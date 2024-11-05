@@ -11,21 +11,25 @@ export default async function FooterServer() {
   })
 
   return (
-    <div className="bg-gray-500">
-      <div className="py-12 mx-w-5xl mx-auto flex justify-between w-full items-center">
-        <div className="relative w-64 h-20">
-          <Image alt={footer.logo.alt} src={footer.logo.url} fill className="object-contain"/>
-        </div>
-        <div>
+    <footer className="bg-white rounded-lg shadow m-4 dark:bg-gray-800">
+      <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+        <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+          © 2023{' '}
+          <a href="https://flowbite.com/" className="hover:underline">
+            Flowbite™
+          </a>
+          . All Rights Reserved.
+        </span>
+        <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
           {footer.navigation.map((item, index) => {
             return (
-              <Link key={item.index} href={item.link} className="text-white text-lg mx-4">
+              <Link key={item.index} href={item.link} className="hover:underline me-4 md:me-6">
                 {item.label}
               </Link>
             )
           })}
-        </div>
+        </ul>
       </div>
-    </div>
+    </footer>
   )
 }
