@@ -3,7 +3,7 @@ import ImageBlockServer from '@/blocks/image/Server'
 import { Page } from '@/payload-types'
 import React, { Fragment } from 'react'
 
-const blockComponents = {
+const blockComponents: { [key: string]: React.ComponentType<any> } = {
   cover: CoverBlockServer,
   image: ImageBlockServer
 }
