@@ -1,5 +1,3 @@
-import type { Metadata } from 'next'
-
 import config from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import React, { cache } from 'react'
@@ -37,13 +35,13 @@ export async function generateStaticParams() {
   })
 
   return pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'index'
-    })
-    .map(({ slug }) => slug)
+    ?.filter((doc) => doc.slug !== 'index')
+    .map((doc) => ({ slug: doc.slug }))
 }
 
-export default async function Page({ params: { slug = 'index' } }) {
+export default async function Page({ params }: { params: { slug: string } }) {
+  const { slug = 'index' } = await params;
+  
   let page: PageType | null
 
   page = await queryPageBySlug({
