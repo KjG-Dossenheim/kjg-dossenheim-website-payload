@@ -1,3 +1,4 @@
+import { fields } from '@payloadcms/plugin-form-builder'
 import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
@@ -7,7 +8,28 @@ export const Users: CollectionConfig = {
   },
   auth: true,
   fields: [
-    // Email added by default
-    // Add more fields as needed
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'firstName',
+          label: 'Vorname',
+          type: 'text',
+          required: true,
+          admin: {
+            width: '50%',
+          },
+        },
+        {
+          name: 'lastName',
+          label: 'Nachname',
+          type: 'text',
+          required: true,
+          admin: {
+            width: '50%',
+          },
+        },
+      ],
+    },
   ],
 }
