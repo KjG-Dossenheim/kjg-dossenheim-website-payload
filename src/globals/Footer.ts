@@ -33,5 +33,49 @@ export const Footer: GlobalConfig = {
             maxRows: 5,
             required: true,
         },
+        {
+            name: "socialLinks",
+            label: "Social Links",
+            type: "array",
+            fields: [
+                {
+                    name: "label",
+                    label: "Label",
+                    type: "text",
+                    required: true,
+                },
+                {
+                    name: "link",
+                    label: "Link",
+                    type: "text",
+                    required: true,
+                },
+            ],
+            minRows: 1,
+            maxRows: 5,
+            required: true,
+        },
+        {
+            name: "legalLinks",
+            label: "Legal Links",
+            type: "array",
+            fields: [
+                {
+                    name: "label",
+                    label: "Label",
+                    type: "text",
+                    required: true,
+                },
+                {
+                    name: "link",
+                    label: "Link",
+                    type: "text",
+                    required: true,
+                },
+            ],
+            minRows: 1,
+            maxRows: 5,
+            required: true,
+        }
     ],
 };
