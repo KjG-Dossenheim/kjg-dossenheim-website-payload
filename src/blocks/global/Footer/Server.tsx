@@ -11,25 +11,67 @@ export default async function FooterServer() {
   })
 
   return (
-    <footer className="bg-white rounded-lg shadow m-4 dark:bg-gray-800">
-      <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-        <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-          © 2023{' '}
-          <a href="https://flowbite.com/" className="hover:underline">
-            Flowbite™
-          </a>
-          . All Rights Reserved.
-        </span>
-        <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
-          {footer.navigation.map((item, index) => {
-            return (
-              <Link key={item.index} href={item.link} className="hover:underline me-4 md:me-6">
-                {item.label}
-              </Link>
-            )
-          })}
-        </ul>
-      </div>
+    <footer
+    className="p-4 text-white bg-primary-500 dark:bg-secondary-500 sm:p-6">
+    <div className="max-w-screen-xl mx-auto">
+        <div className="md:flex md:justify-between">
+            <div className="mb-6 md:mb-0 grid content-between">
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-6d text-sm min-w-fit">
+                <div>
+                    <h2 className="py-0 mb-2 text-sm font-semibold text-white uppercase">Folge uns</h2>
+                    <ul className="space-y-2">
+                        <li className="list-none">
+                            <a href="https://www.facebook.com/kjg.dossenheim/"
+                                className="hover:underline text-white" target="_blank">Facebook</a>
+                        </li>
+                        <li className="list-none">
+                            <a href="https://www.instagram.com/kjg.dossenheim/"
+                                className="hover:underline text-white" target="_blank">Instagram</a>
+                        </li>
+                        <li className="list-none">
+                            <a href="https://whatsapp.com/channel/0029VaDWauKIyPtOOGIy2i1M"
+                                className="hover:underline text-white" target="_blank">WhatsApp</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 className="py-0 mb-2 text-sm font-semibold text-white uppercase">Kontakt</h2>
+                    <ul className="space-y-2">
+                        <li className="list-none">
+                            <a href="mailto:kontakt@kjg-dossenheim.org" className="hover:underline text-white">E-Mail</a>
+                        </li>
+                        <li className="list-none">
+                            <a href="tel:072161906054" className="hover:underline text-white">Telefon</a>
+                        </li>
+                        <li className="list-none">
+                            <a href="https://wa.me/4972161906054" className="hover:underline text-white">WhatsApp</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 className="py-0 mb-2 text-sm font-semibold text-white uppercase">Rechtliches</h2>
+                    <ul className="text-secondary-600 space-y-2">
+                        <li className="list-none">
+                            <a href="{{.Site.BaseURL}}/agb/" className="hover:underline text-white">AGB</a>
+                        </li>
+                        <li className="list-none">
+                            <a href="{{.Site.BaseURL}}/datenschutz/" className="hover:underline text-white">Datenschutz</a>
+                        </li>
+                        <li className="list-none">
+                            <a href="{{.Site.BaseURL}}/impressum/" className="hover:underline text-white">Impressum</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <hr className="my-6 sm:mx-auto lg:my-8" />
+        <div className="sm:flex sm:items-center sm:justify-between">
+            <span className="text-sm sm:text-center">©  <a href="{{.Site.BaseURL}}"
+                    className="hover:underline text-white"></a>. All Rights Reserved.
+            </span>
+        </div>
+    </div>
     </footer>
   )
 }
