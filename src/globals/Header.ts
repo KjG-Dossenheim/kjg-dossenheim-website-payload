@@ -28,10 +28,49 @@ export const Header: GlobalConfig = {
                     type: "text",
                     required: true,
                 },
+                {
+                    name: "dropdown",
+                    label: "Dropdown",
+                    type: "array",
+                    fields: [
+                        {
+                            name: "label",
+                            label: "Label",
+                            type: "text",
+                            required: true,
+                        },
+                        {
+                            name: "link",
+                            label: "Link",
+                            type: "text",
+                            required: true,
+                        },
+                    ],
+                }
             ],
             minRows: 1,
             maxRows: 5,
             required: true,
         },
+        {
+            name: "aktionen",
+            label: "Aktionen",
+            type: "array",
+            required: true,
+            fields: [
+                {
+                    name: "name",
+                    label: "Name",
+                    type: "text",
+                    required: true,
+                },
+                {
+                    name: "link",
+                    label: "Link",
+                    type: "text",
+                    required: true,
+                },
+            ],
+        }
     ],
 };
