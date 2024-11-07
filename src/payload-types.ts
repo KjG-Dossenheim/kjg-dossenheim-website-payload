@@ -12,6 +12,7 @@ export interface Config {
   };
   collections: {
     pages: Page;
+    team: Team;
     users: User;
     media: Media;
     'payload-locked-documents': PayloadLockedDocument;
@@ -20,6 +21,7 @@ export interface Config {
   };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -30,12 +32,18 @@ export interface Config {
     defaultIDType: string;
   };
   globals: {
+    startseite: Startseite;
+    aktionen: Aktionen;
     header: Header;
     footer: Footer;
+    rechtliches: Rechtlich;
   };
   globalsSelect: {
+    startseite: StartseiteSelect<false> | StartseiteSelect<true>;
+    aktionen: AktionenSelect<false> | AktionenSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    rechtliches: RechtlichesSelect<false> | RechtlichesSelect<true>;
   };
   locale: null;
   user: User & {
@@ -131,10 +139,28 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: string;
+  firstName: string;
+  lastName: string;
+  description?: string | null;
+  image?: (string | null) | Media;
+  email?: string | null;
+  phone?: string | null;
+  position?: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: string;
+  firstName: string;
+  lastName: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -156,6 +182,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'team';
+        value: string | Team;
       } | null)
     | ({
         relationTo: 'users';
@@ -245,9 +275,26 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team_select".
+ */
+export interface TeamSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  description?: T;
+  image?: T;
+  email?: T;
+  phone?: T;
+  position?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -310,6 +357,83 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "startseite".
+ */
+export interface Startseite {
+  id: string;
+  neuigkeiten: {
+    title: string;
+    link: string;
+    enabled?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "aktionen".
+ */
+export interface Aktionen {
+  id: string;
+  sommerfreizeit: {
+    allgemein: {
+      title: string;
+      motto?: string | null;
+      startDate: string;
+      endDate: string;
+      alter: string;
+      pricing: {
+        name: string;
+        beschreibung: string;
+        price: number;
+        eigenschaften?:
+          | {
+              name: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[];
+      eigenschaften?:
+        | {
+            title: string;
+            beschreibung: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    unterkunft: {
+      name: string;
+      beschreibung: string;
+      website: string;
+      bild: string | Media;
+    };
+    anmeldung: {
+      website: string;
+    };
+  };
+  martinsumzug?: {
+    Startdatum?: string | null;
+  };
+  adventsmarkt?: {
+    Startdatum?: string | null;
+  };
+  tannebaumaktion?: {
+    Startdatum?: string | null;
+    vekaufsort?:
+      | {
+          name: string;
+          adresse?: string | null;
+          website?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
 export interface Header {
@@ -317,6 +441,18 @@ export interface Header {
   logo: string | Media;
   navigation: {
     label: string;
+    link: string;
+    dropdown?:
+      | {
+          label: string;
+          link: string;
+          id?: string | null;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  aktionen: {
+    name: string;
     link: string;
     id?: string | null;
   }[];
@@ -335,8 +471,156 @@ export interface Footer {
     link: string;
     id?: string | null;
   }[];
+  socialLinks: {
+    label: string;
+    link: string;
+    id?: string | null;
+  }[];
+  legalLinks: {
+    label: string;
+    link: string;
+    id?: string | null;
+  }[];
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rechtliches".
+ */
+export interface Rechtlich {
+  id: string;
+  impressum: {
+    text: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  datenschutz: {
+    text: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "startseite_select".
+ */
+export interface StartseiteSelect<T extends boolean = true> {
+  neuigkeiten?:
+    | T
+    | {
+        title?: T;
+        link?: T;
+        enabled?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "aktionen_select".
+ */
+export interface AktionenSelect<T extends boolean = true> {
+  sommerfreizeit?:
+    | T
+    | {
+        allgemein?:
+          | T
+          | {
+              title?: T;
+              motto?: T;
+              startDate?: T;
+              endDate?: T;
+              alter?: T;
+              pricing?:
+                | T
+                | {
+                    name?: T;
+                    beschreibung?: T;
+                    price?: T;
+                    eigenschaften?:
+                      | T
+                      | {
+                          name?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              eigenschaften?:
+                | T
+                | {
+                    title?: T;
+                    beschreibung?: T;
+                    id?: T;
+                  };
+            };
+        unterkunft?:
+          | T
+          | {
+              name?: T;
+              beschreibung?: T;
+              website?: T;
+              bild?: T;
+            };
+        anmeldung?:
+          | T
+          | {
+              website?: T;
+            };
+      };
+  martinsumzug?:
+    | T
+    | {
+        Startdatum?: T;
+      };
+  adventsmarkt?:
+    | T
+    | {
+        Startdatum?: T;
+      };
+  tannebaumaktion?:
+    | T
+    | {
+        Startdatum?: T;
+        vekaufsort?:
+          | T
+          | {
+              name?: T;
+              adresse?: T;
+              website?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -348,6 +632,20 @@ export interface HeaderSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        link?: T;
+        dropdown?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  aktionen?:
+    | T
+    | {
+        name?: T;
         link?: T;
         id?: T;
       };
@@ -367,6 +665,39 @@ export interface FooterSelect<T extends boolean = true> {
         label?: T;
         link?: T;
         id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        label?: T;
+        link?: T;
+        id?: T;
+      };
+  legalLinks?:
+    | T
+    | {
+        label?: T;
+        link?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rechtliches_select".
+ */
+export interface RechtlichesSelect<T extends boolean = true> {
+  impressum?:
+    | T
+    | {
+        text?: T;
+      };
+  datenschutz?:
+    | T
+    | {
+        text?: T;
       };
   updatedAt?: T;
   createdAt?: T;
