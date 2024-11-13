@@ -2,6 +2,10 @@ import type { CollectionConfig } from 'payload'
 
 export const Team: CollectionConfig = {
     slug: 'team',
+    admin: {
+        useAsTitle: 'firstName',
+        defaultColumns : ['firstName', 'lastName', 'position', 'email'],
+    },
     fields: [
         {
             type: 'row',
@@ -32,10 +36,10 @@ export const Team: CollectionConfig = {
             type: 'textarea',
         },
         {
-            name: 'image',
-            label: 'Bild',
+            name: 'profilePicture',
+            label: 'Profilbild',
             type: 'upload',
-            relationTo: 'media',
+            relationTo: 'teambilder',
             admin: {
               position: 'sidebar',
           },
@@ -43,7 +47,7 @@ export const Team: CollectionConfig = {
         {
             name: 'email',
             label: 'E-Mail',
-            type: 'text',
+            type: 'email',
             admin: {
                 position: 'sidebar',
             },
@@ -61,6 +65,7 @@ export const Team: CollectionConfig = {
             label: 'Position', // required
             type: 'select', // required
             hasMany: true,
+            required: true,
             admin: {
               isClearable: true,
               isSortable: true, // use mouse to drag and drop different values, and sort them according to your choice

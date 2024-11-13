@@ -13,15 +13,18 @@ export interface Config {
   collections: {
     pages: Page;
     team: Team;
+    teambilder: Teambilder;
     users: User;
     media: Media;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
+  collectionsJoins: {};
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
+    teambilder: TeambilderSelect<false> | TeambilderSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -146,12 +149,31 @@ export interface Team {
   firstName: string;
   lastName: string;
   description?: string | null;
-  image?: (string | null) | Media;
+  profilePicture?: (string | null) | Teambilder;
   email?: string | null;
   phone?: string | null;
-  position?: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[] | null;
+  position: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[];
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teambilder".
+ */
+export interface Teambilder {
+  id: string;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -186,6 +208,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'team';
         value: string | Team;
+      } | null)
+    | ({
+        relationTo: 'teambilder';
+        value: string | Teambilder;
       } | null)
     | ({
         relationTo: 'users';
@@ -281,12 +307,30 @@ export interface TeamSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
   description?: T;
-  image?: T;
+  profilePicture?: T;
   email?: T;
   phone?: T;
   position?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teambilder_select".
+ */
+export interface TeambilderSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -375,10 +419,22 @@ export interface Startseite {
  */
 export interface Aktionen {
   id: string;
+  jahresplan: {
+    events: {
+      title: string;
+      startDate: string;
+      endDate?: string | null;
+      description?: string | null;
+      location?: string | null;
+      website?: string | null;
+      id?: string | null;
+    }[];
+  };
   sommerfreizeit: {
     allgemein: {
       title: string;
       motto?: string | null;
+      background?: (string | null) | Media;
       startDate: string;
       endDate: string;
       alter: string;
@@ -386,21 +442,17 @@ export interface Aktionen {
         name: string;
         beschreibung: string;
         price: number;
-        eigenschaften?:
-          | {
-              name: string;
-              id?: string | null;
-            }[]
-          | null;
+        eigenschaften: {
+          name: string;
+          id?: string | null;
+        }[];
         id?: string | null;
       }[];
-      eigenschaften?:
-        | {
-            title: string;
-            beschreibung: string;
-            id?: string | null;
-          }[]
-        | null;
+      eigenschaften: {
+        title: string;
+        beschreibung: string;
+        id?: string | null;
+      }[];
     };
     unterkunft: {
       name: string;
@@ -412,22 +464,28 @@ export interface Aktionen {
       website: string;
     };
   };
-  martinsumzug?: {
-    Startdatum?: string | null;
+  martinsumzug: {
+    startDate: string;
+    endDate?: string | null;
   };
-  adventsmarkt?: {
-    Startdatum?: string | null;
+  adventsmarkt: {
+    startDate: string;
+    endDate?: string | null;
   };
-  tannebaumaktion?: {
-    Startdatum?: string | null;
-    vekaufsort?:
-      | {
-          name: string;
-          adresse?: string | null;
-          website?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+  tannenbaumaktion: {
+    startDate: string;
+    startTime?: string | null;
+    vekaufsort: {
+      name: string;
+      adresse?: string | null;
+      website?: string | null;
+      id?: string | null;
+    }[];
+    fragen: {
+      frage: string;
+      antwort: string;
+      id?: string | null;
+    }[];
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -524,6 +582,24 @@ export interface Rechtlich {
       [k: string]: unknown;
     };
   };
+  agb: {
+    text: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    html?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -548,6 +624,21 @@ export interface StartseiteSelect<T extends boolean = true> {
  * via the `definition` "aktionen_select".
  */
 export interface AktionenSelect<T extends boolean = true> {
+  jahresplan?:
+    | T
+    | {
+        events?:
+          | T
+          | {
+              title?: T;
+              startDate?: T;
+              endDate?: T;
+              description?: T;
+              location?: T;
+              website?: T;
+              id?: T;
+            };
+      };
   sommerfreizeit?:
     | T
     | {
@@ -556,6 +647,7 @@ export interface AktionenSelect<T extends boolean = true> {
           | {
               title?: T;
               motto?: T;
+              background?: T;
               startDate?: T;
               endDate?: T;
               alter?: T;
@@ -598,23 +690,33 @@ export interface AktionenSelect<T extends boolean = true> {
   martinsumzug?:
     | T
     | {
-        Startdatum?: T;
+        startDate?: T;
+        endDate?: T;
       };
   adventsmarkt?:
     | T
     | {
-        Startdatum?: T;
+        startDate?: T;
+        endDate?: T;
       };
-  tannebaumaktion?:
+  tannenbaumaktion?:
     | T
     | {
-        Startdatum?: T;
+        startDate?: T;
+        startTime?: T;
         vekaufsort?:
           | T
           | {
               name?: T;
               adresse?: T;
               website?: T;
+              id?: T;
+            };
+        fragen?:
+          | T
+          | {
+              frage?: T;
+              antwort?: T;
               id?: T;
             };
       };
@@ -698,6 +800,12 @@ export interface RechtlichesSelect<T extends boolean = true> {
     | T
     | {
         text?: T;
+      };
+  agb?:
+    | T
+    | {
+        text?: T;
+        html?: T;
       };
   updatedAt?: T;
   createdAt?: T;

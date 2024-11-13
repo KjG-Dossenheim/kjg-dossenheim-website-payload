@@ -2,10 +2,60 @@ import { GlobalConfig } from "payload";
 
 export const Aktionen: GlobalConfig = {
   slug: "aktionen",
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       type: 'tabs',
       tabs: [
+        {
+          label: 'Jahresplan',
+          name: 'jahresplan',
+          fields: [
+            {
+              name: 'events',
+              label: 'Events',
+              type: 'array',
+              fields: [
+                {
+                  name: 'title',
+                  label: 'Titel',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'startDate',
+                  label: 'Startdatum',
+                  type: 'date',
+                  required: true,
+                },
+                {
+                  name: 'endDate',
+                  label: 'Enddatum',
+                  type: 'date',
+                },
+                {
+                  name: 'description',
+                  label: 'Beschreibung',
+                  type: 'textarea',
+                },
+                {
+                  name: 'location',
+                  label: 'Ort',
+                  type: 'text',
+                },
+                {
+                  name: 'website',
+                  label: 'Webseite',
+                  type: 'text',
+                }
+              ],
+              minRows: 1,
+              required: true,
+            },
+          ],
+        },
         {
           label: 'Sommerfreizeit',
           name: 'sommerfreizeit',
@@ -27,6 +77,12 @@ export const Aktionen: GlobalConfig = {
                       name: 'motto',
                       label: 'Motto',
                       type: 'text',
+                    },
+                    {
+                      name: 'background',
+                      label: 'Hintergrund',
+                      type: 'upload',
+                      relationTo: 'media',
                     },
                     {
                       type: 'row',
@@ -88,6 +144,7 @@ export const Aktionen: GlobalConfig = {
                           name: "eigenschaften",
                           label: "Eigenschaften",
                           type: "array",
+                          required: true,
                           fields: [
                             {
                               name: "name",
@@ -106,6 +163,7 @@ export const Aktionen: GlobalConfig = {
                       name: 'eigenschaften',
                       label: 'Eigenschaften',
                       type: 'array',
+                      required: true,
                       fields: [
                         {
                           name: 'title',
@@ -175,9 +233,27 @@ export const Aktionen: GlobalConfig = {
           name: 'martinsumzug',
           fields: [
             {
-              name: 'Startdatum',
-              type: 'date',
-            }
+              type: 'row',
+              fields: [
+                {
+                  label: 'Startdatum',
+                  name: 'startDate',
+                  type: 'date',
+                  required: true,
+                  admin: {
+                    width: '50%',
+                  },
+                },
+                {
+                  label: 'Enddatum',
+                  name: 'endDate',
+                  type: 'date',
+                  admin: {
+                    width: '50%',
+                  },
+                },
+              ],
+            },
           ],
         },
         {
@@ -185,23 +261,64 @@ export const Aktionen: GlobalConfig = {
           name: 'adventsmarkt',
           fields: [
             {
-              name: 'Startdatum',
-              type: 'date',
-            }
+              type: 'row',
+              fields: [
+                {
+                  label: 'Startdatum',
+                  name: 'startDate',
+                  type: 'date',
+                  required: true,
+                  admin: {
+                    width: '50%',
+                  },
+                },
+                {
+                  label: 'Enddatum',
+                  name: 'endDate',
+                  type: 'date',
+                  admin: {
+                    width: '50%',
+                  },
+                },
+              ],
+            },
           ],
         },
         {
-          label: 'Tannebaumaktion',
-          name: 'tannebaumaktion',
+          label: 'Tannenbaumaktion',
+          name: 'tannenbaumaktion',
           fields: [
             {
-              name: 'Startdatum',
-              type: 'date',
+              type: 'row',
+              fields: [
+                {
+                  label: 'Startdatum',
+                  name: 'startDate',
+                  type: 'date',
+                  required: true,
+                  admin: {
+                    width: '50%',
+                  },
+                },
+                {
+                  label: 'Startzeit',
+                  name: 'startTime',
+                  type: 'date',
+                  admin: {
+                    width: '50%',
+                    date: {
+                      pickerAppearance: 'timeOnly',
+                      displayFormat: 'HH:mm',
+                    },
+                  },
+                },
+              ],
             },
             {
               label: 'Verkaufsort',
               name: 'vekaufsort',
               type: 'array',
+              required: true,
               fields: [
                 {
                   name: 'name',
@@ -220,7 +337,27 @@ export const Aktionen: GlobalConfig = {
                   type: 'text',
                 },
               ],
-            }
+            },
+            {
+              label: 'Fragen',
+              name: 'fragen',
+              type: 'array',
+              required: true,
+              fields: [
+                {
+                  name: 'frage',
+                  label: 'Frage',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'antwort',
+                  label: 'Antwort',
+                  type: 'textarea',
+                  required: true,
+                },
+              ],
+            },
           ],
         }
       ],

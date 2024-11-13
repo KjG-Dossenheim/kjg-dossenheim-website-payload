@@ -1,3 +1,65 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#RichText {
+    h1 {
+        @apply text-4xl font-bold pt-2 text-secondary-500 dark:text-primary-400;
+    }
+
+    h2 {
+        @apply text-3xl font-bold text-secondary-500 dark:text-primary-400;
+    }
+
+    h3 {
+        @apply text-2xl font-bold text-secondary-500 dark:text-primary-400;
+    }
+
+    h4 {
+        @apply text-xl font-bold text-secondary-500 dark:text-primary-400;
+    }
+
+    h5 {
+        @apply text-lg font-bold text-secondary-500 dark:text-primary-400;
+    }
+
+    h6 {
+        @apply text-base font-bold text-secondary-500 dark:text-primary-400;
+    }
+
+    p {
+        @apply text-base;
+    }
+
+    a {
+        @apply text-blue-500 underline;
+    }
+
+    ul {
+        @apply list-disc list-inside;
+    }
+
+    ol {
+        @apply list-decimal;
+    }
+
+    li {
+        @apply text-base;
+    }
+
+    blockquote {
+        @apply p-4 my-4 border-s-4 border-gray-300 bg-gray-50 dark:border-primary-500 dark:bg-secondary-500;
+    }
+
+    pre {
+        @apply bg-gray-800 text-white p-4 rounded;
+    }
+
+    code {
+        @apply font-mono bg-gray-200 p-1 rounded;
+    }
+
+    img {
+        @apply mx-auto my-4;
+    }
+}
