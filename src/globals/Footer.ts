@@ -5,35 +5,6 @@ export const Footer: GlobalConfig = {
     slug: "footer",
     fields: [
         {
-            name: "logo",
-            label: "Logo",
-            type: "upload",
-            relationTo: "media",
-            required: true,
-        },
-        {
-            name: "navigation",
-            label: "Navigation",
-            type: "array",
-            fields: [
-                {
-                    name: "label",
-                    label: "Label",
-                    type: "text",
-                    required: true,
-                },
-                {
-                    name: "link",
-                    label: "Link",
-                    type: "text",
-                    required: true,
-                },
-            ],
-            minRows: 1,
-            maxRows: 5,
-            required: true,
-        },
-        {
             name: "socialLinks",
             label: "Social Links",
             type: "array",
@@ -52,7 +23,7 @@ export const Footer: GlobalConfig = {
                 },
             ],
             minRows: 1,
-            maxRows: 5,
+            maxRows: 3,
             required: true,
         },
         {

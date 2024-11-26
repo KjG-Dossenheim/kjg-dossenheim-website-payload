@@ -15,6 +15,7 @@ export const Header: GlobalConfig = {
             name: "navigation",
             label: "Navigation",
             type: "array",
+            index: true,
             fields: [
                 {
                     name: "label",
@@ -57,6 +58,7 @@ export const Header: GlobalConfig = {
             label: "Aktionen",
             type: "array",
             required: true,
+            index: true,
             fields: [
                 {
                     name: "name",

@@ -1,16 +1,16 @@
-import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
 import Link from 'next/link'
 
 export default async function FooterServer() {
-  const payload = await getPayloadHMR({ config })
+  const payload = await getPayload({ config })
   const footer = await payload.findGlobal({
     slug: 'footer',
   })
 
   return (
-      <footer className="p-4 text-white bg-primary-500 dark:bg-secondary-500 sm:p-6">
+      <footer className="p-4 text-white bg-secondary-500 sm:p-6">
         <div className="max-w-screen-xl mx-auto">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0 grid content-between"></div>
@@ -18,33 +18,13 @@ export default async function FooterServer() {
               <div>
                 <h2 className="py-0 mb-2 text-sm font-semibold text-white uppercase">Folge uns</h2>
                 <ul className="space-y-2">
-                  <li className="list-none">
-                    <a
-                      href="https://www.facebook.com/kjg.dossenheim/"
-                      className="hover:underline text-white"
-                      target="_blank"
-                    >
-                      Facebook
-                    </a>
-                  </li>
-                  <li className="list-none">
-                    <a
-                      href="https://www.instagram.com/kjg.dossenheim/"
-                      className="hover:underline text-white"
-                      target="_blank"
-                    >
-                      Instagram
-                    </a>
-                  </li>
-                  <li className="list-none">
-                    <a
-                      href="https://whatsapp.com/channel/0029VaDWauKIyPtOOGIy2i1M"
-                      className="hover:underline text-white"
-                      target="_blank"
-                    >
-                      WhatsApp
-                    </a>
-                  </li>
+                  {footer.socialLinks.map((socialLink) => (
+                    <li key={socialLink.id} className="list-none">
+                      <a href={socialLink.link} className="hover:underline text-white">
+                        {socialLink.label}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div>

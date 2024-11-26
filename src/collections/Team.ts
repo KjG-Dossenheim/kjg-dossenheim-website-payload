@@ -2,9 +2,18 @@ import type { CollectionConfig } from 'payload'
 
 export const Team: CollectionConfig = {
     slug: 'team',
+    labels: {
+        singular: 'Teammitglied',
+        plural: 'Teammitglieder',
+    },
+    defaultSort: 'firstName',
     admin: {
         useAsTitle: 'firstName',
         defaultColumns : ['firstName', 'lastName', 'position', 'email'],
+        listSearchableFields: ['firstName', 'lastName'],
+        pagination: {
+          defaultLimit: 25,
+        },
     },
     fields: [
         {
@@ -15,6 +24,7 @@ export const Team: CollectionConfig = {
                     label: 'Vorname',
                     type: 'text',
                     required: true,
+                    index: true,
                     admin: {
                         width: '50%',
                     },
@@ -24,6 +34,7 @@ export const Team: CollectionConfig = {
                     label: 'Nachname',
                     type: 'text',
                     required: true,
+                    index: true,
                     admin: {
                         width: '50%',
                     },
