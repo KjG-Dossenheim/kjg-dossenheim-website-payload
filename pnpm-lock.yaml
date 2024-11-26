@@ -12,6 +12,9 @@ importers:
 
   .:
     dependencies:
+      '@netlify/plugin-nextjs':
+        specifier: ^5.8.1
+        version: 5.8.1
       '@payloadcms/db-mongodb':
         specifier: latest
         version: 3.1.1(@aws-sdk/credential-providers@3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0)))(payload@3.1.1(graphql@16.9.0)(monaco-editor@0.52.0)(react-dom@19.0.0-rc.1(react@19.0.0-rc.1))(react@19.0.0-rc.1)(typescript@5.6.3))
@@ -879,6 +882,10 @@ packages:
 
   '@mongodb-js/saslprep@1.1.9':
     resolution: {integrity: sha512-tVkljjeEaAhCqTzajSdgbQ6gE6f3oneVwa3iXR6csiEwXXOFsiC6Uh9iAjAhXPtqa/XMDHWjjeNH/77m/Yq2dw==}
+
+  '@netlify/plugin-nextjs@5.8.1':
+    resolution: {integrity: sha512-WB1N0FslhWZ1yAVYTcB6CcFrFOUSQ0O2LfavYZrbAypeNxu2I+oO+cgmhfDgZ8Eoq1g4EMeoIGMkNoZ4ogZTsg==}
+    engines: {node: '>=18.0.0'}
 
   '@next/env@15.0.3':
     resolution: {integrity: sha512-t9Xy32pjNOvVn2AS+Utt6VmyrshbpfUMhIjFO60gI58deSo/KgLOp31XZ4O+kY/Is8WAGYwA5gR7kOb1eORDBA==}
@@ -5510,6 +5517,8 @@ snapshots:
   '@mongodb-js/saslprep@1.1.9':
     dependencies:
       sparse-bitfield: 3.0.3
+
+  '@netlify/plugin-nextjs@5.8.1': {}
 
   '@next/env@15.0.3': {}
 

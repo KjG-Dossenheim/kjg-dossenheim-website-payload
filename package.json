@@ -15,6 +15,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
+    "@netlify/plugin-nextjs": "^5.8.1",
     "@payloadcms/db-mongodb": "latest",
     "@payloadcms/next": "latest",
     "@payloadcms/payload-cloud": "latest",
