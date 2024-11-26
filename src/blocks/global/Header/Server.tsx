@@ -37,7 +37,7 @@ export default async function HeaderServer() {
   })
 
   return (
-    <NavigationMenu className='max-w-screen-xl mx-auto'>
+    <NavigationMenu className="max-w-screen-xl mx-auto">
       <Sheet>
         <SheetTrigger asChild className="md:hidden m-2">
           <Button variant="outline" size="icon">
@@ -86,7 +86,7 @@ export default async function HeaderServer() {
           </div>
         </SheetContent>
       </Sheet>
-      <h1 className='px-2'>KjG Dossenheim</h1>
+      <h1 className="px-2">KjG Dossenheim</h1>
       <NavigationMenuList className="hidden md:flex">
         <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
@@ -110,13 +110,9 @@ export default async function HeaderServer() {
                 </NavigationMenuLink>
               </li>
               {header.aktionen.map((component) => (
-                <li key={component.id} className='my-auto'>
-                  
-                  <Link className='p-2' href={component.link} title={component.name} passHref>
-                  <NavigationMenuLink >
-                    {component.name}
-                    </NavigationMenuLink>
-
+                <li key={component.id} className="my-auto">
+                  <Link className="p-2" href={component.link} title={component.name} passHref>
+                    <NavigationMenuLink>{component.name}</NavigationMenuLink>
                   </Link>
                 </li>
               ))}
@@ -134,7 +130,11 @@ export default async function HeaderServer() {
             </NavigationMenuItem>
           )
         })}
-        <Button className="hidden md:flex">Mitglied werden</Button>
+        {header.cta.enabled && (
+          <Button asChild className="hidden md:flex">
+            <Link href={header.cta.link}>{header.cta.title}</Link>
+          </Button>
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   )

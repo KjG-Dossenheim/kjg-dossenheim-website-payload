@@ -10,6 +10,36 @@ export const Header: GlobalConfig = {
             type: "upload",
             relationTo: "media",
             required: true,
+            admin: {
+                position: 'sidebar',
+            },
+        },
+        {
+            name: "cta",
+            label: "Call to Action",
+            type: 'group',
+            fields: [
+                {
+                    name: "title",
+                    label: "Title",
+                    type: "text",
+                    required: true,
+                },
+                {
+                    name: "link",
+                    label: "Link",
+                    type: "text",
+                    required: true,
+                },
+                {
+                    name: "enabled",
+                    label: "Enabled",
+                    type: "checkbox",
+                },
+            ],
+            admin: {
+                position: 'sidebar',
+            },
         },
         {
             name: "navigation",
