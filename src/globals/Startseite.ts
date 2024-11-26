@@ -48,7 +48,6 @@ export const Startseite: GlobalConfig = {
                             imagePath: 'meta.image',
                         }),
                         MetaTitleField({
-                            hasGenerateFn: true,
                         }),
                         MetaImageField({
                             relationTo: 'media',
