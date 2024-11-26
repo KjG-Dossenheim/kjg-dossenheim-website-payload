@@ -100,6 +100,7 @@ export interface Team {
 export interface Teambilder {
   id: string;
   alt: string;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -426,6 +427,7 @@ export interface TeamSelect<T extends boolean = true> {
  */
 export interface TeambilderSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -757,6 +759,11 @@ export interface Aktionen {
 export interface Header {
   id: string;
   logo: string | Media;
+  cta: {
+    title: string;
+    link: string;
+    enabled?: boolean | null;
+  };
   navigation: {
     label: string;
     link: string;
@@ -872,11 +879,9 @@ export interface StartseiteSelect<T extends boolean = true> {
   meta?:
     | T
     | {
-        overview?: T;
         title?: T;
         image?: T;
         description?: T;
-        preview?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -993,6 +998,13 @@ export interface AktionenSelect<T extends boolean = true> {
  */
 export interface HeaderSelect<T extends boolean = true> {
   logo?: T;
+  cta?:
+    | T
+    | {
+        title?: T;
+        link?: T;
+        enabled?: T;
+      };
   navigation?:
     | T
     | {

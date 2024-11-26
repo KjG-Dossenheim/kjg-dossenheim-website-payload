@@ -88,6 +88,9 @@ export default buildConfig({
     s3Storage({
       collections: {
         media: true,
+        teambilder: {
+          prefix: 'teambilder',
+        },
       },
       bucket: process.env.S3_BUCKET_NAME || '',
       config: {
