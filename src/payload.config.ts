@@ -1,9 +1,12 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { OAuth2Plugin } from 'payload-oauth2'
+
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import path from 'path'
 import { buildConfig } from 'payload'

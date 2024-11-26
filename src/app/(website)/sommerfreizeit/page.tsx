@@ -57,12 +57,12 @@ export default async function Page() {
           />
         </p>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-          <Button asChild className="rounded-full">
+          <Button asChild>
             <Link href={aktionen.sommerfreizeit.anmeldung.website}>
               Jetzt anmelden <ChevronRight />
             </Link>
           </Button>
-          <Button asChild className="rounded-full border" variant="outline">
+          <Button asChild className="border" variant="outline">
             <Link href="#info">
               Informationen <ChevronDown />
             </Link>
@@ -85,7 +85,7 @@ export default async function Page() {
               {aktionen.sommerfreizeit.unterkunft.beschreibung}
             </p>
             <div className="mt-4 md:mt-8">
-              <Button asChild className="rounded-full mx-auto">
+              <Button asChild className="mx-auto">
                 <Link href={aktionen.sommerfreizeit.unterkunft.website}>
                   {aktionen.sommerfreizeit.unterkunft.name}
                 </Link>
@@ -128,7 +128,7 @@ export default async function Page() {
                   </p>
                 </CardContent>
                 <CardContent>
-                  <Button asChild className="rounded-full mx-auto w-full">
+                  <Button asChild className="mx-auto w-full">
                     <Link href={aktionen.sommerfreizeit.anmeldung.website}> Jetzt anmelden</Link>
                   </Button>
                 </CardContent>
