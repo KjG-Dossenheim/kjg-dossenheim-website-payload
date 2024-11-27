@@ -4,11 +4,14 @@ import config from '@payload-config'
 
 export default async function Page() {
   const payload = await getPayload({ config })
-  const aktionen = await payload.findGlobal({
-    slug: 'aktionen',
+  const about = await payload.findGlobal({
+    slug: 'about',
   })
 
   return (
-    <h1>R</h1>
+    <div
+      className="sm:max-w-screen-lg mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
+        <div id='RichText' dangerouslySetInnerHTML={{ __html: about.html || '' }} />
+    </div>
   )
 }

@@ -10,7 +10,7 @@ export default async function FooterServer() {
   })
 
   return (
-      <footer className="p-4 text-white bg-secondary-500 sm:p-6">
+      <footer className="p-4 text-white bg-secondary sm:p-6">
         <div className="max-w-screen-xl mx-auto">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0 grid content-between"></div>

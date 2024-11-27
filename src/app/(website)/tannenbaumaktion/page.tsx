@@ -27,10 +27,10 @@ export default async function Page() {
   return (
     <section>
       <div className="py-20">
-        <h1 className="text-3xl sm:text-5xl text-secondary-500 dark:text-primary-500 text-center font-bold">
+        <h1 className="text-3xl sm:text-5xl text-secondary dark:text-primary text-center font-bold">
           Tannenbaumaktion
         </h1>
-        <h2 className="text-lg sm:text-2xl text-secondary-500 dark:text-primary-500 text-center">
+        <h2 className="text-lg sm:text-2xl text-secondary dark:text-primary text-center">
           <Date
             dateString={aktionen.tannenbaumaktion.startDate}
             formatString="EEEE, d. MMMM yyyy"
@@ -40,10 +40,10 @@ export default async function Page() {
       </div>
       <section className="py-5 bg-secondary" id='verkaufstellen'>
         <h2 className="text-xl sm:text-4xl text-white text-center font-bold">
-          Unsere Verkaufstellen
+          Unsere Verkaufsstellen
         </h2>
         <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 max-w-screen-lg mx-auto">
-          <Carousel slide={false}>
+          <Carousel>
             {aktionen.tannenbaumaktion.vekaufsort.map((vekaufsort) => (
               <div key={vekaufsort.id} className="flex h-full items-center justify-center ">
                 <div className="text-center text-white">
@@ -56,7 +56,7 @@ export default async function Page() {
         </div>
         <Accordion type="single" collapsible className="max-w-screen-sm mx-auto">
           <AccordionItem value="vekaufsort">
-            <AccordionTrigger className="text-white">Verkaufstellen</AccordionTrigger>
+            <AccordionTrigger className="text-white">Verkaufsstellen</AccordionTrigger>
             {aktionen.tannenbaumaktion.vekaufsort.map((vekaufsort) => (
               <AccordionContent key={vekaufsort.id} className="text-white">
                 {vekaufsort.name} / {vekaufsort.adresse}
@@ -66,14 +66,14 @@ export default async function Page() {
         </Accordion>
       </section>
       <section className="max-w-screen-md mx-auto py-5">
-        <h1 className="text-center text-secondary-500 dark:text-primary-500 text-3xl font-bold pb-5">
+        <h1 className="text-center text-secondary dark:text-primary text-3xl font-bold pb-5">
           FAQ
         </h1>
         <Accordion type="single" collapsible>
           {aktionen.tannenbaumaktion.fragen.map((aktion) => (
             <AccordionItem key={aktion.id} value={aktion.id ?? ''}>
               <AccordionTrigger className='dark:text-white'>{aktion.frage}</AccordionTrigger>
-              <AccordionContent className='dark:text-white'>{aktion.antwort}</AccordionContent>
+              <AccordionContent className='dark:text-white'><div id='RichText' dangerouslySetInnerHTML={{ __html: aktion.answerHTML || '' }} /></AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

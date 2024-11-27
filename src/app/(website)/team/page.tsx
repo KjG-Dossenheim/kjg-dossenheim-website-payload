@@ -22,9 +22,9 @@ export default async function Page() {
 
   return (
     <div>
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+      <div className="max-w-screen-xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
-          <h2 className="text-2xl font-bold md:text-4xl md:leading-tight text-secondary-500 dark:text-primary-500">
+          <h2 className="text-2xl font-bold md:text-4xl md:leading-tight text-secondary dark:text-primary">
             Unser Team
           </h2>
         </div>
@@ -32,7 +32,7 @@ export default async function Page() {
           {team.docs.map((member)=> (
             <div
               key={member.id}
-              className="flex flex-col rounded-xl p-4 md:p-6 bg-white border border-gray-200 dark:bg-secondary-500 dark:border-neutral-700"
+              className="flex flex-col rounded-xl p-4 md:p-6 bg-white border border-gray-200 dark:bg-secondary dark:border-neutral-700"
             >
               <div className="flex items-center gap-x-4">
                 <Avatar className='size-20'>
@@ -43,14 +43,14 @@ export default async function Page() {
                   )}
                 </Avatar>
                 <div className="grow">
-                  <h3 className="font-medium text-secondary-500 dark:text-white">
+                  <h3 className="font-medium text-secondary dark:text-white">
                     {member.firstName} {member.lastName}
                   </h3>
                   <div className="space-x-2">
                     {member.position.map((position) => (
                       <span
                         key={position}
-                        className="inline-block text-xs uppercase font-semibold bg-secondary-500 text-white dark:bg-primary-500 px-2 py-1 rounded-full"
+                        className="inline-block text-xs uppercase font-semibold bg-secondary text-white dark:bg-primary px-2 py-1 rounded-full"
                       >
                         {position}
                       </span>

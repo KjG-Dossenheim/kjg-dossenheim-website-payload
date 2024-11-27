@@ -45,10 +45,7 @@ export default async function HeaderServer() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
-          <SheetHeader>
-            <SheetTitle>KjG Dossenheim</SheetTitle>
-          </SheetHeader>
-          <div className="space-y-2">
+          <div className="space-y-0.5">
             <NavigationMenuItem className="list-none">
               <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -86,42 +83,47 @@ export default async function HeaderServer() {
           </div>
         </SheetContent>
       </Sheet>
-      <h1 className="px-2">KjG Dossenheim</h1>
+      <h1 className="px-2 text-secondary font-bold text-lg">KjG Dossenheim</h1>
       <NavigationMenuList className="hidden md:flex">
-        <NavigationMenuItem>
+        <NavigationMenuItem className="text-secondary">
           <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Startseite
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        <NavigationMenuItem className="text-secondary">
           <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid grid-rows-2 grid-flow-col gap-3 p-6">
-              <li className="row-span-2">
-                <NavigationMenuLink asChild>
-                  <Link
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/aktionen"
-                  >
-                    <div className="mb-2 mt-4 text-lg font-medium">Jahresplan</div>
-                  </Link>
-                </NavigationMenuLink>
-              </li>
+              <NavigationMenuItem className="row-span-2">
+                <Link
+                  className="hover:text-secondary flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                  href="/aktionen"
+                >
+                  <NavigationMenuLink>
+                    <div className="my-auto text-lg font-medium">Jahresplan</div>
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
               {header.aktionen.map((component) => (
-                <li key={component.id} className="my-auto">
-                  <Link className="p-2" href={component.link} title={component.name} passHref>
+                <NavigationMenuItem key={component.id} className="my-auto">
+                  <Link
+                    className="p-2 hover:text-secondary"
+                    href={component.link}
+                    title={component.name}
+                    passHref
+                  >
                     <NavigationMenuLink>{component.name}</NavigationMenuLink>
                   </Link>
-                </li>
+                </NavigationMenuItem>
               ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         {header.navigation.map((item) => {
           return (
-            <NavigationMenuItem key={item.id}>
+            <NavigationMenuItem key={item.id} className="text-secondary">
               <Link href={item.link} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   {item.label}

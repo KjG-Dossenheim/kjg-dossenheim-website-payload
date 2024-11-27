@@ -7,6 +7,8 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { OAuth2Plugin } from 'payload-oauth2'
 
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -20,12 +22,14 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Team } from './collections/Team'
 import { TeamBilder } from './collections/TeamBilder'
+import { Jahresplan } from './collections/Jahresplan'
 
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 import { Rechtliches } from './globals/Rechtliches'
 import { Aktionen } from './globals/Aktionen'
 import { Startseite } from './globals/Startseite'
+import { About } from './globals/About'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -51,8 +55,8 @@ export default buildConfig({
     },
     dateFormat: 'dd.MM.yyyy',
   },
-  collections: [Team, TeamBilder, Users, Media],
-  globals: [Startseite, Aktionen, Header, Footer, Rechtliches],
+  collections: [Jahresplan, Team, TeamBilder, Users, Media],
+  globals: [Startseite, Aktionen, About, Header, Footer, Rechtliches],
   editor: lexicalEditor({}),
   i18n: {
     supportedLanguages: { en, de },
@@ -65,6 +69,19 @@ export default buildConfig({
     url: process.env.DATABASE_URI || '',
   }),
   sharp,
+  email: nodemailerAdapter({
+    defaultFromAddress: 'info@kjg-dossenheim.org',
+    defaultFromName: 'KjG Dossenheim',
+    // Nodemailer transportOptions
+    transportOptions: {
+      host: process.env.SMTP_HOST,
+      port: 587,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    },
+  }),
   plugins: [
     seoPlugin({
       generateTitle,

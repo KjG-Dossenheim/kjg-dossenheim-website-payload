@@ -1,4 +1,5 @@
 import { GlobalConfig } from "payload";
+import { HTMLConverterFeature, lexicalEditor, lexicalHTML } from '@payloadcms/richtext-lexical'
 
 export const Aktionen: GlobalConfig = {
   slug: "aktionen",
@@ -9,53 +10,6 @@ export const Aktionen: GlobalConfig = {
     {
       type: 'tabs',
       tabs: [
-        {
-          label: 'Jahresplan',
-          name: 'jahresplan',
-          fields: [
-            {
-              name: 'events',
-              label: 'Events',
-              type: 'array',
-              fields: [
-                {
-                  name: 'title',
-                  label: 'Titel',
-                  type: 'text',
-                  required: true,
-                },
-                {
-                  name: 'startDate',
-                  label: 'Startdatum',
-                  type: 'date',
-                  required: true,
-                },
-                {
-                  name: 'endDate',
-                  label: 'Enddatum',
-                  type: 'date',
-                },
-                {
-                  name: 'description',
-                  label: 'Beschreibung',
-                  type: 'textarea',
-                },
-                {
-                  name: 'location',
-                  label: 'Ort',
-                  type: 'text',
-                },
-                {
-                  name: 'website',
-                  label: 'Webseite',
-                  type: 'text',
-                }
-              ],
-              minRows: 1,
-              required: true,
-            },
-          ],
-        },
         {
           label: 'Sommerfreizeit',
           name: 'sommerfreizeit',
@@ -172,11 +126,17 @@ export const Aktionen: GlobalConfig = {
                           required: true,
                         },
                         {
-                          name: 'beschreibung',
+                          name: 'description',
                           label: 'Beschreibung',
-                          type: 'textarea',
-                          required: true,
+                          type: 'richText',
+                          editor: lexicalEditor({
+                            features: ({ defaultFeatures }) => [
+                              ...defaultFeatures,
+                              HTMLConverterFeature({}),
+                            ],
+                          }),
                         },
+                        lexicalHTML('description', { name: 'html' }),
                       ],
                     }
                   ],
@@ -254,6 +214,21 @@ export const Aktionen: GlobalConfig = {
                 },
               ],
             },
+            {
+              name: 'content',
+              label: 'Text',
+              type: 'richText',
+              required: true,
+              editor: lexicalEditor({
+                features: ({ defaultFeatures }) => [
+                  ...defaultFeatures,
+                  // The HTMLConverter Feature is the feature which manages the HTML serializers.
+                  // If you do not pass any arguments to it, it will use the default serializers.
+                  HTMLConverterFeature({}),
+                ],
+              }),
+            },
+            lexicalHTML('content', { name: 'html' }),
           ],
         },
         {
@@ -282,6 +257,21 @@ export const Aktionen: GlobalConfig = {
                 },
               ],
             },
+            {
+              name: 'content',
+              label: 'Text',
+              type: 'richText',
+              required: true,
+              editor: lexicalEditor({
+                features: ({ defaultFeatures }) => [
+                  ...defaultFeatures,
+                  // The HTMLConverter Feature is the feature which manages the HTML serializers.
+                  // If you do not pass any arguments to it, it will use the default serializers.
+                  HTMLConverterFeature({}),
+                ],
+              }),
+            },
+            lexicalHTML('content', { name: 'html' }),
           ],
         },
         {
@@ -351,11 +341,18 @@ export const Aktionen: GlobalConfig = {
                   required: true,
                 },
                 {
-                  name: 'antwort',
+                  name: 'answer',
                   label: 'Antwort',
-                  type: 'textarea',
+                  type: 'richText',
                   required: true,
+                  editor: lexicalEditor({
+                    features: ({ defaultFeatures }) => [
+                      ...defaultFeatures,
+                      HTMLConverterFeature({}),
+                    ],
+                  }),
                 },
+                lexicalHTML('answer', { name: 'answerHTML' }),
               ],
             },
           ],

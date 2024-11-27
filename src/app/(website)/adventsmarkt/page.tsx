@@ -10,9 +10,10 @@ export default async function Page() {
   })
 
   return (
-    <div className='text-center py-5 '>
-      <h1 className='text-3xl text-secondary-500 font-bold'>Adventsmarkt</h1>
-      <p><Date dateString={aktionen?.adventsmarkt.startDate} formatString='EEEE, d. MMMM yyyy'></Date></p>
+    <div className='text-center py-5 max-w-screen-lg mx-auto'>
+      <h1 className='text-3xl text-secondary font-bold'>Adventsmarkt</h1>
+      <p className='p-2 text-secondary text-lg'><Date dateString={aktionen?.adventsmarkt.startDate} formatString='EEEE, d. MMMM yyyy'/> bis <Date dateString={aktionen?.adventsmarkt.endDate} formatString='EEEE, d. MMMM yyyy'/> </p>
+      <div id='RichText' dangerouslySetInnerHTML={{ __html: aktionen.adventsmarkt.html || '' }} />
     </div>
   )
 }

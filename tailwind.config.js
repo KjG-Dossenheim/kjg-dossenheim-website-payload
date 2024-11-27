@@ -2,7 +2,8 @@ import flowbite from "flowbite-react/tailwind";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-	darkMode: ['media', 'class'],
+    darkMode: ["class"],
+    // darkMode: ['media', 'class'],
 	content: [
 		"./src/**/*.{js,ts,jsx,tsx,mdx}",
 		flowbite.content(),
@@ -20,7 +21,7 @@ export default {
     				'700': '#006d72',
     				'800': '#00494c',
     				'900': '#002426',
-    				DEFAULT: '#00b6be',
+    				DEFAULT: 'hsl(var(--primary))',
     				foreground: 'hsl(var(--primary-foreground))'
     			},
     			secondary: {
@@ -34,7 +35,7 @@ export default {
     				'700': '#00414f',
     				'800': '#002c35',
     				'900': '#00161a',
-    				DEFAULT: '#006d84',
+    				DEFAULT: 'hsl(var(--secondary))',
     				foreground: 'hsl(var(--secondary-foreground))'
     			},
     			accent: {

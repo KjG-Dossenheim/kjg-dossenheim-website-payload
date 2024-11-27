@@ -11,6 +11,7 @@ export interface Config {
     users: UserAuthOperations;
   };
   collections: {
+    jahresplan: Jahresplan;
     team: Team;
     teambilder: Teambilder;
     users: User;
@@ -23,6 +24,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    jahresplan: JahresplanSelect<false> | JahresplanSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     teambilder: TeambilderSelect<false> | TeambilderSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -39,6 +41,7 @@ export interface Config {
   globals: {
     startseite: Startseite;
     aktionen: Aktionen;
+    about: About;
     header: Header;
     footer: Footer;
     rechtliches: Rechtlich;
@@ -46,6 +49,7 @@ export interface Config {
   globalsSelect: {
     startseite: StartseiteSelect<false> | StartseiteSelect<true>;
     aktionen: AktionenSelect<false> | AktionenSelect<true>;
+    about: AboutSelect<false> | AboutSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     rechtliches: RechtlichesSelect<false> | RechtlichesSelect<true>;
@@ -76,6 +80,21 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jahresplan".
+ */
+export interface Jahresplan {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate?: string | null;
+  description?: string | null;
+  location?: string | null;
+  link?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -341,6 +360,10 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
+        relationTo: 'jahresplan';
+        value: string | Jahresplan;
+      } | null)
+    | ({
         relationTo: 'team';
         value: string | Team;
       } | null)
@@ -405,6 +428,20 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jahresplan_select".
+ */
+export interface JahresplanSelect<T extends boolean = true> {
+  name?: T;
+  startDate?: T;
+  endDate?: T;
+  description?: T;
+  location?: T;
+  link?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -681,17 +718,6 @@ export interface Startseite {
  */
 export interface Aktionen {
   id: string;
-  jahresplan: {
-    events: {
-      title: string;
-      startDate: string;
-      endDate?: string | null;
-      description?: string | null;
-      location?: string | null;
-      website?: string | null;
-      id?: string | null;
-    }[];
-  };
   sommerfreizeit: {
     allgemein: {
       title: string;
@@ -712,7 +738,22 @@ export interface Aktionen {
       }[];
       eigenschaften: {
         title: string;
-        beschreibung: string;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        html?: string | null;
         id?: string | null;
       }[];
     };
@@ -729,10 +770,42 @@ export interface Aktionen {
   martinsumzug: {
     startDate: string;
     endDate?: string | null;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    html?: string | null;
   };
   adventsmarkt: {
     startDate: string;
     endDate?: string | null;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    html?: string | null;
   };
   tannenbaumaktion: {
     startDate: string;
@@ -745,10 +818,50 @@ export interface Aktionen {
     }[];
     fragen: {
       frage: string;
-      antwort: string;
+      answer: {
+        root: {
+          type: string;
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          version: number;
+        };
+        [k: string]: unknown;
+      };
+      answerHTML?: string | null;
       id?: string | null;
     }[];
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about".
+ */
+export interface About {
+  id: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  html?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -892,21 +1005,6 @@ export interface StartseiteSelect<T extends boolean = true> {
  * via the `definition` "aktionen_select".
  */
 export interface AktionenSelect<T extends boolean = true> {
-  jahresplan?:
-    | T
-    | {
-        events?:
-          | T
-          | {
-              title?: T;
-              startDate?: T;
-              endDate?: T;
-              description?: T;
-              location?: T;
-              website?: T;
-              id?: T;
-            };
-      };
   sommerfreizeit?:
     | T
     | {
@@ -937,7 +1035,8 @@ export interface AktionenSelect<T extends boolean = true> {
                 | T
                 | {
                     title?: T;
-                    beschreibung?: T;
+                    description?: T;
+                    html?: T;
                     id?: T;
                   };
             };
@@ -960,12 +1059,16 @@ export interface AktionenSelect<T extends boolean = true> {
     | {
         startDate?: T;
         endDate?: T;
+        content?: T;
+        html?: T;
       };
   adventsmarkt?:
     | T
     | {
         startDate?: T;
         endDate?: T;
+        content?: T;
+        html?: T;
       };
   tannenbaumaktion?:
     | T
@@ -984,10 +1087,22 @@ export interface AktionenSelect<T extends boolean = true> {
           | T
           | {
               frage?: T;
-              antwort?: T;
+              answer?: T;
+              answerHTML?: T;
               id?: T;
             };
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about_select".
+ */
+export interface AboutSelect<T extends boolean = true> {
+  content?: T;
+  html?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
