@@ -26,39 +26,46 @@ import {
 import { Button } from '@/components/ui/button'
 
 import { Metadata } from 'next'
-export function generateMetadata(): Metadata {
+
+export async function generateMetadata(): Promise<Metadata> {
+  const payload = await getPayload({ config });
+  const sommerfreizeit = await payload.findGlobal({
+    slug: 'sommerfreizeit',
+  });
+
   return {
-    title: 'Sommerfreizeit | KjG Dossenheim',
-  }
+    title: sommerfreizeit.meta?.title + ' | KjG Dossenheim',
+    description: sommerfreizeit.meta?.description ?? '',
+  };
 }
 
-export default async function Page() {
+const Page = async () => {
   const payload = await getPayload({ config })
-  const aktionen = await payload.findGlobal({
-    slug: 'aktionen',
+  const sommerfreizeit = await payload.findGlobal({
+    slug: 'sommerfreizeit',
   })
 
   return (
     <section>
-      <section className="px-4 mx-auto text-center py-24 lg:py-56 bg-[image:var(--image-url)] bg-cover bg-center bg-blend-multiply bg-gray-500" style={{'--image-url': `url(${typeof aktionen.sommerfreizeit.allgemein.background !== 'string' ? aktionen.sommerfreizeit.allgemein.background?.url : ''})`} as React.CSSProperties} >
+      <section className="px-4 mx-auto text-center py-24 lg:py-56 bg-[image:var(--image-url)] bg-cover bg-center bg-blend-multiply bg-primary" style={{'--image-url': `url(${typeof sommerfreizeit.allgemein.background !== 'string' ? sommerfreizeit.allgemein.background?.url : ''})`} as React.CSSProperties} >
         <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-primary-foreground">
-          {aktionen.sommerfreizeit.allgemein.title}
+          {sommerfreizeit.allgemein.title}
         </h1>
-        <h2>{aktionen.sommerfreizeit.allgemein.motto}</h2>
+        <h2>{sommerfreizeit.allgemein.motto}</h2>
         <p className="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-primary-foreground">
           <Date
-            dateString={aktionen.sommerfreizeit.allgemein.startDate}
+            dateString={sommerfreizeit.allgemein.startDate}
             formatString="EEEE, d. MMMM yyyy"
           />{' '}
           bis{' '}
           <Date
-            dateString={aktionen.sommerfreizeit.allgemein.endDate}
+            dateString={sommerfreizeit.allgemein.endDate}
             formatString="EEEE, d. MMMM yyyy"
           />
         </p>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
           <Button asChild>
-            <Link href={aktionen.sommerfreizeit.anmeldung.website} target='_blank'>
+            <Link href={sommerfreizeit.anmeldung.website} target='_blank'>
               Jetzt anmelden <ChevronRight />
             </Link>
           </Button>
@@ -73,7 +80,7 @@ export default async function Page() {
         <div className="py-4 sm:py-10 px-4 text-center bg-primary">
           <h2 className="text-2xl sm:text-4xl text-white mb-4 font-extrabold leading-loose tracking-tight">
             Für <span className="underline decoration-8 decoration-accent-500">alle</span> Kinder
-            zwischen {aktionen.sommerfreizeit.allgemein.alter}
+            zwischen {sommerfreizeit.allgemein.alter}
           </h2>
         </div>
       </section>
@@ -82,23 +89,23 @@ export default async function Page() {
           <div className="mx-auto max-w-xl text-center">
             <h2 className="text-2xl font-bold md:text-3xl">Unterkunft</h2>
             <p className="md:mt-4">
-              {aktionen.sommerfreizeit.unterkunft.beschreibung}
+              {sommerfreizeit.unterkunft.beschreibung}
             </p>
             <div className="my-auto">
               <Button asChild className="mx-auto m-4">
-                <Link href={aktionen.sommerfreizeit.unterkunft.website} target='_blank'>
-                  {aktionen.sommerfreizeit.unterkunft.name}
+                <Link href={sommerfreizeit.unterkunft.website} target='_blank'>
+                  {sommerfreizeit.unterkunft.name}
                 </Link>
               </Button>
             </div>
           </div>
         </div>
         <div className="relative w-full">
-          {typeof aktionen.sommerfreizeit.unterkunft.bild !== 'string' &&
-            aktionen.sommerfreizeit.unterkunft.bild && (
+          {typeof sommerfreizeit.unterkunft.bild !== 'string' &&
+            sommerfreizeit.unterkunft.bild && (
               <Image
-                src={aktionen.sommerfreizeit.unterkunft.bild.url || ''}
-                alt={aktionen.sommerfreizeit.unterkunft.bild.alt || 'Unterkunft Bild'}
+                src={sommerfreizeit.unterkunft.bild.url || ''}
+                alt={sommerfreizeit.unterkunft.bild.alt || 'Unterkunft Bild'}
                 fill
                 className="object-cover"
                 sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -112,7 +119,7 @@ export default async function Page() {
           Teilnehmerbeitrag
         </h1>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-8">
-          {aktionen.sommerfreizeit.allgemein.pricing.map((item) => {
+          {sommerfreizeit.allgemein.pricing.map((item) => {
             return (
               <Card key={item.name}>
                 <CardHeader className="h-28">
@@ -131,7 +138,7 @@ export default async function Page() {
                 </CardContent>
                 <CardContent>
                   <Button asChild className="mx-auto w-full">
-                    <Link href={aktionen.sommerfreizeit.anmeldung.website} target='_blank'> Jetzt anmelden</Link>
+                    <Link href={sommerfreizeit.anmeldung.website} target='_blank'> Jetzt anmelden</Link>
                   </Button>
                 </CardContent>
                 <CardFooter>
@@ -178,7 +185,7 @@ export default async function Page() {
           Was uns ausmacht
         </h2>
         <Accordion type="single" collapsible>
-          {aktionen.sommerfreizeit.allgemein.eigenschaften.map((eigenschaft) => (
+          {sommerfreizeit.allgemein.eigenschaften.map((eigenschaft) => (
             <AccordionItem key={eigenschaft.id} value={eigenschaft.id || ''}>
               <AccordionTrigger>{eigenschaft.title}</AccordionTrigger>
               <AccordionContent className="mb-2">
@@ -192,3 +199,5 @@ export default async function Page() {
     </section>
   )
 }
+
+export default Page;

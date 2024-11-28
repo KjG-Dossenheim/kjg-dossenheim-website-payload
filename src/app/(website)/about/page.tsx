@@ -2,6 +2,14 @@ import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
 
+import type { Metadata } from 'next'
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Über uns | KjG Dossenheim',
+    description: 'Erfahre mehr über die KjG Dossenheim',
+  }
+}
+
 export default async function Page() {
   const payload = await getPayload({ config })
   const about = await payload.findGlobal({

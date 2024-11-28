@@ -3,6 +3,8 @@ import React from 'react'
 import config from '@payload-config'
 import Link from 'next/link'
 
+import { ModeToggle } from '@/components/theme-toggle'
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -135,6 +137,7 @@ export default async function HeaderServer() {
             </NavigationMenuItem>
           )
         })}
+        <ModeToggle />
         {header.cta.enabled && (
           <Button asChild className="hidden md:flex">
             <Link href={header.cta.link}>{header.cta.title}</Link>

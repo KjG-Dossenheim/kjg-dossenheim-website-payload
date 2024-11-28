@@ -15,13 +15,14 @@ import type { Metadata } from 'next'
 export function generateMetadata(): Metadata {
   return {
     title: 'Tannenbaumaktion | KjG Dossenheim',
+    description: 'Die Tannenbaumaktion der KjG Dossenheim',
   }
 }
 
 export default async function Page() {
   const payload = await getPayload({ config })
-  const aktionen = await payload.findGlobal({
-    slug: 'aktionen',
+  const tannenbaumaktion = await payload.findGlobal({
+    slug: 'tannenbaumaktion',
   })
 
   return (
@@ -32,32 +33,32 @@ export default async function Page() {
         </h1>
         <h2 className="text-lg sm:text-2xl text-center">
           <Date
-            dateString={aktionen.tannenbaumaktion.startDate}
+            dateString={tannenbaumaktion.startDate}
             formatString="EEEE, d. MMMM yyyy"
           ></Date>{' '}
-          ab <Date dateString={aktionen.tannenbaumaktion.startTime} formatString="H:mm"></Date> Uhr
+          ab <Date dateString={tannenbaumaktion.startTime} formatString="H:mm"></Date> Uhr
         </h2>
       </div>
       <section className="py-5 bg-primary" id='verkaufstellen'>
-        <h2 className="text-xl sm:text-4xl text-center font-bold text-primary-foreground">
+        <h2 className="text-xl sm:text-4xl text-center font-bold text-primary-foreground dark:text-foreground">
           Unsere Verkaufsstellen
         </h2>
         <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 max-w-screen-lg mx-auto">
           <Carousel>
-            {aktionen.tannenbaumaktion.vekaufsort.map((vekaufsort) => (
+            {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
               <div key={vekaufsort.id} className="flex h-full items-center justify-center">
-                <div className="text-center">
-                  <h3 className="text-primary-foreground text-xl sm:text-4xl font-bold">{vekaufsort.name}</h3>
-                  <p className="text-primary-foreground text-lg sm:text-2xl">{vekaufsort.adresse}</p>
+                <div className="text-center text-primary-foreground dark:text-foreground">
+                  <h3 className="text-xl sm:text-4xl font-bold">{vekaufsort.name}</h3>
+                  <p className="text-lg sm:text-2xl">{vekaufsort.adresse}</p>
                 </div>
               </div>
             ))}
           </Carousel>
         </div>
-        <Accordion type="single" collapsible className="max-w-screen-sm mx-auto text-primary-foreground">
+        <Accordion type="single" collapsible className="max-w-screen-sm mx-auto text-primary-foreground dark:text-foreground">
           <AccordionItem value="vekaufsort">
             <AccordionTrigger>Verkaufsstellen</AccordionTrigger>
-            {aktionen.tannenbaumaktion.vekaufsort.map((vekaufsort) => (
+            {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
               <AccordionContent key={vekaufsort.id}>
                 {vekaufsort.name} / {vekaufsort.adresse}
               </AccordionContent>
@@ -70,10 +71,10 @@ export default async function Page() {
           FAQ
         </h1>
         <Accordion type="single" collapsible>
-          {aktionen.tannenbaumaktion.fragen.map((aktion) => (
-            <AccordionItem key={aktion.id} value={aktion.id ?? ''}>
-              <AccordionTrigger className='dark:text-white'>{aktion.frage}</AccordionTrigger>
-              <AccordionContent className='dark:text-white'><div id='RichText' dangerouslySetInnerHTML={{ __html: aktion.answerHTML || '' }} /></AccordionContent>
+          {tannenbaumaktion.fragen.map((fragen) => (
+            <AccordionItem key={fragen.id} value={fragen.id ?? ''}>
+              <AccordionTrigger>{fragen.frage}</AccordionTrigger>
+              <AccordionContent><div id='RichText' dangerouslySetInnerHTML={{ __html: fragen.answerHTML || '' }} /></AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

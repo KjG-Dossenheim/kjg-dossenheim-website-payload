@@ -17,6 +17,14 @@ import DateComponent from '@/components/date'
 
 import { Button } from '@/components/ui/button'
 
+import type { Metadata } from 'next'
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Aktionen | KjG Dossenheim',
+    description: 'Hier findest du alle Aktionen der KjG Dossenheim',
+  }
+}
+
 export default async function Page() {
   const payload = await getPayload({ config })
   const jahresplan = await payload.find({
@@ -27,7 +35,7 @@ export default async function Page() {
   return (
     <section className="mx-auto p-5 max-w-screen-xl w-full">
       <h1 className="text-3xl sm:text-5xl text-center font-bold">
-        Jahresplan
+        Aktionen
       </h1>
       <div className="mx-auto flex items-center justify-center py-5 max-w-screen-sm">
         <Timeline>

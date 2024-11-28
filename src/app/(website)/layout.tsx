@@ -9,6 +9,15 @@ import type { Metadata } from 'next'
 export function generateMetadata(): Metadata {
   return {
     title: 'KjG Dossenheim',
+    description: 'Die KjG Dossenheim ist ein katholischer Jugendverband in Dossenheim',
+    openGraph: {
+      title: 'KjG Dossenheim',
+      description: 'Die KjG Dossenheim ist ein katholischer Jugendverband in Dossenheim',
+      url: 'https://kjg-dossenheim.org',
+      siteName: 'KjG Dossenheim',
+      locale: 'de_DE',
+      type: 'website',
+    },
   }
 }
 

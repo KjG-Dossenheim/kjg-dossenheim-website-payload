@@ -40,7 +40,10 @@ export interface Config {
   };
   globals: {
     startseite: Startseite;
-    aktionen: Aktionen;
+    adventsmarkt: Adventsmarkt;
+    martinsumzug: Martinsumzug;
+    sommerfreizeit: Sommerfreizeit;
+    tannenbaumaktion: Tannenbaumaktion;
     about: About;
     header: Header;
     footer: Footer;
@@ -48,7 +51,10 @@ export interface Config {
   };
   globalsSelect: {
     startseite: StartseiteSelect<false> | StartseiteSelect<true>;
-    aktionen: AktionenSelect<false> | AktionenSelect<true>;
+    adventsmarkt: AdventsmarktSelect<false> | AdventsmarktSelect<true>;
+    martinsumzug: MartinsumzugSelect<false> | MartinsumzugSelect<true>;
+    sommerfreizeit: SommerfreizeitSelect<false> | SommerfreizeitSelect<true>;
+    tannenbaumaktion: TannenbaumaktionSelect<false> | TannenbaumaktionSelect<true>;
     about: AboutSelect<false> | AboutSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
@@ -714,111 +720,84 @@ export interface Startseite {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "aktionen".
+ * via the `definition` "adventsmarkt".
  */
-export interface Aktionen {
+export interface Adventsmarkt {
   id: string;
-  sommerfreizeit: {
-    allgemein: {
-      title: string;
-      motto?: string | null;
-      background?: (string | null) | Media;
-      startDate: string;
-      endDate: string;
-      alter: string;
-      pricing: {
-        name: string;
-        beschreibung: string;
-        price: number;
-        eigenschaften: {
-          name: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
       }[];
-      eigenschaften: {
-        title: string;
-        description?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        html?: string | null;
-        id?: string | null;
-      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
     };
-    unterkunft: {
+    [k: string]: unknown;
+  };
+  html?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "martinsumzug".
+ */
+export interface Martinsumzug {
+  id: string;
+  startDate: string;
+  endDate?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  html?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeit".
+ */
+export interface Sommerfreizeit {
+  id: string;
+  allgemein: {
+    title: string;
+    motto?: string | null;
+    background?: (string | null) | Media;
+    startDate: string;
+    endDate: string;
+    alter: string;
+    pricing: {
       name: string;
       beschreibung: string;
-      website: string;
-      bild: string | Media;
-    };
-    anmeldung: {
-      website: string;
-    };
-  };
-  martinsumzug: {
-    startDate: string;
-    endDate?: string | null;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    html?: string | null;
-  };
-  adventsmarkt: {
-    startDate: string;
-    endDate?: string | null;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    html?: string | null;
-  };
-  tannenbaumaktion: {
-    startDate: string;
-    startTime?: string | null;
-    vekaufsort: {
-      name: string;
-      adresse?: string | null;
-      website?: string | null;
+      price: number;
+      eigenschaften: {
+        name: string;
+        id?: string | null;
+      }[];
       id?: string | null;
     }[];
-    fragen: {
-      frage: string;
-      answer: {
+    eigenschaften: {
+      title: string;
+      description?: {
         root: {
           type: string;
           children: {
@@ -832,11 +811,62 @@ export interface Aktionen {
           version: number;
         };
         [k: string]: unknown;
-      };
-      answerHTML?: string | null;
+      } | null;
+      html?: string | null;
       id?: string | null;
     }[];
   };
+  unterkunft: {
+    name: string;
+    beschreibung: string;
+    website: string;
+    bild: string | Media;
+  };
+  anmeldung: {
+    website: string;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (string | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tannenbaumaktion".
+ */
+export interface Tannenbaumaktion {
+  id: string;
+  startDate: string;
+  startTime?: string | null;
+  vekaufsort: {
+    name: string;
+    adresse?: string | null;
+    website?: string | null;
+    id?: string | null;
+  }[];
+  fragen: {
+    frage: string;
+    answer: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    answerHTML?: string | null;
+    id?: string | null;
+  }[];
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1002,95 +1032,113 @@ export interface StartseiteSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "aktionen_select".
+ * via the `definition` "adventsmarkt_select".
  */
-export interface AktionenSelect<T extends boolean = true> {
-  sommerfreizeit?:
+export interface AdventsmarktSelect<T extends boolean = true> {
+  startDate?: T;
+  endDate?: T;
+  content?: T;
+  html?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "martinsumzug_select".
+ */
+export interface MartinsumzugSelect<T extends boolean = true> {
+  startDate?: T;
+  endDate?: T;
+  content?: T;
+  html?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeit_select".
+ */
+export interface SommerfreizeitSelect<T extends boolean = true> {
+  allgemein?:
     | T
     | {
-        allgemein?:
-          | T
-          | {
-              title?: T;
-              motto?: T;
-              background?: T;
-              startDate?: T;
-              endDate?: T;
-              alter?: T;
-              pricing?:
-                | T
-                | {
-                    name?: T;
-                    beschreibung?: T;
-                    price?: T;
-                    eigenschaften?:
-                      | T
-                      | {
-                          name?: T;
-                          id?: T;
-                        };
-                    id?: T;
-                  };
-              eigenschaften?:
-                | T
-                | {
-                    title?: T;
-                    description?: T;
-                    html?: T;
-                    id?: T;
-                  };
-            };
-        unterkunft?:
+        title?: T;
+        motto?: T;
+        background?: T;
+        startDate?: T;
+        endDate?: T;
+        alter?: T;
+        pricing?:
           | T
           | {
               name?: T;
               beschreibung?: T;
-              website?: T;
-              bild?: T;
-            };
-        anmeldung?:
-          | T
-          | {
-              website?: T;
-            };
-      };
-  martinsumzug?:
-    | T
-    | {
-        startDate?: T;
-        endDate?: T;
-        content?: T;
-        html?: T;
-      };
-  adventsmarkt?:
-    | T
-    | {
-        startDate?: T;
-        endDate?: T;
-        content?: T;
-        html?: T;
-      };
-  tannenbaumaktion?:
-    | T
-    | {
-        startDate?: T;
-        startTime?: T;
-        vekaufsort?:
-          | T
-          | {
-              name?: T;
-              adresse?: T;
-              website?: T;
+              price?: T;
+              eigenschaften?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
               id?: T;
             };
-        fragen?:
+        eigenschaften?:
           | T
           | {
-              frage?: T;
-              answer?: T;
-              answerHTML?: T;
+              title?: T;
+              description?: T;
+              html?: T;
               id?: T;
             };
+      };
+  unterkunft?:
+    | T
+    | {
+        name?: T;
+        beschreibung?: T;
+        website?: T;
+        bild?: T;
+      };
+  anmeldung?:
+    | T
+    | {
+        website?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tannenbaumaktion_select".
+ */
+export interface TannenbaumaktionSelect<T extends boolean = true> {
+  startDate?: T;
+  startTime?: T;
+  vekaufsort?:
+    | T
+    | {
+        name?: T;
+        adresse?: T;
+        website?: T;
+        id?: T;
+      };
+  fragen?:
+    | T
+    | {
+        frage?: T;
+        answer?: T;
+        answerHTML?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

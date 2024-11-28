@@ -12,6 +12,7 @@ import { Metadata } from 'next'
 export function generateMetadata(): Metadata {
   return {
     title: 'Startseite | KjG Dossenheim',
+    description: 'Willkommen bei der KjG Dossenheim',
   }
 }
 

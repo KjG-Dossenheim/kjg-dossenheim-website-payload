@@ -27,9 +27,13 @@ import { Jahresplan } from './collections/Jahresplan'
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 import { Rechtliches } from './globals/Rechtliches'
-import { Aktionen } from './globals/Aktionen'
 import { Startseite } from './globals/Startseite'
 import { About } from './globals/About'
+
+import { Sommerfreizeit } from './globals/Sommerfreizeit'
+import { Adventsmarkt } from './globals/Adventsmarkt'
+import { Martinsumzug } from './globals/Martinsumzug'
+import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -56,7 +60,7 @@ export default buildConfig({
     dateFormat: 'dd.MM.yyyy',
   },
   collections: [Jahresplan, Team, TeamBilder, Users, Media],
-  globals: [Startseite, Aktionen, About, Header, Footer, Rechtliches],
+  globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches],
   editor: lexicalEditor({}),
   i18n: {
     supportedLanguages: { en, de },
