@@ -154,7 +154,7 @@ export const Aktionen: GlobalConfig = {
                     {
                       name: 'beschreibung',
                       label: 'Beschreibung',
-                      type: 'text',
+                      type: 'textarea',
                       required: true,
                     },
                     {

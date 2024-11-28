@@ -3,7 +3,6 @@ import flowbite from "flowbite-react/tailwind";
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ["class"],
-    // darkMode: ['media', 'class'],
 	content: [
 		"./src/**/*.{js,ts,jsx,tsx,mdx}",
 		flowbite.content(),

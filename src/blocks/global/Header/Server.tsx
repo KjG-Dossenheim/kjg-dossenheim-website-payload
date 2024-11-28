@@ -37,7 +37,7 @@ export default async function HeaderServer() {
   })
 
   return (
-    <NavigationMenu className="max-w-screen-xl mx-auto">
+    <NavigationMenu className="max-w-screen-xl mx-auto px-0 md:px-2">
       <Sheet>
         <SheetTrigger asChild className="md:hidden m-2">
           <Button variant="outline" size="icon">
@@ -45,6 +45,9 @@ export default async function HeaderServer() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
+          <SheetHeader>
+            <SheetTitle className='text-left'>KjG Dossenheim</SheetTitle>
+          </SheetHeader>
           <div className="space-y-0.5">
             <NavigationMenuItem className="list-none">
               <Link href="/" legacyBehavior passHref>
@@ -83,22 +86,22 @@ export default async function HeaderServer() {
           </div>
         </SheetContent>
       </Sheet>
-      <h1 className="px-2 text-secondary font-bold text-lg">KjG Dossenheim</h1>
+      <h1 className="px-2 font-bold text-lg">KjG Dossenheim</h1>
       <NavigationMenuList className="hidden md:flex">
-        <NavigationMenuItem className="text-secondary">
+        <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Startseite
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem className="text-secondary">
+        <NavigationMenuItem>
           <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid grid-rows-2 grid-flow-col gap-3 p-6">
               <NavigationMenuItem className="row-span-2">
                 <Link
-                  className="hover:text-secondary flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                  className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                   href="/aktionen"
                 >
                   <NavigationMenuLink>
@@ -109,12 +112,12 @@ export default async function HeaderServer() {
               {header.aktionen.map((component) => (
                 <NavigationMenuItem key={component.id} className="my-auto">
                   <Link
-                    className="p-2 hover:text-secondary"
+                    className="p-2"
                     href={component.link}
                     title={component.name}
                     passHref
                   >
-                    <NavigationMenuLink>{component.name}</NavigationMenuLink>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>{component.name}</NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
               ))}
@@ -123,7 +126,7 @@ export default async function HeaderServer() {
         </NavigationMenuItem>
         {header.navigation.map((item) => {
           return (
-            <NavigationMenuItem key={item.id} className="text-secondary">
+            <NavigationMenuItem key={item.id}>
               <Link href={item.link} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   {item.label}

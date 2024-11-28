@@ -2,7 +2,6 @@ import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
 import Link from 'next/link'
-
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 import { ChevronRight, Newspaper, Calendar } from 'lucide-react'
@@ -28,8 +27,8 @@ export default async function Page() {
         <div className="py-20 px-4 mx-auto max-w-screen-xl lg:py-32">
           {startseite.neuigkeiten.enabled && (
             <Link href={startseite.neuigkeiten.link}>
-              <Alert className="w-fit mx-auto hover:text-secondary">
-                <Newspaper className="h-4 w-4"/>
+              <Alert className="w-fit mx-auto hover:underline">
+                <Newspaper className="size-4"/>
                 <AlertTitle>Neuigkeiten</AlertTitle>
                 <AlertDescription className="inline-flex">
                   {startseite.neuigkeiten.title} <ChevronRight className="size-5" />{' '}
@@ -37,15 +36,15 @@ export default async function Page() {
               </Alert>
             </Link>
           )}
-          <h1 className="pt-5 mb-4 text-4xl font-extrabold text-center tracking-tight leading-none md:text-5xl lg:text-6xl text-secondary dark:text-primary">
+          <h1 className="pt-5 mb-4 text-4xl font-extrabold text-center tracking-tight leading-none md:text-5xl lg:text-6xl">
             Willkommen bei der KjG
           </h1>
-          <p className="mb-8 text-lg font-normal text-center text-secondary lg:text-xl sm:px-16 lg:px-48 dark:text-primary">
+          <p className="mb-8 text-lg font-normal text-center lg:text-xl sm:px-16 lg:px-48">
             Die KjG Dossenheim vertritt die Interessen der Kinder und Jugendlichen in der
             katholischen Gemeinden Dossenheim
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 md:space-x-6">
-            <Button asChild variant='secondary'>
+            <Button asChild>
               <Link href="/aktionen">
                 Unsere Aktionen
                 <Calendar />

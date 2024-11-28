@@ -39,13 +39,13 @@ export default async function Page() {
   })
 
   return (
-    <section className="pb-4">
-      <section className="px-4 mx-auto text-center py-24 lg:py-56">
-        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-secondary md:text-5xl lg:text-6xl">
+    <section>
+      <section className="px-4 mx-auto text-center py-24 lg:py-56 bg-[image:var(--image-url)] bg-cover bg-center bg-blend-multiply bg-gray-500" style={{'--image-url': `url(${typeof aktionen.sommerfreizeit.allgemein.background !== 'string' ? aktionen.sommerfreizeit.allgemein.background?.url : ''})`} as React.CSSProperties} >
+        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-primary-foreground">
           {aktionen.sommerfreizeit.allgemein.title}
         </h1>
         <h2>{aktionen.sommerfreizeit.allgemein.motto}</h2>
-        <p className="mb-8 text-lg font-normal text-secondary lg:text-xl sm:px-16 lg:px-48">
+        <p className="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-primary-foreground">
           <Date
             dateString={aktionen.sommerfreizeit.allgemein.startDate}
             formatString="EEEE, d. MMMM yyyy"
@@ -57,7 +57,7 @@ export default async function Page() {
           />
         </p>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-          <Button asChild variant='secondary'>
+          <Button asChild>
             <Link href={aktionen.sommerfreizeit.anmeldung.website} target='_blank'>
               Jetzt anmelden <ChevronRight />
             </Link>
@@ -70,22 +70,22 @@ export default async function Page() {
         </div>
       </section>
       <section id="info">
-        <div className="py-4 sm:py-16 px-4 text-center bg-secondary">
-          <h2 className="text-3xl sm:text-4xl text-white mb-4 font-extrabold leading-loose tracking-tight">
+        <div className="py-4 sm:py-10 px-4 text-center bg-primary">
+          <h2 className="text-2xl sm:text-4xl text-white mb-4 font-extrabold leading-loose tracking-tight">
             Für <span className="underline decoration-8 decoration-accent-500">alle</span> Kinder
             zwischen {aktionen.sommerfreizeit.allgemein.alter}
           </h2>
         </div>
       </section>
-      <section className="overflow-hidden md:grid md:grid-cols-2">
+      <section className="overflow-hidden grid grid-cols-1 md:grid-cols-2">
         <div className="p-8 md:p-12 lg:px-16 lg:py-24">
-          <div className="mx-auto max-w-xl text-center ltr:md:text-left rtl:md:text-right">
-            <h2 className="text-2xl font-bold md:text-3xl text-secondary">Unterkunft</h2>
-            <p className="text-secondary dark:text-primary md:mt-4">
+          <div className="mx-auto max-w-xl text-center">
+            <h2 className="text-2xl font-bold md:text-3xl">Unterkunft</h2>
+            <p className="md:mt-4">
               {aktionen.sommerfreizeit.unterkunft.beschreibung}
             </p>
-            <div className="mt-4 md:mt-8">
-              <Button asChild variant='secondary' className="mx-auto">
+            <div className="my-auto">
+              <Button asChild className="mx-auto m-4">
                 <Link href={aktionen.sommerfreizeit.unterkunft.website} target='_blank'>
                   {aktionen.sommerfreizeit.unterkunft.name}
                 </Link>
@@ -93,7 +93,7 @@ export default async function Page() {
             </div>
           </div>
         </div>
-        <div className="relative w-full sm:h-full">
+        <div className="relative w-full">
           {typeof aktionen.sommerfreizeit.unterkunft.bild !== 'string' &&
             aktionen.sommerfreizeit.unterkunft.bild && (
               <Image
@@ -101,12 +101,14 @@ export default async function Page() {
                 alt={aktionen.sommerfreizeit.unterkunft.bild.alt || 'Unterkunft Bild'}
                 fill
                 className="object-cover"
+                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             )}
         </div>
       </section>
-      <section className="max-w-screen-xl p-6 sm:p-8 lg:p-10 mx-auto">
-        <h1 className="text-center pb-8 text-4xl text-secondary dark:text-primary font-bold">
+      <section>
+        <div className="max-w-screen-xl p-6 sm:p-8 lg:p-10 mx-auto">
+        <h1 className="text-center pb-8 text-4xl font-bold">
           Teilnehmerbeitrag
         </h1>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-8">
@@ -114,27 +116,27 @@ export default async function Page() {
             return (
               <Card key={item.name}>
                 <CardHeader className="h-28">
-                  <CardTitle className="text-secondary">{item.name}</CardTitle>
+                  <CardTitle>{item.name}</CardTitle>
                   <CardDescription>{item.beschreibung}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="mt-2 sm:mt-4">
-                    <strong className="text-3xl font-bold text-secondary sm:text-4xl">
+                    <strong className="text-3xl font-bold text-primary sm:text-4xl">
                       {item.price}€
                     </strong>
-                    <span className="text-sm font-medium text-secondary">
+                    <span className="text-sm font-medium text-primary">
                       /pro Teilnehmer
                     </span>
                   </p>
                 </CardContent>
                 <CardContent>
-                  <Button asChild variant='secondary' className="mx-auto w-full">
+                  <Button asChild className="mx-auto w-full">
                     <Link href={aktionen.sommerfreizeit.anmeldung.website} target='_blank'> Jetzt anmelden</Link>
                   </Button>
                 </CardContent>
                 <CardFooter>
                   <div>
-                    <p className="text-lg font-medium text-secondary sm:text-xl">
+                    <p className="text-lg font-medium sm:text-xl">
                       Inklusive:
                     </p>
                     <ul className="mt-2 space-y-2 sm:mt-4">
@@ -147,7 +149,7 @@ export default async function Page() {
                               viewBox="0 0 24 24"
                               strokeWidth="1.5"
                               stroke="currentColor"
-                              className="h-5 w-5 text-secondary"
+                              className="size-5 text-primary"
                             >
                               <path
                                 strokeLinecap="round"
@@ -155,7 +157,7 @@ export default async function Page() {
                                 d="M4.5 12.75l6 6 9-13.5"
                               />
                             </svg>
-                            <span className="text-secondary">
+                            <span>
                               {eigenschaft.name}
                             </span>
                           </li>
@@ -168,21 +170,24 @@ export default async function Page() {
             )
           })}
         </div>
+        </div>
       </section>
-      <section className="max-w-screen-md mx-auto">
-        <h2 className="text-center text-4xl font-bold text-secondary dark:text-primary mb-5">
+      <section>
+        <div className="max-w-screen-lg p-6 sm:p-8 lg:p-10 mx-auto">
+        <h2 className="text-center text-4xl font-bold mb-5">
           Was uns ausmacht
         </h2>
         <Accordion type="single" collapsible>
           {aktionen.sommerfreizeit.allgemein.eigenschaften.map((eigenschaft) => (
             <AccordionItem key={eigenschaft.id} value={eigenschaft.id || ''}>
-              <AccordionTrigger className="dark:text-white">{eigenschaft.title}</AccordionTrigger>
+              <AccordionTrigger>{eigenschaft.title}</AccordionTrigger>
               <AccordionContent className="mb-2">
                 <div id='RichText' dangerouslySetInnerHTML={{ __html: eigenschaft.html || '' }} />
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
+        </div>
       </section>
     </section>
   )

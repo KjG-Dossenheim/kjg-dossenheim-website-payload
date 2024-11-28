@@ -9,6 +9,6 @@ export default async function Page() {
   })
 
   return (
-    <h1>R</h1>
+    <section>R</section>
   )
 }
