@@ -12,8 +12,8 @@ export function generateMetadata(): Metadata {
 
 export default async function Page() {
   const payload = await getPayload({ config })
-  const aktionen = await payload.findGlobal({
-    slug: 'aktionen',
+  const martinsumzug = await payload.findGlobal({
+    slug: 'martinsumzug',
   })
 
   return (
