@@ -47,12 +47,12 @@ const Page = async () => {
 
   return (
     <section>
-      <section className="px-4 mx-auto text-center py-24 lg:py-56 bg-[image:var(--image-url)] bg-cover bg-center bg-blend-multiply bg-primary" style={{'--image-url': `url(${typeof sommerfreizeit.allgemein.background !== 'string' ? sommerfreizeit.allgemein.background?.url : ''})`} as React.CSSProperties} >
-        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-primary-foreground">
+      <section className="px-4 mx-auto text-center py-24 lg:py-56">
+        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl">
           {sommerfreizeit.allgemein.title}
         </h1>
         <h2>{sommerfreizeit.allgemein.motto}</h2>
-        <p className="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-primary-foreground">
+        <p className="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48">
           <Date
             dateString={sommerfreizeit.allgemein.startDate}
             formatString="EEEE, d. MMMM yyyy"
@@ -77,7 +77,7 @@ const Page = async () => {
         </div>
       </section>
       <section id="info">
-        <div className="py-4 sm:py-10 px-4 text-center bg-primary">
+        <div className="py-4 sm:py-11 px-4 text-center bg-primary">
           <h2 className="text-2xl sm:text-4xl text-white mb-4 font-extrabold leading-loose tracking-tight">
             Für <span className="underline decoration-8 decoration-accent-500">alle</span> Kinder
             zwischen {sommerfreizeit.allgemein.alter}

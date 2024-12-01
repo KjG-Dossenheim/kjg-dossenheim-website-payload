@@ -9,7 +9,6 @@ import { OAuth2Plugin } from 'payload-oauth2'
 
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
-import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -37,16 +36,6 @@ import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
-const generateTitle: GenerateTitle = ({ doc }) => {
-  return doc?.title ? `${doc.title} | KjG Dossenheim` : 'KjG Dossenheim'
-}
-
-const generateURL: GenerateURL = ({ doc }) => {
-  return doc?.slug
-    ? `${process.env.NEXT_PUBLIC_SERVER_URL!}/${doc.slug}`
-    : process.env.NEXT_PUBLIC_SERVER_URL!
-}
 
 export default buildConfig({
   admin: {
@@ -88,12 +77,14 @@ export default buildConfig({
   }),
   plugins: [
     seoPlugin({
-      generateTitle,
-      generateURL,
     }),
     formBuilderPlugin({
       formOverrides: {
-        slug: 'contact-forms',
+        slug: 'forms',
+        labels: { 
+          singular: 'Formular',
+          plural: 'Formulare',
+        },
         access: {
           read: ({ req: { user } }) => !!user, // authenticated users only
           update: () => false,

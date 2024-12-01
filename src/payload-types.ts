@@ -16,7 +16,7 @@ export interface Config {
     teambilder: Teambilder;
     users: User;
     media: Media;
-    'contact-forms': ContactForm;
+    forms: Form;
     'form-submissions': FormSubmission;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -29,7 +29,7 @@ export interface Config {
     teambilder: TeambilderSelect<false> | TeambilderSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    'contact-forms': ContactFormsSelect<false> | ContactFormsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -178,9 +178,9 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-forms".
+ * via the `definition` "forms".
  */
-export interface ContactForm {
+export interface Form {
   id: string;
   title: string;
   fields?:
@@ -347,7 +347,7 @@ export interface ContactForm {
  */
 export interface FormSubmission {
   id: string;
-  form: string | ContactForm;
+  form: string | Form;
   submissionData?:
     | {
         field: string;
@@ -386,8 +386,8 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'contact-forms';
-        value: string | ContactForm;
+        relationTo: 'forms';
+        value: string | Form;
       } | null)
     | ({
         relationTo: 'form-submissions';
@@ -520,9 +520,9 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-forms_select".
+ * via the `definition` "forms_select".
  */
-export interface ContactFormsSelect<T extends boolean = true> {
+export interface FormsSelect<T extends boolean = true> {
   title?: T;
   fields?:
     | T
@@ -825,6 +825,9 @@ export interface Sommerfreizeit {
   anmeldung: {
     website: string;
   };
+  newsletter?: {
+    tes?: string | null;
+  };
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1105,6 +1108,11 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
     | T
     | {
         website?: T;
+      };
+  newsletter?:
+    | T
+    | {
+        tes?: T;
       };
   meta?:
     | T

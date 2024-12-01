@@ -66,7 +66,7 @@ export default async function Page() {
           </AccordionItem>
         </Accordion>
       </section>
-      <section className="max-w-screen-md mx-auto py-5">
+      <section className="max-w-screen-md mx-auto p-5">
         <h1 className="text-center text-3xl font-bold pb-5">
           FAQ
         </h1>

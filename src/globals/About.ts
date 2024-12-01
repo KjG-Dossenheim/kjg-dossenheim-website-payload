@@ -5,6 +5,9 @@ import { HTMLConverterFeature, lexicalEditor, lexicalHTML } from '@payloadcms/ri
 
 export const About: GlobalConfig = {
   slug: "about",
+  label: {
+    singular: "Über uns",
+  },
   fields: [
     {
       name: 'content',

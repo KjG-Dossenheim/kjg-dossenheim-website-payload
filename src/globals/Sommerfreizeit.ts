@@ -185,6 +185,17 @@ export const Sommerfreizeit: GlobalConfig = {
           ],
         },
         {
+          name: 'newsletter',
+          label: 'Newsletter',
+          fields: [
+              {
+                  name: 'tes',
+                  label: 'test',
+                  type: 'text',
+              },
+          ],
+        },
+        {
           name: 'meta',
           label: 'SEO',
           fields: [

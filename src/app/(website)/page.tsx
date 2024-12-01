@@ -3,22 +3,26 @@ import React from 'react'
 import config from '@payload-config'
 import Link from 'next/link'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 
 import { ChevronRight, Newspaper, Calendar } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
 import { Metadata } from 'next'
+export async function generateMetadata(): Promise<Metadata> {
+  const payload = await getPayload({ config });
+  const page = await payload.findGlobal({
+    slug: 'startseite',
+  });
 
-export function generateMetadata(): Metadata {
   return {
-    title: 'Startseite | KjG Dossenheim',
-    description: 'Willkommen bei der KjG Dossenheim',
-  }
+    title: page.meta?.title + ' | KjG Dossenheim',
+    description: page.meta?.description ?? '',
+  };
 }
 
 export default async function Page() {
   const payload = await getPayload({ config })
-  const startseite = await payload.findGlobal({
+  const page = await payload.findGlobal({
     slug: 'startseite',
   })
 
@@ -26,13 +30,13 @@ export default async function Page() {
     <section>
       <section>
         <div className="py-20 px-4 mx-auto max-w-screen-xl lg:py-32">
-          {startseite.neuigkeiten.enabled && (
-            <Link href={startseite.neuigkeiten.link}>
+          {page.neuigkeiten.enabled && (
+            <Link href={page.neuigkeiten.link}>
               <Alert className="w-fit mx-auto hover:underline">
                 <Newspaper className="size-4"/>
                 <AlertTitle>Neuigkeiten</AlertTitle>
                 <AlertDescription className="inline-flex">
-                  {startseite.neuigkeiten.title} <ChevronRight className="size-5" />{' '}
+                  {page.neuigkeiten.title} <ChevronRight className="size-5" />{' '}
                 </AlertDescription>
               </Alert>
             </Link>

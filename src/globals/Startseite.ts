@@ -52,12 +52,9 @@ export const Startseite: GlobalConfig = {
                         MetaImageField({
                             relationTo: 'media',
                         }),
-
                         MetaDescriptionField({}),
                         PreviewField({
                             // if the `generateUrl` function is configured
-                            hasGenerateFn: true,
-
                             // field paths to match the target field for data
                             titlePath: 'meta.title',
                             descriptionPath: 'meta.description',

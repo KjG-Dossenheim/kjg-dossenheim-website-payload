@@ -39,16 +39,16 @@ export default async function HeaderServer() {
   })
 
   return (
-    <NavigationMenu className="max-w-screen-xl mx-auto px-0 md:px-2">
+    <NavigationMenu className="mx-auto max-w-screen-xl justify-normal md:justify-between md:p-2">
       <Sheet>
-        <SheetTrigger asChild className="md:hidden m-2">
+        <SheetTrigger asChild className="m-2 md:hidden">
           <Button variant="outline" size="icon">
             <Menu />
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
           <SheetHeader>
-            <SheetTitle className='text-left'>KjG Dossenheim</SheetTitle>
+            <SheetTitle className="text-left">KjG Dossenheim</SheetTitle>
           </SheetHeader>
           <div className="space-y-0.5">
             <NavigationMenuItem className="list-none">
@@ -88,7 +88,7 @@ export default async function HeaderServer() {
           </div>
         </SheetContent>
       </Sheet>
-      <h1 className="px-2 font-bold text-lg">KjG Dossenheim</h1>
+      <h1 className="px-2 text-lg font-bold">KjG Dossenheim</h1>
       <NavigationMenuList className="hidden md:flex">
         <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
@@ -100,7 +100,7 @@ export default async function HeaderServer() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid grid-rows-2 grid-flow-col gap-3 p-6">
+            <ul className="grid grid-flow-col grid-rows-2 gap-3 p-6">
               <NavigationMenuItem className="row-span-2">
                 <Link
                   className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
@@ -113,13 +113,10 @@ export default async function HeaderServer() {
               </NavigationMenuItem>
               {header.aktionen.map((component) => (
                 <NavigationMenuItem key={component.id} className="my-auto">
-                  <Link
-                    className="p-2"
-                    href={component.link}
-                    title={component.name}
-                    passHref
-                  >
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>{component.name}</NavigationMenuLink>
+                  <Link className="p-2" href={component.link} title={component.name} passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      {component.name}
+                    </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
               ))}
