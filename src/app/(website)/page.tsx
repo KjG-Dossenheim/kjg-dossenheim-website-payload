@@ -66,11 +66,6 @@ export default async function Page() {
           </div>
         </div>
       </section>
-      <Newsletter 
-        title={page.newsletter.title} 
-        subtitle={page.newsletter.subtitle} 
-        list={page.newsletter.list.map(item => ({ ...item, hidden: item.hidden ?? false }))} 
-      />
     </section>
   )
 }
