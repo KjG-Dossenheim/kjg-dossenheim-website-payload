@@ -3,6 +3,7 @@ import React from 'react'
 import config from '@payload-config'
 import { Carousel } from 'flowbite-react'
 import Date from '@/components/date'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import {
   Accordion,
@@ -74,7 +75,8 @@ export default async function Page() {
           {tannenbaumaktion.fragen.map((fragen) => (
             <AccordionItem key={fragen.id} value={fragen.id ?? ''}>
               <AccordionTrigger>{fragen.frage}</AccordionTrigger>
-              <AccordionContent><div id='RichText' dangerouslySetInnerHTML={{ __html: fragen.answerHTML || '' }} /></AccordionContent>
+              <AccordionContent>
+              <RichText className='RichText' data={fragen.answer} /></AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

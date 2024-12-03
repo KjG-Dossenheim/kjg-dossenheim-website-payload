@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-#RichText {
+.RichText {
 
     h1 {
         @apply text-4xl font-bold pt-2 text-primary;

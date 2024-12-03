@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
 import Date from '@/components/date'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import type { Metadata } from 'next'
 export function generateMetadata(): Metadata {
@@ -21,7 +22,7 @@ export default async function Page() {
     <section className='text-center p-5 max-w-screen-lg mx-auto'>
       <h1 className='text-3xl font-bold'>Adventsmarkt</h1>
       <p className='p-2 text-lg'><Date dateString={adventsmarkt.startDate} formatString='EEEE, d. MMMM yyyy'/> bis <Date dateString={adventsmarkt.endDate} formatString='EEEE, d. MMMM yyyy'/> </p>
-      <div id='RichText' dangerouslySetInnerHTML={{ __html: adventsmarkt.html || '' }} />
+      <RichText className='RichText' data={adventsmarkt.content} />
     </section>
   )
 }

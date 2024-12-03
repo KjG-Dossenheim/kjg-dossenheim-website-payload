@@ -1,5 +1,5 @@
-import HeaderServer from '@/blocks/global/Header/Server'
-import FooterServer from '@/blocks/global/Footer/Server'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 import React, { ReactNode } from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
 
@@ -31,9 +31,9 @@ export default function layout({ children }: { children: ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          <HeaderServer />
+          <Navbar />
             <main className="relative min-h-screen">{children}</main>
-          <FooterServer />
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

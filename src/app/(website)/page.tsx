@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { ChevronRight, Newspaper, Calendar } from 'lucide-react'
 
 import { Metadata } from 'next'
+import Newsletter from '@/blocks/newsletter/Server'
+
 export async function generateMetadata(): Promise<Metadata> {
   const payload = await getPayload({ config });
   const page = await payload.findGlobal({
@@ -64,6 +66,11 @@ export default async function Page() {
           </div>
         </div>
       </section>
+      <Newsletter 
+        title={page.newsletter.title} 
+        subtitle={page.newsletter.subtitle} 
+        list={page.newsletter.list.map(item => ({ ...item, hidden: item.hidden ?? false }))} 
+      />
     </section>
   )
 }

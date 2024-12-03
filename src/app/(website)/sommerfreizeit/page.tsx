@@ -4,6 +4,7 @@ import config from '@payload-config'
 import Date from 'src/components/date'
 import Image from 'next/image'
 import Link from 'next/link'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import { ChevronDown, ChevronRight } from 'lucide-react'
 
@@ -189,7 +190,9 @@ const Page = async () => {
             <AccordionItem key={eigenschaft.id} value={eigenschaft.id || ''}>
               <AccordionTrigger>{eigenschaft.title}</AccordionTrigger>
               <AccordionContent className="mb-2">
-                <div id='RichText' dangerouslySetInnerHTML={{ __html: eigenschaft.html || '' }} />
+                {eigenschaft.description && (
+                  <RichText className='RichText' data={eigenschaft.description} />
+                )}
               </AccordionContent>
             </AccordionItem>
           ))}
