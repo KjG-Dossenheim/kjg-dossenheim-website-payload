@@ -852,34 +852,41 @@ export interface Sommerfreizeit {
  */
 export interface Tannenbaumaktion {
   id: string;
-  startDate: string;
-  startTime?: string | null;
-  vekaufsort: {
-    name: string;
-    adresse?: string | null;
-    website?: string | null;
-    id?: string | null;
-  }[];
-  fragen: {
-    frage: string;
-    answer: {
-      root: {
-        type: string;
-        children: {
+  allgemein: {
+    startDate: string;
+    startTime?: string | null;
+    vekaufsort: {
+      name: string;
+      adresse?: string | null;
+      website?: string | null;
+      id?: string | null;
+    }[];
+    fragen: {
+      frage: string;
+      answer: {
+        root: {
           type: string;
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
           version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
+        };
+        [k: string]: unknown;
       };
-      [k: string]: unknown;
-    };
-    answerHTML?: string | null;
-    id?: string | null;
-  }[];
+      answerHTML?: string | null;
+      id?: string | null;
+    }[];
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (string | null) | Media;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1154,23 +1161,34 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
  * via the `definition` "tannenbaumaktion_select".
  */
 export interface TannenbaumaktionSelect<T extends boolean = true> {
-  startDate?: T;
-  startTime?: T;
-  vekaufsort?:
+  allgemein?:
     | T
     | {
-        name?: T;
-        adresse?: T;
-        website?: T;
-        id?: T;
+        startDate?: T;
+        startTime?: T;
+        vekaufsort?:
+          | T
+          | {
+              name?: T;
+              adresse?: T;
+              website?: T;
+              id?: T;
+            };
+        fragen?:
+          | T
+          | {
+              frage?: T;
+              answer?: T;
+              answerHTML?: T;
+              id?: T;
+            };
       };
-  fragen?:
+  meta?:
     | T
     | {
-        frage?: T;
-        answer?: T;
-        answerHTML?: T;
-        id?: T;
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;

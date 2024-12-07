@@ -3,85 +3,128 @@ import { GlobalConfig } from "payload";
 
 import { HTMLConverterFeature, lexicalEditor, lexicalHTML } from '@payloadcms/richtext-lexical';
 
+import {
+  MetaDescriptionField,
+  MetaImageField,
+  MetaTitleField,
+  OverviewField,
+  PreviewField,
+} from '@payloadcms/plugin-seo/fields'
+
 export const Tannenbaumaktion: GlobalConfig = {
   slug: "tannenbaumaktion",
   fields: [
     {
-      type: 'row',
-      fields: [
+      type: 'tabs',
+      tabs: [
         {
-          label: 'Startdatum',
-          name: 'startDate',
-          type: 'date',
-          required: true,
-          admin: {
-            width: '50%',
-          },
-        },
-        {
-          label: 'Startzeit',
-          name: 'startTime',
-          type: 'date',
-          admin: {
-            width: '50%',
-            date: {
-              pickerAppearance: 'timeOnly',
-              displayFormat: 'HH:mm',
+          name: 'allgemein',
+          label: 'Allgemein',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  label: 'Startdatum',
+                  name: 'startDate',
+                  type: 'date',
+                  required: true,
+                  admin: {
+                    width: '50%',
+                  },
+                },
+                {
+                  label: 'Startzeit',
+                  name: 'startTime',
+                  type: 'date',
+                  admin: {
+                    width: '50%',
+                    date: {
+                      pickerAppearance: 'timeOnly',
+                      displayFormat: 'HH:mm',
+                    },
+                  },
+                },
+              ],
             },
-          },
+            {
+              label: 'Verkaufsort',
+              name: 'vekaufsort',
+              type: 'array',
+              required: true,
+              fields: [
+                {
+                  name: 'name',
+                  label: 'Name',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'adresse',
+                  label: 'Adresse',
+                  type: 'text',
+                },
+                {
+                  name: 'website',
+                  label: 'Webseite',
+                  type: 'text',
+                },
+              ],
+            },
+            {
+              label: 'Fragen',
+              name: 'fragen',
+              type: 'array',
+              required: true,
+              fields: [
+                {
+                  name: 'frage',
+                  label: 'Frage',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'answer',
+                  label: 'Antwort',
+                  type: 'richText',
+                  required: true,
+                  editor: lexicalEditor({
+                    features: ({ defaultFeatures }) => [
+                      ...defaultFeatures,
+                      HTMLConverterFeature({}),
+                    ],
+                  }),
+                },
+                lexicalHTML('answer', { name: 'answerHTML' }),
+              ],
+            },
+          ]
         },
-      ],
-    },
-    {
-      label: 'Verkaufsort',
-      name: 'vekaufsort',
-      type: 'array',
-      required: true,
-      fields: [
         {
-          name: 'name',
-          label: 'Name',
-          type: 'text',
-          required: true,
+          name: 'meta',
+          label: 'SEO',
+          fields: [
+            OverviewField({
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+              imagePath: 'meta.image',
+            }),
+            MetaTitleField({
+            }),
+            MetaDescriptionField({}),
+            MetaImageField({
+              relationTo: 'media',
+            }),
+            PreviewField({
+              // if the `generateUrl` function is configured
+              hasGenerateFn: true,
+              // field paths to match the target field for data
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+            }),
+          ],
         },
-        {
-          name: 'adresse',
-          label: 'Adresse',
-          type: 'text',
-        },
-        {
-          name: 'website',
-          label: 'Webseite',
-          type: 'text',
-        },
-      ],
-    },
-    {
-      label: 'Fragen',
-      name: 'fragen',
-      type: 'array',
-      required: true,
-      fields: [
-        {
-          name: 'frage',
-          label: 'Frage',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'answer',
-          label: 'Antwort',
-          type: 'richText',
-          required: true,
-          editor: lexicalEditor({
-            features: ({ defaultFeatures }) => [
-              ...defaultFeatures,
-              HTMLConverterFeature({}),
-            ],
-          }),
-        },
-        lexicalHTML('answer', { name: 'answerHTML' }),
       ],
     },
   ],
-};
+}
