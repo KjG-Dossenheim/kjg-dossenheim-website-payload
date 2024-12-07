@@ -188,37 +188,37 @@ export const Sommerfreizeit: GlobalConfig = {
           name: 'newsletter',
           label: 'Newsletter',
           fields: [
-              {
-                  name: 'tes',
-                  label: 'test',
-                  type: 'text',
-              },
+            {
+              name: 'tes',
+              label: 'test',
+              type: 'text',
+            },
           ],
         },
         {
           name: 'meta',
           label: 'SEO',
           fields: [
-              OverviewField({
-                  titlePath: 'meta.title',
-                  descriptionPath: 'meta.description',
-                  imagePath: 'meta.image',
-              }),
-              MetaTitleField({
-              }),
-              MetaDescriptionField({}),
-              MetaImageField({
-                  relationTo: 'media',
-              }),
-              PreviewField({
-                  // if the `generateUrl` function is configured
-                  hasGenerateFn: true,
-                  // field paths to match the target field for data
-                  titlePath: 'meta.title',
-                  descriptionPath: 'meta.description',
-              }),
+            OverviewField({
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+              imagePath: 'meta.image',
+            }),
+            MetaTitleField({
+            }),
+            MetaDescriptionField({}),
+            MetaImageField({
+              relationTo: 'media',
+            }),
+            PreviewField({
+              // if the `generateUrl` function is configured
+              hasGenerateFn: true,
+              // field paths to match the target field for data
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+            }),
           ],
-      },
+        },
       ],
     },
   ],
