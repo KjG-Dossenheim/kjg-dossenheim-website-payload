@@ -12,6 +12,7 @@ export interface Config {
   };
   collections: {
     jahresplan: Jahresplan;
+    blogPosts: BlogPost;
     team: Team;
     teambilder: Teambilder;
     users: User;
@@ -25,6 +26,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     jahresplan: JahresplanSelect<false> | JahresplanSelect<true>;
+    blogPosts: BlogPostsSelect<false> | BlogPostsSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     teambilder: TeambilderSelect<false> | TeambilderSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -99,6 +101,32 @@ export interface Jahresplan {
   description?: string | null;
   location?: string | null;
   link?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogPosts".
+ */
+export interface BlogPost {
+  id: string;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -370,6 +398,10 @@ export interface PayloadLockedDocument {
         value: string | Jahresplan;
       } | null)
     | ({
+        relationTo: 'blogPosts';
+        value: string | BlogPost;
+      } | null)
+    | ({
         relationTo: 'team';
         value: string | Team;
       } | null)
@@ -446,6 +478,17 @@ export interface JahresplanSelect<T extends boolean = true> {
   description?: T;
   location?: T;
   link?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogPosts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  title?: T;
+  content?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -762,7 +805,6 @@ export interface Adventsmarkt {
 export interface Martinsumzug {
   id: string;
   startDate: string;
-  endDate?: string | null;
   content: {
     root: {
       type: string;
@@ -852,9 +894,8 @@ export interface Sommerfreizeit {
  */
 export interface Tannenbaumaktion {
   id: string;
+  startDate: string;
   allgemein: {
-    startDate: string;
-    startTime?: string | null;
     vekaufsort: {
       name: string;
       adresse?: string | null;
@@ -1083,7 +1124,6 @@ export interface AdventsmarktSelect<T extends boolean = true> {
  */
 export interface MartinsumzugSelect<T extends boolean = true> {
   startDate?: T;
-  endDate?: T;
   content?: T;
   html?: T;
   updatedAt?: T;
@@ -1161,11 +1201,10 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
  * via the `definition` "tannenbaumaktion_select".
  */
 export interface TannenbaumaktionSelect<T extends boolean = true> {
+  startDate?: T;
   allgemein?:
     | T
     | {
-        startDate?: T;
-        startTime?: T;
         vekaufsort?:
           | T
           | {

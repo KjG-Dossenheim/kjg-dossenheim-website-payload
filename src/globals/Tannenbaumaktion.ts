@@ -15,38 +15,25 @@ export const Tannenbaumaktion: GlobalConfig = {
   slug: "tannenbaumaktion",
   fields: [
     {
+      label: 'Startdatum',
+      name: 'startDate',
+      type: 'date',
+      required: true,
+      admin: {
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'dd.MM.yyyy HH:mm',
+        },
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
           name: 'allgemein',
           label: 'Allgemein',
           fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  label: 'Startdatum',
-                  name: 'startDate',
-                  type: 'date',
-                  required: true,
-                  admin: {
-                    width: '50%',
-                  },
-                },
-                {
-                  label: 'Startzeit',
-                  name: 'startTime',
-                  type: 'date',
-                  admin: {
-                    width: '50%',
-                    date: {
-                      pickerAppearance: 'timeOnly',
-                      displayFormat: 'HH:mm',
-                    },
-                  },
-                },
-              ],
-            },
             {
               label: 'Verkaufsort',
               name: 'vekaufsort',

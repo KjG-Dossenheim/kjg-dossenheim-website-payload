@@ -7,26 +7,17 @@ export const Martinsumzug: GlobalConfig = {
   slug: "martinsumzug",
   fields: [
     {
-      type: 'row',
-      fields: [
-        {
-          label: 'Startdatum',
-          name: 'startDate',
-          type: 'date',
-          required: true,
-          admin: {
-            width: '50%',
-          },
+      label: 'Startdatum',
+      name: 'startDate',
+      type: 'date',
+      required: true,
+      admin: {
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'dd.MM.yyyy HH:mm',
         },
-        {
-          label: 'Enddatum',
-          name: 'endDate',
-          type: 'date',
-          admin: {
-            width: '50%',
-          },
-        },
-      ],
+      },
     },
     {
       name: 'content',

@@ -55,7 +55,7 @@ export default async function Page() {
                   <TimelineTime>{event.location}</TimelineTime>
                   <TimelineBody>{event.description}</TimelineBody>
                   {event.link && (
-                    <Button asChild variant="link">
+                    <Button asChild variant="link" className='pl-0'>
                       <Link href={event.link}>
                         Mehr erfahren <HiArrowNarrowRight />
                       </Link>

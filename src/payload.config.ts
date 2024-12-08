@@ -5,7 +5,6 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { OAuth2Plugin } from 'payload-oauth2'
 
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
@@ -22,6 +21,7 @@ import { Media } from './collections/Media'
 import { Team } from './collections/Team'
 import { TeamBilder } from './collections/TeamBilder'
 import { Jahresplan } from './collections/Jahresplan'
+import { blogPosts } from './collections/blogPosts'
 
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
@@ -48,7 +48,7 @@ export default buildConfig({
     },
     dateFormat: 'dd.MM.yyyy',
   },
-  collections: [Jahresplan, Team, TeamBilder, Users, Media],
+  collections: [Jahresplan, blogPosts, Team, TeamBilder, Users, Media],
   globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches],
   editor: lexicalEditor({}),
   i18n: {

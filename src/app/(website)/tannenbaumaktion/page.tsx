@@ -34,10 +34,10 @@ export default async function Page() {
         </h1>
         <h2 className="text-lg sm:text-2xl text-center">
           <Date
-            dateString={tannenbaumaktion.allgemein.startDate}
+            dateString={tannenbaumaktion.startDate}
             formatString="EEEE, d. MMMM yyyy"
           ></Date>{' '}
-          ab <Date dateString={tannenbaumaktion.allgemein.startTime} formatString="H:mm"></Date> Uhr
+          ab <Date dateString={tannenbaumaktion.startDate} formatString="H:mm"></Date> Uhr
         </h2>
       </div>
       <section className="py-5 bg-primary" id='verkaufstellen'>
