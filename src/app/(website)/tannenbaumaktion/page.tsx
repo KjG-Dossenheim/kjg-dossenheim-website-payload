@@ -29,34 +29,33 @@ export default async function Page() {
   return (
     <section>
       <div className="py-20">
-        <h1 className="text-3xl sm:text-5xl text-center font-bold">
-          Tannenbaumaktion
-        </h1>
-        <h2 className="text-lg sm:text-2xl text-center">
-          <Date
-            dateString={tannenbaumaktion.startDate}
-            formatString="EEEE, d. MMMM yyyy"
-          ></Date>{' '}
-          ab <Date dateString={tannenbaumaktion.startDate} formatString="H:mm"></Date> Uhr
+        <h1 className="text-center text-3xl font-bold sm:text-5xl">Tannenbaumaktion</h1>
+        <h2 className="text-center text-lg sm:text-2xl">
+          <Date dateString={tannenbaumaktion.startDate} formatString="EEEE, d. MMMM yyyy"></Date> ab{' '}
+          <Date dateString={tannenbaumaktion.startDate} formatString="H:mm"></Date> Uhr
         </h2>
       </div>
-      <section className="py-5 bg-primary" id='verkaufstellen'>
-        <h2 className="text-xl sm:text-4xl text-center font-bold text-primary-foreground dark:text-foreground">
+      <section className="bg-primary py-5" id="verkaufstellen">
+        <h2 className="text-center text-xl font-bold text-primary-foreground dark:text-foreground sm:text-4xl">
           Unsere Verkaufsstellen
         </h2>
-        <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 max-w-screen-lg mx-auto">
+        <div className="mx-auto h-56 max-w-screen-lg sm:h-64 xl:h-80 2xl:h-96">
           <Carousel>
             {tannenbaumaktion.allgemein.vekaufsort.map((vekaufsort) => (
               <div key={vekaufsort.id} className="flex h-full items-center justify-center">
                 <div className="text-center text-primary-foreground dark:text-foreground">
-                  <h3 className="text-xl sm:text-4xl font-bold">{vekaufsort.name}</h3>
+                  <h3 className="text-xl font-bold sm:text-4xl">{vekaufsort.name}</h3>
                   <p className="text-lg sm:text-2xl">{vekaufsort.adresse}</p>
                 </div>
               </div>
             ))}
           </Carousel>
         </div>
-        <Accordion type="single" collapsible className="max-w-screen-sm mx-auto text-primary-foreground dark:text-foreground">
+        <Accordion
+          type="single"
+          collapsible
+          className="mx-auto max-w-screen-sm p-4 text-primary-foreground dark:text-foreground"
+        >
           <AccordionItem value="vekaufsort">
             <AccordionTrigger>Verkaufsstellen</AccordionTrigger>
             {tannenbaumaktion.allgemein.vekaufsort.map((vekaufsort) => (
@@ -67,16 +66,15 @@ export default async function Page() {
           </AccordionItem>
         </Accordion>
       </section>
-      <section className="max-w-screen-md mx-auto p-5">
-        <h1 className="text-center text-3xl font-bold pb-5">
-          FAQ
-        </h1>
+      <section className="mx-auto max-w-screen-md p-3">
+        <h1 className="pb-5 text-center text-3xl font-bold">FAQ</h1>
         <Accordion type="single" collapsible>
           {tannenbaumaktion.allgemein.fragen.map((fragen) => (
             <AccordionItem key={fragen.id} value={fragen.id ?? ''}>
               <AccordionTrigger>{fragen.frage}</AccordionTrigger>
               <AccordionContent>
-              <RichText className='RichText' data={fragen.answer} /></AccordionContent>
+                <RichText className="RichText" data={fragen.answer} />
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
