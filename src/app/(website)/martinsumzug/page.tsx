@@ -20,10 +20,13 @@ export default async function Page() {
   })
 
   return (
-    <section className='p-5 max-w-screen-lg mx-auto'>
-      <h1 className='text-3xl font-bold text-center '>Martinsumzug</h1>
-      <p className='p-2 text-lg text-center '><Date dateString={martinsumzug.startDate} formatString='EEEE, d. MMMM yyyy'/> ab <Date dateString={martinsumzug.startDate} formatString='EEEE, d. MMMM yyyy'/> </p>
-      <RichText className='RichText' data={martinsumzug.content} />
+    <section className="mx-auto max-w-screen-lg p-5">
+      <h1 className="text-center text-3xl font-bold">Martinsumzug</h1>
+      <p className="p-2 text-center text-lg">
+        <Date dateString={martinsumzug.startDate} formatString="EEEE, d. MMMM yyyy" /> ab{' '}
+        <Date dateString={martinsumzug.startDate} formatString="H:mm" />{' '}
+      </p>
+      <RichText className="RichText" data={martinsumzug.content} />
     </section>
   )
 }
