@@ -108,10 +108,10 @@ importers:
         specifier: latest
         version: 3.28.1(graphql@16.10.0)(typescript@5.6.3)
       react:
-        specifier: 19.0.0
+        specifier: ^19.0.0
         version: 19.0.0
       react-dom:
-        specifier: 19.0.0
+        specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
       react-hook-form:
         specifier: ^7.54.2
