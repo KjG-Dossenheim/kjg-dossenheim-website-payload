@@ -47,6 +47,9 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     dateFormat: 'dd.MM.yyyy',
+    components: {
+      actions: ['@/components/admin/RebuildButton'],
+    },
   },
   collections: [Jahresplan, blogPosts, Team, TeamBilder, Users, Media],
   globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches],
@@ -81,7 +84,7 @@ export default buildConfig({
     formBuilderPlugin({
       formOverrides: {
         slug: 'forms',
-        labels: { 
+        labels: {
           singular: 'Formular',
           plural: 'Formulare',
         },
