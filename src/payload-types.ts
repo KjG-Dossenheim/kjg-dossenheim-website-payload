@@ -1104,20 +1104,39 @@ export interface Rechtlich {
     };
   };
   datenschutz: {
-    text: {
-      root: {
-        type: string;
-        children: {
+    allgemein: {
+      text: {
+        root: {
           type: string;
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
           version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
+        };
+        [k: string]: unknown;
       };
-      [k: string]: unknown;
+    };
+    sommerfreizeit: {
+      text: {
+        root: {
+          type: string;
+          children: {
+            type: string;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          version: number;
+        };
+        [k: string]: unknown;
+      };
     };
   };
   agb: {
@@ -1391,7 +1410,16 @@ export interface RechtlichesSelect<T extends boolean = true> {
   datenschutz?:
     | T
     | {
-        text?: T;
+        allgemein?:
+          | T
+          | {
+              text?: T;
+            };
+        sommerfreizeit?:
+          | T
+          | {
+              text?: T;
+            };
       };
   agb?:
     | T
