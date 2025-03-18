@@ -10,7 +10,7 @@ export const Rechtliches: GlobalConfig = {
       tabs: [
         {
           label: 'Impressum',
-          name: 'impressum', 
+          name: 'impressum',
           fields: [
             {
               name: 'text',
@@ -22,19 +22,42 @@ export const Rechtliches: GlobalConfig = {
         },
         {
           label: 'Datenschutz',
-          name: 'datenschutz', 
+          name: 'datenschutz',
           fields: [
             {
-              name: 'text',
-              label: 'Inhalt',
-              type: 'richText',
-              required: true,
+              type: 'tabs',
+              tabs: [
+                {
+                  label: 'Allgemein',
+                  name: 'allgemein',
+                  fields: [
+                    {
+                      name: 'text',
+                      label: 'Inhalt',
+                      type: 'richText',
+                      required: true,
+                    },
+                  ],
+                },
+                {
+                  label: 'Sommerfreizeit',
+                  name: 'sommerfreizeit',
+                  fields: [
+                    {
+                      name: 'text',
+                      label: 'Inhalt',
+                      type: 'richText',
+                      required: true,
+                    },
+                  ],
+                },
+              ],
             },
           ],
         },
         {
           label: 'AGB',
-          name: 'agb', 
+          name: 'agb',
           fields: [
             {
               name: 'text',
