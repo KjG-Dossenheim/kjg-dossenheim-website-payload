@@ -941,6 +941,9 @@ export interface Sommerfreizeit {
     website: string;
     bild: string | Media;
   };
+  team?: {
+    team?: (string | Team)[] | null;
+  };
   anmeldung: {
     website: string;
   };
@@ -1035,7 +1038,7 @@ export interface About {
  */
 export interface Header {
   id: string;
-  logo: string | Media;
+  logo?: (string | null) | Media;
   cta: {
     title: string;
     link: string;
@@ -1044,13 +1047,6 @@ export interface Header {
   navigation: {
     label: string;
     link: string;
-    dropdown?:
-      | {
-          label: string;
-          link: string;
-          id?: string | null;
-        }[]
-      | null;
     id?: string | null;
   }[];
   aktionen: {
@@ -1155,7 +1151,6 @@ export interface Rechtlich {
       };
       [k: string]: unknown;
     };
-    html?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1267,6 +1262,11 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
         website?: T;
         bild?: T;
       };
+  team?:
+    | T
+    | {
+        team?: T;
+      };
   anmeldung?:
     | T
     | {
@@ -1354,13 +1354,6 @@ export interface HeaderSelect<T extends boolean = true> {
     | {
         label?: T;
         link?: T;
-        dropdown?:
-          | T
-          | {
-              label?: T;
-              link?: T;
-              id?: T;
-            };
         id?: T;
       };
   aktionen?:
@@ -1425,7 +1418,6 @@ export interface RechtlichesSelect<T extends boolean = true> {
     | T
     | {
         text?: T;
-        html?: T;
       };
   updatedAt?: T;
   createdAt?: T;

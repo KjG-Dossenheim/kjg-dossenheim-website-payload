@@ -173,6 +173,19 @@ export const Sommerfreizeit: GlobalConfig = {
           ],
         },
         {
+          label: 'Team',
+          name: 'team',
+          fields: [
+            {
+              label: 'Team',
+              name: 'team',
+              type: 'relationship',
+              relationTo: 'team',
+              hasMany: true,
+            }
+          ],
+        },
+        {
           label: 'Anmeldung',
           name: 'anmeldung',
           fields: [

@@ -67,7 +67,7 @@ export default async function HeaderServer() {
             </NavigationMenuItem>
             {header.aktionen.map((component) => (
               <NavigationMenuItem key={component.id} className="list-none">
-                <Link href={component.link} legacyBehavior passHref>
+                <Link href={`/${component.link}`} legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     {component.name}
                   </NavigationMenuLink>
@@ -77,7 +77,7 @@ export default async function HeaderServer() {
             {header.navigation.map((item) => {
               return (
                 <NavigationMenuItem key={item.id} className="list-none">
-                  <Link href={item.link} legacyBehavior passHref>
+                  <Link href={`/${item.link}`} legacyBehavior passHref>
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                       {item.label}
                     </NavigationMenuLink>
@@ -113,7 +113,7 @@ export default async function HeaderServer() {
               </NavigationMenuItem>
               {header.aktionen.map((component) => (
                 <NavigationMenuItem key={component.id} className="my-auto">
-                  <Link className="p-2" href={component.link} title={component.name} passHref>
+                  <Link className="p-2" href={`/${component.link}`} title={component.name} passHref>
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                       {component.name}
                     </NavigationMenuLink>
@@ -126,7 +126,7 @@ export default async function HeaderServer() {
         {header.navigation.map((item) => {
           return (
             <NavigationMenuItem key={item.id}>
-              <Link href={item.link} legacyBehavior passHref>
+              <Link href={`/${item.link}`} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   {item.label}
                 </NavigationMenuLink>
@@ -134,12 +134,12 @@ export default async function HeaderServer() {
             </NavigationMenuItem>
           )
         })}
-        <ModeToggle />
         {header.cta.enabled && (
           <Button asChild className="hidden md:flex">
             <Link href={header.cta.link}>{header.cta.title}</Link>
           </Button>
         )}
+        <ModeToggle />
       </NavigationMenuList>
     </NavigationMenu>
   )
