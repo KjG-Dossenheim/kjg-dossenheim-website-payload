@@ -9,7 +9,6 @@ export const Header: GlobalConfig = {
             label: "Logo",
             type: "upload",
             relationTo: "media",
-            required: true,
             admin: {
                 position: 'sidebar',
             },
@@ -59,25 +58,6 @@ export const Header: GlobalConfig = {
                     type: "text",
                     required: true,
                 },
-                {
-                    name: "dropdown",
-                    label: "Dropdown",
-                    type: "array",
-                    fields: [
-                        {
-                            name: "label",
-                            label: "Label",
-                            type: "text",
-                            required: true,
-                        },
-                        {
-                            name: "link",
-                            label: "Link",
-                            type: "text",
-                            required: true,
-                        },
-                    ],
-                }
             ],
             minRows: 1,
             maxRows: 5,
