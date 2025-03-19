@@ -11,7 +11,7 @@ export const About: GlobalConfig = {
   fields: [
     {
       name: 'content',
-      label: 'Text',
+      label: '',
       type: 'richText',
       required: true,
       editor: lexicalEditor({
