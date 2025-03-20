@@ -172,7 +172,7 @@ const Page = async () => {
         <h1 className="p-6 text-center text-4xl font-bold">Unser Team</h1>
         <div className="flex flex-wrap justify-center gap-4">
           {sommerfreizeit.team.team.map((member) => (
-            <Card key={member.id} className="my-auto">
+            <Card key={member.firstName} className="my-auto">
               <CardHeader className="max-h-fit max-w-sm">
                 <div className="flex flex-row">
                   <div>
