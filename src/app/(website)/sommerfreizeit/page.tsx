@@ -172,15 +172,15 @@ const Page = async () => {
         <h1 className="p-6 text-center text-4xl font-bold">Unser Team</h1>
         <div className="flex flex-wrap justify-center gap-4">
           {sommerfreizeit.team.team.map((member) => (
-            <Card key={member.firstName} className="my-auto">
+            <Card className="my-auto" key="team">
               <CardHeader className="max-h-fit max-w-sm">
                 <div className="flex flex-row">
                   <div>
                     <p className="text-xl font-bold">
-                      {member.firstName} {member.lastName}
+                      {typeof member !== 'string' && `${member.firstName} ${member.lastName}`}
                     </p>
                   </div>
-                  {member.email && (
+                  {typeof member !== 'string' && member.email && (
                     <div className="ml-2">
                       <Link
                         href={`mailto:${member.email}`}
@@ -191,7 +191,7 @@ const Page = async () => {
                     </div>
                   )}
                 </div>
-                {member.descriptionSommerfreizeit && (
+                {typeof member !== 'string' && member.descriptionSommerfreizeit && (
                   <CardDescription>{member.descriptionSommerfreizeit}</CardDescription>
                 )}
               </CardHeader>
