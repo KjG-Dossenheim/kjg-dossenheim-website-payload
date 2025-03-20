@@ -194,6 +194,7 @@ export interface Team {
   firstName: string;
   lastName: string;
   description?: string | null;
+  descriptionSommerfreizeit?: string | null;
   profilePicture?: (string | null) | Teambilder;
   email?: string | null;
   phone?: string | null;
@@ -564,6 +565,7 @@ export interface TeamSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
   description?: T;
+  descriptionSommerfreizeit?: T;
   profilePicture?: T;
   email?: T;
   phone?: T;
@@ -941,8 +943,8 @@ export interface Sommerfreizeit {
     website: string;
     bild: string | Media;
   };
-  team?: {
-    team?: (string | Team)[] | null;
+  team: {
+    team: (string | Team)[];
   };
   anmeldung: {
     website: string;

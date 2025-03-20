@@ -182,6 +182,7 @@ export const Sommerfreizeit: GlobalConfig = {
               type: 'relationship',
               relationTo: 'team',
               hasMany: true,
+              required: true,
             }
           ],
         },

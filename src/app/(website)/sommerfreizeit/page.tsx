@@ -26,6 +26,8 @@ import {
 
 import { Button } from '@/components/ui/button'
 
+import { badgeVariants } from '@/components/ui/badge'
+
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -77,32 +79,6 @@ const Page = async () => {
             Für <span className="underline decoration-accent-500 decoration-8">alle</span> Kinder
             zwischen {sommerfreizeit.allgemein.alter}
           </h2>
-        </div>
-      </section>
-      <section className="grid grid-cols-1 overflow-hidden md:grid-cols-2">
-        <div className="p-8 md:p-12 lg:px-16 lg:py-24">
-          <div className="mx-auto max-w-xl text-center">
-            <h2 className="text-2xl font-bold md:text-3xl">Unterkunft</h2>
-            <p className="md:mt-4">{sommerfreizeit.unterkunft.beschreibung}</p>
-            <div className="my-auto">
-              <Button asChild className="m-4 mx-auto">
-                <Link href={sommerfreizeit.unterkunft.website} target="_blank">
-                  {sommerfreizeit.unterkunft.name}
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="relative w-full">
-          {typeof sommerfreizeit.unterkunft.bild !== 'string' && sommerfreizeit.unterkunft.bild && (
-            <Image
-              src={sommerfreizeit.unterkunft.bild.url || ''}
-              alt={sommerfreizeit.unterkunft.bild.alt || 'Unterkunft Bild'}
-              fill
-              className="object-cover"
-              sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          )}
         </div>
       </section>
       <section>
@@ -164,6 +140,63 @@ const Page = async () => {
               )
             })}
           </div>
+        </div>
+      </section>
+      <section className="grid grid-cols-1 overflow-hidden md:grid-cols-2">
+        <div className="p-8 md:p-12 lg:px-16 lg:py-24">
+          <div className="mx-auto max-w-xl text-center">
+            <h2 className="text-2xl font-bold md:text-3xl">Unterkunft</h2>
+            <p className="md:mt-4">{sommerfreizeit.unterkunft.beschreibung}</p>
+            <div className="my-auto">
+              <Button asChild className="m-4 mx-auto">
+                <Link href={sommerfreizeit.unterkunft.website} target="_blank">
+                  {sommerfreizeit.unterkunft.name}
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="relative w-full">
+          {typeof sommerfreizeit.unterkunft.bild !== 'string' && sommerfreizeit.unterkunft.bild && (
+            <Image
+              src={sommerfreizeit.unterkunft.bild.url || ''}
+              alt={sommerfreizeit.unterkunft.bild.alt || 'Unterkunft Bild'}
+              fill
+              className="object-cover"
+              sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          )}
+        </div>
+      </section>
+      <section className="mx-auto max-w-screen-lg">
+        <h1 className="p-6 text-center text-4xl font-bold">Unser Team</h1>
+        <div className="flex flex-wrap justify-center gap-4">
+          {sommerfreizeit.team.team.map((member) => (
+            <Card key={member.id} className="my-auto">
+              <CardHeader className="max-h-fit max-w-sm">
+                <div className="flex flex-row">
+                  <div>
+                    <p className="text-xl font-bold">
+                      {member.firstName} {member.lastName}
+                    </p>
+                  </div>
+                  {member.email && (
+                    <div className="ml-2">
+                      <Link
+                        href={`mailto:${member.email}`}
+                        className={`${badgeVariants({ variant: 'default' })} uppercase`}
+                      >
+                        E-Mail
+                      </Link>
+                    </div>
+                  )}
+                </div>
+                {member.descriptionSommerfreizeit && (
+                  <CardDescription>{member.descriptionSommerfreizeit}</CardDescription>
+                )}
+              </CardHeader>
+            </Card>
+          ))}
         </div>
       </section>
       <section>

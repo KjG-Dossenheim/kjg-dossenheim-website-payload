@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/card'
 
 import { Badge } from '@/components/ui/badge'
+import { badgeVariants } from '@/components/ui/badge'
 
 import type { Metadata } from 'next'
 export function generateMetadata(): Metadata {
@@ -66,6 +68,16 @@ export default async function Page() {
                 <CardContent>
                   <p>{member.description}</p>
                 </CardContent>
+              )}
+              {member.email && (
+                <CardFooter>
+                  <Link
+                    href={`mailto:${member.email}`}
+                    className={`${badgeVariants({ variant: 'default' })} uppercase`}
+                  >
+                    E-Mail
+                  </Link>
+                </CardFooter>
               )}
             </Card>
           ))}
