@@ -161,17 +161,16 @@ const Page = async () => {
           </Card>
           <Card className="md:h-fix h-96 w-full md:w-2/3">
             <div className="relative h-full w-full">
-              {sommerfreizeit.unterkunft.bild && (
-                <Image
-                  src={
-                    sommerfreizeit.unterkunft.bild.url || '/placeholder.svg?height=300&width=400'
-                  }
-                  alt={sommerfreizeit.unterkunft.bild.alt || 'Unterkunft Bild'}
-                  fill
-                  className="rounded-lg object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              )}
+              {typeof sommerfreizeit.unterkunft.bild !== 'string' &&
+                sommerfreizeit.unterkunft.bild && (
+                  <Image
+                    src={sommerfreizeit.unterkunft.bild.url || ''}
+                    alt={sommerfreizeit.unterkunft.bild.alt || 'Unterkunft Bild'}
+                    fill
+                    className="rounded-lg object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                )}
             </div>
           </Card>
         </section>
@@ -228,10 +227,10 @@ const Page = async () => {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-4xl font-bold tracking-tighter">Kontakt</h1>
-                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Hast du Fragen oder möchtest du mehr erfahren? Wir würden uns freuen, von Dir zu
-                  hören.
-                </p>
+                <div className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                  <p>Hast du Fragen oder möchtest du mehr erfahren?</p>
+                  <p>Wir würden uns freuen, von Dir zu hören.</p>
+                </div>
               </div>
               <div className="w-full max-w-sm space-y-2">
                 <div className="flex justify-center">
