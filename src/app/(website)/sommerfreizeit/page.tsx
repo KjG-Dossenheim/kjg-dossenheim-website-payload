@@ -182,8 +182,11 @@ const Page = async () => {
         <section className="mx-auto max-w-screen-lg">
           <h1 className="p-6 text-center text-4xl font-bold">Unser Team</h1>
           <div className="flex flex-wrap justify-center gap-4">
-            {sommerfreizeit.team.team.map((member) => (
-              <Card className="my-auto" key={member.id}>
+            {sommerfreizeit.team.team.map((member, index) => (
+              <Card
+                className="my-auto"
+                key={typeof member === 'string' ? `member-${index}` : member.id}
+              >
                 <CardHeader className="max-h-fit max-w-sm">
                   <div className="flex flex-row">
                     <div>
