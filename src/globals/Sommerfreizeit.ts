@@ -33,12 +33,6 @@ export const Sommerfreizeit: GlobalConfig = {
               type: 'text',
             },
             {
-              name: 'background',
-              label: 'Hintergrund',
-              type: 'upload',
-              relationTo: 'media',
-            },
-            {
               type: 'row',
               fields: [
                 {
@@ -195,17 +189,6 @@ export const Sommerfreizeit: GlobalConfig = {
               label: 'Webseite',
               type: 'text',
               required: true,
-            },
-          ],
-        },
-        {
-          name: 'newsletter',
-          label: 'Newsletter',
-          fields: [
-            {
-              name: 'tes',
-              label: 'test',
-              type: 'text',
             },
           ],
         },

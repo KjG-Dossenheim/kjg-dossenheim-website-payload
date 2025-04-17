@@ -902,7 +902,6 @@ export interface Sommerfreizeit {
   allgemein: {
     title: string;
     motto?: string | null;
-    background?: (string | null) | Media;
     startDate: string;
     endDate: string;
     alter: string;
@@ -948,9 +947,6 @@ export interface Sommerfreizeit {
   };
   anmeldung: {
     website: string;
-  };
-  newsletter?: {
-    tes?: string | null;
   };
   meta?: {
     title?: string | null;
@@ -1229,7 +1225,6 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
     | {
         title?: T;
         motto?: T;
-        background?: T;
         startDate?: T;
         endDate?: T;
         alter?: T;
@@ -1273,11 +1268,6 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
     | T
     | {
         website?: T;
-      };
-  newsletter?:
-    | T
-    | {
-        tes?: T;
       };
   meta?:
     | T

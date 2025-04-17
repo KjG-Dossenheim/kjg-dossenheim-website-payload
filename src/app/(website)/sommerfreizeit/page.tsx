@@ -8,6 +8,8 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import { ChevronDown, ChevronRight, Mail } from 'lucide-react'
 
+import Countdown from '@/components/Countdown'
+
 import {
   Accordion,
   AccordionContent,
@@ -60,6 +62,9 @@ const Page = async () => {
           bis{' '}
           <Date dateString={sommerfreizeit.allgemein.endDate} formatString="EEEE, d. MMMM yyyy" />
         </p>
+        <div>
+          <Countdown targetDate={sommerfreizeit.allgemein.startDate} />
+        </div>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
           <Button asChild>
             <Link href={sommerfreizeit.anmeldung.website} target="_blank">
@@ -84,7 +89,7 @@ const Page = async () => {
       <section className="space-y-6 p-6 sm:space-y-8 sm:p-8 lg:space-y-10 lg:p-10">
         <section>
           <div className="mx-auto max-w-screen-xl">
-            <h1 className="p-8 text-center text-4xl font-bold">Teilnehmerbeitrag</h1>
+            <h1 className="py-8 text-center text-4xl font-bold">Teilnehmerbeitrag</h1>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-8">
               {sommerfreizeit.allgemein.pricing.map((item) => {
                 return (
@@ -178,7 +183,7 @@ const Page = async () => {
           <h1 className="p-6 text-center text-4xl font-bold">Unser Team</h1>
           <div className="flex flex-wrap justify-center gap-4">
             {sommerfreizeit.team.team.map((member) => (
-              <Card className="my-auto" key="team">
+              <Card className="my-auto" key={member.id}>
                 <CardHeader className="max-h-fit max-w-sm">
                   <div className="flex flex-row">
                     <div>
