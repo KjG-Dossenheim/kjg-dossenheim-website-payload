@@ -52,36 +52,34 @@ export default async function HeaderServer() {
           </SheetHeader>
           <div className="space-y-0.5">
             <NavigationMenuItem className="list-none">
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Startseite
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
+                Startseite
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem className="list-none">
-              <Link href="/aktionen" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Jahresplan
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink href="/aktionen" className={navigationMenuTriggerStyle()}>
+                Jahresplan
+              </NavigationMenuLink>
             </NavigationMenuItem>
             {header.aktionen.map((component) => (
               <NavigationMenuItem key={component.id} className="list-none">
-                <Link href={`/${component.link}`} legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    {component.name}
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink
+                  href={`/${component.link}`}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  {component.name}
+                </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
             {header.navigation.map((item) => {
               return (
                 <NavigationMenuItem key={item.id} className="list-none">
-                  <Link href={`/${item.link}`} legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      {item.label}
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink
+                    href={`/${item.link}`}
+                    className={navigationMenuTriggerStyle()}
+                  >
+                    {item.label}
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               )
             })}
@@ -91,33 +89,31 @@ export default async function HeaderServer() {
       <h1 className="px-2 text-lg font-bold">KjG Dossenheim</h1>
       <NavigationMenuList className="hidden md:flex">
         <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Startseite
-            </NavigationMenuLink>
-          </Link>
+          <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
+            Startseite
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid grid-flow-col grid-rows-2 gap-3 p-6">
               <NavigationMenuItem className="row-span-2">
-                <Link
+                <NavigationMenuLink
                   className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                   href="/aktionen"
                 >
-                  <NavigationMenuLink>
-                    <div className="my-auto text-lg font-medium">Jahresplan</div>
-                  </NavigationMenuLink>
-                </Link>
+                  <div className="my-auto text-lg font-medium">Jahresplan</div>
+                </NavigationMenuLink>
               </NavigationMenuItem>
               {header.aktionen.map((component) => (
                 <NavigationMenuItem key={component.id} className="my-auto">
-                  <Link className="p-2" href={`/${component.link}`} title={component.name} passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      {component.name}
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink
+                    className={`${navigationMenuTriggerStyle()} p-2`}
+                    href={`/${component.link}`}
+                    title={component.name}
+                  >
+                    {component.name}
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
             </ul>
@@ -126,11 +122,9 @@ export default async function HeaderServer() {
         {header.navigation.map((item) => {
           return (
             <NavigationMenuItem key={item.id}>
-              <Link href={`/${item.link}`} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  {item.label}
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
+                {item.label}
+              </NavigationMenuLink>
             </NavigationMenuItem>
           )
         })}

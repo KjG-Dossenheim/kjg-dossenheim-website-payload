@@ -68,12 +68,16 @@ const Page = async () => {
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0">
           <Button asChild>
             <Link href={sommerfreizeit.anmeldung.website} target="_blank">
-              Jetzt anmelden <ChevronRight />
+              <span className="flex items-center gap-2">
+                Jetzt anmelden <ChevronRight />
+              </span>
             </Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="#info">
-              Informationen <ChevronDown />
+              <span className="flex items-center gap-2">
+                Informationen <ChevronDown />
+              </span>
             </Link>
           </Button>
         </div>
@@ -109,7 +113,6 @@ const Page = async () => {
                     <CardContent>
                       <Button asChild className="mx-auto w-full">
                         <Link href={sommerfreizeit.anmeldung.website} target="_blank">
-                          {' '}
                           Jetzt anmelden
                         </Link>
                       </Button>
@@ -242,10 +245,12 @@ const Page = async () => {
               </div>
               <div className="w-full max-w-sm space-y-2">
                 <div className="flex justify-center">
-                  <Button asChild size="lg" className="gap-2">
+                  <Button asChild size="lg">
                     <Link href="mailto:sommerfreizeit@kjg-dossenheim.org">
-                      <Mail className="size-5" />
-                      <span>sommerfreizeit@kjg-dossenheim.org</span>
+                      <span className="flex items-center gap-2">
+                        <Mail className="size-5" />
+                        <span>sommerfreizeit@kjg-dossenheim.org</span>
+                      </span>
                     </Link>
                   </Button>
                 </div>

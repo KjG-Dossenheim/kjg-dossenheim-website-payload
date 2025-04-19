@@ -33,11 +33,9 @@ export default async function Page() {
   })
 
   return (
-    <section className="mx-auto p-5 max-w-screen-xl w-full">
-      <h1 className="text-3xl sm:text-5xl text-center font-bold">
-        Aktionen
-      </h1>
-      <div className="mx-auto flex items-center justify-center py-5 max-w-screen-sm">
+    <section className="mx-auto w-full max-w-screen-xl p-5">
+      <h1 className="text-center text-3xl font-bold sm:text-5xl">Aktionen</h1>
+      <div className="mx-auto flex max-w-screen-sm items-center justify-center py-5">
         <Timeline>
           {jahresplan.docs
             .filter((event) => new Date(event.startDate) > new Date())
@@ -55,7 +53,7 @@ export default async function Page() {
                   <TimelineTime>{event.location}</TimelineTime>
                   <TimelineBody>{event.description}</TimelineBody>
                   {event.link && (
-                    <Button asChild variant="link" className='pl-0'>
+                    <Button asChild variant="link" className="pl-0">
                       <Link href={event.link}>
                         Mehr erfahren <HiArrowNarrowRight />
                       </Link>

@@ -11,15 +11,15 @@ import { Metadata } from 'next'
 import Newsletter from '@/blocks/newsletter/Server'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const payload = await getPayload({ config });
+  const payload = await getPayload({ config })
   const page = await payload.findGlobal({
     slug: 'startseite',
-  });
+  })
 
   return {
     title: page.meta?.title + ' | KjG Dossenheim',
     description: page.meta?.description ?? '',
-  };
+  }
 }
 
 export default async function Page() {
@@ -31,11 +31,11 @@ export default async function Page() {
   return (
     <section>
       <section>
-        <div className="py-20 px-4 mx-auto max-w-screen-xl lg:py-32">
+        <div className="mx-auto max-w-screen-xl px-4 py-20 lg:py-32">
           {page.neuigkeiten.enabled && (
             <Link href={page.neuigkeiten.link}>
-              <Alert className="w-fit mx-auto hover:underline">
-                <Newspaper className="size-4"/>
+              <Alert className="mx-auto w-fit hover:underline">
+                <Newspaper className="size-4" />
                 <AlertTitle>Neuigkeiten</AlertTitle>
                 <AlertDescription className="inline-flex">
                   {page.neuigkeiten.title} <ChevronRight className="size-5" />{' '}
@@ -43,10 +43,10 @@ export default async function Page() {
               </Alert>
             </Link>
           )}
-          <h1 className="pt-5 mb-4 text-4xl font-extrabold text-center tracking-tight leading-none md:text-5xl lg:text-6xl">
+          <h1 className="mb-4 pt-5 text-center text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl">
             Willkommen bei der KjG
           </h1>
-          <p className="mb-8 text-lg font-normal text-center lg:text-xl sm:px-16 lg:px-48">
+          <p className="mb-8 text-center text-lg font-normal sm:px-16 lg:px-48 lg:text-xl">
             Die KjG Dossenheim vertritt die Interessen der Kinder und Jugendlichen in der
             katholischen Gemeinden Dossenheim
           </p>
@@ -57,7 +57,7 @@ export default async function Page() {
                 <Calendar />
               </Link>
             </Button>
-            <Button asChild variant='outline'>
+            <Button asChild variant="outline">
               <Link href="/about/">
                 Über uns
                 <ChevronRight />

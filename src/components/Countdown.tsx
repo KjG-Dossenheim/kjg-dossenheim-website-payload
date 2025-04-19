@@ -40,29 +40,29 @@ export default function Countdown({ targetDate }: CountdownProps) {
 
   return (
     <div className="my-4 flex flex-wrap justify-center gap-2 sm:my-6 sm:gap-3 md:my-8 md:gap-4">
-      <div className="flex min-w-16 flex-col items-center rounded-lg bg-primary/10 p-2 sm:min-w-20 sm:p-3 md:min-w-24 md:p-4">
-        <span className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">
+      <div className="flex flex-col items-center rounded-lg bg-primary/10 p-2 dark:bg-primary sm:p-3 md:p-4">
+        <span className="text-2xl font-bold text-primary dark:text-white sm:text-3xl md:text-4xl">
           {timeLeft.days}
         </span>
-        <span className="text-xs text-gray-600 sm:text-sm">Tage</span>
+        <span className="text-xs text-gray-600 dark:text-secondary-50 sm:text-sm">Tage</span>
       </div>
-      <div className="flex min-w-14 flex-col items-center rounded-lg bg-primary/10 p-2 sm:min-w-16 sm:p-3 md:min-w-20 md:p-4">
-        <span className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">
+      <div className="flex flex-col items-center rounded-lg bg-primary/10 p-2 dark:bg-primary sm:p-3 md:p-4">
+        <span className="text-2xl font-bold text-primary dark:text-white sm:text-3xl md:text-4xl">
           {timeLeft.hours}
         </span>
-        <span className="text-xs text-gray-600 sm:text-sm">Stunden</span>
+        <span className="text-xs text-gray-600 dark:text-secondary-50 sm:text-sm">Stunden</span>
       </div>
-      <div className="flex min-w-14 flex-col items-center rounded-lg bg-primary/10 p-2 sm:min-w-16 sm:p-3 md:min-w-20 md:p-4">
-        <span className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">
+      <div className="flex flex-col items-center rounded-lg bg-primary/10 p-2 dark:bg-primary sm:p-3 md:p-4">
+        <span className="text-2xl font-bold text-primary dark:text-white sm:text-3xl md:text-4xl">
           {timeLeft.minutes}
         </span>
-        <span className="text-xs text-gray-600 sm:text-sm">Minuten</span>
+        <span className="text-xs text-gray-600 dark:text-secondary-50 sm:text-sm">Minuten</span>
       </div>
-      <div className="flex min-w-14 flex-col items-center rounded-lg bg-primary/10 p-2 sm:min-w-16 sm:p-3 md:min-w-20 md:p-4">
-        <span className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">
+      <div className="flex flex-col items-center rounded-lg bg-primary/10 p-2 dark:bg-primary sm:p-3 md:p-4">
+        <span className="text-2xl font-bold text-primary dark:text-white sm:text-3xl md:text-4xl">
           {timeLeft.seconds}
         </span>
-        <span className="text-xs text-gray-600 sm:text-sm">Sekunden</span>
+        <span className="text-xs text-gray-600 dark:text-secondary-50 sm:text-sm">Sekunden</span>
       </div>
     </div>
   )
