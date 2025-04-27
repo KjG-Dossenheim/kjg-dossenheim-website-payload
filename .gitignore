@@ -6,7 +6,7 @@ package-lock.json
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-
+.pnp.*
 /.idea/*
 !/.idea/runConfigurations
 
@@ -35,12 +35,20 @@ yarn-error.log*
 # vercel
 .vercel
 
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
+# local env files
 .env
-
 /media
 public/sitemap-0.xml
 public/sitemap.xml
