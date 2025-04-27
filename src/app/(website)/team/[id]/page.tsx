@@ -1,0 +1,141 @@
+import React from 'react'
+import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
+import Link from 'next/link'
+import config from '@payload-config'
+import { Mail, Phone } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Metadata } from 'next'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
+// Shared function to fetch team member data to avoid code duplication
+async function getTeamMember(id: string) {
+  if (!id) return null
+
+  try {
+    const payload = await getPayload({ config })
+    return await payload.findByID({
+      collection: 'team',
+      id,
+    })
+  } catch (error) {
+    console.error('Error fetching team member:', error)
+    return null
+  }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const member = await getTeamMember(id)
+  if (!member) {
+    return {
+      title: 'Team Member Not Found | KjG Dossenheim',
+      description: '',
+    }
+  }
+
+  return {
+    title: `${member.firstName} ${member.lastName} | KjG Dossenheim`,
+    description: member.description || '',
+  }
+}
+
+// Dynamic route page that displays a single team member by ID
+export default async function TeamMemberPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const member = await getTeamMember(id)
+
+  if (!member) {
+    return notFound()
+  }
+
+  return (
+    <div className="px-4 py-8">
+      <Card className="mx-auto max-w-md">
+        <div className="flex flex-row items-center">
+          <Avatar className="ml-6 size-14">
+            {member.profilePicture ? (
+              <AvatarImage
+                src={(member.profilePicture as { url: string }).url}
+                alt={`${member.firstName} ${member.lastName}`}
+              />
+            ) : (
+              <AvatarFallback className="text-xl">
+                {member.firstName.charAt(0)}
+                {member.lastName.charAt(0)}
+              </AvatarFallback>
+            )}
+          </Avatar>
+          <CardHeader>
+            <CardTitle>
+              {member.firstName} {member.lastName}
+            </CardTitle>
+            <CardDescription className="flex flex-wrap gap-2">
+              {member.position.map((pos) => (
+                <Badge key={pos} variant="outline" className="uppercase">
+                  {pos}
+                </Badge>
+              ))}
+            </CardDescription>
+          </CardHeader>
+        </div>
+        {member.description && (
+          <CardContent>
+            <h2 className="text-md font-semibold">Über mich</h2>
+            <p>{member.description}</p>
+          </CardContent>
+        )}
+        {member.descriptionSommerfreizeit && (
+          <CardContent>
+            <h2 className="text-md font-semibold">Sommerfreizeit</h2>
+            <p>{member.descriptionSommerfreizeit}</p>
+          </CardContent>
+        )}
+        {(member.email || member.phone) && (
+          <CardFooter className="flex flex-wrap gap-4">
+            {member.email && (
+              <Button variant="outline" size="sm" asChild className="flex items-center gap-2">
+                <Link href={`mailto:${member.email}`} className="flex items-center gap-2">
+                  <Mail className="h-6 w-6" />
+                  <span>{member.email}</span>
+                </Link>
+              </Button>
+            )}
+            {member.phone && (
+              <Button variant="outline" size="sm" asChild className="flex items-center gap-2">
+                <Link href={`tel:${member.phone}`} className="flex items-center gap-2">
+                  <Phone className="h-6 w-6" />
+                  <span>{member.phone}</span>
+                </Link>
+              </Button>
+            )}
+          </CardFooter>
+        )}
+      </Card>
+    </div>
+  )
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config })
+  const { docs: teamMembers } = await payload.find({
+    collection: 'team',
+  })
+
+  return teamMembers.map((member) => ({
+    id: member.id,
+  }))
+}
