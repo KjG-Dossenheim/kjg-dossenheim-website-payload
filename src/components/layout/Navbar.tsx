@@ -127,9 +127,9 @@ function ActionsSubmenu({ aktionen }: { aktionen: ActionItem[] }) {
           </NavigationMenuLink>
         </NavigationMenuItem>
         {aktionen.map((component) => (
-          <NavigationMenuItem key={component.id} className="my-auto">
+          <NavigationMenuItem key={component.id}>
             <NavigationMenuLink
-              className={`${navigationMenuTriggerStyle()} p-2`}
+              className={`${navigationMenuTriggerStyle()}`}
               href={`/${component.link}`}
               title={component.name}
             >
