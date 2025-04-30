@@ -18,16 +18,16 @@ export default async function FooterServer() {
 
   return (
     <footer className="mx-auto max-w-screen-xl p-4">
-      <Card>
-        <div className="flex flex-wrap items-center justify-between p-6 md:flex-row">
-          <CardContent className="relative overflow-hidden p-6">
+      <Card className="p-0">
+        <div className="flex flex-wrap justify-between md:flex-row">
+          <CardContent className="relative max-w-56 overflow-hidden p-6">
             {typeof footer.logo === 'object' && footer.logo?.url ? (
               <Image
                 src={footer.logo.url as string}
                 alt={footer.logo.alt || 'Logo'}
-                width={200}
-                height={200}
-                className="object-contain"
+                height={300}
+                width={300}
+                className="object-cover"
               />
             ) : null}
           </CardContent>
