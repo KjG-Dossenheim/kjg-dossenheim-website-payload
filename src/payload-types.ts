@@ -1110,6 +1110,10 @@ export interface Footer {
     link: string;
     id?: string | null;
   }[];
+  /**
+   * Das Logo wird im Footer angezeigt.
+   */
+  logo: string | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1427,6 +1431,7 @@ export interface FooterSelect<T extends boolean = true> {
         link?: T;
         id?: T;
       };
+  logo?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
