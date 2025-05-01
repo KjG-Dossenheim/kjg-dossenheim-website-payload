@@ -1103,6 +1103,7 @@ export interface Footer {
   socialLinks: {
     label: string;
     link: string;
+    icon: 'SiFacebook' | 'SiInstagram' | 'SiWhatsapp';
     id?: string | null;
   }[];
   legalLinks: {
@@ -1422,6 +1423,7 @@ export interface FooterSelect<T extends boolean = true> {
     | {
         label?: T;
         link?: T;
+        icon?: T;
         id?: T;
       };
   legalLinks?:

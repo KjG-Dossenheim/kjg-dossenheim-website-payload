@@ -21,6 +21,26 @@ export const Footer: GlobalConfig = {
                     type: "text",
                     required: true,
                 },
+                {
+                    name: "icon",
+                    label: "Icon",
+                    type: "select",
+                    options: [
+                        {
+                            label: "Facebook",
+                            value: "SiFacebook",
+                        },
+                        {
+                            label: "Instagram",
+                            value: "SiInstagram",
+                        },
+                        {
+                            label: "WhatsApp",
+                            value: "SiWhatsapp",
+                        },
+                    ],
+                    required: true,
+                },
             ],
             minRows: 1,
             maxRows: 3,
