@@ -4,7 +4,7 @@ import config from '@payload-config'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import { SiWhatsapp } from '@icons-pack/react-simple-icons'
+import { SiWhatsapp, SiFacebook, SiInstagram } from '@icons-pack/react-simple-icons'
 
 import { Mail, Phone } from 'lucide-react'
 
@@ -24,7 +24,16 @@ export default async function FooterServer() {
             <h2 className="font-semibold uppercase">Folge uns</h2>
             <ul className="list-none space-y-2">
               {footer.socialLinks.map((socialLink) => (
-                <li key={socialLink.id}>
+                <li key={socialLink.id} className="flex items-center gap-2">
+                  {(() => {
+                    const IconMap = {
+                      SiWhatsapp: SiWhatsapp,
+                      SiFacebook: SiFacebook,
+                      SiInstagram: SiInstagram,
+                    }
+                    const IconComponent = IconMap[socialLink.icon]
+                    return IconComponent ? <IconComponent className="size-4" /> : null
+                  })()}
                   <a href={socialLink.link} className="hover:underline">
                     {socialLink.label}
                   </a>
