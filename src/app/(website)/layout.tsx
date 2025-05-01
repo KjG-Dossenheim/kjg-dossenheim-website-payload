@@ -32,7 +32,7 @@ export default function layout({ children }: { children: ReactNode }) {
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="relative min-h-screen">{children}</main>
+          <main className="relative min-h-svh">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>
