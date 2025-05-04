@@ -75,6 +75,14 @@ export async function generateStaticParams() {
   const payload = await getPayload({ config })
   const { docs: blogPosts } = await payload.find({
     collection: 'blogPosts',
+    where: {
+      _status: {
+        equals: 'published',
+      },
+      slug: {
+        exists: true,
+      },
+    },
   })
 
   return blogPosts.map((post) => ({
