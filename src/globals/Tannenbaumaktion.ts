@@ -34,9 +34,18 @@ export const Tannenbaumaktion: GlobalConfig = {
           fields: [
             {
               label: 'Verkaufsort',
+              labels: {
+                singular: 'Verkaufsort',
+                plural: 'Verkaufsorte',
+              },
               name: 'vekaufsort',
               type: 'array',
               required: true,
+              admin: {
+                components: {
+                  RowLabel: "src/components/admin/rowLable/ArrayRowLabelName.tsx",
+                },
+              },
               fields: [
                 {
                   name: 'name',
@@ -58,6 +67,10 @@ export const Tannenbaumaktion: GlobalConfig = {
             },
             {
               label: 'Fragen',
+              labels: {
+                singular: 'Frage',
+                plural: 'Fragen',
+              },
               name: 'fragen',
               type: 'array',
               required: true,

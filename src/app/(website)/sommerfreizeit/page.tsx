@@ -28,8 +28,6 @@ import {
 
 import { Button } from '@/components/ui/button'
 
-import { badgeVariants } from '@/components/ui/badge'
-
 import { Metadata } from 'next'
 
 async function getData() {
@@ -55,25 +53,21 @@ export default async function Page() {
       <section className="mx-auto space-y-12 px-4 py-24 text-center">
         <div>
           <h1 className="text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl">
-            {sommerfreizeit.allgemein.title}
+            {sommerfreizeit.title}
           </h1>
-          <h2 className="text-xl md:text-2xl lg:text-3xl">{sommerfreizeit.allgemein.motto}</h2>
+          <h2 className="text-xl md:text-2xl lg:text-3xl">{sommerfreizeit.motto}</h2>
         </div>
         <div className="space-y-2">
-          <Countdown targetDate={sommerfreizeit.allgemein.startDate} />
+          <Countdown targetDate={sommerfreizeit.startDate} />
 
           <p className="text-lg font-normal sm:px-16 lg:px-48 lg:text-xl">
-            <Date
-              dateString={sommerfreizeit.allgemein.startDate}
-              formatString="EEEE, d. MMMM yyyy"
-            />{' '}
-            bis{' '}
-            <Date dateString={sommerfreizeit.allgemein.endDate} formatString="EEEE, d. MMMM yyyy" />
+            <Date dateString={sommerfreizeit.startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
+            <Date dateString={sommerfreizeit.endDate} formatString="EEEE, d. MMMM yyyy" />
           </p>
         </div>
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
           <Button asChild>
-            <Link href={sommerfreizeit.allgemein.anmeldungWebsite} target="_blank">
+            <Link href={sommerfreizeit.anmeldungWebsite} target="_blank">
               <span className="flex items-center gap-2">
                 Jetzt anmelden <ChevronRight />
               </span>
@@ -95,7 +89,7 @@ export default async function Page() {
             <span className="underline decoration-accent-500 decoration-4 md:decoration-8">
               alle
             </span>{' '}
-            Kinder zwischen {sommerfreizeit.allgemein.alter}
+            Kinder zwischen {sommerfreizeit.alter}
           </h2>
         </div>
       </section>
@@ -123,7 +117,7 @@ export default async function Page() {
                   </CardContent>
                   <CardContent>
                     <Button asChild className="mx-auto w-full">
-                      <Link href={sommerfreizeit.allgemein.anmeldungWebsite} target="_blank">
+                      <Link href={sommerfreizeit.anmeldungWebsite} target="_blank">
                         Jetzt anmelden
                       </Link>
                     </Button>

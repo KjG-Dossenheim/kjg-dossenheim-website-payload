@@ -182,9 +182,31 @@ export interface BlogPost {
     };
     [k: string]: unknown;
   };
-  slug: string;
+  slug?: string | null;
+  author: string | User;
+  publishedDate: string;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -222,25 +244,6 @@ export interface Teambilder {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -556,8 +559,11 @@ export interface BlogPostsSelect<T extends boolean = true> {
   title?: T;
   content?: T;
   slug?: T;
+  author?: T;
+  publishedDate?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -900,13 +906,13 @@ export interface Martinsumzug {
  */
 export interface Sommerfreizeit {
   id: string;
+  title: string;
+  motto?: string | null;
+  startDate: string;
+  endDate: string;
+  alter: string;
+  anmeldungWebsite: string;
   allgemein: {
-    title: string;
-    motto?: string | null;
-    startDate: string;
-    endDate: string;
-    alter: string;
-    anmeldungWebsite: string;
     pricing: {
       name: string;
       beschreibung: string;
@@ -1262,15 +1268,15 @@ export interface MartinsumzugSelect<T extends boolean = true> {
  * via the `definition` "sommerfreizeit_select".
  */
 export interface SommerfreizeitSelect<T extends boolean = true> {
+  title?: T;
+  motto?: T;
+  startDate?: T;
+  endDate?: T;
+  alter?: T;
+  anmeldungWebsite?: T;
   allgemein?:
     | T
     | {
-        title?: T;
-        motto?: T;
-        startDate?: T;
-        endDate?: T;
-        alter?: T;
-        anmeldungWebsite?: T;
         pricing?:
           | T
           | {

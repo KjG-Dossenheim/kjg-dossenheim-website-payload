@@ -13,58 +13,65 @@ export const Sommerfreizeit: GlobalConfig = {
   slug: "sommerfreizeit",
   fields: [
     {
+      name: 'title',
+      label: 'Titel',
+      type: 'text',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'motto',
+      label: 'Motto',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'startDate',
+      label: 'Startdatum',
+      type: 'date',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'endDate',
+      label: 'Enddatum',
+      type: 'date',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'alter',
+      label: 'Alter',
+      type: 'text',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'anmeldungWebsite',
+      label: 'Webseite',
+      type: 'text',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
           label: 'Allgemein',
           name: 'allgemein',
           fields: [
-            {
-              name: 'title',
-              label: 'Titel',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'motto',
-              label: 'Motto',
-              type: 'text',
-            },
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'startDate',
-                  label: 'Startdatum',
-                  type: 'date',
-                  required: true,
-                  admin: {
-                    width: '50%',
-                  },
-                },
-                {
-                  name: 'endDate',
-                  label: 'Enddatum',
-                  type: 'date',
-                  required: true,
-                  admin: {
-                    width: '50%',
-                  },
-                },
-              ],
-            },
-            {
-              name: 'alter',
-              label: 'Alter',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'anmeldungWebsite',
-              label: 'Webseite',
-              type: 'text',
-              required: true,
-            },
             {
               name: "pricing",
               label: "Preisstaffelung",
@@ -73,6 +80,11 @@ export const Sommerfreizeit: GlobalConfig = {
                 plural: "Preisstufen",
               },
               type: "array",
+              admin: {
+                components: {
+                  RowLabel: "src/components/admin/rowLable/ArrayRowLabelName.tsx",
+                },
+              },
               fields: [
                 {
                   name: "name",
@@ -97,6 +109,11 @@ export const Sommerfreizeit: GlobalConfig = {
                   label: "Eigenschaften",
                   type: "array",
                   required: true,
+                  admin: {
+                    components: {
+                      RowLabel: "src/components/admin/rowLable/ArrayRowLabelName.tsx",
+                    },
+                  },
                   fields: [
                     {
                       name: "name",
@@ -116,6 +133,11 @@ export const Sommerfreizeit: GlobalConfig = {
               label: 'Eigenschaften',
               type: 'array',
               required: true,
+              admin: {
+                components: {
+                  RowLabel: "src/components/admin/rowLable/ArrayRowLabel.tsx",
+                },
+              },
               fields: [
                 {
                   name: 'title',
@@ -197,6 +219,11 @@ export const Sommerfreizeit: GlobalConfig = {
               type: 'array',
               required: true,
               minRows: 1,
+              admin: {
+                components: {
+                  RowLabel: "src/components/admin/rowLable/ArrayRowLabel.tsx",
+                },
+              },
               fields: [
                 {
                   name: 'title',

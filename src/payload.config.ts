@@ -38,7 +38,7 @@ import { Media } from './collections/Media'
 import { Team } from './collections/Team'
 import { TeamBilder } from './collections/TeamBilder'
 import { Jahresplan } from './collections/Jahresplan'
-import { blogPosts } from './collections/blogPosts'
+import { blogPosts } from './collections/blogPost'
 
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
@@ -66,6 +66,12 @@ export default buildConfig({
     dateFormat: 'dd.MM.yyyy',
     components: {
       actions: ['@/components/admin/RebuildButton'],
+    },
+    livePreview: {
+      url: ({
+        data,
+      }) => `${process.env.SITE_URL}/blog/${data.slug}`,
+      collections: [''],
     },
   },
   collections: [Jahresplan, blogPosts, Team, TeamBilder, Users, Media],
@@ -116,6 +122,8 @@ export default buildConfig({
   }),
   plugins: [
     seoPlugin({
+      generateURL: ({ doc }) =>
+        `${process.env.SITE_URL}/${doc.title}`,
     }),
     formBuilderPlugin({
       formOverrides: {
