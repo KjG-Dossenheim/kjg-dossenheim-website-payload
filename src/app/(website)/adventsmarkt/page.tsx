@@ -5,24 +5,33 @@ import Date from '@/components/date'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import type { Metadata } from 'next'
-export function generateMetadata(): Metadata {
+
+async function getData() {
+  const payload = await getPayload({ config })
+  return payload.findGlobal({
+    slug: 'adventsmarkt',
+  })
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const adventsmarkt = await getData()
   return {
-    title: 'Adventsmarkt | KjG Dossenheim',
-    description: 'Der Adventsmarkt der kath. Kirchengemeinde Dossenheim',
+    title: `${adventsmarkt.meta?.title} | KjG Dossenheim`,
+    description: `${adventsmarkt.meta?.description}`,
   }
 }
 
 export default async function Page() {
-  const payload = await getPayload({ config })
-  const adventsmarkt = await payload.findGlobal({
-    slug: 'adventsmarkt',
-  })
+  const adventsmarkt = await getData()
 
   return (
-    <section className='text-center p-5 max-w-screen-lg mx-auto'>
-      <h1 className='text-3xl font-bold'>Adventsmarkt</h1>
-      <p className='p-2 text-lg'><Date dateString={adventsmarkt.startDate} formatString='EEEE, d. MMMM yyyy'/> bis <Date dateString={adventsmarkt.endDate} formatString='EEEE, d. MMMM yyyy'/> </p>
-      <RichText className='RichText' data={adventsmarkt.content} />
+    <section className="mx-auto max-w-screen-lg p-5 text-center">
+      <h1 className="text-3xl font-bold">Adventsmarkt</h1>
+      <p className="p-2 text-lg">
+        <Date dateString={adventsmarkt.startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
+        <Date dateString={adventsmarkt.endDate} formatString="EEEE, d. MMMM yyyy" />{' '}
+      </p>
+      <RichText className="RichText" data={adventsmarkt.content} />
     </section>
   )
 }

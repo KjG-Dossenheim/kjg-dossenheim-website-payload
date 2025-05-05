@@ -47,11 +47,6 @@ export const Team: CollectionConfig = {
       type: 'textarea',
     },
     {
-      name: 'descriptionSommerfreizeit',
-      label: 'Beschreibung Sommerfreizeit',
-      type: 'textarea',
-    },
-    {
       name: 'profilePicture',
       label: 'Profilbild',
       type: 'upload',

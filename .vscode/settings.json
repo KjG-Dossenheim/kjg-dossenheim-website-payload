@@ -10,5 +10,10 @@
     "unterkunft",
     "vekaufsort",
     "verkaufstellen"
-  ]
+  ],
+  "workbench.editor.customLabels.patterns": {
+    "**/app/**/page.tsx": "(${dirname})/page.${extname}",
+    "**/app/**/layout.tsx": "(${dirname})/layout.${extname}",
+    "**/app/**/index.tsx": "(${dirname})/index.${extname}"
+  }
 }

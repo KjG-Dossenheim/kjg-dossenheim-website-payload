@@ -13,18 +13,24 @@ import {
 } from '@/components/ui/accordion'
 
 import type { Metadata } from 'next'
-export function generateMetadata(): Metadata {
+
+async function getData() {
+  const payload = await getPayload({ config })
+  return payload.findGlobal({
+    slug: 'tannenbaumaktion',
+  })
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const tannenbaumaktion = await getData()
   return {
-    title: 'Tannenbaumaktion | KjG Dossenheim',
-    description: 'Die Tannenbaumaktion der KjG Dossenheim',
+    title: `${tannenbaumaktion.meta?.title} | KjG Dossenheim`,
+    description: `${tannenbaumaktion.meta?.description}`,
   }
 }
 
 export default async function Page() {
-  const payload = await getPayload({ config })
-  const tannenbaumaktion = await payload.findGlobal({
-    slug: 'tannenbaumaktion',
-  })
+  const tannenbaumaktion = await getData()
 
   return (
     <section>
@@ -41,7 +47,7 @@ export default async function Page() {
         </h2>
         <div className="mx-auto h-56 max-w-screen-lg sm:h-64 xl:h-80 2xl:h-96">
           <Carousel>
-            {tannenbaumaktion.allgemein.vekaufsort.map((vekaufsort) => (
+            {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
               <div key={vekaufsort.id} className="flex h-full items-center justify-center">
                 <div className="text-center text-primary-foreground dark:text-foreground">
                   <h3 className="text-xl font-bold sm:text-4xl">{vekaufsort.name}</h3>
@@ -58,7 +64,7 @@ export default async function Page() {
         >
           <AccordionItem value="vekaufsort">
             <AccordionTrigger>Verkaufsstellen</AccordionTrigger>
-            {tannenbaumaktion.allgemein.vekaufsort.map((vekaufsort) => (
+            {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
               <AccordionContent key={vekaufsort.id}>
                 {vekaufsort.name} / {vekaufsort.adresse}
               </AccordionContent>
@@ -69,7 +75,7 @@ export default async function Page() {
       <section className="mx-auto max-w-screen-md p-3">
         <h1 className="pb-5 text-center text-3xl font-bold">FAQ</h1>
         <Accordion type="single" collapsible>
-          {tannenbaumaktion.allgemein.fragen.map((fragen) => (
+          {tannenbaumaktion.fragen.map((fragen) => (
             <AccordionItem key={fragen.id} value={fragen.id ?? ''}>
               <AccordionTrigger>{fragen.frage}</AccordionTrigger>
               <AccordionContent>

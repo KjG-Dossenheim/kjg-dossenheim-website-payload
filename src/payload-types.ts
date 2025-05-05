@@ -217,7 +217,6 @@ export interface Team {
   firstName: string;
   lastName: string;
   description?: string | null;
-  descriptionSommerfreizeit?: string | null;
   profilePicture?: (string | null) | Teambilder;
   email?: string | null;
   phone?: string | null;
@@ -573,7 +572,6 @@ export interface TeamSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
   description?: T;
-  descriptionSommerfreizeit?: T;
   profilePicture?: T;
   email?: T;
   phone?: T;
@@ -857,6 +855,13 @@ export interface Adventsmarkt {
   id: string;
   startDate: string;
   endDate?: string | null;
+  /**
+   * Meta-Daten für SEO
+   */
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+  };
   content: {
     root: {
       type: string;
@@ -882,6 +887,13 @@ export interface Adventsmarkt {
 export interface Martinsumzug {
   id: string;
   startDate: string;
+  /**
+   * Meta-Daten für SEO
+   */
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+  };
   content: {
     root: {
       type: string;
@@ -998,10 +1010,6 @@ export interface Sommerfreizeit {
   meta?: {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1013,41 +1021,38 @@ export interface Sommerfreizeit {
 export interface Tannenbaumaktion {
   id: string;
   startDate: string;
-  allgemein: {
-    vekaufsort: {
-      name: string;
-      adresse?: string | null;
-      website?: string | null;
-      id?: string | null;
-    }[];
-    fragen: {
-      frage: string;
-      answer: {
-        root: {
-          type: string;
-          children: {
-            type: string;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      };
-      id?: string | null;
-    }[];
-  };
+  /**
+   * Meta-Daten für SEO
+   */
   meta?: {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
   };
+  vekaufsort: {
+    name: string;
+    adresse?: string | null;
+    website?: string | null;
+    id?: string | null;
+  }[];
+  fragen: {
+    frage: string;
+    answer: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+  }[];
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1247,6 +1252,12 @@ export interface StartseiteSelect<T extends boolean = true> {
 export interface AdventsmarktSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   content?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1258,6 +1269,12 @@ export interface AdventsmarktSelect<T extends boolean = true> {
  */
 export interface MartinsumzugSelect<T extends boolean = true> {
   startDate?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   content?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1336,7 +1353,6 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
     | {
         title?: T;
         description?: T;
-        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1348,31 +1364,26 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
  */
 export interface TannenbaumaktionSelect<T extends boolean = true> {
   startDate?: T;
-  allgemein?:
-    | T
-    | {
-        vekaufsort?:
-          | T
-          | {
-              name?: T;
-              adresse?: T;
-              website?: T;
-              id?: T;
-            };
-        fragen?:
-          | T
-          | {
-              frage?: T;
-              answer?: T;
-              id?: T;
-            };
-      };
   meta?:
     | T
     | {
         title?: T;
         description?: T;
-        image?: T;
+      };
+  vekaufsort?:
+    | T
+    | {
+        name?: T;
+        adresse?: T;
+        website?: T;
+        id?: T;
+      };
+  fragen?:
+    | T
+    | {
+        frage?: T;
+        answer?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

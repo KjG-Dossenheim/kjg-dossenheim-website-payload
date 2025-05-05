@@ -5,27 +5,31 @@
 .RichText {
 
     h1 {
-        @apply text-4xl font-bold pt-2 text-primary;
+        @apply text-4xl font-bold pt-2 text-primary scroll-m-20 tracking-tight;
     }
 
     h2 {
-        @apply text-3xl font-bold text-primary;
+        @apply text-3xl font-bold text-primary scroll-m-20 tracking-tight;
     }
 
     h3 {
-        @apply text-2xl font-bold text-primary;
+        @apply text-2xl font-bold text-primary scroll-m-20 tracking-tight;
     }
 
     h4 {
-        @apply text-xl font-bold text-primary;
+        @apply text-xl font-bold text-primary scroll-m-20 tracking-tight;
     }
 
     h5 {
-        @apply text-lg font-bold text-primary;
+        @apply text-lg font-bold text-primary scroll-m-20 tracking-tight;
     }
 
     h6 {
-        @apply text-base font-bold text-primary;
+        @apply text-base font-bold text-primary scroll-m-20 tracking-tight;
+    }
+
+    p {
+        @apply leading-7 [&:not(:first-child)]:mt-6;
     }
 
     a {

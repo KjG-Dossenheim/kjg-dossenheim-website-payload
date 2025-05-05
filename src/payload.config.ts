@@ -31,7 +31,6 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { de } from '@payloadcms/translations/languages/de'
-import { en } from '@payloadcms/translations/languages/en'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -97,7 +96,7 @@ export default buildConfig({
     ],
   }),
   i18n: {
-    supportedLanguages: { en, de },
+    supportedLanguages: { de },
   },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -122,8 +121,12 @@ export default buildConfig({
   }),
   plugins: [
     seoPlugin({
-      generateURL: ({ doc }) =>
-        `${process.env.SITE_URL}/${doc.title}`,
+      uploadsCollection: 'media',
+      tabbedUI: true,
+      generateURL: ({ title }) =>
+        `${process.env.SITE_URL}/${title.toLocaleLowerCase()}`,
+      generateTitle: ({ title }) => `${title}`,
+      generateImage: ({ title }) => `${process.env.SITE_URL}/api/og/?title=${title}`
     }),
     formBuilderPlugin({
       formOverrides: {

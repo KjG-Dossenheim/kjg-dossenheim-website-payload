@@ -272,15 +272,12 @@ export const Sommerfreizeit: GlobalConfig = {
               imagePath: 'meta.image',
             }),
             MetaTitleField({
+              hasGenerateFn: true,
             }),
             MetaDescriptionField({}),
-            MetaImageField({
-              relationTo: 'media',
-            }),
             PreviewField({
               // if the `generateUrl` function is configured
-              hasGenerateFn: true,
-              // field paths to match the target field for data
+              // field paths to match the target field for URL
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
             }),

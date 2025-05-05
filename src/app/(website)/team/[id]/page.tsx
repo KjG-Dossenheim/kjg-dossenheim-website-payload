@@ -83,25 +83,19 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
             <CardTitle>
               {member.firstName} {member.lastName}
             </CardTitle>
-            <CardDescription className="flex flex-wrap gap-2">
+            <CardDescription className="flex flex-wrap gap-2" id="position">
               {member.position.map((pos) => (
-                <Badge key={pos} variant="outline" className="uppercase">
-                  {pos}
+                <Badge key={pos} variant="outline">
+                  {pos.toUpperCase()}
                 </Badge>
               ))}
             </CardDescription>
           </CardHeader>
         </div>
         {member.description && (
-          <CardContent>
+          <CardContent id="beschreibung">
             <h2 className="text-md font-semibold">Über mich</h2>
             <p>{member.description}</p>
-          </CardContent>
-        )}
-        {member.descriptionSommerfreizeit && (
-          <CardContent>
-            <h2 className="text-md font-semibold">Sommerfreizeit</h2>
-            <p>{member.descriptionSommerfreizeit}</p>
           </CardContent>
         )}
         {(member.email || member.phone) && (

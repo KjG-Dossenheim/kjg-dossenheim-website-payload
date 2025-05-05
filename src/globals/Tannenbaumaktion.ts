@@ -26,94 +26,85 @@ export const Tannenbaumaktion: GlobalConfig = {
       },
     },
     {
-      type: 'tabs',
-      tabs: [
+      type: 'group',
+      name: 'meta',
+      label: 'Meta',
+      fields: [
+        OverviewField({
+          titlePath: 'meta.title',
+          descriptionPath: 'meta.description',
+          imagePath: 'meta.image',
+        }),
+        MetaTitleField({
+          hasGenerateFn: true,
+        }),
+        MetaDescriptionField({}),
+        PreviewField({
+          // if the `generateUrl` function is configured
+          // field paths to match the target field for URL
+          titlePath: 'meta.title',
+          descriptionPath: 'meta.description',
+        }),
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Meta-Daten für SEO',
+      },
+    },
+    {
+      label: 'Verkaufsort',
+      labels: {
+        singular: 'Verkaufsort',
+        plural: 'Verkaufsorte',
+      },
+      name: 'vekaufsort',
+      type: 'array',
+      required: true,
+      admin: {
+        components: {
+          RowLabel: "src/components/admin/rowLable/ArrayRowLabelName.tsx",
+        },
+      },
+      fields: [
         {
-          name: 'allgemein',
-          label: 'Allgemein',
-          fields: [
-            {
-              label: 'Verkaufsort',
-              labels: {
-                singular: 'Verkaufsort',
-                plural: 'Verkaufsorte',
-              },
-              name: 'vekaufsort',
-              type: 'array',
-              required: true,
-              admin: {
-                components: {
-                  RowLabel: "src/components/admin/rowLable/ArrayRowLabelName.tsx",
-                },
-              },
-              fields: [
-                {
-                  name: 'name',
-                  label: 'Name',
-                  type: 'text',
-                  required: true,
-                },
-                {
-                  name: 'adresse',
-                  label: 'Adresse',
-                  type: 'text',
-                },
-                {
-                  name: 'website',
-                  label: 'Webseite',
-                  type: 'text',
-                },
-              ],
-            },
-            {
-              label: 'Fragen',
-              labels: {
-                singular: 'Frage',
-                plural: 'Fragen',
-              },
-              name: 'fragen',
-              type: 'array',
-              required: true,
-              fields: [
-                {
-                  name: 'frage',
-                  label: 'Frage',
-                  type: 'text',
-                  required: true,
-                },
-                {
-                  name: 'answer',
-                  label: 'Antwort',
-                  type: 'richText',
-                  required: true,
-                },
-              ],
-            },
-          ]
+          name: 'name',
+          label: 'Name',
+          type: 'text',
+          required: true,
         },
         {
-          name: 'meta',
-          label: 'SEO',
-          fields: [
-            OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
-            }),
-            MetaTitleField({
-            }),
-            MetaDescriptionField({}),
-            MetaImageField({
-              relationTo: 'media',
-            }),
-            PreviewField({
-              // if the `generateUrl` function is configured
-              hasGenerateFn: true,
-              // field paths to match the target field for data
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-            }),
-          ],
+          name: 'adresse',
+          label: 'Adresse',
+          type: 'text',
+        },
+        {
+          name: 'website',
+          label: 'Webseite',
+          type: 'text',
+        },
+      ],
+    },
+    {
+      label: 'Fragen',
+      labels: {
+        singular: 'Frage',
+        plural: 'Fragen',
+      },
+      name: 'fragen',
+      type: 'array',
+      required: true,
+      fields: [
+        {
+          name: 'frage',
+          label: 'Frage',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'answer',
+          label: 'Antwort',
+          type: 'richText',
+          required: true,
         },
       ],
     },
