@@ -182,7 +182,7 @@ export interface BlogPost {
     };
     [k: string]: unknown;
   };
-  slug?: string | null;
+  slug: string;
   author: string | User;
   publishedDate: string;
   updatedAt: string;

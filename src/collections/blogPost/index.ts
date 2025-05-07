@@ -37,6 +37,7 @@ export const blogPosts: CollectionConfig = {
         readOnly: true,
       },
       unique: true,
+      required: true,
       hooks: {
         beforeValidate: [formatSlug('title')],
       },

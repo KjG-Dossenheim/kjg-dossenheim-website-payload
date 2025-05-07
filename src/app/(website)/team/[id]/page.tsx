@@ -50,7 +50,6 @@ export async function generateMetadata({
 
   return {
     title: `${member.firstName} ${member.lastName} | KjG Dossenheim`,
-    description: member.description || '',
   }
 }
 
