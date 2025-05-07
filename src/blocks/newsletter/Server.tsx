@@ -51,7 +51,7 @@ export default function Newsletter({
   })
 
   return (
-    <section className="mx-auto max-w-screen-md">
+    <section className="mx-auto max-w-(--breakpoint-md)">
       <div className="mx-auto text-center">
         <h2 className="text-3xl font-extrabold">{title}</h2>
         <p className="mt-4 text-lg text-muted-foreground">{subtitle}</p>

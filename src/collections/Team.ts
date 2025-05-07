@@ -44,7 +44,7 @@ export const Team: CollectionConfig = {
     {
       name: 'description',
       label: 'Beschreibung',
-      type: 'textarea',
+      type: 'richText',
     },
     {
       name: 'profilePicture',
@@ -72,14 +72,14 @@ export const Team: CollectionConfig = {
       },
     },
     {
-      name: 'position', // required
-      label: 'Position', // required
-      type: 'select', // required
+      name: 'position',
+      label: 'Position',
+      type: 'select',
       hasMany: true,
       required: true,
       admin: {
         isClearable: true,
-        isSortable: true, // use mouse to drag and drop different values, and sort them according to your choice
+        isSortable: true,
       },
       options: [
         {

@@ -94,7 +94,7 @@ export default async function TeamPage() {
         <h1 className="text-4xl font-bold">Unser Team</h1>
       </div>
       {teamMembers.length > 0 ? (
-        <div className="flex flex-wrap justify-center gap-4 p-6">
+        <div className="flex flex-wrap justify-center gap-4 p-4">
           {teamMembers.map((member) => (
             <TeamMemberCard key={member.id} member={member} />
           ))}

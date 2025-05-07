@@ -1,8 +1,11 @@
 import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
-import { Carousel } from 'flowbite-react'
+
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+
 import Date from '@/components/date'
+
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import {
@@ -13,6 +16,8 @@ import {
 } from '@/components/ui/accordion'
 
 import type { Metadata } from 'next'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 async function getData() {
   const payload = await getPayload({ config })
@@ -42,37 +47,21 @@ export default async function Page() {
         </h2>
       </div>
       <section className="bg-primary py-5" id="verkaufstellen">
-        <h2 className="text-center text-xl font-bold text-primary-foreground dark:text-foreground sm:text-4xl">
+        <h2 className="text-primary-foreground dark:text-foreground text-center text-xl font-bold sm:text-4xl">
           Unsere Verkaufsstellen
         </h2>
-        <div className="mx-auto h-56 max-w-screen-lg sm:h-64 xl:h-80 2xl:h-96">
-          <Carousel>
-            {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
-              <div key={vekaufsort.id} className="flex h-full items-center justify-center">
-                <div className="text-center text-primary-foreground dark:text-foreground">
-                  <h3 className="text-xl font-bold sm:text-4xl">{vekaufsort.name}</h3>
-                  <p className="text-lg sm:text-2xl">{vekaufsort.adresse}</p>
-                </div>
-              </div>
-            ))}
-          </Carousel>
+        <div className="flex flex-wrap justify-center p-5">
+          {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
+            <Card key={vekaufsort.id} className="m-3 w-fit max-w-sm">
+              <CardHeader>
+                <CardTitle id={`${vekaufsort.name}`}>{vekaufsort.name}</CardTitle>
+                <CardDescription id={`${vekaufsort.adresse}`}>{vekaufsort.adresse}</CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
         </div>
-        <Accordion
-          type="single"
-          collapsible
-          className="mx-auto max-w-screen-sm p-4 text-primary-foreground dark:text-foreground"
-        >
-          <AccordionItem value="vekaufsort">
-            <AccordionTrigger>Verkaufsstellen</AccordionTrigger>
-            {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
-              <AccordionContent key={vekaufsort.id}>
-                {vekaufsort.name} / {vekaufsort.adresse}
-              </AccordionContent>
-            ))}
-          </AccordionItem>
-        </Accordion>
       </section>
-      <section className="mx-auto max-w-screen-md p-3">
+      <section className="mx-auto max-w-(--breakpoint-md) p-3">
         <h1 className="pb-5 text-center text-3xl font-bold">FAQ</h1>
         <Accordion type="single" collapsible>
           {tannenbaumaktion.fragen.map((fragen) => (

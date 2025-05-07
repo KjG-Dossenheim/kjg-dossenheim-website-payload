@@ -199,6 +199,9 @@ export interface User {
   lastName: string;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -216,7 +219,21 @@ export interface Team {
   id: string;
   firstName: string;
   lastName: string;
-  description?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   profilePicture?: (string | null) | Teambilder;
   email?: string | null;
   phone?: string | null;
@@ -607,6 +624,9 @@ export interface UsersSelect<T extends boolean = true> {
   lastName?: T;
   updatedAt?: T;
   createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -1030,8 +1050,7 @@ export interface Tannenbaumaktion {
   };
   vekaufsort: {
     name: string;
-    adresse?: string | null;
-    website?: string | null;
+    adresse: string;
     id?: string | null;
   }[];
   fragen: {
@@ -1095,6 +1114,13 @@ export interface Header {
   navigation: {
     label: string;
     link: string;
+    subNavigation?:
+      | {
+          label: string;
+          link: string;
+          id?: string | null;
+        }[]
+      | null;
     id?: string | null;
   }[];
   aktionen: {
@@ -1375,7 +1401,6 @@ export interface TannenbaumaktionSelect<T extends boolean = true> {
     | {
         name?: T;
         adresse?: T;
-        website?: T;
         id?: T;
       };
   fragen?:
@@ -1417,6 +1442,13 @@ export interface HeaderSelect<T extends boolean = true> {
     | {
         label?: T;
         link?: T;
+        subNavigation?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+              id?: T;
+            };
         id?: T;
       };
   aktionen?:

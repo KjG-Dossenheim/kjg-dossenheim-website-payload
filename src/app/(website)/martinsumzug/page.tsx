@@ -20,7 +20,7 @@ export default async function Page() {
   })
 
   return (
-    <section className="mx-auto max-w-screen-lg p-5">
+    <section className="mx-auto max-w-(--breakpoint-lg) p-5">
       <h1 className="text-center text-3xl font-bold">Martinsumzug</h1>
       <p className="p-2 text-center text-lg">
         <Date dateString={martinsumzug.startDate} formatString="EEEE, d. MMMM yyyy" /> ab{' '}

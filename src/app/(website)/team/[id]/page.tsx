@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 // Shared function to fetch team member data to avoid code duplication
 async function getTeamMember(id: string) {
@@ -95,7 +96,7 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
         {member.description && (
           <CardContent id="beschreibung">
             <h2 className="text-md font-semibold">Über mich</h2>
-            <p>{member.description}</p>
+            <RichText data={member.description} />
           </CardContent>
         )}
         {(member.email || member.phone) && (

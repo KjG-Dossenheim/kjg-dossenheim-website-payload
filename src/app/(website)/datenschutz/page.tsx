@@ -20,7 +20,7 @@ export default async function Page() {
   })
 
   return (
-    <section className="mx-auto flex flex-wrap gap-4 px-4 py-8 sm:max-w-screen-lg sm:px-6 lg:px-8 lg:py-14">
+    <section className="mx-auto flex flex-wrap gap-4 px-4 py-8 sm:max-w-(--breakpoint-lg) sm:px-6 lg:px-8 lg:py-14">
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Allgemein</CardTitle>

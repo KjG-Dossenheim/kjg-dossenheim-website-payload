@@ -26,7 +26,7 @@ export default async function Page() {
   const page = await getPageData()
 
   return (
-    <section className="mx-auto max-w-screen-xl px-4 py-20 lg:py-32">
+    <section className="mx-auto max-w-(--breakpoint-xl) px-4 py-20 lg:py-32">
       {page.neuigkeiten?.enabled && (
         <Link href={page.neuigkeiten.link}>
           <Alert className="mx-auto w-fit hover:underline">

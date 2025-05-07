@@ -94,7 +94,7 @@ export default async function Page() {
         </div>
       </section>
       <section
-        className="mx-auto max-w-screen-xl space-y-6 p-6 sm:space-y-8 sm:p-8 lg:space-y-10 lg:p-10"
+        className="mx-auto max-w-(--breakpoint-xl) space-y-6 p-6 sm:space-y-8 sm:p-8 lg:space-y-10 lg:p-10"
         id="info"
       >
         <section>
@@ -155,13 +155,13 @@ export default async function Page() {
             })}
           </div>
         </section>
-        <section className="mx-auto max-w-screen-md">
+        <section className="mx-auto max-w-(--breakpoint-md)">
           <Card className="flex h-full w-full flex-col md:flex-row">
             <div className="flex flex-1 flex-col">
               <CardHeader>
                 <CardTitle>Unterkunft</CardTitle>
               </CardHeader>
-              <CardContent className="flex-grow">
+              <CardContent className="grow">
                 <p>{sommerfreizeit.unterkunft.beschreibung}</p>
               </CardContent>
               <CardFooter>
@@ -212,7 +212,7 @@ export default async function Page() {
             ))}
           </div>
         </section>
-        <section className="mx-auto max-w-screen-sm">
+        <section className="mx-auto max-w-(--breakpoint-sm)">
           <h2 className="mb-5 text-center text-4xl font-bold">Was uns ausmacht</h2>
           <Accordion type="single" collapsible>
             {sommerfreizeit.allgemein.eigenschaften.map((eigenschaft) => (

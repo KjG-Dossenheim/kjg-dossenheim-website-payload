@@ -11,6 +11,9 @@ import {
 
 export const Adventsmarkt: GlobalConfig = {
   slug: "adventsmarkt",
+  admin: {
+    group: 'Aktionen',
+  },
   fields: [
     {
       label: 'Startdatum',

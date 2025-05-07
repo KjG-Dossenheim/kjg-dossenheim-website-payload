@@ -14,30 +14,53 @@ import {
 
 export function ModeToggle() {
   const { setTheme, theme } = useTheme()
+  const [isMounted, setIsMounted] = React.useState(false)
+
+  // Use a more efficient mounted check with useEffect
+  React.useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Determine which icon to use based on current theme
+  const ThemeIcon = React.useMemo(() => {
+    if (!isMounted) return SunMoon
+    return theme === 'dark' ? Moon : theme === 'light' ? Sun : SunMoon
+  }, [theme, isMounted])
+
+  const handleThemeChange = React.useCallback(
+    (newTheme: 'light' | 'dark' | 'system') => {
+      return () => setTheme(newTheme)
+    },
+    [setTheme],
+  )
+
+  // Prevent hydration mismatch by rendering a placeholder until mounted
+  if (!isMounted) {
+    return (
+      <Button variant="outline" size="icon">
+        <SunMoon className="size-5" />
+        <span className="sr-only">Loading theme toggle</span>
+      </Button>
+    )
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
-          {theme === 'dark' ? (
-            <Moon className="size-5" />
-          ) : theme === 'light' ? (
-            <Sun className="size-5" />
-          ) : (
-            <SunMoon className="size-5" />
-          )}
+          <ThemeIcon className="size-5" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
-          <Sun /> Hell
+        <DropdownMenuItem onClick={handleThemeChange('light')} className="flex items-center gap-2">
+          <Sun className="size-4" /> Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
-          <Moon /> Dunkel
+        <DropdownMenuItem onClick={handleThemeChange('dark')} className="flex items-center gap-2">
+          <Moon className="size-4" /> Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
-          <SunMoon /> Auto
+        <DropdownMenuItem onClick={handleThemeChange('system')} className="flex items-center gap-2">
+          <SunMoon className="size-4" /> System
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

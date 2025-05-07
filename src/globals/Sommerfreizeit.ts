@@ -11,6 +11,9 @@ import {
 
 export const Sommerfreizeit: GlobalConfig = {
   slug: "sommerfreizeit",
+  admin: {
+    group: 'Aktionen',
+  },
   fields: [
     {
       name: 'title',
@@ -159,6 +162,10 @@ export const Sommerfreizeit: GlobalConfig = {
               relationTo: 'team',
               hasMany: true,
               required: true,
+              admin: {
+                allowCreate: false,
+                allowEdit: false,
+              },
             },
           ],
         },

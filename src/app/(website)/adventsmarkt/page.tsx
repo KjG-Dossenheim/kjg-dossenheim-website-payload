@@ -25,7 +25,7 @@ export default async function Page() {
   const adventsmarkt = await getData()
 
   return (
-    <section className="mx-auto max-w-screen-lg p-5 text-center">
+    <section className="mx-auto max-w-(--breakpoint-lg) p-5 text-center">
       <h1 className="text-3xl font-bold">Adventsmarkt</h1>
       <p className="p-2 text-lg">
         <Date dateString={adventsmarkt.startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}

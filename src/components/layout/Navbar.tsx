@@ -15,59 +15,22 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/ctaButton'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '../ui/dropdown-menu'
 
-// Type definitions for better type safety
-type NavItem = {
-  id: string
-  label: string
-  link: string
-}
+import type { Header } from '@/payload-types'
+import { it } from 'node:test'
 
-type ActionItem = {
-  id: string
-  name: string
-  link: string
-}
-
-type CTAItem = {
-  enabled: boolean
-  title: string
-  link: string
-}
-
-type HeaderData = {
-  navigation: NavItem[]
-  aktionen: ActionItem[]
-  cta: CTAItem
-}
-
-// Separate data fetching for better error handling and caching potential
-async function getHeaderData(): Promise<HeaderData> {
-  try {
-    const payload = await getPayload({ config })
-    const header = await payload.findGlobal({
-      slug: 'header',
-    })
-    return header as HeaderData
-  } catch (error) {
-    console.error('Failed to fetch header data:', error)
-    // Return fallback data in case of error
-    return {
-      navigation: [],
-      aktionen: [],
-      cta: { enabled: false, title: '', link: '' },
-    }
-  }
+async function getHeaderData() {
+  const payload = await getPayload({ config })
+  const header: Header = await payload.findGlobal({
+    slug: 'header',
+  })
+  return header
 }
 
 // Mobile navigation component
-function MobileNavigation({
-  navigation,
-  aktionen,
-}: {
-  navigation: NavItem[]
-  aktionen: ActionItem[]
-}) {
+async function MobileNavigation() {
+  const headerData = await getHeaderData()
   return (
     <Sheet>
       <SheetTrigger asChild className="m-2 md:hidden">
@@ -90,7 +53,7 @@ function MobileNavigation({
               Jahresplan
             </NavigationMenuLink>
           </NavigationMenuItem>
-          {aktionen.map((component) => (
+          {headerData.aktionen.map((component) => (
             <NavigationMenuItem key={component.id} className="list-none">
               <NavigationMenuLink
                 href={`/${component.link}`}
@@ -100,7 +63,7 @@ function MobileNavigation({
               </NavigationMenuLink>
             </NavigationMenuItem>
           ))}
-          {navigation.map((item) => (
+          {headerData.navigation.map((item) => (
             <NavigationMenuItem key={item.id} className="list-none">
               <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
                 {item.label}
@@ -114,19 +77,20 @@ function MobileNavigation({
 }
 
 // Desktop actions submenu
-function ActionsSubmenu({ aktionen }: { aktionen: ActionItem[] }) {
+async function ActionsSubmenu() {
+  const headerData = await getHeaderData()
   return (
     <NavigationMenuContent>
-      <ul className="grid grid-flow-col grid-rows-2 gap-2 p-6">
+      <ul className="grid grid-flow-col grid-rows-2 gap-2 p-2">
         <NavigationMenuItem className="row-span-2">
           <NavigationMenuLink
-            className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+            className="from-muted/50 to-muted flex h-full w-full flex-col justify-center rounded-md bg-linear-to-b p-6 no-underline outline-hidden select-none focus:shadow-md"
             href="/aktionen"
           >
             <div className="my-auto text-lg font-medium">Jahresplan</div>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        {aktionen.map((component) => (
+        {headerData.aktionen.map((component) => (
           <NavigationMenuItem key={component.id}>
             <NavigationMenuLink
               className={`${navigationMenuTriggerStyle()}`}
@@ -143,15 +107,8 @@ function ActionsSubmenu({ aktionen }: { aktionen: ActionItem[] }) {
 }
 
 // Desktop navigation
-function DesktopNavigation({
-  navigation,
-  aktionen,
-  cta,
-}: {
-  navigation: NavItem[]
-  aktionen: ActionItem[]
-  cta: CTAItem
-}) {
+async function DesktopNavigation() {
+  const headerData = await getHeaderData()
   return (
     <NavigationMenuList className="hidden md:flex">
       <NavigationMenuItem>
@@ -161,16 +118,45 @@ function DesktopNavigation({
       </NavigationMenuItem>
       <NavigationMenuItem>
         <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
-        <ActionsSubmenu aktionen={aktionen} />
+        <ActionsSubmenu />
       </NavigationMenuItem>
-      {navigation.map((item) => (
+      {headerData?.navigation?.map((item) => (
         <NavigationMenuItem key={item.id}>
-          <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
-            {item.label}
-          </NavigationMenuLink>
+          {item.subNavigation ? (
+            item.subNavigation.length > 0 ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+                    <span>{item.label}</span>
+                  </NavigationMenuTrigger>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {item.subNavigation.map((subItem) => (
+                    <NavigationMenuItem key={subItem.id} className="list-none">
+                      <NavigationMenuLink
+                        className={`${navigationMenuTriggerStyle()} w-full`}
+                        href={`/${subItem.link}`}
+                        title={subItem.label}
+                      >
+                        {subItem.label}
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
+                {item.label}
+              </NavigationMenuLink>
+            )
+          ) : (
+            <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
+              {item.label}
+            </NavigationMenuLink>
+          )}
         </NavigationMenuItem>
       ))}
-      {cta.enabled && <CtaButton cta={cta} />}
+      {headerData.cta.enabled && <CtaButton cta={headerData.cta} />}
       <ModeToggle />
     </NavigationMenuList>
   )
@@ -178,17 +164,14 @@ function DesktopNavigation({
 
 export default async function HeaderServer() {
   const headerData = await getHeaderData()
-  const { navigation, aktionen, cta } = headerData
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background shadow-sm">
-      <div className="mx-auto max-w-screen-xl">
-        <NavigationMenu className="mx-auto max-w-screen-xl justify-normal md:justify-between md:p-2">
-          <MobileNavigation navigation={navigation} aktionen={aktionen} />
-          <h1 className="px-2 text-lg font-bold">KjG Dossenheim</h1>
-          <DesktopNavigation navigation={navigation} aktionen={aktionen} cta={cta} />
-        </NavigationMenu>
-      </div>
+    <header className="bg-background sticky top-0 z-50 p-2 shadow-xs">
+      <NavigationMenu className="mx-auto flex max-w-screen-xl items-center justify-between">
+        <MobileNavigation />
+        <h1 className="px-4 text-lg font-bold">KjG Dossenheim</h1>
+        <DesktopNavigation />
+      </NavigationMenu>
     </header>
   )
 }

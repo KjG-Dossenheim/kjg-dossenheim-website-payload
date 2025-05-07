@@ -11,7 +11,7 @@ export function Newsletter() {
             Sign up for our newsletter to stay up to date on the latest news and events.
           </p>
         </div>
-        <form method="post" action="https://listmonk.kjg-dossenheim.org/subscription/form" className='max-w-screen-lg mx-auto'>
+        <form method="post" action="https://listmonk.kjg-dossenheim.org/subscription/form" className='max-w-(--breakpoint-lg) mx-auto'>
           <div>
             <input type="hidden" name="nonce" />
             <p>

@@ -24,17 +24,17 @@ export default async function FooterServer() {
             <h2 className="font-semibold uppercase">Folge uns</h2>
             <ul className="list-none space-y-2">
               {footer.socialLinks.map((socialLink) => (
-                <li key={socialLink.id} className="flex items-center gap-2">
-                  {(() => {
-                    const IconMap = {
-                      SiWhatsapp: SiWhatsapp,
-                      SiFacebook: SiFacebook,
-                      SiInstagram: SiInstagram,
-                    }
-                    const IconComponent = IconMap[socialLink.icon]
-                    return IconComponent ? <IconComponent className="size-4" /> : null
-                  })()}
-                  <a href={socialLink.link} className="hover:underline">
+                <li key={socialLink.id}>
+                  <a href={socialLink.link} className="flex items-center gap-2 hover:underline">
+                    {(() => {
+                      const IconMap = {
+                        SiWhatsapp: SiWhatsapp,
+                        SiFacebook: SiFacebook,
+                        SiInstagram: SiInstagram,
+                      }
+                      const IconComponent = IconMap[socialLink.icon]
+                      return IconComponent ? <IconComponent className="size-4" /> : null
+                    })()}
                     {socialLink.label}
                   </a>
                 </li>
@@ -44,22 +44,26 @@ export default async function FooterServer() {
           <CardContent className="max-h-fit space-y-1 p-6">
             <h2 className="font-semibold uppercase">Kontakt</h2>
             <ul className="list-none space-y-2">
-              <li className="flex items-center gap-2">
-                <Mail className="size-4" />
-                <a href="mailto:kontakt@kjg-dossenheim.org" className="hover:underline">
+              <li>
+                <a
+                  href="mailto:kontakt@kjg-dossenheim.org"
+                  className="flex items-center gap-2 hover:underline"
+                >
+                  <Mail className="size-4" />
                   E-Mail
                 </a>
               </li>
-              <li className="flex items-center gap-2">
-                <Phone className="size-4" />
-                <a href="tel:072161906054" className="hover:underline">
-                  Telefon
+              <li>
+                <a href="tel:072161906054" className="flex items-center gap-2 hover:underline">
+                  <Phone className="size-4" /> Telefon
                 </a>
               </li>
-              <li className="flex items-center gap-2">
-                <SiWhatsapp className="size-4" />
-                <a href="https://wa.me/4972161906054" className="hover:underline">
-                  WhatsApp
+              <li>
+                <a
+                  href="https://wa.me/4972161906054"
+                  className="flex items-center gap-2 hover:underline"
+                >
+                  <SiWhatsapp className="size-4" /> WhatsApp
                 </a>
               </li>
             </ul>

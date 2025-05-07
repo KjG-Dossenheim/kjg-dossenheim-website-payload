@@ -11,6 +11,9 @@ import {
 
 export const Martinsumzug: GlobalConfig = {
   slug: "martinsumzug",
+  admin: {
+    group: 'Aktionen',
+  },
   fields: [
     {
       label: 'Startdatum',

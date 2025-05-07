@@ -1,4 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload'
+import withFlowbiteReact from "flowbite-react/plugin/nextjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,4 +13,4 @@ const nextConfig = {
   },
 }
 
-export default withPayload(nextConfig)
+export default withFlowbiteReact(withPayload(nextConfig))

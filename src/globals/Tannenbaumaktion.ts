@@ -11,6 +11,9 @@ import {
 
 export const Tannenbaumaktion: GlobalConfig = {
   slug: "tannenbaumaktion",
+  admin: {
+    group: 'Aktionen',
+  },
   fields: [
     {
       label: 'Startdatum',
@@ -76,11 +79,7 @@ export const Tannenbaumaktion: GlobalConfig = {
           name: 'adresse',
           label: 'Adresse',
           type: 'text',
-        },
-        {
-          name: 'website',
-          label: 'Webseite',
-          type: 'text',
+          required: true,
         },
       ],
     },
