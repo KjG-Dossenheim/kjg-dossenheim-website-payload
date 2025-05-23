@@ -11,6 +11,9 @@ import {
 
 export const Sommerfreizeit: GlobalConfig = {
   slug: "sommerfreizeit",
+  access: {
+    read: () => true,
+  },
   admin: {
     group: 'Aktionen',
   },
