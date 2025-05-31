@@ -1,4 +1,3 @@
-import { fields } from '@payloadcms/plugin-form-builder'
 import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
@@ -8,6 +7,7 @@ export const Users: CollectionConfig = {
   },
   auth: {
     useAPIKey: true,
+    disableLocalStrategy: true,
   },
   fields: [
     {
@@ -33,5 +33,15 @@ export const Users: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'email',
+      label: 'E-Mail',
+      type: 'email',
+      required: true,
+      unique: true,
+      admin: {
+        width: '100%',
+      },
+    }
   ],
 }

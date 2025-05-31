@@ -22,6 +22,7 @@ import {
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { authentikOAuth } from './lib/authentikOAuth'
 
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
@@ -65,6 +66,12 @@ export default buildConfig({
     dateFormat: 'dd.MM.yyyy',
     components: {
       actions: ['@/components/admin/RebuildButton'],
+      afterLogin: [
+        "@/components/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton",
+      ],
+      graphics: {
+        Logo: './graphics/Logo',
+      },
     },
     livePreview: {
       url: ({
@@ -168,5 +175,7 @@ export default buildConfig({
         // ... Other S3 configuration
       },
     }),
+    authentikOAuth,
   ],
+
 })

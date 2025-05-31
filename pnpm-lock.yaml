@@ -48,7 +48,7 @@ importers:
         specifier: latest
         version: 3.37.0
       '@payloadcms/ui':
-        specifier: latest
+        specifier: ^3.37.0
         version: 3.37.0(@types/react@19.0.0)(monaco-editor@0.52.0)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.37.0(graphql@16.11.0)(typescript@5.6.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.6.3)
       '@radix-ui/react-accordion':
         specifier: ^1.2.10
@@ -110,6 +110,9 @@ importers:
       payload:
         specifier: latest
         version: 3.37.0(graphql@16.11.0)(typescript@5.6.3)
+      payload-oauth2:
+        specifier: ^1.0.15
+        version: 1.0.15(payload@3.37.0(graphql@16.11.0)(typescript@5.6.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -3805,6 +3808,11 @@ packages:
   path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
+
+  payload-oauth2@1.0.15:
+    resolution: {integrity: sha512-8olwJ9pRm1wFEiqdMCmZ9wyOTA4dIa8McHP4paF3WhiSCYNbC0tOza7++XhckhzrKCPOEpZuw5bqbSW4YCO5Hg==}
+    peerDependencies:
+      payload: ^3
 
   payload@3.37.0:
     resolution: {integrity: sha512-fihg4c/SyuvCAkOFKCwTblkQ9t5fE77nACJ/3BEZlPr8Ikl4AgfkBfc29yZnf+GFiEuaul1j0KYwI3le0wex/g==}
@@ -9205,6 +9213,10 @@ snapshots:
   path-to-regexp@8.2.0: {}
 
   path-type@4.0.0: {}
+
+  payload-oauth2@1.0.15(payload@3.37.0(graphql@16.11.0)(typescript@5.6.3)):
+    dependencies:
+      payload: 3.37.0(graphql@16.11.0)(typescript@5.6.3)
 
   payload@3.37.0(graphql@16.11.0)(typescript@5.6.3):
     dependencies:
