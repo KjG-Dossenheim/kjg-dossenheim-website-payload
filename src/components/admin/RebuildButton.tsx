@@ -32,7 +32,7 @@ export default function RebuildButton() {
   }
 
   return (
-    <div>
+    <div className="flex gap-2">
       <Button onClick={triggerNetlifyBuild}>Veröffentlichen</Button>
     </div>
   )
