@@ -13,7 +13,7 @@ export const authentikOAuth = OAuth2Plugin({
     typeof process.env.AUTHENTIK_USERINFO_ENDPOINT === "string",
   strategyName: "authentik",
   useEmailAsIdentity: true,
-  serverURL: process.env.NEXT_PUBLIC_URL || "http://localhost:3000",
+  serverURL: process.env.SITE_URL || "http://localhost:3000",
   clientId: process.env.AUTHENTIK_CLIENT_ID || "",
   clientSecret: process.env.AUTHENTIK_CLIENT_SECRET || "",
   authCollection: "users",

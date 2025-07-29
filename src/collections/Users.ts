@@ -7,7 +7,6 @@ export const Users: CollectionConfig = {
   },
   auth: {
     useAPIKey: true,
-    disableLocalStrategy: true,
   },
   fields: [
     {
