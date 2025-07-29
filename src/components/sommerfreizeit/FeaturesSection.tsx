@@ -12,7 +12,7 @@ import {
 interface Feature {
   id?: string | null | undefined
   title: string
-  description?: any // RichText data
+  description?: any
 }
 
 interface FeaturesSectionProps {
