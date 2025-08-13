@@ -18,15 +18,15 @@ async function getData() {
 }
 
 export const metadata: Metadata = {
-  title: 'Letzten Informationen',
-  description: 'Letzten Informationen für die Sommerfreizeit',
+  title: 'Letzte Informationen',
+  description: 'Letzte Informationen für die Sommerfreizeit',
   openGraph: {
-    title: 'Letzten Informationen',
-    description: 'Letzten Informationen für die Sommerfreizeit',
+    title: 'Letzte Informationen',
+    description: 'Letzte Informationen für die Sommerfreizeit',
   },
   twitter: {
-    title: 'Letzten Informationen',
-    description: 'Letzten Informationen für die Sommerfreizeit',
+    title: 'Letzte Informationen',
+    description: 'Letzte Informationen für die Sommerfreizeit',
   },
 }
 
@@ -35,7 +35,7 @@ export default async function Page() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold">Letzten Informationen</h1>
+      <h1 className="mb-6 text-3xl font-bold">Letzte Informationen</h1>
       <div className="flex flex-col gap-4">
         {sommerfreizeit.informationen.eintrag.map((eintrag) => (
           <Card key={eintrag.title}>
