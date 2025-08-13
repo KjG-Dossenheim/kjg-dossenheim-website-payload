@@ -46,7 +46,12 @@ function TeamMemberCard({ member }: { member: Team }) {
   const hasProfilePicture = typeof member.profilePicture === 'object' && member.profilePicture?.url
 
   return (
-    <Link href={`/team/${member.id}`} key={member.id} id={member.id} className="w-full max-w-sm">
+    <Link
+      href={`/team/${member.firstName}-${member.lastName}/id=${member.id}`}
+      key={member.id}
+      id={member.id}
+      className="w-full max-w-sm"
+    >
       <Card>
         <div className="flex cursor-pointer items-center transition-shadow hover:shadow-md">
           <Avatar className="m-6 mr-0 size-16">
