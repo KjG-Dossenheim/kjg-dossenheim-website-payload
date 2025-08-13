@@ -11,6 +11,9 @@ async function getData() {
   })
 }
 
+// ⬇️ ISR-Zeit (in Sekunden) einstellen
+export const revalidate = 60 // alle 60s neue Daten abrufen
+
 export const metadata: Metadata = {
   title: 'Packliste',
   description: 'Packliste für die Sommerfreizeit',

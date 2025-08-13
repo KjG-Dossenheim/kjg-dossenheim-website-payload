@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { GlobalConfig } from "payload";
 
 import {

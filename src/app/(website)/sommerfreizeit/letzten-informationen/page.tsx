@@ -3,18 +3,12 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { Metadata } from 'next'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-
 import Link from 'next/link'
+
+// ⬇️ ISR-Zeit (in Sekunden) einstellen
+export const revalidate = 60 // alle 60s neue Daten abrufen
 
 async function getData() {
   const payload = await getPayload({ config })
@@ -55,11 +49,7 @@ export default async function Page() {
               <CardFooter className="flex flex-wrap gap-2">
                 {eintrag.links.map((link) => (
                   <Button key={link.linkText} asChild>
-                    <Link
-                      href={link.link ? link.link : ''}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <Link href={link.link || ''} target="_blank" rel="noopener noreferrer">
                       {link.linkText}
                     </Link>
                   </Button>
