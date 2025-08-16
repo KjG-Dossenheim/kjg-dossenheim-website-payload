@@ -17,6 +17,10 @@ import {
   SuperscriptFeature,
   BlockquoteFeature,
   HorizontalRuleFeature,
+  IndentFeature,
+  ChecklistFeature,
+  AlignFeature,
+  TextStateFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { seoPlugin } from '@payloadcms/plugin-seo'
@@ -100,6 +104,10 @@ export default buildConfig({
       HeadingFeature(),
       BlockquoteFeature(),
       HorizontalRuleFeature(),
+      IndentFeature(),
+      ChecklistFeature(),
+      AlignFeature(),
+      TextStateFeature(),
     ],
   }),
   i18n: {
