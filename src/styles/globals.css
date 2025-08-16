@@ -7,28 +7,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-primary-100: #ccf0f2;
-  --color-primary-200: #99e2e5;
-  --color-primary-300: #66d3d8;
-  --color-primary-400: #33c5cb;
-  --color-primary-500: #00b6be;
-  --color-primary-600: #009298;
-  --color-primary-700: #006d72;
-  --color-primary-800: #00494c;
-  --color-primary-900: #002426;
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
 
-  --color-secondary-50: #e6f0f3;
-  --color-secondary-100: #cce2e6;
-  --color-secondary-200: #99c5ce;
-  --color-secondary-300: #66a7b5;
-  --color-secondary-400: #338a9d;
-  --color-secondary-500: #006d84;
-  --color-secondary-600: #00576a;
-  --color-secondary-700: #00414f;
-  --color-secondary-800: #002c35;
-  --color-secondary-900: #00161a;
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
 
@@ -216,7 +197,7 @@
     }
 
     blockquote {
-      @apply border-primary bg-secondary/80 my-4 border-s-4 p-4 text-white;
+      @apply border-secondary bg-primary my-4 border-s-8 p-4 text-white;
     }
 
     pre {
