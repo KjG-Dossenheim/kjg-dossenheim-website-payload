@@ -12,7 +12,7 @@ async function getData() {
 }
 
 // ⬇️ ISR-Zeit (in Sekunden) einstellen
-export const revalidate = 60 // alle 60s neue Daten abrufen
+export const revalidate = 60 // 1 Minute
 
 export const metadata: Metadata = {
   title: 'Packliste',
