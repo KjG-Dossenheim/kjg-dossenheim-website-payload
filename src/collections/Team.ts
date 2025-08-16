@@ -28,6 +28,14 @@ export const Team: CollectionConfig = {
           admin: {
             width: '50%',
           },
+          hooks: {
+            beforeValidate: [
+              ({ value }) => {
+                // Trim whitespace
+                return value.trim()
+              },
+            ],
+          },
         },
         {
           name: 'lastName',
@@ -37,6 +45,14 @@ export const Team: CollectionConfig = {
           index: true,
           admin: {
             width: '50%',
+          },
+          hooks: {
+            beforeValidate: [
+              ({ value }) => {
+                // Trim whitespace
+                return value.trim()
+              },
+            ],
           },
         },
       ],
