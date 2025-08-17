@@ -1,52 +1,52 @@
 import type { CollectionConfig } from 'payload'
 
 export const Jahresplan: CollectionConfig = {
-    slug: 'jahresplan',
-    labels: {
-        singular: 'Aktion',
-        plural: 'Aktionen',
+  slug: 'jahresplan',
+  labels: {
+    singular: 'Aktion',
+    plural: 'Aktionen',
+  },
+  admin: {
+    useAsTitle: 'name',
+    defaultColumns: ['name'],
+    listSearchableFields: ['name', 'startDate', 'endDate'],
+    pagination: {
+      defaultLimit: 25,
     },
-    admin: {
-        useAsTitle: 'name',
-        defaultColumns: ['name'],
-        listSearchableFields: ['name', 'startDate', 'endDate'],
-        pagination: {
-            defaultLimit: 25,
-        },
-        group: 'Aktionen',
+    group: 'Aktionen',
+  },
+  fields: [
+    {
+      name: 'name',
+      label: 'Name',
+      type: 'text',
+      required: true,
     },
-    fields: [
-        {
-            name: 'name',
-            label: 'Name',
-            type: 'text',
-            required: true,
-        },
-        {
-            name: 'startDate',
-            label: 'Startdatum',
-            type: 'date',
-            required: true,
-        },
-        {
-            name: 'endDate',
-            label: 'Enddatum',
-            type: 'date',
-        },
-        {
-            name: 'description',
-            label: 'Beschreibung',
-            type: 'textarea',
-        },
-        {
-            name: 'location',
-            label: 'Ort',
-            type: 'text',
-        },
-        {
-            name: 'link',
-            label: 'Link',
-            type: 'text',
-        }
-    ],
+    {
+      name: 'startDate',
+      label: 'Startdatum',
+      type: 'date',
+      required: true,
+    },
+    {
+      name: 'endDate',
+      label: 'Enddatum',
+      type: 'date',
+    },
+    {
+      name: 'description',
+      label: 'Beschreibung',
+      type: 'textarea',
+    },
+    {
+      name: 'location',
+      label: 'Ort',
+      type: 'text',
+    },
+    {
+      name: 'link',
+      label: 'Link',
+      type: 'text',
+    }
+  ],
 }
