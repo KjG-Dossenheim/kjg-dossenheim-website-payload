@@ -42,9 +42,11 @@ export default async function Page() {
             <CardHeader>
               <CardTitle>{eintrag.title}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <RichText data={eintrag.text} className="RichText" />
-            </CardContent>
+            {eintrag.text && eintrag.text?.root?.direction !== null && (
+              <CardContent>
+                <RichText data={eintrag.text} className="RichText" />
+              </CardContent>
+            )}
             {eintrag.links && eintrag.links.length > 0 && (
               <CardFooter className="flex flex-wrap gap-2">
                 {eintrag.links.map((link) => (
