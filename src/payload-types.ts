@@ -1017,8 +1017,8 @@ export interface Sommerfreizeit {
   };
   informationen: {
     eintrag: {
-      title: string;
-      text: {
+      title?: string | null;
+      text?: {
         root: {
           type: string;
           children: {
@@ -1032,7 +1032,7 @@ export interface Sommerfreizeit {
           version: number;
         };
         [k: string]: unknown;
-      };
+      } | null;
       links?:
         | {
             linkText?: string | null;

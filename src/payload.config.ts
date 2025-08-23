@@ -9,6 +9,7 @@ import {
   LinkFeature,
   ItalicFeature,
   InlineToolbarFeature,
+  FixedToolbarFeature,
   StrikethroughFeature,
   InlineCodeFeature,
   ParagraphFeature,
@@ -21,6 +22,7 @@ import {
   ChecklistFeature,
   AlignFeature,
   TextStateFeature,
+  defaultColors
 } from '@payloadcms/richtext-lexical'
 
 import { seoPlugin } from '@payloadcms/plugin-seo'
@@ -107,7 +109,14 @@ export default buildConfig({
       IndentFeature(),
       ChecklistFeature(),
       AlignFeature(),
-      TextStateFeature(),
+      TextStateFeature({
+        state: {
+          color: {
+            galaxy: { label: 'Galaxy', css: { background: 'linear-gradient(to right, #0000ff, #ff0000)', color: 'white' } },
+          },
+        },
+      }),
+      FixedToolbarFeature(),
     ],
   }),
   i18n: {

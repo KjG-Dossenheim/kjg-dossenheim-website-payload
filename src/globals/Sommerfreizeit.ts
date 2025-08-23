@@ -238,13 +238,11 @@ export const Sommerfreizeit: GlobalConfig = {
                   name: 'title',
                   label: 'Titel',
                   type: 'text',
-                  required: true,
                 },
                 {
                   name: 'text',
                   label: 'Text',
                   type: 'richText',
-                  required: true,
                 },
                 {
                   name: 'links',
