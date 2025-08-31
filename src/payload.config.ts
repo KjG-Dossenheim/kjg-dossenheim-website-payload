@@ -22,7 +22,8 @@ import {
   ChecklistFeature,
   AlignFeature,
   TextStateFeature,
-  defaultColors
+  defaultColors,
+  UploadFeature
 } from '@payloadcms/richtext-lexical'
 
 import { seoPlugin } from '@payloadcms/plugin-seo'
@@ -45,6 +46,7 @@ import { Team } from './collections/Team'
 import { TeamBilder } from './collections/TeamBilder'
 import { Jahresplan } from './collections/Jahresplan'
 import { blogPosts } from './collections/blogPost'
+import { blogCategory } from './collections/blogCategory'
 
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
@@ -56,6 +58,7 @@ import { Sommerfreizeit } from './globals/Sommerfreizeit'
 import { Adventsmarkt } from './globals/Adventsmarkt'
 import { Martinsumzug } from './globals/Martinsumzug'
 import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
+import { Upload } from 'lucide-react'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -69,6 +72,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    timezones: {
+      defaultTimezone: 'Europe/Berlin',
+    },
     dateFormat: 'dd.MM.yyyy',
     components: {
       actions: ['@/components/admin/RebuildButton'],
@@ -79,14 +85,14 @@ export default buildConfig({
         Logo: './graphics/Logo',
       },
     },
-    livePreview: {
+    /* livePreview: {
       url: ({
         data,
       }) => `${process.env.SITE_URL}/blog/${data.slug}`,
       collections: [''],
-    },
+    }, */
   },
-  collections: [Jahresplan, blogPosts, Team, TeamBilder, Users, Media],
+  collections: [Jahresplan, blogPosts, blogCategory, Team, TeamBilder, Users, Media],
   globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches],
   editor: lexicalEditor({
     features: ({ defaultFeatures, rootFeatures }) => [
@@ -117,7 +123,10 @@ export default buildConfig({
         },
       }),
       FixedToolbarFeature(),
-    ],
+      /* UploadFeature({
+        collections: ['media'],
+      }), */
+    ]
   }),
   i18n: {
     supportedLanguages: { de },
@@ -147,10 +156,10 @@ export default buildConfig({
     seoPlugin({
       uploadsCollection: 'media',
       tabbedUI: true,
-      generateURL: ({ title }) =>
-        `${process.env.SITE_URL}/${title.toLocaleLowerCase()}`,
-      generateTitle: ({ title }) => `${title}`,
-      generateImage: ({ title }) => `${process.env.SITE_URL}/api/og/?title=${title}`
+      generateURL: ({ doc }) =>
+        `${process.env.SITE_URL}/${doc.title?.toLocaleLowerCase() || ''}`,
+      generateTitle: ({ doc }) => `${doc.title || ''}`,
+      generateImage: ({ doc }) => `${process.env.SITE_URL}/api/og/?title=${encodeURIComponent(doc.title || '')}`
     }),
     formBuilderPlugin({
       formOverrides: {

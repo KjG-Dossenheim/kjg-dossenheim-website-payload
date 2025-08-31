@@ -17,45 +17,40 @@ export const Team: CollectionConfig = {
   },
   fields: [
     {
-      type: 'row',
-      fields: [
-        {
-          name: 'firstName',
-          label: 'Vorname',
-          type: 'text',
-          required: true,
-          index: true,
-          admin: {
-            width: '50%',
+      name: 'firstName',
+      label: 'Vorname',
+      type: 'text',
+      required: true,
+      index: true,
+      admin: {
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value }) => {
+            // Trim whitespace
+            return value.trim()
           },
-          hooks: {
-            beforeValidate: [
-              ({ value }) => {
-                // Trim whitespace
-                return value.trim()
-              },
-            ],
+        ],
+      },
+    },
+    {
+      name: 'lastName',
+      label: 'Nachname',
+      type: 'text',
+      required: true,
+      index: true,
+      admin: {
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value }) => {
+            // Trim whitespace
+            return value.trim()
           },
-        },
-        {
-          name: 'lastName',
-          label: 'Nachname',
-          type: 'text',
-          required: true,
-          index: true,
-          admin: {
-            width: '50%',
-          },
-          hooks: {
-            beforeValidate: [
-              ({ value }) => {
-                // Trim whitespace
-                return value.trim()
-              },
-            ],
-          },
-        },
-      ],
+        ],
+      },
     },
     {
       name: 'description',
@@ -96,6 +91,7 @@ export const Team: CollectionConfig = {
       admin: {
         isClearable: true,
         isSortable: true,
+        position: 'sidebar',
       },
       options: [
         {
@@ -116,5 +112,16 @@ export const Team: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'user',
+      label: 'Benutzer',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        position: 'sidebar',
+        allowCreate: false,
+        allowEdit: false,
+      },
+    }
   ],
 }

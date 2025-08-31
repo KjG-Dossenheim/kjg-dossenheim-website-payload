@@ -2,6 +2,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import React, { ReactNode } from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
+import { PayloadAdminBar } from '@payloadcms/admin-bar'
 
 import '@/styles/globals.css'
 

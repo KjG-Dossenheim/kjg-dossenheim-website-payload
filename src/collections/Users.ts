@@ -5,32 +5,31 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
+  labels: {
+    singular: 'Benutzer',
+    plural: 'Benutzer',
+  },
   auth: {
     useAPIKey: true,
   },
   fields: [
     {
-      type: 'row',
-      fields: [
-        {
-          name: 'firstName',
-          label: 'Vorname',
-          type: 'text',
-          required: true,
-          admin: {
-            width: '50%',
-          },
-        },
-        {
-          name: 'lastName',
-          label: 'Nachname',
-          type: 'text',
-          required: true,
-          admin: {
-            width: '50%',
-          },
-        },
-      ],
+      name: 'firstName',
+      label: 'Vorname',
+      type: 'text',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'lastName',
+      label: 'Nachname',
+      type: 'text',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'email',
@@ -38,8 +37,14 @@ export const Users: CollectionConfig = {
       type: 'email',
       required: true,
       unique: true,
+    },
+    {
+      name: 'teamer',
+      label: 'Teamer',
+      type: 'relationship',
+      relationTo: 'team',
       admin: {
-        width: '100%',
+        position: 'sidebar',
       },
     }
   ],

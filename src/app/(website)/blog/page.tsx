@@ -20,11 +20,19 @@ async function getBlogPosts(): Promise<BlogPost[]> {
     // Query posts collection
     const { docs } = await payload.find({
       collection: 'blogPosts',
-      limit: 100,
+      // overrideAccess: false,
       where: {
         _status: {
           equals: 'published',
         },
+      },
+      select: {
+        title: true,
+        slug: true,
+        categories: true,
+        meta: true,
+        createdAt: true,
+        author: true,
       },
     })
 
@@ -61,9 +69,9 @@ export default async function BlogPage() {
                 <CardHeader>
                   <CardTitle>{post.title}</CardTitle>
                   <CardDescription className="flex flex-row gap-2">
-                    {post.publishedDate && (
+                    {post.createdAt && (
                       <span className="flex items-center gap-2">
-                        <Calendar className="size-4" /> {formatDate(post.publishedDate)}
+                        <Calendar className="size-4" /> {formatDate(post.createdAt)}
                       </span>
                     )}
                     {post.author && (

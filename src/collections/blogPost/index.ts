@@ -3,8 +3,26 @@ import { formatSlug } from './hooks/formatSlug'
 
 export const blogPosts: CollectionConfig = {
   slug: 'blogPosts',
+  trash: true,
+  access: {
+    read: ({ req: { user } }) => {
+      if (user) {
+        return true
+      }
+      return {
+        _status: {
+          equals: 'published',
+        },
+      }
+    },
+  },
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: {
+        showSaveDraftButton: true,
+      },
+      schedulePublish: true,
+    },
   },
   labels: {
     singular: 'Blog Beitrag',
@@ -12,10 +30,26 @@ export const blogPosts: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    preview: (doc, { req }) => `${req.protocol}//${req.host}/blog/${doc.slug}`
-  },
-  access: {
-    read: () => true,
+    defaultColumns: ['title', 'author', 'createdAt', 'updatedAt', 'category'],
+    // Live Preview
+    // livePreview: {
+    //   url: ({ data, req }) => {
+    //     const path = generatePreviewPath({
+    //       slug: typeof data?.slug === 'string' ? data.slug : '',
+    //       collection: 'blogPosts',
+    //       req,
+    //     })
+    //     return path
+    //   },
+    // },
+
+    // Preview URL
+    // preview: (data, { req }) =>
+    //   generatePreviewPath({
+    //     slug: typeof data?.slug === 'string' ? data.slug : '',
+    //     collection: 'blogPosts',
+    //     req,
+    //   }),
   },
   fields: [
     {
@@ -23,6 +57,11 @@ export const blogPosts: CollectionConfig = {
       label: 'Titel',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'tableOfContents',
+      label: 'Inhaltsverzeichnis',
+      type: 'richText',
     },
     {
       name: 'content',
@@ -53,9 +92,11 @@ export const blogPosts: CollectionConfig = {
       },
     },
     {
-      name: 'publishedDate',
-      label: 'Veröffentlichungsdatum',
-      type: 'date',
+      name: 'category',
+      label: 'Kategorie',
+      type: 'relationship',
+      relationTo: 'blogCategory',
+      hasMany: true,
       required: true,
       admin: {
         position: 'sidebar',

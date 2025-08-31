@@ -6,9 +6,10 @@ export const Jahresplan: CollectionConfig = {
     singular: 'Aktion',
     plural: 'Aktionen',
   },
+  defaultSort: 'startDate',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name'],
+    defaultColumns: ['name', 'startDate', 'endDate', 'location'],
     listSearchableFields: ['name', 'startDate', 'endDate'],
     pagination: {
       defaultLimit: 25,
