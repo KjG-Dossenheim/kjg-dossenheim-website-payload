@@ -1,5 +1,3 @@
-// pages/index.js
-
 'use client'
 
 import React from 'react'
@@ -10,8 +8,7 @@ export default function RebuildButton() {
     try {
       if (!process.env.NEXT_PUBLIC_REBUILD_HOOK) {
         console.error('NEXT_PUBLIC_REBUILD_HOOK environment variable is not defined.')
-        toast.error('Rebuild hook environment variable is not set.')
-        return // Exit if the env variable is missing
+        return
       }
 
       const response = await fetch(process.env.NEXT_PUBLIC_REBUILD_HOOK, {
@@ -33,7 +30,7 @@ export default function RebuildButton() {
 
   return (
     <div className="flex gap-2">
-      <Button onClick={triggerNetlifyBuild}>Veröffentlichen</Button>
+      <Button onClick={triggerNetlifyBuild}>Rebuild</Button>
     </div>
   )
 }
