@@ -1,3 +1,6 @@
+// ⬇️ ISR-Zeit (in Sekunden) einstellen
+export const revalidate = 60 // 1 Minute
+
 import React from 'react'
 import Link from 'next/link'
 import { getPayload } from 'payload'
