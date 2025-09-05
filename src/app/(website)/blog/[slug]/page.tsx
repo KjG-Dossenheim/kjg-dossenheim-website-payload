@@ -89,11 +89,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 <CardDescription>Inhaltsverzeichnis</CardDescription>
               </CardHeader>
               <CardContent>
-                <RichText data={post.tableOfContents} />
+                <RichText data={post.tableOfContents} className="RichText" />
               </CardContent>
             </Card>
           )}
-          <RichText data={post.content} />
+          <RichText data={post.content} className="RichText" />
         </CardContent>
       </Card>
     )

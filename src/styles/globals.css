@@ -215,6 +215,10 @@
     hr {
       @apply border-primary my-2 h-px border-2;
     }
+
+    p {
+      @apply pb-2;
+    }
   }
 }
 
