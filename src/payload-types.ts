@@ -181,21 +181,6 @@ export interface Jahresplan {
 export interface BlogPost {
   id: string;
   title: string;
-  tableOfContents?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   content: {
     root: {
       type: string;
@@ -211,6 +196,7 @@ export interface BlogPost {
     };
     [k: string]: unknown;
   };
+  relatedPosts?: (string | BlogPost)[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
   author: string | User;
@@ -729,8 +715,8 @@ export interface JahresplanSelect<T extends boolean = true> {
  */
 export interface BlogPostsSelect<T extends boolean = true> {
   title?: T;
-  tableOfContents?: T;
   content?: T;
+  relatedPosts?: T;
   slug?: T;
   slugLock?: T;
   author?: T;

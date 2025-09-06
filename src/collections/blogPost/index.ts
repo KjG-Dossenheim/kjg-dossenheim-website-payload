@@ -60,28 +60,29 @@ export const blogPosts: CollectionConfig = {
       required: true,
     },
     {
-      name: 'tableOfContents',
-      label: 'Inhaltsverzeichnis',
-      type: 'richText',
-    },
-    {
       name: 'content',
       type: 'richText',
       required: true,
     },
-    /* {
-      name: 'slug',
-      type: 'text',
+    {
+      name: 'relatedPosts',
+      type: 'relationship',
       admin: {
         position: 'sidebar',
-        // readOnly: true,
+        appearance: 'drawer',
+        allowEdit: false,
+        allowCreate: false,
       },
-      unique: true,
-      required: true,
-      hooks: {
-        beforeValidate: [formatSlug('title')],
+      filterOptions: ({ id }) => {
+        return {
+          id: {
+            not_in: [id],
+          },
+        }
       },
-    }, */
+      hasMany: true,
+      relationTo: 'blogPosts',
+    },
     ...slugField(),
     {
       name: 'author',

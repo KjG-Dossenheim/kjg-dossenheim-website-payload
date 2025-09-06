@@ -59,8 +59,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
               })}
             </CardDescription>
           )}
@@ -71,8 +69,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
               })}
             </CardDescription>
           )}
@@ -83,16 +79,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           )}
         </CardHeader>
         <CardContent>
-          {post.tableOfContents && post.tableOfContents?.root?.direction !== null && (
-            <Card>
-              <CardHeader>
-                <CardDescription>Inhaltsverzeichnis</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RichText data={post.tableOfContents} className="RichText" />
-              </CardContent>
-            </Card>
-          )}
           <RichText data={post.content} className="RichText" />
         </CardContent>
       </Card>
