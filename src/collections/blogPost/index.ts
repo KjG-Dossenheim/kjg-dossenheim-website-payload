@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { formatSlug } from './hooks/formatSlug'
+import { slugField } from '@/fields/slug'
 
 export const blogPosts: CollectionConfig = {
   slug: 'blogPosts',
@@ -68,19 +69,20 @@ export const blogPosts: CollectionConfig = {
       type: 'richText',
       required: true,
     },
-    {
+    /* {
       name: 'slug',
       type: 'text',
       admin: {
         position: 'sidebar',
-        readOnly: true,
+        // readOnly: true,
       },
       unique: true,
       required: true,
       hooks: {
         beforeValidate: [formatSlug('title')],
       },
-    },
+    }, */
+    ...slugField(),
     {
       name: 'author',
       label: 'Autor',

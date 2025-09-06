@@ -211,7 +211,8 @@ export interface BlogPost {
     };
     [k: string]: unknown;
   };
-  slug: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
   author: string | User;
   category: (string | BlogCategory)[];
   updatedAt: string;
@@ -731,6 +732,7 @@ export interface BlogPostsSelect<T extends boolean = true> {
   tableOfContents?: T;
   content?: T;
   slug?: T;
+  slugLock?: T;
   author?: T;
   category?: T;
   updatedAt?: T;
