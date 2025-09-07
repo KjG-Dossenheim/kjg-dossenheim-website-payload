@@ -29,7 +29,7 @@ export default function FeaturesSection({ eigenschaften }: FeaturesSectionProps)
             <AccordionTrigger>{eigenschaft.title}</AccordionTrigger>
             <AccordionContent className="mb-2">
               {eigenschaft.description && (
-                <RichText className="RichText" data={eigenschaft.description} />
+                <RichTextdata={eigenschaft.description} />
               )}
             </AccordionContent>
           </AccordionItem>

@@ -86,7 +86,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           )}
         </CardHeader>
         <CardContent>
-          <RichText data={post.content} className="RichText" />
+          <RichText data={post.content} />
         </CardContent>
       </Card>
     )

@@ -47,7 +47,7 @@ export default async function Page() {
             </CardHeader>
             {eintrag.text && eintrag.text?.root?.direction !== null && (
               <CardContent>
-                <RichText data={eintrag.text} className="RichText" />
+                <RichText data={eintrag.text} />
               </CardContent>
             )}
             {eintrag.links && eintrag.links.length > 0 && (

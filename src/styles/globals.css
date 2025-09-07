@@ -155,7 +155,7 @@
 }
 
 @layer utilities {
-  .RichText {
+  .payload-richtext {
     h1 {
       @apply text-primary scroll-m-20 pt-2 text-4xl font-bold tracking-tight;
     }
