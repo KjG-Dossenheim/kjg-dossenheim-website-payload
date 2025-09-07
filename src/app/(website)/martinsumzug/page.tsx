@@ -26,7 +26,7 @@ export default async function Page() {
         <Date dateString={martinsumzug.startDate} formatString="EEEE, d. MMMM yyyy" /> ab{' '}
         <Date dateString={martinsumzug.startDate} formatString="H:mm" />{' '}
       </p>
-      <RichTextdata={martinsumzug.content} />
+      <RichText data={martinsumzug.content} />
     </section>
   )
 }

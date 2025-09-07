@@ -16,7 +16,7 @@ export default async function Page() {
 
   return (
     <section className="mx-auto px-4 py-8 sm:max-w-(--breakpoint-lg) sm:px-6 lg:px-8 lg:py-14">
-      <RichTextdata={rechtliches.datenschutz.allgemein.text} />
+      <RichText className="RichText" data={rechtliches.datenschutz.allgemein.text} />
     </section>
   )
 }

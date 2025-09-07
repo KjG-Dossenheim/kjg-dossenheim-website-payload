@@ -66,7 +66,7 @@ export default async function Page() {
             <AccordionItem key={fragen.id} value={fragen.id ?? ''}>
               <AccordionTrigger>{fragen.frage}</AccordionTrigger>
               <AccordionContent>
-                <RichTextdata={fragen.answer} />
+                <RichText data={fragen.answer} />
               </AccordionContent>
             </AccordionItem>
           ))}
