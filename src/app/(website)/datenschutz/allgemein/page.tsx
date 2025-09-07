@@ -8,7 +8,9 @@ export default async function Page() {
   const rechtliches = await payload.findGlobal({
     slug: 'rechtliches',
     select: {
-      datenschutz: true,
+      datenschutz: {
+        allgemein: true,
+      },
     },
   })
 
