@@ -100,7 +100,11 @@ export default buildConfig({
       UnderlineFeature(),
       OrderedListFeature(),
       UnorderedListFeature(),
-      LinkFeature(),
+      LinkFeature(
+        {
+          enabledCollections: ['blogPosts'],
+        }
+      ),
       ItalicFeature(),
       InlineToolbarFeature(),
       UnderlineFeature(),
@@ -123,9 +127,7 @@ export default buildConfig({
         },
       }),
       FixedToolbarFeature(),
-      /* UploadFeature({
-        collections: ['media'],
-      }), */
+      UploadFeature()
     ]
   }),
   i18n: {
