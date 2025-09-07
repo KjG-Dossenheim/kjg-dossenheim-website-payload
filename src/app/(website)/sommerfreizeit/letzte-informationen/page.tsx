@@ -14,6 +14,9 @@ async function getData() {
   const payload = await getPayload({ config })
   return payload.findGlobal({
     slug: 'sommerfreizeit',
+    select: {
+      informationen: true,
+    },
   })
 }
 

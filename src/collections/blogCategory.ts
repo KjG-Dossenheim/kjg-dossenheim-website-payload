@@ -16,6 +16,9 @@ export const blogCategory: CollectionConfig = {
       type: 'join',
       collection: 'blogPosts',
       on: 'category',
+      admin: {
+        allowCreate: false
+      }
     },
   ],
 }

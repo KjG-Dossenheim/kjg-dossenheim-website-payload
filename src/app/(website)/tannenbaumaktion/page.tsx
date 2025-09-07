@@ -16,8 +16,6 @@ import {
 } from '@/components/ui/accordion'
 
 import type { Metadata } from 'next'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 
 async function getData() {
   const payload = await getPayload({ config })

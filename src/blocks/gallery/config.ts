@@ -1,10 +1,10 @@
 import { Block } from "payload";
 
-export const Image: Block = {
-  slug: "image",
+export const Gallery: Block = {
+  slug: "gallery",
   labels: {
-    singular: "Image",
-    plural: "Images",
+    singular: "Gallery",
+    plural: "Galleries",
   },
   fields: [
     {
@@ -13,6 +13,7 @@ export const Image: Block = {
       type: "upload",
       relationTo: "media",
       required: true,
+      hasMany: true
     },
   ],
 }

@@ -39,6 +39,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           equals: 'published',
         },
       },
+      select: {
+        updatedAt: true,
+        createdAt: true,
+        author: true,
+        content: true,
+        title: true,
+      },
     })
 
     if (!posts?.docs?.length) {

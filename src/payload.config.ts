@@ -23,8 +23,11 @@ import {
   AlignFeature,
   TextStateFeature,
   defaultColors,
-  UploadFeature
+  UploadFeature,
+  BlocksFeature
 } from '@payloadcms/richtext-lexical'
+
+import { Gallery } from './blocks/gallery/config'
 
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
@@ -58,7 +61,6 @@ import { Sommerfreizeit } from './globals/Sommerfreizeit'
 import { Adventsmarkt } from './globals/Adventsmarkt'
 import { Martinsumzug } from './globals/Martinsumzug'
 import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
-import { Upload } from 'lucide-react'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -127,7 +129,10 @@ export default buildConfig({
         },
       }),
       FixedToolbarFeature(),
-      UploadFeature()
+      UploadFeature(),
+      BlocksFeature({
+        blocks: [Gallery],
+      })
     ]
   }),
   i18n: {

@@ -7,6 +7,9 @@ export default async function Page() {
   const payload = await getPayload({ config })
   const rechtliches = await payload.findGlobal({
     slug: 'rechtliches',
+    select: {
+      sommerfreizeit: true,
+    },
   })
 
   return (

@@ -32,7 +32,6 @@ async function getBlogPosts(): Promise<BlogPost[]> {
       select: {
         title: true,
         slug: true,
-        categories: true,
         meta: true,
         createdAt: true,
         author: true,
