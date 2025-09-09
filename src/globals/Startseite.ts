@@ -39,50 +39,6 @@ export const Startseite: GlobalConfig = {
           ],
         },
         {
-          label: 'Newsletter',
-          name: 'newsletter',
-          fields: [
-            {
-              name: 'title',
-              label: 'Titel',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'subtitle',
-              label: 'Untertitel',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'list',
-              label: 'Liste',
-              type: 'array',
-              fields: [
-                {
-                  name: 'name',
-                  label: 'Name',
-                  type: 'text',
-                  required: true,
-                },
-                {
-                  name: 'value',
-                  label: 'Wert',
-                  type: 'text',
-                  required: true,
-                },
-                {
-                  name: 'hidden',
-                  label: 'Versteckt',
-                  type: 'checkbox',
-                }
-              ],
-              required: true,
-              minRows: 1,
-            },
-          ]
-        },
-        {
           name: 'meta',
           label: 'SEO',
           fields: [

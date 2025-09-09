@@ -3,8 +3,8 @@ import type { CollectionConfig } from 'payload'
 export const Team: CollectionConfig = {
   slug: 'team',
   labels: {
-    singular: 'Teammitglied',
-    plural: 'Teammitglieder',
+    singular: 'Mitglied',
+    plural: 'Mitglieder',
   },
   defaultSort: 'firstName',
   admin: {
@@ -14,6 +14,7 @@ export const Team: CollectionConfig = {
     pagination: {
       defaultLimit: 25,
     },
+    group: 'Team',
   },
   fields: [
     {

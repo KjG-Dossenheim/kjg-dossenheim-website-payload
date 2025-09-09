@@ -9,7 +9,6 @@ export const About: GlobalConfig = {
   fields: [
     {
       name: 'content',
-      label: '',
       type: 'richText',
       required: true,
     },

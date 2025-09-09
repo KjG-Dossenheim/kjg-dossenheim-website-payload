@@ -26,12 +26,13 @@ export const blogPosts: CollectionConfig = {
     },
   },
   labels: {
-    singular: 'Blog Beitrag',
-    plural: 'Blog Beiträge',
+    singular: 'Beitrag',
+    plural: 'Beiträge',
   },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'author', 'createdAt', 'updatedAt', 'category'],
+    group: 'Blog',
     // Live Preview
     // livePreview: {
     //   url: ({ data, req }) => {

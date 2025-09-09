@@ -4,6 +4,11 @@ export const blogCategory: CollectionConfig = {
   slug: 'blogCategory',
   admin: {
     useAsTitle: 'title',
+    group: 'Blog',
+  },
+  labels: {
+    singular: 'Kategorie',
+    plural: 'Kategorien',
   },
   fields: [
     {

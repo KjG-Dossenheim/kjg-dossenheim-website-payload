@@ -79,13 +79,9 @@ export default buildConfig({
     },
     dateFormat: 'dd.MM.yyyy',
     components: {
-      actions: ['@/components/admin/RebuildButton'],
       afterLogin: [
         "@/components/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton",
       ],
-      graphics: {
-        Logo: './graphics/Logo',
-      },
     },
     /* livePreview: {
       url: ({

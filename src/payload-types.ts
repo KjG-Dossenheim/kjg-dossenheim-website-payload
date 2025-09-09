@@ -1102,16 +1102,6 @@ export interface Startseite {
     link: string;
     enabled?: boolean | null;
   };
-  newsletter: {
-    title: string;
-    subtitle: string;
-    list: {
-      name: string;
-      value: string;
-      hidden?: boolean | null;
-      id?: string | null;
-    }[];
-  };
   meta?: {
     title?: string | null;
     /**
@@ -1501,20 +1491,6 @@ export interface StartseiteSelect<T extends boolean = true> {
         title?: T;
         link?: T;
         enabled?: T;
-      };
-  newsletter?:
-    | T
-    | {
-        title?: T;
-        subtitle?: T;
-        list?:
-          | T
-          | {
-              name?: T;
-              value?: T;
-              hidden?: T;
-              id?: T;
-            };
       };
   meta?:
     | T
