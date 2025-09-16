@@ -15,22 +15,30 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/ctaButton'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '../ui/dropdown-menu'
-
 import type { Header } from '@/payload-types'
-import { it } from 'node:test'
+import { Startseite } from '../../payload-types'
 
-async function getHeaderData() {
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+
+async function fetchHeaderData() {
   const payload = await getPayload({ config })
-  const header: Header = await payload.findGlobal({
-    slug: 'header',
-  })
-  return header
+  return (await payload.findGlobal({ slug: 'header' })) as Header
 }
 
-// Mobile navigation component
-async function MobileNavigation() {
-  const headerData = await getHeaderData()
+interface MenuItem {
+  title: string
+  url: string
+  description?: string
+  icon?: React.ReactNode
+  subNavigation?: MenuItem[]
+}
+
+function MobileNavigation({ header }: { header: Header }) {
   return (
     <Sheet>
       <SheetTrigger asChild className="m-2 md:hidden">
@@ -53,20 +61,20 @@ async function MobileNavigation() {
               Jahresplan
             </NavigationMenuLink>
           </NavigationMenuItem>
-          {headerData.aktionen.map((component) => (
+          {header.aktionen?.map((component) => (
             <NavigationMenuItem key={component.id} className="list-none">
               <NavigationMenuLink
-                href={`/${component.link}`}
+                href={`/${component.url}`}
                 className={navigationMenuTriggerStyle()}
               >
                 {component.name}
               </NavigationMenuLink>
             </NavigationMenuItem>
           ))}
-          {headerData.navigation.map((item) => (
+          {header.navigation?.map((item) => (
             <NavigationMenuItem key={item.id} className="list-none">
-              <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
-                {item.label}
+              <NavigationMenuLink href={`/${item.url}`} className={navigationMenuTriggerStyle()}>
+                {item.title}
               </NavigationMenuLink>
             </NavigationMenuItem>
           ))}
@@ -76,9 +84,7 @@ async function MobileNavigation() {
   )
 }
 
-// Desktop actions submenu
-async function ActionsSubmenu() {
-  const headerData = await getHeaderData()
+function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
   return (
     <NavigationMenuContent>
       <ul className="grid grid-flow-col grid-rows-2 gap-2 p-2">
@@ -90,11 +96,11 @@ async function ActionsSubmenu() {
             <div className="my-auto text-lg font-medium">Jahresplan</div>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        {headerData.aktionen.map((component) => (
+        {aktionen?.map((component) => (
           <NavigationMenuItem key={component.id}>
             <NavigationMenuLink
-              className={`${navigationMenuTriggerStyle()}`}
-              href={`/${component.link}`}
+              className={navigationMenuTriggerStyle()}
+              href={component.url}
               title={component.name}
             >
               {component.name}
@@ -105,10 +111,32 @@ async function ActionsSubmenu() {
     </NavigationMenuContent>
   )
 }
+function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
+  return (
+    <div>
+      <AccordionItem key="Aktionen" value="Aktionen" className="border-b-0">
+        <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
+          Aktionen
+        </AccordionTrigger>
+        <AccordionContent className="mt-2">
+          {aktionen?.map((subItem) => (
+            <a
+              key={subItem.id}
+              className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
+              href={`${subItem.url}`}
+            >
+              <div>
+                <div className="text-sm font-semibold">{subItem.name}</div>
+              </div>
+            </a>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+    </div>
+  )
+}
 
-// Desktop navigation
-async function DesktopNavigation() {
-  const headerData = await getHeaderData()
+function DesktopNavigation({ header }: { header: Header }) {
   return (
     <NavigationMenuList className="hidden md:flex">
       <NavigationMenuItem>
@@ -118,60 +146,191 @@ async function DesktopNavigation() {
       </NavigationMenuItem>
       <NavigationMenuItem>
         <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
-        <ActionsSubmenu />
+        <ActionsSubmenu aktionen={header.aktionen} />
       </NavigationMenuItem>
-      {headerData?.navigation?.map((item) => (
-        <NavigationMenuItem key={item.id}>
-          {item.subNavigation ? (
-            item.subNavigation.length > 0 ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
-                    <span>{item.label}</span>
-                  </NavigationMenuTrigger>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
+      {header.navigation?.map((item) =>
+        item.subNavigation && item.subNavigation.length > 0 ? (
+          <NavigationMenuItem key={item.id}>
+            <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[200px] gap-4">
+                <li>
                   {item.subNavigation.map((subItem) => (
-                    <NavigationMenuItem key={subItem.id} className="list-none">
-                      <NavigationMenuLink
-                        className={`${navigationMenuTriggerStyle()} w-full`}
-                        href={`/${subItem.link}`}
-                        title={subItem.label}
-                      >
-                        {subItem.label}
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
+                    <NavigationMenuLink asChild key={subItem.id}>
+                      <a href={`/${subItem.url}`}>{subItem.title}</a>
+                    </NavigationMenuLink>
                   ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
-                {item.label}
-              </NavigationMenuLink>
-            )
-          ) : (
-            <NavigationMenuLink href={`/${item.link}`} className={navigationMenuTriggerStyle()}>
-              {item.label}
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        ) : (
+          <NavigationMenuItem key={item.id}>
+            <NavigationMenuLink href={`/${item.url}`} className={navigationMenuTriggerStyle()}>
+              {item.title}
             </NavigationMenuLink>
-          )}
-        </NavigationMenuItem>
-      ))}
-      {headerData.cta.enabled && <CtaButton cta={headerData.cta} />}
+          </NavigationMenuItem>
+        ),
+      )}
+      {header.cta?.enabled && <CtaButton cta={header.cta} />}
       <ModeToggle />
     </NavigationMenuList>
   )
 }
 
-export default async function HeaderServer() {
-  const headerData = await getHeaderData()
+export default async function Navbar() {
+  const header = await fetchHeaderData()
+  return (
+    <section className="bg-background sticky top-0 z-50 p-2 shadow-xs">
+      <div className="lg:container lg:mx-auto">
+        {/* Desktop Menu */}
+        <nav className="hidden justify-between lg:flex">
+          <div className="flex items-center gap-6">
+            {/* Logo */}
+            <a href="/" className="flex items-center gap-2">
+              <span className="text-lg font-semibold tracking-tighter">KjG Dossenheim</span>
+            </a>
+            <div className="flex items-center">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      href="/"
+                      className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                    >
+                      Startseite
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
+                    <ActionsSubmenu aktionen={header.aktionen} />
+                  </NavigationMenuItem>
+                  {header.navigation.map((item) => renderMenuItem(item))}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
+          </div>
+          {header.cta?.enabled && (
+            <div className="flex gap-2">
+              <CtaButton cta={header.cta} />
+            </div>
+          )}
+          <ModeToggle />
+        </nav>
+
+        {/* Mobile Menu */}
+        <div className="block lg:hidden">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <a href="/" className="flex items-center gap-2">
+              <span className="text-lg font-semibold tracking-tighter">KjG Dossenheim</span>
+            </a>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Menu className="size-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>
+                    <a href={header.logo?.url} className="flex items-center gap-2">
+                      <img
+                        src={header.logo?.src}
+                        className="max-h-8 dark:invert"
+                        alt={header.logo?.alt}
+                      />
+                    </a>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-6 p-4">
+                  <Accordion type="single" collapsible className="flex w-full flex-col gap-4">
+                    <a href="/" className="text-md font-semibold">
+                      Startseite
+                    </a>
+                    <MobileActionsSubmenu aktionen={header.aktionen} />
+                    {header.navigation.map((item) => renderMobileMenuItem(item))}
+                  </Accordion>
+                  {header.cta?.enabled && (
+                    <div className="flex flex-col gap-3">
+                      <CtaButton cta={header.cta} />
+                    </div>
+                  )}
+                  <CtaButton cta={header.cta} />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const renderMenuItem = (item: MenuItem) => {
+  if (item.subNavigation && item.subNavigation.length > 0) {
+    return (
+      <NavigationMenuItem key={item.title}>
+        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+        <NavigationMenuContent className="bg-popover text-popover-foreground">
+          {item.subNavigation.map((subItem) => (
+            <NavigationMenuLink asChild key={subItem.title} className="w-80">
+              <SubMenuLink item={subItem} />
+            </NavigationMenuLink>
+          ))}
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+    )
+  }
 
   return (
-    <header className="bg-background sticky top-0 z-50 p-2 shadow-xs">
-      <NavigationMenu className="mx-auto flex max-w-screen-xl items-center justify-between">
-        <MobileNavigation />
-        <h1 className="px-4 text-lg font-bold">KjG Dossenheim</h1>
-        <DesktopNavigation />
-      </NavigationMenu>
-    </header>
+    <NavigationMenuItem key={item.title}>
+      <NavigationMenuLink
+        href={item.url}
+        className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+      >
+        {item.title}
+      </NavigationMenuLink>
+    </NavigationMenuItem>
+  )
+}
+
+const renderMobileMenuItem = (item: MenuItem) => {
+  if (item.subNavigation && item.subNavigation.length > 0) {
+    return (
+      <AccordionItem key={item.title} value={item.title} className="border-b-0">
+        <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
+          {item.title}
+        </AccordionTrigger>
+        <AccordionContent className="mt-2">
+          {item.subNavigation.map((subItem) => (
+            <SubMenuLink key={subItem.title} item={subItem} />
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+    )
+  }
+
+  return (
+    <a key={item.title} href={item.url} className="text-md font-semibold">
+      {item.title}
+    </a>
+  )
+}
+
+const SubMenuLink = ({ item }: { item: MenuItem }) => {
+  return (
+    <a
+      className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
+      href={item.url}
+    >
+      <div className="text-foreground">{item.icon}</div>
+      <div>
+        <div className="text-sm font-semibold">{item.title}</div>
+        {item.description && (
+          <p className="text-muted-foreground text-sm leading-snug">{item.description}</p>
+        )}
+      </div>
+    </a>
   )
 }

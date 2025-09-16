@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
 import Date from '@/components/date'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText } from '@/components/RichText'
 
 import type { Metadata } from 'next'
 
@@ -25,13 +25,13 @@ export default async function Page() {
   const adventsmarkt = await getData()
 
   return (
-    <section className="mx-auto max-w-(--breakpoint-lg) p-5 text-center">
+    <section className="container mx-auto p-5 text-center">
       <h1 className="text-3xl font-bold">Adventsmarkt</h1>
       <p className="p-2 text-lg">
         <Date dateString={adventsmarkt.startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
         <Date dateString={adventsmarkt.endDate} formatString="EEEE, d. MMMM yyyy" />{' '}
       </p>
-      <RichText className="RichText" data={adventsmarkt.content} />
+      <RichText data={adventsmarkt.content} />
     </section>
   )
 }

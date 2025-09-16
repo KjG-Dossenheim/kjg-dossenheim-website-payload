@@ -264,7 +264,6 @@ export interface Team {
   email?: string | null;
   phone?: string | null;
   position: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[];
-  user?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -309,7 +308,22 @@ export interface BlogCategory {
  */
 export interface Media {
   id: string;
-  alt: string;
+  alt?: string | null;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -774,7 +788,6 @@ export interface TeamSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   position?: T;
-  user?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -803,6 +816,7 @@ export interface TeambilderSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1355,15 +1369,18 @@ export interface Header {
   cta: {
     title: string;
     link: string;
+    url: string;
     enabled?: boolean | null;
   };
   navigation: {
-    label: string;
-    link: string;
+    title: string;
+    url: string;
     subNavigation?:
       | {
           label: string;
+          title: string;
           link: string;
+          url: string;
           id?: string | null;
         }[]
       | null;
@@ -1371,7 +1388,9 @@ export interface Header {
   }[];
   aktionen: {
     name: string;
+    title: string;
     link: string;
+    url: string;
     id?: string | null;
   }[];
   updatedAt?: string | null;
@@ -1394,10 +1413,6 @@ export interface Footer {
     link: string;
     id?: string | null;
   }[];
-  /**
-   * Das Logo wird im Footer angezeigt.
-   */
-  logo: string | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1667,18 +1682,21 @@ export interface HeaderSelect<T extends boolean = true> {
     | {
         title?: T;
         link?: T;
+        url?: T;
         enabled?: T;
       };
   navigation?:
     | T
     | {
-        label?: T;
-        link?: T;
+        title?: T;
+        url?: T;
         subNavigation?:
           | T
           | {
               label?: T;
+              title?: T;
               link?: T;
+              url?: T;
               id?: T;
             };
         id?: T;
@@ -1687,7 +1705,9 @@ export interface HeaderSelect<T extends boolean = true> {
     | T
     | {
         name?: T;
+        title?: T;
         link?: T;
+        url?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -1714,7 +1734,6 @@ export interface FooterSelect<T extends boolean = true> {
         link?: T;
         id?: T;
       };
-  logo?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

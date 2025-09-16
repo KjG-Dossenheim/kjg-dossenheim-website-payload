@@ -127,7 +127,7 @@ export default buildConfig({
       FixedToolbarFeature(),
       UploadFeature(),
       BlocksFeature({
-        blocks: [Gallery],
+        // blocks: [Gallery],
       })
     ]
   }),

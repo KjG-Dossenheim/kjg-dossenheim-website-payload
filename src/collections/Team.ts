@@ -113,16 +113,5 @@ export const Team: CollectionConfig = {
         },
       ],
     },
-    {
-      name: 'user',
-      label: 'Benutzer',
-      type: 'relationship',
-      relationTo: 'users',
-      admin: {
-        position: 'sidebar',
-        allowCreate: false,
-        allowEdit: false,
-      },
-    }
   ],
 }

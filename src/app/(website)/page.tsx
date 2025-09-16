@@ -26,7 +26,7 @@ export default async function Page() {
   const page = await getPageData()
 
   return (
-    <section className="mx-auto max-w-(--breakpoint-xl) px-4 py-20 lg:py-32">
+    <section className="container mx-auto px-4 py-20 lg:py-32">
       {page.neuigkeiten?.enabled && (
         <Link href={page.neuigkeiten.link}>
           <Alert className="mx-auto w-fit hover:underline">
@@ -39,7 +39,7 @@ export default async function Page() {
         </Link>
       )}
 
-      <h1 className="mb-4 pt-5 text-center text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl">
+      <h1 className="mb-4 pt-5 text-center text-4xl leading-none font-extrabold tracking-tight md:text-5xl lg:text-6xl">
         Willkommen bei der KjG
       </h1>
 

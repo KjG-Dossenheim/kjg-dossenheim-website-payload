@@ -9,35 +9,25 @@ import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 
 import type { BlogPost } from '@/payload-types'
 
 // Create a React component for the blog post page
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
-  // Await the params if they are a Promise
+  const { slug } = await params
+  const { isEnabled: draft } = await draftMode()
+  const payload = await getPayload({ config })
+  let post: BlogPost | undefined
   try {
-    const resolvedParams = await params
-    const { slug } = resolvedParams
-
-    const { isEnabled: draft } = await draftMode()
-
-    const payload = await getPayload({ config })
-
-    // Fetch the blog post using the slug
     const posts = await payload.find({
       collection: 'blogPosts',
-      // overrideAccess: false,
       draft,
       limit: 1,
       overrideAccess: draft,
       where: {
-        slug: {
-          equals: slug,
-        },
-        _status: {
-          equals: 'published',
-        },
+        slug: { equals: slug },
+        _status: { equals: 'published' },
       },
       select: {
         updatedAt: true,
@@ -47,53 +37,49 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         title: true,
       },
     })
-
-    if (!posts?.docs?.length) {
-      notFound()
-    }
-
-    const post = posts.docs[0] as BlogPost
-
-    return (
-      <Card className="mx-auto my-12 w-full max-w-3xl">
-        {draft && <RefreshRouteOnSave />}
-        <CardHeader>
-          <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
-          {post.createdAt && (
-            <CardDescription>
-              Datum:{' '}
-              {new Date(post.createdAt).toLocaleDateString('de-DE', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </CardDescription>
-          )}
-          {post.updatedAt && (
-            <CardDescription>
-              Aktualisiert am:{' '}
-              {new Date(post.updatedAt).toLocaleDateString('de-DE', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </CardDescription>
-          )}
-          {post.author && typeof post.author !== 'string' && (
-            <CardDescription>
-              Autor: {post.author.firstName} {post.author.lastName}
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent>
-          <RichText data={post.content} />
-        </CardContent>
-      </Card>
-    )
+    if (!posts?.docs?.length) return notFound()
+    post = posts.docs[0] as BlogPost
   } catch (error) {
     console.error('Error fetching blog post:', error)
-    notFound()
+    return notFound()
   }
+
+  return (
+    <Card className="container mx-auto my-12 w-full">
+      {draft && <RefreshRouteOnSave />}
+      <CardHeader>
+        <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
+        {post.createdAt && (
+          <CardDescription>
+            Datum:{' '}
+            {new Date(post.createdAt).toLocaleDateString('de-DE', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </CardDescription>
+        )}
+        {post.updatedAt && (
+          <CardDescription>
+            Aktualisiert am:{' '}
+            {new Date(post.updatedAt).toLocaleDateString('de-DE', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </CardDescription>
+        )}
+        {post.author && typeof post.author !== 'string' && (
+          <CardDescription>
+            Autor: {post.author.firstName} {post.author.lastName}
+          </CardDescription>
+        )}
+      </CardHeader>
+      <CardContent>
+        <RichText data={post.content} />
+      </CardContent>
+    </Card>
+  )
 }
 
 export async function generateStaticParams() {

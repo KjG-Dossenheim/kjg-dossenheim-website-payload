@@ -44,7 +44,7 @@ export default async function Page() {
       <AgeRangeSection alter={sommerfreizeit.alter} />
 
       <section
-        className="mx-auto max-w-(--breakpoint-xl) space-y-6 p-6 sm:space-y-8 sm:p-8 lg:space-y-10 lg:p-10"
+        className="container mx-auto space-y-6 p-6 sm:space-y-8 sm:p-8 lg:space-y-10 lg:p-10"
         id="info"
       >
         <PricingSection

@@ -71,16 +71,5 @@ export const Footer: GlobalConfig = {
             maxRows: 5,
             required: true,
         },
-        {
-            name: "logo",
-            label: "Logo",
-            type: "upload",
-            relationTo: "media",
-            required: true,
-            admin: {
-                description: "Das Logo wird im Footer angezeigt.",
-                position: "sidebar",
-            },
-        }
     ],
 };

@@ -34,6 +34,12 @@ export const Header: GlobalConfig = {
           required: true,
         },
         {
+          name: "url",
+          label: "URL",
+          type: "text",
+          required: true,
+        },
+        {
           name: "enabled",
           label: "Enabled",
           type: "checkbox",
@@ -48,16 +54,18 @@ export const Header: GlobalConfig = {
       label: "Navigation",
       type: "array",
       index: true,
+      required: true,
+      minRows: 1,
       fields: [
         {
-          name: "label",
-          label: "Label",
+          name: "title",
+          label: "Title",
           type: "text",
           required: true,
         },
         {
-          name: "link",
-          label: "Link",
+          name: "url",
+          label: "URL",
           type: "text",
           required: true,
         },
@@ -73,8 +81,20 @@ export const Header: GlobalConfig = {
               required: true,
             },
             {
+              name: "title",
+              label: "Title",
+              type: "text",
+              required: true,
+            },
+            {
               name: "link",
               label: "Link",
+              type: "text",
+              required: true,
+            },
+            {
+              name: "url",
+              label: "URL",
               type: "text",
               required: true,
             },
@@ -83,9 +103,6 @@ export const Header: GlobalConfig = {
           maxRows: 5,
         }
       ],
-      minRows: 1,
-      maxRows: 5,
-      required: true,
     },
     {
       name: "aktionen",
@@ -101,8 +118,20 @@ export const Header: GlobalConfig = {
           required: true,
         },
         {
+          name: "title",
+          label: "Title",
+          type: "text",
+          required: true,
+        },
+        {
           name: "link",
           label: "Link",
+          type: "text",
+          required: true,
+        },
+        {
+          name: "url",
+          label: "URL",
           type: "text",
           required: true,
         },

@@ -17,7 +17,7 @@ export default async function FooterServer() {
   })
 
   return (
-    <footer className="mx-auto max-w-screen-xl p-4">
+    <footer className="container mx-auto p-4">
       <Card className="max-h-fit">
         <div className="flex flex-wrap md:flex-row md:justify-end">
           <CardContent className="max-h-fit space-y-1 p-6">
