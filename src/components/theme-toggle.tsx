@@ -38,7 +38,7 @@ export function ModeToggle() {
   if (!isMounted) {
     return (
       <Button variant="outline" size="icon">
-        <SunMoon className="size-5" />
+        <SunMoon className="size-4" />
         <span className="sr-only">Loading theme toggle</span>
       </Button>
     )
@@ -48,7 +48,7 @@ export function ModeToggle() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
-          <ThemeIcon className="size-5" />
+          <ThemeIcon className="size-4" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>

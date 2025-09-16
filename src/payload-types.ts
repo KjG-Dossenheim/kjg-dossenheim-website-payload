@@ -1387,9 +1387,8 @@ export interface Header {
     id?: string | null;
   }[];
   aktionen: {
-    name: string;
+    icon: string;
     title: string;
-    link: string;
     url: string;
     id?: string | null;
   }[];
@@ -1704,9 +1703,8 @@ export interface HeaderSelect<T extends boolean = true> {
   aktionen?:
     | T
     | {
-        name?: T;
+        icon?: T;
         title?: T;
-        link?: T;
         url?: T;
         id?: T;
       };

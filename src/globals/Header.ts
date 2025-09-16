@@ -112,20 +112,14 @@ export const Header: GlobalConfig = {
       index: true,
       fields: [
         {
-          name: "name",
-          label: "Name",
-          type: "text",
+          name: 'icon',
+          label: 'Icon (SVG)',
+          type: 'text',
           required: true,
         },
         {
           name: "title",
           label: "Title",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "link",
-          label: "Link",
           type: "text",
           required: true,
         },

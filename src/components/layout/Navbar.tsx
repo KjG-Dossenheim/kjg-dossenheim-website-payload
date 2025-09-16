@@ -16,7 +16,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/ctaButton'
 import type { Header } from '@/payload-types'
-import { Startseite } from '../../payload-types'
+import Link from 'next/link'
 
 import {
   Accordion,
@@ -35,53 +35,7 @@ interface MenuItem {
   url: string
   description?: string
   icon?: React.ReactNode
-  subNavigation?: MenuItem[]
-}
-
-function MobileNavigation({ header }: { header: Header }) {
-  return (
-    <Sheet>
-      <SheetTrigger asChild className="m-2 md:hidden">
-        <Button variant="outline" size="icon" aria-label="Toggle menu">
-          <Menu />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left">
-        <SheetHeader>
-          <SheetTitle className="text-left">KjG Dossenheim</SheetTitle>
-        </SheetHeader>
-        <div className="space-y-0.5">
-          <NavigationMenuItem className="list-none">
-            <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-              Startseite
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="list-none">
-            <NavigationMenuLink href="/aktionen" className={navigationMenuTriggerStyle()}>
-              Jahresplan
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          {header.aktionen?.map((component) => (
-            <NavigationMenuItem key={component.id} className="list-none">
-              <NavigationMenuLink
-                href={`/${component.url}`}
-                className={navigationMenuTriggerStyle()}
-              >
-                {component.name}
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          ))}
-          {header.navigation?.map((item) => (
-            <NavigationMenuItem key={item.id} className="list-none">
-              <NavigationMenuLink href={`/${item.url}`} className={navigationMenuTriggerStyle()}>
-                {item.title}
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          ))}
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
+  subNavigation?: MenuItem[] | null
 }
 
 function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
@@ -101,9 +55,9 @@ function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
             <NavigationMenuLink
               className={navigationMenuTriggerStyle()}
               href={component.url}
-              title={component.name}
+              title={component.title}
             >
-              {component.name}
+              {component.title}
             </NavigationMenuLink>
           </NavigationMenuItem>
         ))}
@@ -120,15 +74,15 @@ function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
         </AccordionTrigger>
         <AccordionContent className="mt-2">
           {aktionen?.map((subItem) => (
-            <a
+            <Link
               key={subItem.id}
               className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
               href={`${subItem.url}`}
             >
               <div>
-                <div className="text-sm font-semibold">{subItem.name}</div>
+                <div className="text-sm font-semibold">{subItem.title}</div>
               </div>
-            </a>
+            </Link>
           ))}
         </AccordionContent>
       </AccordionItem>
@@ -136,60 +90,18 @@ function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
   )
 }
 
-function DesktopNavigation({ header }: { header: Header }) {
-  return (
-    <NavigationMenuList className="hidden md:flex">
-      <NavigationMenuItem>
-        <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-          Startseite
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
-        <ActionsSubmenu aktionen={header.aktionen} />
-      </NavigationMenuItem>
-      {header.navigation?.map((item) =>
-        item.subNavigation && item.subNavigation.length > 0 ? (
-          <NavigationMenuItem key={item.id}>
-            <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-4">
-                <li>
-                  {item.subNavigation.map((subItem) => (
-                    <NavigationMenuLink asChild key={subItem.id}>
-                      <a href={`/${subItem.url}`}>{subItem.title}</a>
-                    </NavigationMenuLink>
-                  ))}
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        ) : (
-          <NavigationMenuItem key={item.id}>
-            <NavigationMenuLink href={`/${item.url}`} className={navigationMenuTriggerStyle()}>
-              {item.title}
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ),
-      )}
-      {header.cta?.enabled && <CtaButton cta={header.cta} />}
-      <ModeToggle />
-    </NavigationMenuList>
-  )
-}
-
 export default async function Navbar() {
   const header = await fetchHeaderData()
   return (
-    <section className="bg-background sticky top-0 z-50 p-2 shadow-xs">
+    <section className="bg-background sticky top-0 z-50 p-2 shadow-sm backdrop-blur-md">
       <div className="lg:container lg:mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center pl-6">
               <span className="text-lg font-semibold tracking-tighter">KjG Dossenheim</span>
-            </a>
+            </Link>
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -202,7 +114,9 @@ export default async function Navbar() {
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger>Aktionen</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors">
+                      Aktionen
+                    </NavigationMenuTrigger>
                     <ActionsSubmenu aktionen={header.aktionen} />
                   </NavigationMenuItem>
                   {header.navigation.map((item) => renderMenuItem(item))}
@@ -222,9 +136,9 @@ export default async function Navbar() {
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter">KjG Dossenheim</span>
-            </a>
+            <Link href="/" className="flex items-center gap-2">
+              <span className="pl-2 text-lg font-semibold tracking-tighter">KjG Dossenheim</span>
+            </Link>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -234,20 +148,20 @@ export default async function Navbar() {
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    <a href={header.logo?.url} className="flex items-center gap-2">
+                    {/* <Link href={header.logo?.url} className="flex items-center gap-2">
                       <img
                         src={header.logo?.src}
                         className="max-h-8 dark:invert"
                         alt={header.logo?.alt}
                       />
-                    </a>
+                    </Link> */}
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
                   <Accordion type="single" collapsible className="flex w-full flex-col gap-4">
-                    <a href="/" className="text-md font-semibold">
+                    <Link href="/" className="text-md font-semibold">
                       Startseite
-                    </a>
+                    </Link>
                     <MobileActionsSubmenu aktionen={header.aktionen} />
                     {header.navigation.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
@@ -274,7 +188,7 @@ const renderMenuItem = (item: MenuItem) => {
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent className="bg-popover text-popover-foreground">
           {item.subNavigation.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-80">
+            <NavigationMenuLink asChild key={subItem.title}>
               <SubMenuLink item={subItem} />
             </NavigationMenuLink>
           ))}
@@ -312,9 +226,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
+    <Link key={item.title} href={item.url} className="text-md font-semibold">
       {item.title}
-    </a>
+    </Link>
   )
 }
 

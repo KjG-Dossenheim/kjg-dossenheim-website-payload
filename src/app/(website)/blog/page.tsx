@@ -2,7 +2,6 @@
 export const revalidate = 60 // 1 Minute
 
 import React from 'react'
-import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
@@ -58,14 +57,14 @@ export default async function BlogPage() {
     errorMsg = 'Fehler beim Laden der Blog-Einträge.'
   }
   return (
-    <main className="container mx-auto px-4 py-12">
-      <h1 className="mb-8 text-3xl font-bold">Blog</h1>
+    <main className="container mx-auto">
+      <h1 className="p-6 text-3xl font-bold">Blog</h1>
       {errorMsg ? (
         <p className="text-red-600">{errorMsg}</p>
       ) : posts.length === 0 ? (
         <p className="text-gray-600">Keine Blog-Einträge gefunden.</p>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <BlogCard key={post.id} post={post} />
           ))}

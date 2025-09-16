@@ -46,41 +46,39 @@ function TeamMemberCard({ member }: { member: Team }) {
   const hasProfilePicture = typeof member.profilePicture === 'object' && member.profilePicture?.url
 
   return (
-    <Link href={`/team/${member.id}`} key={member.id} id={member.id} className="w-full max-w-sm">
-      <Card>
-        <div className="flex cursor-pointer items-center transition-shadow hover:shadow-md">
-          <Avatar className="m-6 mr-0 size-16">
-            {hasProfilePicture ? (
-              <AvatarImage
-                src={(member.profilePicture as { url: string }).url}
-                alt={`${member.firstName} ${member.lastName}`}
-              />
-            ) : (
-              <AvatarFallback>
-                {member.firstName.charAt(0)}
-                {member.lastName.charAt(0)}
-              </AvatarFallback>
+    <Link href={`/team/${member.id}`} key={member.id} id={member.id} className="w-full">
+      <div className="flex items-center rounded-lg hover:ring">
+        <Avatar className="m-6 mr-0 size-16 ring">
+          {hasProfilePicture ? (
+            <AvatarImage
+              src={(member.profilePicture as { url: string }).url}
+              alt={`${member.firstName} ${member.lastName}`}
+            />
+          ) : (
+            <AvatarFallback>
+              {member.firstName.charAt(0)}
+              {member.lastName.charAt(0)}
+            </AvatarFallback>
+          )}
+        </Avatar>
+        <CardHeader>
+          <CardTitle>
+            {member.firstName} {member.lastName}
+          </CardTitle>
+          <CardDescription className="flex flex-wrap gap-2">
+            {member.position.map((position) => (
+              <Badge className="uppercase" key={position} variant={'outline'}>
+                {position}
+              </Badge>
+            ))}
+            {member.email && (
+              <Badge className="uppercase" variant={'outline'}>
+                <Mail className="size-4" />
+              </Badge>
             )}
-          </Avatar>
-          <CardHeader>
-            <CardTitle>
-              {member.firstName} {member.lastName}
-            </CardTitle>
-            <CardDescription className="flex flex-wrap gap-2">
-              {member.position.map((position) => (
-                <Badge className="uppercase" key={position} variant={'outline'}>
-                  {position}
-                </Badge>
-              ))}
-              {member.email && (
-                <Badge className="uppercase" variant={'outline'}>
-                  <Mail className="size-4" />
-                </Badge>
-              )}
-            </CardDescription>
-          </CardHeader>
-        </div>
-      </Card>
+          </CardDescription>
+        </CardHeader>
+      </div>
     </Link>
   )
 }
@@ -90,11 +88,12 @@ export default async function TeamPage() {
 
   return (
     <section className="container mx-auto">
-      <div className="p-6 text-center">
-        <h1 className="text-4xl font-bold">Unser Team</h1>
-      </div>
+      <CardHeader>
+        <CardTitle>Unser Team</CardTitle>
+        <CardDescription>Hier findest du alle Mitglieder des KjG Dossenheim Teams</CardDescription>
+      </CardHeader>
       {teamMembers.length > 0 ? (
-        <div className="flex flex-wrap justify-center gap-4 p-4">
+        <div className="grid gap-6 p-4 md:grid-cols-2 lg:grid-cols-3">
           {teamMembers.map((member) => (
             <TeamMemberCard key={member.id} member={member} />
           ))}

@@ -4,6 +4,7 @@ import config from '@payload-config'
 import { RichText } from '@/components/RichText'
 
 import type { Metadata } from 'next'
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 export function generateMetadata(): Metadata {
   return {
     title: 'Über uns | KjG Dossenheim',
@@ -18,9 +19,13 @@ export default async function Page() {
   })
 
   return (
-    <section className="mx-auto px-4 py-8 sm:container sm:px-6 lg:px-8 lg:py-14">
-      <h1 className="mb-8 text-center text-3xl font-bold">Über uns</h1>
-      <RichText data={about.content} />
+    <section className="container mx-auto">
+      <CardHeader>
+        <CardTitle>Über uns</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <RichText data={about.content} />
+      </CardContent>
     </section>
   )
 }

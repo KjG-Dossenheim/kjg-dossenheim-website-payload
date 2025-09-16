@@ -8,7 +8,7 @@ import type { BlogPost } from '@/payload-types'
 export function BlogCard({ post }: { post: BlogPost }) {
   const { slug, id, createdAt, title, author } = post
   return (
-    <Card key={id}>
+    <div key={id}>
       <CardHeader>
         <CardTitle className="hover:underline">
           <Link href={`/blog/${slug}`}>{title}</Link>
@@ -37,6 +37,6 @@ export function BlogCard({ post }: { post: BlogPost }) {
           <ArrowRight className="ml-2 size-4" />
         </a>
       </CardFooter>
-    </Card>
+    </div>
   )
 }
