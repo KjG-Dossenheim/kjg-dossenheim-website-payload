@@ -90,7 +90,7 @@ export default async function TeamPage() {
     <section className="container mx-auto">
       <CardHeader>
         <CardTitle>Unser Team</CardTitle>
-        <CardDescription>Hier findest du alle Mitglieder des KjG Dossenheim Teams</CardDescription>
+        <p>Hier findest du alle Mitglieder des KjG Dossenheim Teams</p>
       </CardHeader>
       {teamMembers.length > 0 ? (
         <div className="grid gap-6 p-4 md:grid-cols-2 lg:grid-cols-3">

@@ -12,6 +12,7 @@ export const Header: GlobalConfig = {
       label: "Logo",
       type: "upload",
       relationTo: "media",
+      required: true,
       admin: {
         position: 'sidebar',
       },

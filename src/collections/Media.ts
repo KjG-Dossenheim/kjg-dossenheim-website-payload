@@ -28,30 +28,39 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    adminThumbnail: 'thumbnail',
     imageSizes: [
       {
         name: 'thumbnail',
-        width: 400,
-        height: 300,
-        position: 'centre',
+        width: 300,
       },
       {
-        name: 'card',
-        width: 768,
-        height: 1024,
-        position: 'centre',
+        name: 'square',
+        width: 500,
+        height: 500,
       },
       {
-        name: 'tablet',
-        width: 1024,
-        // By specifying `undefined` or leaving a height undefined,
-        // the image will be sized to a certain width,
-        // but it will retain its original aspect ratio
-        // and calculate a height automatically.
-        height: undefined,
-        position: 'centre',
+        name: 'small',
+        width: 600,
+      },
+      {
+        name: 'medium',
+        width: 900,
+      },
+      {
+        name: 'large',
+        width: 1400,
+      },
+      {
+        name: 'xlarge',
+        width: 1920,
+      },
+      {
+        name: 'og',
+        width: 1200,
+        height: 630,
+        crop: 'center',
       },
     ],
-    adminThumbnail: 'thumbnail',
   }
 }

@@ -45,7 +45,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <Card className="container mx-auto my-12 w-full">
+    <div className="container mx-auto">
       {draft && <RefreshRouteOnSave />}
       <CardHeader>
         <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
@@ -78,7 +78,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <CardContent>
         <RichText data={post.content} />
       </CardContent>
-    </Card>
+    </div>
   )
 }
 

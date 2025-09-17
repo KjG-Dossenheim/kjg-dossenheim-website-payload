@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/ctaButton'
 import type { Header } from '@/payload-types'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import {
   Accordion,
@@ -24,6 +25,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+
+import { DynamicIcon } from 'lucide-react/dynamic'
+import type { IconName } from 'lucide-react/dynamic'
 
 async function fetchHeaderData() {
   const payload = await getPayload({ config })
@@ -51,13 +55,12 @@ function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
           </NavigationMenuLink>
         </NavigationMenuItem>
         {aktionen?.map((component) => (
-          <NavigationMenuItem key={component.id}>
-            <NavigationMenuLink
-              className={navigationMenuTriggerStyle()}
-              href={component.url}
-              title={component.title}
-            >
-              {component.title}
+          <NavigationMenuItem key={component.id} className="flex flex-row items-center">
+            <NavigationMenuLink asChild>
+              <Link href={component.url} className="flex-row items-center gap-2">
+                <DynamicIcon name={component.icon as IconName} className="size-4" />
+                {component.title}
+              </Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         ))}
@@ -93,14 +96,22 @@ function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
 export default async function Navbar() {
   const header = await fetchHeaderData()
   return (
-    <section className="bg-background sticky top-0 z-50 p-2 shadow-sm backdrop-blur-md">
+    <section className="bg-background sticky top-0 z-50 p-2">
       <div className="lg:container lg:mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
             <Link href="/" className="flex items-center pl-6">
-              <span className="text-lg font-semibold tracking-tighter">KjG Dossenheim</span>
+              {header.logo && typeof header.logo !== 'string' && header.logo.url && (
+                <Image
+                  src={header.logo.url}
+                  alt={header.logo.alt || 'Logo'}
+                  width={32}
+                  height={32}
+                  className="h-8 w-auto"
+                />
+              )}
             </Link>
             <div className="flex items-center">
               <NavigationMenu>
@@ -136,15 +147,26 @@ export default async function Navbar() {
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <span className="pl-2 text-lg font-semibold tracking-tighter">KjG Dossenheim</span>
+            <Link href="/" className="flex items-center gap-2 pl-2">
+              {header.logo && typeof header.logo !== 'string' && header.logo.url && (
+                <Image
+                  src={header.logo.url}
+                  alt={header.logo.alt || 'Logo'}
+                  width={32}
+                  height={32}
+                  className="h-8 w-auto"
+                />
+              )}
             </Link>
             <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
+              <div className="flex items-center gap-2">
+                <ModeToggle />
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="size-4" />
+                  </Button>
+                </SheetTrigger>
+              </div>
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>

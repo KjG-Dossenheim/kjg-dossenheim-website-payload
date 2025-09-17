@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card'
 
 import { Button } from '@/components/ui/button'
+import Link from 'next/dist/client/link'
 
 export default async function Page() {
   const payload = await getPayload({ config })
@@ -27,7 +28,9 @@ export default async function Page() {
           <CardDescription></CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button>Mehr</Button>
+          <Button asChild>
+            <Link href="/datenschutz/agb/">Mehr</Link>
+          </Button>
         </CardFooter>
       </Card>
       <Card className="w-full">
@@ -36,7 +39,9 @@ export default async function Page() {
           <CardDescription></CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button>Mehr</Button>
+          <Button asChild>
+            <Link href="/datenschutz/sommerfreizeit/">Mehr</Link>
+          </Button>
         </CardFooter>
       </Card>
       <Card className="w-full">
@@ -45,7 +50,9 @@ export default async function Page() {
           <CardDescription></CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button>Mehr</Button>
+          <Button asChild>
+            <Link href="/datenschutz/pretix/">Mehr</Link>
+          </Button>
         </CardFooter>
       </Card>
     </section>

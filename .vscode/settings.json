@@ -14,24 +14,16 @@
   "workbench.editor.customLabels.patterns": {
     "**/app/**/page.tsx": "(${dirname})/page.${extname}",
     "**/app/**/layout.tsx": "(${dirname})/layout.${extname}",
-    "**/app/**/index.tsx": "(${dirname})/index.${extname}"
+    "**/app/**/index.tsx": "(${dirname})/index.${extname}",
+    "**/collections/**/index.ts": "(${dirname})/index.${extname}",
+    "**/globals/**/index.ts": "(${dirname})/index.${extname}"
   },
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "tailwindCSS.classAttributes": [
-    "class",
-    "className",
-    "theme"
-  ],
+  "tailwindCSS.classAttributes": ["class", "className", "theme"],
   "tailwindCSS.experimental.classRegex": [
-    [
-      "twMerge\\(([^)]*)\\)",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
-    ],
-    [
-      "createTheme(?:<\\w+>)?\\s*\\(([^)]*)\\)",
-      "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"
-    ]
+    ["twMerge\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["createTheme(?:<\\w+>)?\\s*\\(([^)]*)\\)", "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"]
   ]
 }

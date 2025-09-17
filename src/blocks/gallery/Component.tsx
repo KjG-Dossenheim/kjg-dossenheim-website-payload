@@ -9,7 +9,7 @@ export default function GalleryBlockServer({
   return (
     <div>
       {images.map((image, index) => (
-        <div key={index} style={{ marginBottom: '1rem' }}>
+        <div key={index}>
           <Image src={image.url} alt={image.alt} width={500} height={500} />
         </div>
       ))}

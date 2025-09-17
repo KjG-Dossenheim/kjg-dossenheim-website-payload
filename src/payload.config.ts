@@ -61,6 +61,9 @@ import { Sommerfreizeit } from './globals/Sommerfreizeit'
 import { Adventsmarkt } from './globals/Adventsmarkt'
 import { Martinsumzug } from './globals/Martinsumzug'
 import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
+import { Knallbonbon } from './globals/Knallbonbon'
+import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
+import { knallbonbonEvents } from './collections/knallbonbonEvents'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -90,8 +93,8 @@ export default buildConfig({
       collections: [''],
     }, */
   },
-  collections: [Jahresplan, blogPosts, blogCategory, Team, TeamBilder, Users, Media],
-  globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches],
+  collections: [Jahresplan, blogPosts, blogCategory, Team, TeamBilder, Users, Media, knallbonbonRegistration, knallbonbonEvents],
+  globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches, Knallbonbon],
   editor: lexicalEditor({
     features: ({ defaultFeatures, rootFeatures }) => [
       BoldFeature(),
@@ -170,10 +173,6 @@ export default buildConfig({
         labels: {
           singular: 'Formular',
           plural: 'Formulare',
-        },
-        access: {
-          read: ({ req: { user } }) => !!user, // authenticated users only
-          update: () => false,
         },
         fields: ({ defaultFields }) => {
           return [

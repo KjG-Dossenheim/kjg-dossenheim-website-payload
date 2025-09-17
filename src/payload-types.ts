@@ -73,6 +73,8 @@ export interface Config {
     team: Team;
     teambilder: Teambilder;
     media: Media;
+    knallbonbonRegistration: KnallbonbonRegistration;
+    knallbonbonEvents: KnallbonbonEvent;
     forms: Form;
     'form-submissions': FormSubmission;
     users: User;
@@ -93,6 +95,8 @@ export interface Config {
     team: TeamSelect<false> | TeamSelect<true>;
     teambilder: TeambilderSelect<false> | TeambilderSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    knallbonbonRegistration: KnallbonbonRegistrationSelect<false> | KnallbonbonRegistrationSelect<true>;
+    knallbonbonEvents: KnallbonbonEventsSelect<false> | KnallbonbonEventsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -114,6 +118,7 @@ export interface Config {
     header: Header;
     footer: Footer;
     rechtliches: Rechtlich;
+    knallbonbon: Knallbonbon;
   };
   globalsSelect: {
     startseite: StartseiteSelect<false> | StartseiteSelect<true>;
@@ -125,6 +130,7 @@ export interface Config {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     rechtliches: RechtlichesSelect<false> | RechtlichesSelect<true>;
+    knallbonbon: KnallbonbonSelect<false> | KnallbonbonSelect<true>;
   };
   locale: null;
   user: User & {
@@ -344,7 +350,7 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    card?: {
+    square?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -352,7 +358,39 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    tablet?: {
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    xlarge?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -361,6 +399,40 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonRegistration".
+ */
+export interface KnallbonbonRegistration {
+  id: string;
+  firstNameParent: string;
+  lastNameParent: string;
+  firstNameChild: string;
+  lastNameChild: string;
+  email: string;
+  phone?: string | null;
+  address?: string | null;
+  photoConsent: boolean;
+  event: string | KnallbonbonEvent;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonEvents".
+ */
+export interface KnallbonbonEvent {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  /**
+   * Weitere Details zum Termin, z.B. Treffpunkt oder besondere Hinweise.
+   */
+  additionalInfo?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -678,6 +750,14 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
+        relationTo: 'knallbonbonRegistration';
+        value: string | KnallbonbonRegistration;
+      } | null)
+    | ({
+        relationTo: 'knallbonbonEvents';
+        value: string | KnallbonbonEvent;
+      } | null)
+    | ({
         relationTo: 'forms';
         value: string | Form;
       } | null)
@@ -841,7 +921,7 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        card?:
+        square?:
           | T
           | {
               url?: T;
@@ -851,7 +931,47 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        tablet?:
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        xlarge?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
           | T
           | {
               url?: T;
@@ -862,6 +982,35 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonRegistration_select".
+ */
+export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
+  firstNameParent?: T;
+  lastNameParent?: T;
+  firstNameChild?: T;
+  lastNameChild?: T;
+  email?: T;
+  phone?: T;
+  address?: T;
+  photoConsent?: T;
+  event?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonEvents_select".
+ */
+export interface KnallbonbonEventsSelect<T extends boolean = true> {
+  title?: T;
+  date?: T;
+  location?: T;
+  additionalInfo?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1365,7 +1514,7 @@ export interface About {
  */
 export interface Header {
   id: string;
-  logo?: (string | null) | Media;
+  logo: string | Media;
   cta: {
     title: string;
     link: string;
@@ -1491,6 +1640,20 @@ export interface Rechtlich {
       [k: string]: unknown;
     };
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbon".
+ */
+export interface Knallbonbon {
+  id: string;
+  title: string;
+  /**
+   * Kurze Beschreibung, die auf der Website angezeigt wird.
+   */
+  description: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1765,6 +1928,17 @@ export interface RechtlichesSelect<T extends boolean = true> {
     | {
         text?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbon_select".
+ */
+export interface KnallbonbonSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
