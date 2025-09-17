@@ -1,10 +1,10 @@
 // app/server-sitemap-index.xml/route.ts
-import { getServerSideSitemapIndex } from 'next-sitemap'
+import { getServerSideSitemap } from 'next-sitemap'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
 
-export async function GET(request: Request) {
+export async function GET() {
   // Method to source urls from cms
   const payload = await getPayload({ config })
   const blogPosts = await payload.find({
@@ -12,7 +12,10 @@ export async function GET(request: Request) {
     limit: 100,
   })
 
-  return getServerSideSitemapIndex([
-    ...blogPosts.docs.map((post) => `${process.env.SITE_URL}/blog/${post.slug}`),
+  return getServerSideSitemap([
+    ...blogPosts.docs.map((post) => ({
+      loc: `${process.env.SITE_URL}/blog/${post.slug}`,
+      lastmod: post.updatedAt,
+    })),
   ])
 }
