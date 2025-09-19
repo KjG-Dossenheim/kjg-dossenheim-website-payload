@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
-import { formatSlug } from './hooks/formatSlug'
 import { slugField } from '@/fields/slug'
+import { revalidatePath } from 'next/cache'
 
 export const blogPosts: CollectionConfig = {
   slug: 'blogPosts',
@@ -16,6 +16,13 @@ export const blogPosts: CollectionConfig = {
         },
       }
     },
+  },
+  hooks: {
+    afterChange: [
+      ({ doc }) => {
+        revalidatePath('/blog/' + doc.slug);
+      },
+    ],
   },
   versions: {
     drafts: {

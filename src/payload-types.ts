@@ -75,6 +75,7 @@ export interface Config {
     media: Media;
     knallbonbonRegistration: KnallbonbonRegistration;
     knallbonbonEvents: KnallbonbonEvent;
+    membershipApplication: MembershipApplication;
     forms: Form;
     'form-submissions': FormSubmission;
     users: User;
@@ -97,6 +98,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     knallbonbonRegistration: KnallbonbonRegistrationSelect<false> | KnallbonbonRegistrationSelect<true>;
     knallbonbonEvents: KnallbonbonEventsSelect<false> | KnallbonbonEventsSelect<true>;
+    membershipApplication: MembershipApplicationSelect<false> | MembershipApplicationSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -436,6 +438,27 @@ export interface KnallbonbonEvent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "membershipApplication".
+ */
+export interface MembershipApplication {
+  id: string;
+  firstName: string;
+  lastName: string;
+  name?: string | null;
+  birthDate: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  email: string;
+  phone?: string | null;
+  status: 'new' | 'in_review' | 'completed' | 'rejected';
+  notes?: string | null;
+  consentToDataProcessing: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms".
  */
 export interface Form {
@@ -758,6 +781,10 @@ export interface PayloadLockedDocument {
         value: string | KnallbonbonEvent;
       } | null)
     | ({
+        relationTo: 'membershipApplication';
+        value: string | MembershipApplication;
+      } | null)
+    | ({
         relationTo: 'forms';
         value: string | Form;
       } | null)
@@ -1009,6 +1036,26 @@ export interface KnallbonbonEventsSelect<T extends boolean = true> {
   date?: T;
   location?: T;
   additionalInfo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "membershipApplication_select".
+ */
+export interface MembershipApplicationSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  name?: T;
+  birthDate?: T;
+  address?: T;
+  city?: T;
+  postalCode?: T;
+  email?: T;
+  phone?: T;
+  status?: T;
+  notes?: T;
+  consentToDataProcessing?: T;
   updatedAt?: T;
   createdAt?: T;
 }

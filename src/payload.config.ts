@@ -64,6 +64,8 @@ import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 import { Knallbonbon } from './globals/Knallbonbon'
 import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
 import { knallbonbonEvents } from './collections/knallbonbonEvents'
+import { membershipApplication } from './collections/membershipApplication'
+import { secondsInDay } from 'date-fns/constants'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -93,7 +95,7 @@ export default buildConfig({
       collections: [''],
     }, */
   },
-  collections: [Jahresplan, blogPosts, blogCategory, Team, TeamBilder, Users, Media, knallbonbonRegistration, knallbonbonEvents],
+  collections: [Jahresplan, blogPosts, blogCategory, Team, TeamBilder, Users, Media, knallbonbonRegistration, knallbonbonEvents, membershipApplication],
   globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches, Knallbonbon],
   editor: lexicalEditor({
     features: ({ defaultFeatures, rootFeatures }) => [
@@ -151,7 +153,7 @@ export default buildConfig({
     // Nodemailer transportOptions
     transportOptions: {
       host: process.env.SMTP_HOST,
-      port: 587,
+      secure: true,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,

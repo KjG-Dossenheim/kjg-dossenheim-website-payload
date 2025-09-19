@@ -9,7 +9,7 @@ import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
 
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
+import { CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 
 import type { BlogPost } from '@/payload-types'
 
@@ -35,6 +35,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         author: true,
         content: true,
         title: true,
+        slug: true,
       },
     })
     if (!posts?.docs?.length) return notFound()
@@ -46,6 +47,31 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   return (
     <div className="container mx-auto">
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: post.title,
+            datePublished: post.createdAt,
+            dateModified: post.updatedAt,
+            author:
+              post.author && typeof post.author !== 'string'
+                ? {
+                    '@type': 'Person',
+                    name: `${post.author.firstName} ${post.author.lastName}`,
+                  }
+                : undefined,
+            articleBody: typeof post.content === 'string' ? post.content : undefined,
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': `${process.env.SITE_URL}/blog/${post.slug}`,
+            },
+          }),
+        }}
+      />
       {draft && <RefreshRouteOnSave />}
       <CardHeader>
         <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>

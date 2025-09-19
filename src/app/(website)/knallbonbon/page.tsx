@@ -7,6 +7,8 @@ import Date from '@/components/date'
 import type { Metadata } from 'next'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
+export const revalidate = 60 // seconds (regenerate every 1 minute)
+
 export function generateMetadata(): Metadata {
   return {
     title: 'Knallbonbon | KjG Dossenheim',

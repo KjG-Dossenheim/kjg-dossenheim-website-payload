@@ -10,7 +10,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -135,12 +134,21 @@ export default async function Navbar() {
               </NavigationMenu>
             </div>
           </div>
-          {header.cta?.enabled && (
-            <div className="flex gap-2">
-              <CtaButton cta={header.cta} />
-            </div>
-          )}
-          <ModeToggle />
+          <div className="flex gap-2">
+            <Button asChild>
+              <Link href="/mitglied">Mitglied werden</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link
+                href="https://www.paypal.com/donate/?hosted_button_id=VNX7B928TD4JE"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Spenden
+              </Link>
+            </Button>
+            <ModeToggle />
+          </div>
         </nav>
 
         {/* Mobile Menu */}
@@ -187,12 +195,20 @@ export default async function Navbar() {
                     <MobileActionsSubmenu aktionen={header.aktionen} />
                     {header.navigation.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
-                  {header.cta?.enabled && (
-                    <div className="flex flex-col gap-3">
-                      <CtaButton cta={header.cta} />
-                    </div>
-                  )}
-                  <CtaButton cta={header.cta} />
+                  <div className="flex flex-col gap-2">
+                    <Button asChild>
+                      <Link href="/mitglied">Mitglied werden</Link>
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <Link
+                        href="https://www.paypal.com/donate/?hosted_button_id=VNX7B928TD4JE"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Spenden
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
