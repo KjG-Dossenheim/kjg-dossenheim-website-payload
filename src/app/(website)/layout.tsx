@@ -1,8 +1,11 @@
-import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import Navbar from '@/components/layout/Navbar'
+
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
 import React, { ReactNode } from 'react'
 import { ThemeProvider } from '@/components/theme-provider'
-import { PayloadAdminBar } from '@payloadcms/admin-bar'
 
 import '@/styles/globals.css'
 
@@ -22,7 +25,11 @@ export function generateMetadata(): Metadata {
   }
 }
 
-export default function layout({ children }: { children: ReactNode }) {
+export default async function layout({ children }: { children: ReactNode }) {
+  const payload = await getPayload({ config })
+  const header = await payload.findGlobal({
+    slug: 'header',
+  })
   return (
     <html suppressHydrationWarning lang="de">
       <body>
@@ -32,7 +39,7 @@ export default function layout({ children }: { children: ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
+          <Navbar headerData={header} />
           <main className="relative min-h-svh">{children}</main>
           <Footer />
         </ThemeProvider>

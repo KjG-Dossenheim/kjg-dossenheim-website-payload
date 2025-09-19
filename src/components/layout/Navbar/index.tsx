@@ -1,6 +1,6 @@
+'use client'
+
 import React from 'react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
 import { Menu } from 'lucide-react'
 import { ModeToggle } from '@/components/theme-toggle'
 import {
@@ -27,11 +27,6 @@ import {
 
 import { DynamicIcon } from 'lucide-react/dynamic'
 import type { IconName } from 'lucide-react/dynamic'
-
-async function fetchHeaderData() {
-  const payload = await getPayload({ config })
-  return (await payload.findGlobal({ slug: 'header' })) as Header
-}
 
 interface MenuItem {
   title: string
@@ -67,6 +62,7 @@ function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
     </NavigationMenuContent>
   )
 }
+
 function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
   return (
     <div>
@@ -92,8 +88,11 @@ function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
   )
 }
 
-export default async function Navbar() {
-  const header = await fetchHeaderData()
+interface NavbarProps {
+  headerData: Header
+}
+
+export default function Navbar({ headerData }: NavbarProps) {
   return (
     <section className="bg-background sticky top-0 z-50 p-2">
       <div className="lg:container lg:mx-auto">
@@ -119,9 +118,9 @@ export default async function Navbar() {
                     <NavigationMenuTrigger className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors">
                       Aktionen
                     </NavigationMenuTrigger>
-                    <ActionsSubmenu aktionen={header.aktionen} />
+                    <ActionsSubmenu aktionen={headerData.aktionen} />
                   </NavigationMenuItem>
-                  {header.navigation.map((item) => renderMenuItem(item))}
+                  {headerData.navigation.map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
@@ -162,11 +161,11 @@ export default async function Navbar() {
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    {/* <Link href={header.logo?.url} className="flex items-center gap-2">
+                    {/* <Link href={headerData.logo?.url} className="flex items-center gap-2">
                       <img
-                        src={header.logo?.src}
+                        src={headerData.logo?.src}
                         className="max-h-8 dark:invert"
-                        alt={header.logo?.alt}
+                        alt={headerData.logo?.alt}
                       />
                     </Link> */}
                   </SheetTitle>
@@ -176,8 +175,8 @@ export default async function Navbar() {
                     <Link href="/" className="text-md font-semibold">
                       Startseite
                     </Link>
-                    <MobileActionsSubmenu aktionen={header.aktionen} />
-                    {header.navigation.map((item) => renderMobileMenuItem(item))}
+                    <MobileActionsSubmenu aktionen={headerData.aktionen} />
+                    {headerData.navigation.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
                   <div className="flex flex-col gap-2">
                     <Button asChild>
