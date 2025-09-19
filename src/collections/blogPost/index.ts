@@ -73,6 +73,49 @@ export const blogPosts: CollectionConfig = {
       required: true,
     },
     {
+      name: 'publishedAt',
+      label: 'Veröffentlicht am',
+      type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeChange: [
+          ({ siblingData, value }) => {
+            if (siblingData._status === 'published' && !value) {
+              return new Date()
+            }
+            return value
+          },
+        ],
+      },
+    },
+    {
+      name: 'author',
+      label: 'Autor',
+      type: 'relationship',
+      required: true,
+      relationTo: 'users',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    ...slugField(),
+    {
+      name: 'category',
+      label: 'Kategorie',
+      type: 'relationship',
+      relationTo: 'blogCategory',
+      hasMany: true,
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'relatedPosts',
       type: 'relationship',
       admin: {
@@ -90,28 +133,6 @@ export const blogPosts: CollectionConfig = {
       },
       hasMany: true,
       relationTo: 'blogPosts',
-    },
-    ...slugField(),
-    {
-      name: 'author',
-      label: 'Autor',
-      type: 'relationship',
-      required: true,
-      relationTo: 'users',
-      admin: {
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'category',
-      label: 'Kategorie',
-      type: 'relationship',
-      relationTo: 'blogCategory',
-      hasMany: true,
-      required: true,
-      admin: {
-        position: 'sidebar',
-      },
     },
   ],
 }

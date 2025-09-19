@@ -2,13 +2,12 @@ import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import { SiWhatsapp, SiFacebook, SiInstagram } from '@icons-pack/react-simple-icons'
 
 import { Mail, Phone } from 'lucide-react'
 
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 
 export default async function FooterServer() {
   const payload = await getPayload({ config })
@@ -24,7 +23,7 @@ export default async function FooterServer() {
           <ul className="list-none space-y-2">
             {footer.socialLinks.map((socialLink) => (
               <li key={socialLink.id}>
-                <a href={socialLink.link} className="flex items-center gap-2 hover:underline">
+                <a href={socialLink.url} className="flex items-center gap-2 hover:underline">
                   {(() => {
                     const IconMap = {
                       SiWhatsapp: SiWhatsapp,
@@ -34,7 +33,7 @@ export default async function FooterServer() {
                     const IconComponent = IconMap[socialLink.icon]
                     return IconComponent ? <IconComponent className="size-4" /> : null
                   })()}
-                  {socialLink.label}
+                  {socialLink.title}
                 </a>
               </li>
             ))}
@@ -45,7 +44,7 @@ export default async function FooterServer() {
           <ul className="list-none space-y-2">
             <li>
               <a
-                href="mailto:kontakt@kjg-dossenheim.org"
+                href={`mailto:${footer.email}`}
                 className="flex items-center gap-2 hover:underline"
               >
                 <Mail className="size-4" />
@@ -53,13 +52,13 @@ export default async function FooterServer() {
               </a>
             </li>
             <li>
-              <a href="tel:072161906054" className="flex items-center gap-2 hover:underline">
+              <a href={`tel:${footer.phone}`} className="flex items-center gap-2 hover:underline">
                 <Phone className="size-4" /> Telefon
               </a>
             </li>
             <li>
               <a
-                href="https://wa.me/4972161906054"
+                href={`https://wa.me/${footer.whatsapp}`}
                 className="flex items-center gap-2 hover:underline"
               >
                 <SiWhatsapp className="size-4" /> WhatsApp

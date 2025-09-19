@@ -15,7 +15,7 @@ export default async function Page() {
   })
 
   return (
-    <section className="mx-auto px-4 py-8 sm:container sm:px-6 lg:px-8 lg:py-14">
+    <section className="container mx-auto p-6">
       <RichText data={rechtliches.datenschutz.sommerfreizeit.text} />
     </section>
   )

@@ -20,18 +20,16 @@ async function getBlogPosts(): Promise<BlogPost[]> {
         id: true,
         title: true,
         slug: true,
-        createdAt: true,
         author: true,
         content: true,
         category: true,
-        updatedAt: true,
+        publishedAt: true,
       },
     })
     // Pre-format date for each post, ensure slug is string
     return (docs || []).map((post) => ({
       ...post,
-      createdAt: post.createdAt ? formatDate(post.createdAt) : '',
-      slug: post.slug ? String(post.slug) : '',
+      publishedAt: post.publishedAt ? formatDate(post.publishedAt) : '',
     }))
   } catch (error) {
     console.error('Error fetching blog posts:', error)

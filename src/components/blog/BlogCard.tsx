@@ -6,7 +6,7 @@ import { ArrowRight, Calendar, Contact } from 'lucide-react'
 import type { BlogPost } from '@/payload-types'
 
 export function BlogCard({ post }: { post: BlogPost }) {
-  const { slug, id, createdAt, title, author } = post
+  const { slug, id, publishedAt, title, author } = post
   return (
     <div key={id}>
       <CardHeader>
@@ -14,9 +14,9 @@ export function BlogCard({ post }: { post: BlogPost }) {
           <Link href={`/blog/${slug}`}>{title}</Link>
         </CardTitle>
         <CardDescription className="flex flex-row gap-2">
-          {createdAt && (
+          {publishedAt && (
             <span className="flex items-center gap-2">
-              <Calendar className="size-4" /> {createdAt}
+              <Calendar className="size-4" /> {publishedAt}
             </span>
           )}
           {author && (

@@ -204,11 +204,12 @@ export interface BlogPost {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (string | BlogPost)[] | null;
+  publishedAt?: string | null;
+  author: string | User;
   slug?: string | null;
   slugLock?: boolean | null;
-  author: string | User;
   category: (string | BlogCategory)[];
+  relatedPosts?: (string | BlogPost)[] | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -863,11 +864,12 @@ export interface JahresplanSelect<T extends boolean = true> {
 export interface BlogPostsSelect<T extends boolean = true> {
   title?: T;
   content?: T;
-  relatedPosts?: T;
+  publishedAt?: T;
+  author?: T;
   slug?: T;
   slugLock?: T;
-  author?: T;
   category?: T;
+  relatedPosts?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -1594,16 +1596,19 @@ export interface Header {
 export interface Footer {
   id: string;
   socialLinks: {
-    label: string;
-    link: string;
+    title: string;
+    url: string;
     icon: 'SiFacebook' | 'SiInstagram' | 'SiWhatsapp';
     id?: string | null;
   }[];
   legalLinks: {
-    label: string;
-    link: string;
+    title: string;
+    url: string;
     id?: string | null;
   }[];
+  email: string;
+  phone: string;
+  whatsapp: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1917,18 +1922,21 @@ export interface FooterSelect<T extends boolean = true> {
   socialLinks?:
     | T
     | {
-        label?: T;
-        link?: T;
+        title?: T;
+        url?: T;
         icon?: T;
         id?: T;
       };
   legalLinks?:
     | T
     | {
-        label?: T;
-        link?: T;
+        title?: T;
+        url?: T;
         id?: T;
       };
+  email?: T;
+  phone?: T;
+  whatsapp?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

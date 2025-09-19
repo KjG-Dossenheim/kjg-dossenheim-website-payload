@@ -30,8 +30,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         _status: { equals: 'published' },
       },
       select: {
-        updatedAt: true,
-        createdAt: true,
+        publishedAt: true,
         author: true,
         content: true,
         title: true,
@@ -75,20 +74,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {draft && <RefreshRouteOnSave />}
       <CardHeader>
         <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
-        {post.createdAt && (
+        {post.publishedAt && (
           <CardDescription>
-            Datum:{' '}
-            {new Date(post.createdAt).toLocaleDateString('de-DE', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </CardDescription>
-        )}
-        {post.updatedAt && (
-          <CardDescription>
-            Aktualisiert am:{' '}
-            {new Date(post.updatedAt).toLocaleDateString('de-DE', {
+            Veröffentlicht am:{' '}
+            {new Date(post.publishedAt).toLocaleDateString('de-DE', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',

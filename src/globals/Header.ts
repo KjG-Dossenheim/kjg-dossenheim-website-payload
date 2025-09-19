@@ -56,10 +56,18 @@ export const Header: GlobalConfig = {
               required: true,
             },
           ],
-          minRows: 0,
-          maxRows: 5,
+          admin: {
+            components: {
+              RowLabel: "src/components/admin/rowLable/ArrayRowLabel.tsx",
+            },
+          },
         }
       ],
+      admin: {
+        components: {
+          RowLabel: "src/components/admin/rowLable/ArrayRowLabel.tsx",
+        },
+      },
     },
     {
       name: "aktionen",
@@ -90,6 +98,11 @@ export const Header: GlobalConfig = {
           required: true,
         },
       ],
+      admin: {
+        components: {
+          RowLabel: "src/components/admin/rowLable/ArrayRowLabel.tsx",
+        },
+      },
     }
   ],
 };
