@@ -1561,13 +1561,6 @@ export interface About {
  */
 export interface Header {
   id: string;
-  logo: string | Media;
-  cta: {
-    title: string;
-    link: string;
-    url: string;
-    enabled?: boolean | null;
-  };
   navigation: {
     title: string;
     url: string;
@@ -1583,6 +1576,9 @@ export interface Header {
     id?: string | null;
   }[];
   aktionen: {
+    /**
+     * Name des Icons von https://lucide.dev/icons (z.B. "Calendar" für das Kalender-Icon)
+     */
     icon: string;
     title: string;
     url: string;
@@ -1885,15 +1881,6 @@ export interface AboutSelect<T extends boolean = true> {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
-  logo?: T;
-  cta?:
-    | T
-    | {
-        title?: T;
-        link?: T;
-        url?: T;
-        enabled?: T;
-      };
   navigation?:
     | T
     | {

@@ -13,10 +13,10 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import CtaButton from '@/components/ctaButton'
 import type { Header } from '@/payload-types'
 import Link from 'next/link'
-import Image from 'next/image'
+
+import Wortmarke from '@/components/logo/kjgWortmarke'
 
 import {
   Accordion,
@@ -102,15 +102,7 @@ export default async function Navbar() {
           <div className="flex items-center gap-6">
             {/* Logo */}
             <Link href="/" className="flex items-center pl-6">
-              {header.logo && typeof header.logo !== 'string' && header.logo.url && (
-                <Image
-                  src={header.logo.url}
-                  alt={header.logo.alt || 'Logo'}
-                  width={32}
-                  height={32}
-                  className="h-8 w-auto"
-                />
-              )}
+              <Wortmarke className="h-8 w-auto" />
             </Link>
             <div className="flex items-center">
               <NavigationMenu>
@@ -156,15 +148,7 @@ export default async function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 pl-2">
-              {header.logo && typeof header.logo !== 'string' && header.logo.url && (
-                <Image
-                  src={header.logo.url}
-                  alt={header.logo.alt || 'Logo'}
-                  width={32}
-                  height={32}
-                  className="h-8 w-auto"
-                />
-              )}
+              <Wortmarke className="h-8 w-auto" />
             </Link>
             <Sheet>
               <div className="flex items-center gap-2">

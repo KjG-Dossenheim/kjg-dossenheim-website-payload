@@ -1,4 +1,3 @@
-
 import { GlobalConfig } from "payload";
 
 export const Header: GlobalConfig = {
@@ -7,49 +6,6 @@ export const Header: GlobalConfig = {
     group: 'Einstellungen',
   },
   fields: [
-    {
-      name: "logo",
-      label: "Logo",
-      type: "upload",
-      relationTo: "media",
-      required: true,
-      admin: {
-        position: 'sidebar',
-      },
-    },
-    {
-      name: "cta",
-      label: "Call to Action",
-      type: 'group',
-      fields: [
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "link",
-          label: "Link",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "url",
-          label: "URL",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "enabled",
-          label: "Enabled",
-          type: "checkbox",
-        },
-      ],
-      admin: {
-        position: 'sidebar',
-      },
-    },
     {
       name: "navigation",
       label: "Navigation",
@@ -117,6 +73,9 @@ export const Header: GlobalConfig = {
           label: 'Icon (SVG)',
           type: 'text',
           required: true,
+          admin: {
+            description: 'Name des Icons von https://lucide.dev/icons (z.B. "Calendar" für das Kalender-Icon)',
+          },
         },
         {
           name: "title",
