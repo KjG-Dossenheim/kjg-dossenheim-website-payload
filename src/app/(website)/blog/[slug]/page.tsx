@@ -1,17 +1,24 @@
 // ⬇️ ISR-Zeit (in Sekunden) einstellen
 export const revalidate = 60 // 1 Minute
 
+// React and Next.js
 import React from 'react'
 import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
+
+// Third-party libraries
+import { RichText } from '@payloadcms/richtext-lexical/react'
+
+// Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { RichText } from '@payloadcms/richtext-lexical/react'
-import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
+import type { BlogPost } from '@/payload-types'
 
+// UI Components
 import { CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 
-import type { BlogPost } from '@/payload-types'
+// Custom Components
+import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
 
 // Create a React component for the blog post page
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

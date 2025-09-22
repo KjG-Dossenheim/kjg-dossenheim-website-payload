@@ -1,11 +1,18 @@
-import { getPayload } from 'payload'
+// React and Next.js
 import React from 'react'
-import config from '@payload-config'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+// Third-party libraries
+import { ChevronRight, Newspaper, Calendar, Users, Heart, Globe } from 'lucide-react'
+
+// Payload CMS
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+// UI Components
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { ChevronRight, Newspaper, Calendar, Users, Heart, Globe } from 'lucide-react'
-import { Metadata } from 'next'
 import { Card, CardTitle } from '@/components/ui/card'
 
 // Reusable function to get page data

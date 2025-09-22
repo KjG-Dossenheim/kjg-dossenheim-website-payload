@@ -1,20 +1,26 @@
-import { getPayload } from 'payload'
+// React and Next.js
 import React from 'react'
-import config from '@payload-config'
 
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
-import Date from '@/components/date'
-
+// Third-party libraries
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
+// Payload CMS
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+// UI Components
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
+// Custom Components
+import Date from '@/components/date'
+
+// Types
 import type { Metadata } from 'next'
 
 async function getData() {

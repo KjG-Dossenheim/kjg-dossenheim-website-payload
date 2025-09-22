@@ -1,16 +1,24 @@
 // ⬇️ ISR-Zeit (in Sekunden) einstellen
 export const revalidate = 60 // 1 Minute
 
+// React and Next.js
 import React from 'react'
-import { notFound } from 'next/navigation'
-import { getPayload } from 'payload'
 import Link from 'next/link'
-import config from '@payload-config'
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+
+// Third-party libraries
 import { Mail, Phone } from 'lucide-react'
+import { RichText } from '@payloadcms/richtext-lexical/react'
+
+// Payload CMS
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+// UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Metadata } from 'next'
 import {
   Card,
   CardContent,
@@ -19,7 +27,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { RichText } from '@payloadcms/richtext-lexical/react'
 
 // Shared function to fetch team member data to avoid code duplication
 async function getTeamMember(id: string) {

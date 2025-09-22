@@ -1,8 +1,9 @@
-import Wortmarke from '@/graphics/logo/Wortmarke'
+import Bildmarke from '@/graphics/logo/Bildmarke'
 import React from 'react'
+
 export const Logo = () => (
   <div className="logo">
-    <Wortmarke className="h-auto w-full" />
+    <Bildmarke className="h-auto w-full" />
   </div>
 )
 export default Logo

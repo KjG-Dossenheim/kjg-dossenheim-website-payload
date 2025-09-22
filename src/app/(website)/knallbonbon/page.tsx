@@ -1,13 +1,18 @@
-import { getPayload } from 'payload'
+export const revalidate = 60 // seconds (regenerate every 1 minute)
+
+// React and Next.js
 import React from 'react'
+import type { Metadata } from 'next'
+
+// Payload CMS
+import { getPayload } from 'payload'
 import config from '@payload-config'
 
-import Date from '@/components/date'
-
-import type { Metadata } from 'next'
+// UI Components
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const revalidate = 60 // seconds (regenerate every 1 minute)
+// Custom Components
+import Date from '@/components/date'
 
 export function generateMetadata(): Metadata {
   return {

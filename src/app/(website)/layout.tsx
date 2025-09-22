@@ -1,15 +1,19 @@
-import Footer from '@/components/layout/Footer'
-import Navbar from '@/components/layout/Navbar'
+// React and Next.js
+import React, { ReactNode } from 'react'
+import type { Metadata } from 'next'
 
+// Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-import React, { ReactNode } from 'react'
+// Custom Components
+import Footer from '@/components/layout/Footer'
+import Navbar from '@/components/layout/Navbar'
 import { ThemeProvider } from '@/components/theme-provider'
 
+// Styles
 import '@/styles/globals.css'
 
-import type { Metadata } from 'next'
 export function generateMetadata(): Metadata {
   return {
     title: 'KjG Dossenheim',

@@ -1,11 +1,15 @@
-import { getPayload } from 'payload'
+// React and Next.js
 import React from 'react'
-import config from '@payload-config'
+import type { Metadata } from 'next'
 
-import Date from '@/components/date'
+// Payload CMS
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
-import type { Metadata } from 'next'
+// Custom Components
+import Date from '@/components/date'
+
 export function generateMetadata(): Metadata {
   return {
     title: 'Martinsumzug | KjG Dossenheim',

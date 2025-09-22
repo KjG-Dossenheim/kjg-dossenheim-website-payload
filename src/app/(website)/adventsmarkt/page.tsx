@@ -1,10 +1,14 @@
-import { getPayload } from 'payload'
+// React and Next.js
 import React from 'react'
+import type { Metadata } from 'next'
+
+// Payload CMS
+import { getPayload } from 'payload'
 import config from '@payload-config'
+
+// Custom Components
 import Date from '@/components/date'
 import { RichText } from '@/components/RichText'
-
-import type { Metadata } from 'next'
 
 async function getData() {
   const payload = await getPayload({ config })

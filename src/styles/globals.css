@@ -1,6 +1,4 @@
 @import 'tailwindcss';
-@plugin 'flowbite-react/plugin/tailwindcss';
-@source '../../.flowbite-react/class-list.json';
 
 @plugin 'tailwindcss-animate';
 
@@ -59,16 +57,8 @@
   --color-success-800: #425217;
   --color-success-900: #21290b;
 
-  --color-warning-50: #fff7e8;
-  --color-warning-100: #feefd1;
-  --color-warning-200: #fedfa2;
-  --color-warning-300: #fdcf74;
-  --color-warning-400: #fdbf45;
-  --color-warning-500: #fcaf17;
-  --color-warning-600: #ca8c12;
-  --color-warning-700: #97690e;
-  --color-warning-800: #654609;
-  --color-warning-900: #322305;
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
 
   --color-error-50: #f4eaed;
   --color-error-100: #ead5dc;
@@ -181,7 +171,7 @@
     }
 
     a {
-      @apply text-warning-500 underline;
+      @apply text-warning underline;
     }
 
     ul {
@@ -258,6 +248,10 @@
 
     --ring: 240 10% 3.9%;
 
+    --warning: 39 100% 50%;
+
+    --warning-foreground: 240 5% 98%;
+
     --chart-1: 12 76% 61%;
 
     --chart-2: 173 58% 39%;
@@ -324,9 +318,8 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
-
   body {
     @apply bg-background text-foreground;
   }

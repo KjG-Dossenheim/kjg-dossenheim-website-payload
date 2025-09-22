@@ -87,6 +87,10 @@ export default buildConfig({
       afterLogin: [
         "@/components/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton",
       ],
+      graphics: {
+        Logo: './graphics/Logo',
+        Icon: './graphics/Icon',
+      },
     },
     /* livePreview: {
       url: ({
@@ -169,24 +173,15 @@ export default buildConfig({
       generateTitle: ({ doc }) => `${doc.title || ''}`,
       generateImage: ({ doc }) => `${process.env.SITE_URL}/api/og/?title=${encodeURIComponent(doc.title || '')}`
     }),
-    formBuilderPlugin({
+    /* formBuilderPlugin({
       formOverrides: {
         slug: 'forms',
         labels: {
           singular: 'Formular',
           plural: 'Formulare',
         },
-        fields: ({ defaultFields }) => {
-          return [
-            ...defaultFields,
-            {
-              name: 'custom',
-              type: 'text',
-            },
-          ]
-        },
       },
-    }),
+    }), */
     s3Storage({
       collections: {
         media: true,

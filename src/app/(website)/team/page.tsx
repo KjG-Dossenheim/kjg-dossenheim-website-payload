@@ -1,8 +1,19 @@
+// React and Next.js
 import React from 'react'
+import Link from 'next/link'
+import type { Metadata } from 'next'
+
+// Third-party libraries
+import { Mail } from 'lucide-react'
+
+// Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import Link from 'next/link'
+import type { Team } from '@/payload-types'
+
+// UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge, badgeVariants } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
@@ -11,11 +22,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Badge, badgeVariants } from '@/components/ui/badge'
-import type { Metadata } from 'next'
-
-import type { Team } from '@/payload-types'
-import { Mail } from 'lucide-react'
 
 // Move data fetching to a separate function for better error handling and caching
 async function getTeamMembers() {

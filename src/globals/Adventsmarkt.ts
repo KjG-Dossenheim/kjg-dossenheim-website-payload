@@ -28,6 +28,7 @@ export const Adventsmarkt: GlobalConfig = {
       label: 'Enddatum',
       name: 'endDate',
       type: 'date',
+      required: true,
       admin: {
         position: 'sidebar',
       },

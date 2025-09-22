@@ -1,11 +1,18 @@
+// React and Next.js
 import React from 'react'
+import Link from 'next/link'
+import type { Metadata } from 'next'
+
+// Third-party libraries
+import { RichText } from '@payloadcms/richtext-lexical/react'
+
+// Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { RichText } from '@payloadcms/richtext-lexical/react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
+// UI Components
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 // ⬇️ ISR-Zeit (in Sekunden) einstellen
 export const revalidate = 60 // alle 60s neue Daten abrufen

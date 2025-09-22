@@ -1,17 +1,19 @@
+// React and Next.js
 import React from 'react'
+import type { Metadata } from 'next'
 
+// Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-import { Metadata } from 'next'
-
-import HeroSection from '@/components/sommerfreizeit/HeroSection'
-import AgeRangeSection from '@/components/sommerfreizeit/AgeRangeSection'
-import PricingSection from '@/components/sommerfreizeit/PricingSection'
+// Custom Components
 import AccommodationSection from '@/components/sommerfreizeit/AccommodationSection'
-import TeamSection from '@/components/sommerfreizeit/TeamSection'
-import FeaturesSection from '@/components/sommerfreizeit/FeaturesSection'
+import AgeRangeSection from '@/components/sommerfreizeit/AgeRangeSection'
 import ContactSection from '@/components/sommerfreizeit/ContactSection'
+import FeaturesSection from '@/components/sommerfreizeit/FeaturesSection'
+import HeroSection from '@/components/sommerfreizeit/HeroSection'
+import PricingSection from '@/components/sommerfreizeit/PricingSection'
+import TeamSection from '@/components/sommerfreizeit/TeamSection'
 
 async function getData() {
   const payload = await getPayload({ config })

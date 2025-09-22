@@ -1,10 +1,16 @@
-import { getPayload } from 'payload'
+// React and Next.js
 import React from 'react'
-import config from '@payload-config'
-import { RichText } from '@/components/RichText'
-
 import type { Metadata } from 'next'
+
+// Payload CMS
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+// UI Components
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+// Custom Components
+import { RichText } from '@/components/RichText'
 export function generateMetadata(): Metadata {
   return {
     title: 'Über uns | KjG Dossenheim',

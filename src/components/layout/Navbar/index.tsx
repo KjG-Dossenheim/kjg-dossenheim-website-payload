@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button'
 import type { Header } from '@/payload-types'
 import Link from 'next/link'
 
-import Wortmarke from '@/components/logo/kjgWortmarke'
+import Wortmarke from '@/graphics/logo/Wortmarke'
 
 import {
   Accordion,

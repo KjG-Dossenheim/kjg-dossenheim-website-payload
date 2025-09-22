@@ -1,12 +1,18 @@
 // ⬇️ ISR-Zeit (in Sekunden) einstellen
 export const revalidate = 60 // 1 Minute
 
+// React and Next.js
 import React from 'react'
+
+// Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import type { BlogPost } from '@/payload-types'
 
-import type { BlogPost } from '@/payload-types' // Adjust the import path as necessary
+// UI Components
+import { CardHeader, CardTitle } from '@/components/ui/card'
 
+// Custom Components
 import { BlogCard } from '@/components/blog/BlogCard'
 
 // Fetch blog posts from Payload CMS
@@ -56,7 +62,9 @@ export default async function BlogPage() {
   }
   return (
     <main className="container mx-auto">
-      <h1 className="p-6 text-3xl font-bold">Blog</h1>
+      <CardHeader>
+        <CardTitle>Blog</CardTitle>
+      </CardHeader>
       {errorMsg ? (
         <p className="text-red-600">{errorMsg}</p>
       ) : posts.length === 0 ? (
