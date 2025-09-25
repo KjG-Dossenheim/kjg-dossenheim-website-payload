@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Menu } from 'lucide-react'
-import { ModeToggle } from '@/components/theme-toggle'
+import { ModeToggle } from '@/components/common/theme-toggle'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -42,7 +42,7 @@ function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
       <ul className="grid grid-flow-col grid-rows-2 gap-2 p-2">
         <NavigationMenuItem className="row-span-2">
           <NavigationMenuLink
-            className="from-muted/50 to-muted flex h-full w-full flex-col justify-center rounded-md bg-linear-to-b p-6 no-underline outline-hidden select-none focus:shadow-md"
+            className="bg-muted flex h-full w-full flex-col justify-center rounded-md p-6 no-underline outline-hidden select-none focus:shadow-md"
             href="/aktionen"
           >
             <div className="my-auto text-lg font-medium">Jahresplan</div>

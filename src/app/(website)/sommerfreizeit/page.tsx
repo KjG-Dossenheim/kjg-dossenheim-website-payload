@@ -7,13 +7,13 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 
 // Custom Components
-import AccommodationSection from '@/components/sommerfreizeit/AccommodationSection'
-import AgeRangeSection from '@/components/sommerfreizeit/AgeRangeSection'
-import ContactSection from '@/components/sommerfreizeit/ContactSection'
-import FeaturesSection from '@/components/sommerfreizeit/FeaturesSection'
-import HeroSection from '@/components/sommerfreizeit/HeroSection'
-import PricingSection from '@/components/sommerfreizeit/PricingSection'
-import TeamSection from '@/components/sommerfreizeit/TeamSection'
+import AccommodationSection from '@/components/features/sommerfreizeit/AccommodationSection'
+import AgeRangeSection from '@/components/features/sommerfreizeit/AgeRangeSection'
+import ContactSection from '@/components/features/sommerfreizeit/ContactSection'
+import FeaturesSection from '@/components/features/sommerfreizeit/FeaturesSection'
+import HeroSection from '@/components/features/sommerfreizeit/HeroSection'
+import PricingSection from '@/components/features/sommerfreizeit/PricingSection'
+import TeamSection from '@/components/features/sommerfreizeit/TeamSection'
 
 async function getData() {
   const payload = await getPayload({ config })

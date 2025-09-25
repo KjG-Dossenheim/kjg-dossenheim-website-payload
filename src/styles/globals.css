@@ -11,18 +11,11 @@
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
 
-  --color-accent-50: #fef3e9;
-  --color-accent-100: #fde6d2;
-  --color-accent-200: #fbcda6;
-  --color-accent-300: #f9b479;
-  --color-accent-400: #f79b4d;
-  --color-accent-500: #f58220;
-  --color-accent-600: #c4681a;
-  --color-accent-700: #934e13;
-  --color-accent-800: #62340d;
-  --color-accent-900: #311a06;
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-bordeaux: hsl(var(--bordeaux));
+  --color-bordeaux-foreground: hsl(var(--bordeaux-foreground));
 
   --color-neutral-50: #ececee;
   --color-neutral-100: #d8dadc;
@@ -203,7 +196,7 @@
     }
 
     p {
-      @apply mb-2 leading-7;
+      @apply pb-1 last:p-0;
     }
   }
 }
@@ -237,6 +230,10 @@
     --accent: 240 4.8% 95.9%;
 
     --accent-foreground: 240 5.9% 10%;
+
+    --bordeaux: 340, 54%, 38%;
+
+    --bordeaux-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
 

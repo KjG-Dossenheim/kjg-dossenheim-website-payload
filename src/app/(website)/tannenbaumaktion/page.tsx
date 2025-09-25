@@ -18,7 +18,7 @@ import {
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Custom Components
-import Date from '@/components/date'
+import Date from '@/components/common/date'
 
 // Types
 import type { Metadata } from 'next'

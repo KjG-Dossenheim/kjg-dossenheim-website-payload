@@ -24,6 +24,12 @@ export const Jahresplan: CollectionConfig = {
       required: true,
     },
     {
+      name: 'title',
+      label: 'Title',
+      type: 'text',
+      required: true,
+    },
+    {
       name: 'startDate',
       label: 'Startdatum',
       type: 'date',
@@ -47,6 +53,11 @@ export const Jahresplan: CollectionConfig = {
     {
       name: 'link',
       label: 'Link',
+      type: 'text',
+    },
+    {
+      name: 'url',
+      label: 'URL',
       type: 'text',
     }
   ],

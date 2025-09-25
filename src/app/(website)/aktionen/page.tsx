@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/timeline'
 
 // Custom Components
-import DateComponent from '@/components/date'
+import DateComponent from '@/components/common/date'
 
 export function generateMetadata(): Metadata {
   return {

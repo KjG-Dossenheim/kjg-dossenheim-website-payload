@@ -1,5 +1,14 @@
-// storage-adapter-import-placeholder
+// Node.js built-in modules
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// External packages
+import sharp from 'sharp'
+import { buildConfig } from 'payload'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+// import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 import {
   BoldFeature,
   lexicalEditor,
@@ -22,27 +31,17 @@ import {
   ChecklistFeature,
   AlignFeature,
   TextStateFeature,
-  defaultColors,
+  // defaultColors,
   UploadFeature,
   BlocksFeature
 } from '@payloadcms/richtext-lexical'
-
-import { Gallery } from './blocks/gallery/config'
-
-import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
-import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { authentikOAuth } from './lib/authentikOAuth'
-
-import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-
-import path from 'path'
-import { buildConfig } from 'payload'
-import { fileURLToPath } from 'url'
-import sharp from 'sharp'
-
 import { de } from '@payloadcms/translations/languages/de'
 
+// Relative imports - blocks
+// import { Gallery } from './blocks/gallery/config'
+
+// Relative imports - collections
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Team } from './collections/Team'
@@ -50,22 +49,24 @@ import { TeamBilder } from './collections/TeamBilder'
 import { Jahresplan } from './collections/Jahresplan'
 import { blogPosts } from './collections/blogPost'
 import { blogCategory } from './collections/blogCategory'
+import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
+import { knallbonbonEvents } from './collections/knallbonbonEvents'
+import { membershipApplication } from './collections/membershipApplication'
 
+// Relative imports - globals
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 import { Rechtliches } from './globals/Rechtliches'
 import { Startseite } from './globals/Startseite'
 import { About } from './globals/About'
-
 import { Sommerfreizeit } from './globals/Sommerfreizeit'
 import { Adventsmarkt } from './globals/Adventsmarkt'
 import { Martinsumzug } from './globals/Martinsumzug'
 import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 import { Knallbonbon } from './globals/Knallbonbon'
-import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
-import { knallbonbonEvents } from './collections/knallbonbonEvents'
-import { membershipApplication } from './collections/membershipApplication'
-import { secondsInDay } from 'date-fns/constants'
+
+// Relative imports - lib
+import { authentikOAuth } from './lib/authentikOAuth'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -85,7 +86,7 @@ export default buildConfig({
     dateFormat: 'dd.MM.yyyy',
     components: {
       afterLogin: [
-        "@/components/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton",
+        "@/components/admin/button/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton",
       ],
       graphics: {
         Logo: './graphics/Logo',

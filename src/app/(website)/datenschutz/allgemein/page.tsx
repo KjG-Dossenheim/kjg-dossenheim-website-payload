@@ -1,7 +1,7 @@
 import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'
-import { RichText } from '@/components/RichText'
+import { RichText } from '@/components/utils/RichText'
 
 export default async function Page() {
   const payload = await getPayload({ config })

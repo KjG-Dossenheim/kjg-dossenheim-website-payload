@@ -22,6 +22,9 @@ export const Adventsmarkt: GlobalConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+        date: {
+          displayFormat: 'dd.MM.yyyy',
+        },
       },
     },
     {
@@ -31,6 +34,9 @@ export const Adventsmarkt: GlobalConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+        date: {
+          displayFormat: 'dd.MM.yyyy',
+        },
       },
     },
     {

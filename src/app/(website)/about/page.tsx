@@ -10,7 +10,7 @@ import config from '@payload-config'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Custom Components
-import { RichText } from '@/components/RichText'
+import { RichText } from '@/components/utils/RichText'
 export function generateMetadata(): Metadata {
   return {
     title: 'Über uns | KjG Dossenheim',

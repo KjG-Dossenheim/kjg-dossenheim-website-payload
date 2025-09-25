@@ -170,11 +170,13 @@ export interface UserAuthOperations {
 export interface Jahresplan {
   id: string;
   name: string;
+  title: string;
   startDate: string;
   endDate?: string | null;
   description?: string | null;
   location?: string | null;
   link?: string | null;
+  url?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -645,11 +647,13 @@ export interface PayloadMigration {
  */
 export interface JahresplanSelect<T extends boolean = true> {
   name?: T;
+  title?: T;
   startDate?: T;
   endDate?: T;
   description?: T;
   location?: T;
   link?: T;
+  url?: T;
   updatedAt?: T;
   createdAt?: T;
 }

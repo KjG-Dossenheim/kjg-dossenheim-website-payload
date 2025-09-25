@@ -13,7 +13,7 @@ import type { BlogPost } from '@/payload-types'
 import { CardHeader, CardTitle } from '@/components/ui/card'
 
 // Custom Components
-import { BlogCard } from '@/components/blog/BlogCard'
+import { BlogCard } from '@/components/features/blog/BlogCard'
 
 // Fetch blog posts from Payload CMS
 async function getBlogPosts(): Promise<BlogPost[]> {

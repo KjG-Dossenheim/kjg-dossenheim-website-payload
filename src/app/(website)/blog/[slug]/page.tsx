@@ -18,7 +18,7 @@ import type { BlogPost } from '@/payload-types'
 import { CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 
 // Custom Components
-import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
+import { RefreshRouteOnSave } from '@/components/utils/RefreshRouteOnSave'
 
 // Create a React component for the blog post page
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -80,7 +80,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       />
       {draft && <RefreshRouteOnSave />}
       <CardHeader>
-        <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
+        <h1 className="text-4xl font-bold">{post.title}</h1>
         {post.publishedAt && (
           <CardDescription>
             Veröffentlicht am:{' '}

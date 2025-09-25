@@ -12,7 +12,7 @@ import config from '@payload-config'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Custom Components
-import Date from '@/components/date'
+import Date from '@/components/common/date'
 
 export function generateMetadata(): Metadata {
   return {
@@ -33,29 +33,40 @@ export default async function Page() {
   })
 
   return (
-    <section className="mx-auto max-w-lg">
+    <section className="container mx-auto p-6">
       <CardHeader>
         <CardTitle>{knallbonbon.title}</CardTitle>
         <p>{knallbonbon.description}</p>
       </CardHeader>
       <div className="mx-auto max-w-md px-6">
-        {knallbonbonEvents.docs.map((event) => (
-          <Card key={event.id}>
+        {knallbonbonEvents.docs.length > 0 ? (
+          knallbonbonEvents.docs.map((event) => (
+            <Card key={event.id}>
+              <CardHeader>
+                <CardTitle>{event.title}</CardTitle>
+                <CardDescription>
+                  <Date dateString={event.date} formatString="EEEE, d. MMMM yyyy 'um' H:mm" />
+                </CardDescription>
+                <CardDescription>Ort: {event.location}</CardDescription>
+              </CardHeader>
+              {event.additionalInfo && (
+                <div className="mt-2">
+                  <h3 className="font-medium">Zusätzliche Informationen:</h3>
+                  <p>{event.additionalInfo}</p>
+                </div>
+              )}
+            </Card>
+          ))
+        ) : (
+          <Card>
             <CardHeader>
-              <CardTitle>{event.title}</CardTitle>
+              <CardTitle>Keine Veranstaltungen</CardTitle>
               <CardDescription>
-                <Date dateString={event.date} formatString="EEEE, d. MMMM yyyy 'um' H:mm" />
+                Aktuell sind keine Knallbonbon-Veranstaltungen geplant. Schaue bald wieder vorbei!
               </CardDescription>
-              <CardDescription>Ort: {event.location}</CardDescription>
             </CardHeader>
-            {event.additionalInfo && (
-              <div className="mt-2">
-                <h3 className="font-medium">Zusätzliche Informationen:</h3>
-                <p>{event.additionalInfo}</p>
-              </div>
-            )}
           </Card>
-        ))}
+        )}
       </div>
     </section>
   )

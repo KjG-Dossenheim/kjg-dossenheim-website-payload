@@ -33,7 +33,7 @@ import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/compone
 import { default as default_3114f6896e65c6486d201259c98e238e } from 'src/components/admin/rowLable/ArrayRowLabel.tsx'
 import { default as default_9fdad4af80370aada0e2c21ec48e4c70 } from '../../../graphics/Icon'
 import { default as default_d90c735eee50c28b024b50ad94a64ff8 } from '../../../graphics/Logo'
-import { AuthentikOAuthLoginButton as AuthentikOAuthLoginButton_893952f0f862c5897326b905f4e807ea } from '@/components/AuthentikOAuthLoginButton'
+import { AuthentikOAuthLoginButton as AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914 } from '@/components/admin/button/AuthentikOAuthLoginButton'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
@@ -72,6 +72,6 @@ export const importMap = {
   "src/components/admin/rowLable/ArrayRowLabel.tsx#default": default_3114f6896e65c6486d201259c98e238e,
   "./graphics/Icon#default": default_9fdad4af80370aada0e2c21ec48e4c70,
   "./graphics/Logo#default": default_d90c735eee50c28b024b50ad94a64ff8,
-  "@/components/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton": AuthentikOAuthLoginButton_893952f0f862c5897326b905f4e807ea,
+  "@/components/admin/button/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton": AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

@@ -1,8 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
-import Date from 'src/components/date'
+import Date from '@/components/common/date'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import Countdown from '@/components/Countdown'
+import Countdown from '@/components/common/Countdown'
 import { Button } from '@/components/ui/button'
 
 interface HeroSectionProps {

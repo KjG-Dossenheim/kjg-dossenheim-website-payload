@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from '@/fields/slug'
 import { revalidatePath } from 'next/cache'
+import { format } from 'date-fns';
 
 export const blogPosts: CollectionConfig = {
   slug: 'blogPosts',
@@ -79,6 +80,7 @@ export const blogPosts: CollectionConfig = {
       admin: {
         date: {
           pickerAppearance: 'dayAndTime',
+          displayFormat: 'DD.MM.YYYY HH:mm',
         },
         position: 'sidebar',
       },

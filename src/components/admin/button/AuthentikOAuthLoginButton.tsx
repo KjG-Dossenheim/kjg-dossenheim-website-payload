@@ -1,5 +1,4 @@
 'use client'
-
 import { Button } from '@payloadcms/ui'
 import Link from 'next/link'
 

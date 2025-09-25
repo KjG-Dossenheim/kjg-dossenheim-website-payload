@@ -9,7 +9,7 @@ import config from '@payload-config'
 // Custom Components
 import Footer from '@/components/layout/Footer'
 import Navbar from '@/components/layout/Navbar'
-import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeProvider } from '@/components/common/theme-provider'
 
 // Styles
 import '@/styles/globals.css'
