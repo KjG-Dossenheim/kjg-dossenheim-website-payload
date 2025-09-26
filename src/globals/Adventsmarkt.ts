@@ -41,6 +41,76 @@ export const Adventsmarkt: GlobalConfig = {
     },
     {
       type: 'group',
+      name: 'saturdayTimes',
+      label: 'Zeiten (Samstag)',
+      admin: {
+        position: 'sidebar',
+      },
+      fields: [
+        {
+          label: 'Startzeit',
+          name: 'startTime',
+          type: 'date',
+          required: true,
+          admin: {
+            date: {
+              pickerAppearance: 'timeOnly',
+              timeFormat: 'HH:mm',
+              displayFormat: 'HH:mm',
+            },
+          },
+        },
+        {
+          label: 'Endzeit',
+          name: 'endTime',
+          type: 'date',
+          required: true,
+          admin: {
+            date: {
+              pickerAppearance: 'timeOnly',
+              timeFormat: 'HH:mm',
+              displayFormat: 'HH:mm',
+            },
+          },
+        },
+      ],
+    },
+    {
+      type: 'group',
+      name: 'sundayTimes',
+      label: 'Zeiten (Sonntag)',
+      admin: {
+        position: 'sidebar',
+      },
+      fields: [{
+        label: 'Startzeit',
+        name: 'startTime',
+        type: 'date',
+        required: true,
+        admin: {
+          date: {
+            pickerAppearance: 'timeOnly',
+            timeFormat: 'HH:mm',
+            displayFormat: 'HH:mm',
+          },
+        },
+      },
+      {
+        label: 'Endzeit',
+        name: 'endTime',
+        type: 'date',
+        required: true,
+        admin: {
+          date: {
+            pickerAppearance: 'timeOnly',
+            timeFormat: 'HH:mm',
+            displayFormat: 'HH:mm',
+          },
+        },
+      },],
+    },
+    {
+      type: 'group',
       name: 'meta',
       label: 'Meta',
       fields: [

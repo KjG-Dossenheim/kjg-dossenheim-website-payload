@@ -14,6 +14,8 @@ import config from '@payload-config'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardTitle } from '@/components/ui/card'
+import CurrentWeather from '@/components/common/weather/currentWeather'
+import WeatherWidgetCompact from '@/components/common/weather/WeatherWidgetCompact'
 
 // Reusable function to get page data
 async function getPageData() {

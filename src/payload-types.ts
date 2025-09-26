@@ -983,6 +983,14 @@ export interface Adventsmarkt {
   id: string;
   startDate: string;
   endDate: string;
+  saturdayTimes: {
+    startTime: string;
+    endTime: string;
+  };
+  sundayTimes: {
+    startTime: string;
+    endTime: string;
+  };
   /**
    * Meta-Daten für SEO
    */
@@ -1089,6 +1097,11 @@ export interface Sommerfreizeit {
     beschreibung: string;
     website: string;
     bild: string | Media;
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    location?: [number, number] | null;
   };
   packliste: {
     text: {
@@ -1385,6 +1398,18 @@ export interface StartseiteSelect<T extends boolean = true> {
 export interface AdventsmarktSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
+  saturdayTimes?:
+    | T
+    | {
+        startTime?: T;
+        endTime?: T;
+      };
+  sundayTimes?:
+    | T
+    | {
+        startTime?: T;
+        endTime?: T;
+      };
   meta?:
     | T
     | {
@@ -1457,6 +1482,7 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
         beschreibung?: T;
         website?: T;
         bild?: T;
+        location?: T;
       };
   packliste?:
     | T

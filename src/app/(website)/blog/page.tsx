@@ -9,8 +9,8 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { BlogPost } from '@/payload-types'
 
-// UI Components
-import { CardHeader, CardTitle } from '@/components/ui/card'
+// Icons
+import { Calendar } from 'lucide-react'
 
 // Custom Components
 import { BlogCard } from '@/components/features/blog/BlogCard'
@@ -30,7 +30,10 @@ async function getBlogPosts(): Promise<BlogPost[]> {
         content: true,
         category: true,
         publishedAt: true,
+        featuredImage: true,
       },
+      sort: '-publishedAt',
+      limit: 50,
     })
     // Pre-format date for each post, ensure slug is string
     return (docs || []).map((post) => ({
@@ -54,28 +57,52 @@ function formatDate(dateString: string): string {
 
 export default async function BlogPage() {
   let posts: BlogPost[] = []
-  let errorMsg: string | null = null
+
   try {
     posts = await getBlogPosts()
   } catch (error) {
-    errorMsg = 'Fehler beim Laden der Blog-Einträge.'
+    console.error('Error fetching blog posts:', error)
   }
+
   return (
-    <main className="container mx-auto">
-      <CardHeader>
-        <CardTitle>Blog</CardTitle>
-      </CardHeader>
-      {errorMsg ? (
-        <p className="text-red-600">{errorMsg}</p>
-      ) : posts.length === 0 ? (
-        <p className="text-gray-600">Keine Blog-Einträge gefunden.</p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <BlogCard key={post.id} post={post} />
-          ))}
+    <div>
+      {/* Hero Section */}
+      <section className="from-primary/10 to-secondary/10 relative overflow-hidden bg-gradient-to-r py-20">
+        <div className="relative container mx-auto px-4">
+          <div className="text-center">
+            <h1 className="text-primary mb-6 text-5xl font-bold md:text-6xl">Unser Blog</h1>
+          </div>
         </div>
-      )}
-    </main>
+      </section>
+
+      <main className="container mx-auto px-4 py-12">
+        {posts.length === 0 ? (
+          <div className="border-muted-foreground/25 rounded-lg border-2 border-dashed p-12 text-center">
+            <div className="bg-muted mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+              <Calendar className="text-muted-foreground h-6 w-6" />
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">Noch keine Blog-Einträge</h3>
+            <p className="text-muted-foreground">
+              Es wurden noch keine Blog-Einträge veröffentlicht. Schauen Sie bald wieder vorbei!
+            </p>
+          </div>
+        ) : (
+          <section>
+            {/* All Posts Grid */}
+            <div className="mb-8">
+              <h2 className="text-primary text-2xl font-bold">Alle Beiträge</h2>
+              <p className="text-muted-foreground">
+                {posts.length} {posts.length === 1 ? 'Beitrag' : 'Beiträge'} gefunden
+              </p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {posts.map((post) => (
+                <BlogCard key={post.id} post={post} />
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+    </div>
   )
 }

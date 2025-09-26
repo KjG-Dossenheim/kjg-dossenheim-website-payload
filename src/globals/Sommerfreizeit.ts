@@ -200,6 +200,11 @@ export const Sommerfreizeit: GlobalConfig = {
               relationTo: "media",
               required: true,
             },
+            {
+              name: 'location',
+              type: 'point',
+              label: 'Koordinaten',
+            },
           ],
         },
         {
