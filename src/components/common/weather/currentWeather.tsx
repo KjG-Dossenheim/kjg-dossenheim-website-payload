@@ -197,7 +197,7 @@ export default function CurrentWeather({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchWeather = async () => {
+  const fetchWeather = React.useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -223,7 +223,7 @@ export default function CurrentWeather({
     } finally {
       setLoading(false)
     }
-  }
+  }, [lat, lon])
 
   useEffect(() => {
     fetchWeather()
@@ -232,7 +232,7 @@ export default function CurrentWeather({
     const interval = setInterval(fetchWeather, 10 * 60 * 1000)
 
     return () => clearInterval(interval)
-  }, [lat, lon])
+  }, [fetchWeather])
 
   if (loading) {
     return (

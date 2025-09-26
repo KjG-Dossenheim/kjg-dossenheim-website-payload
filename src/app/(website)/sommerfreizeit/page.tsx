@@ -19,6 +19,24 @@ async function getData() {
   const payload = await getPayload({ config })
   return payload.findGlobal({
     slug: 'sommerfreizeit',
+    select: {
+      title: true,
+      motto: true,
+      startDate: true,
+      endDate: true,
+      alter: true,
+      unterkunft: true,
+      allgemein: {
+        teamFreizeit: true,
+        eigenschaften: true,
+        pricing: true,
+      },
+      anmeldungWebsite: true,
+      meta: {
+        title: true,
+        description: true,
+      },
+    },
   })
 }
 
@@ -35,15 +53,9 @@ export default async function Page() {
 
   return (
     <section>
-      <HeroSection
-        title={sommerfreizeit.title}
-        motto={sommerfreizeit.motto}
-        startDate={sommerfreizeit.startDate}
-        endDate={sommerfreizeit.endDate}
-        anmeldungWebsite={sommerfreizeit.anmeldungWebsite}
-      />
+      <HeroSection {...sommerfreizeit} />
 
-      <AgeRangeSection alter={sommerfreizeit.alter} />
+      <AgeRangeSection {...sommerfreizeit} />
 
       <section
         className="container mx-auto space-y-6 p-6 sm:space-y-8 sm:p-8 lg:space-y-10 lg:p-10"
@@ -54,7 +66,7 @@ export default async function Page() {
           anmeldungWebsite={sommerfreizeit.anmeldungWebsite}
         />
 
-        <AccommodationSection unterkunft={sommerfreizeit.unterkunft} />
+        <AccommodationSection {...sommerfreizeit} />
 
         <TeamSection team={sommerfreizeit.allgemein.teamFreizeit} />
 

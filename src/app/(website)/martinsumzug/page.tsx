@@ -21,6 +21,7 @@ import { Calendar, Clock, MapPin, Users } from 'lucide-react'
 
 // Custom Components
 import Date from '@/components/common/date'
+import Countdown from '@/components/common/Countdown'
 
 export function generateMetadata(): Metadata {
   return {
@@ -50,13 +51,19 @@ export default async function Page() {
               Martinsumzug <Date dateString={martinsumzug.startDate} formatString="yyyy" />
             </h1>
             <div className="flex flex-col items-center justify-center gap-4">
-              <p className="mx-auto max-w-2xl text-xl">
-                <Date dateString={martinsumzug.startDate} formatString="EEEE, d. MMMM yyyy" />
-                ab <Date dateString={martinsumzug.startDate} formatString="HH:mm" />
+              <p className="mx-auto text-xl">
+                <Date dateString={martinsumzug.startDate} formatString="EEEE, d. MMMM" />
+                {' ab '}
+                <Date dateString={martinsumzug.startDate} formatString="HH:mm" />
               </p>
-              <p className="mx-auto max-w-2xl text-center text-xl">
+              <p className="mx-auto flex items-center justify-center gap-2 text-xl">
+                <MapPin className="size-5" />
+                {martinsumzug.startLocation}
+              </p>
+              <p className="mx-auto text-center text-xl">
                 Begleiten Sie uns bei unserem traditionellen Martinsumzug durch Dossenheim
               </p>
+              <Countdown targetDate={martinsumzug.startDate} />
             </div>
           </div>
         </div>

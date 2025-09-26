@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 
 interface HeroSectionProps {
   title: string
-  motto: string | null | undefined
+  motto?: string | null | undefined
   startDate: string
   endDate: string
   anmeldungWebsite: string
@@ -21,8 +21,8 @@ export default function HeroSection({
   anmeldungWebsite,
 }: HeroSectionProps) {
   return (
-    <section className="mx-auto space-y-12 px-4 py-24 text-center">
-      <div>
+    <section className="mx-auto space-y-12 overflow-hidden py-24 text-center">
+      <div className="space-y-4">
         <h1 className="text-4xl leading-none font-extrabold tracking-tight md:text-5xl lg:text-6xl">
           {title}
         </h1>

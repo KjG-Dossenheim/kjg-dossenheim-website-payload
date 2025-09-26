@@ -29,6 +29,24 @@ export const Martinsumzug: GlobalConfig = {
       },
     },
     {
+      label: 'Startort',
+      name: 'startLocation',
+      type: 'text',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      label: 'Endort',
+      name: 'endLocation',
+      type: 'text',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       type: 'group',
       name: 'meta',
       label: 'Meta',

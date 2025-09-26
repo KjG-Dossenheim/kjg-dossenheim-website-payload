@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { SlidingNumber } from '../ui/sliding-number'
+import { Card } from '../ui/card'
 
 interface CountdownProps {
   targetDate: string
@@ -12,11 +14,7 @@ interface CountdownProps {
   bgColor?: string
 }
 
-export default function Countdown({
-  targetDate,
-  textColor = 'text-primary-foreground',
-  bgColor = 'bg-primary',
-}: CountdownProps) {
+export default function Countdown({ targetDate, textColor, bgColor }: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -49,23 +47,39 @@ export default function Countdown({
   }, [targetDate])
 
   return (
-    <div className={`${textColor} flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4`}>
-      <div className={`${bgColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}>
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">{timeLeft.days}</span>
+    <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
+      <Card
+        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
+      >
+        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
+          <SlidingNumber value={timeLeft.days} padStart={true} />
+        </span>
         <span className="text-xs sm:text-sm">Tage</span>
-      </div>
-      <div className={`${bgColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}>
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">{timeLeft.hours}</span>
+      </Card>
+      <Card
+        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
+      >
+        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
+          <SlidingNumber value={timeLeft.hours} padStart={true} />
+        </span>
         <span className="text-xs sm:text-sm">Stunden</span>
-      </div>
-      <div className={`${bgColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}>
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">{timeLeft.minutes}</span>
+      </Card>
+      <Card
+        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
+      >
+        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
+          <SlidingNumber value={timeLeft.minutes} padStart={true} />
+        </span>
         <span className="text-xs sm:text-sm">Minuten</span>
-      </div>
-      <div className={`${bgColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}>
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">{timeLeft.seconds}</span>
+      </Card>
+      <Card
+        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
+      >
+        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
+          <SlidingNumber value={timeLeft.seconds} padStart={true} />
+        </span>
         <span className="text-xs sm:text-sm">Sekunden</span>
-      </div>
+      </Card>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from '@/fields/slug'
 import { revalidatePath } from 'next/cache'
-import { format } from 'date-fns';
 
 export const blogPosts: CollectionConfig = {
   slug: 'blogPosts',
@@ -80,7 +79,7 @@ export const blogPosts: CollectionConfig = {
       admin: {
         date: {
           pickerAppearance: 'dayAndTime',
-          displayFormat: 'DD.MM.YYYY HH:mm',
+          displayFormat: 'dd.MM.yyyy HH:mm',
         },
         position: 'sidebar',
       },
@@ -116,25 +115,6 @@ export const blogPosts: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-    },
-    {
-      name: 'relatedPosts',
-      type: 'relationship',
-      admin: {
-        position: 'sidebar',
-        appearance: 'drawer',
-        allowEdit: false,
-        allowCreate: false,
-      },
-      filterOptions: ({ id }) => {
-        return {
-          id: {
-            not_in: [id],
-          },
-        }
-      },
-      hasMany: true,
-      relationTo: 'blogPosts',
     },
   ],
 }

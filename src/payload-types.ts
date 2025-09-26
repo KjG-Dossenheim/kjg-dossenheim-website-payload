@@ -207,7 +207,6 @@ export interface BlogPost {
   slug?: string | null;
   slugLock?: boolean | null;
   category: (string | BlogCategory)[];
-  relatedPosts?: (string | BlogPost)[] | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -669,7 +668,6 @@ export interface BlogPostsSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   category?: T;
-  relatedPosts?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -1023,6 +1021,8 @@ export interface Adventsmarkt {
 export interface Martinsumzug {
   id: string;
   startDate: string;
+  startLocation: string;
+  endLocation: string;
   /**
    * Meta-Daten für SEO
    */
@@ -1427,6 +1427,8 @@ export interface AdventsmarktSelect<T extends boolean = true> {
  */
 export interface MartinsumzugSelect<T extends boolean = true> {
   startDate?: T;
+  startLocation?: T;
+  endLocation?: T;
   meta?:
     | T
     | {
