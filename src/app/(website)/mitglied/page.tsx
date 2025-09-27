@@ -1,25 +1,30 @@
 'use client'
 
+// External libraries
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
+
+// Internal components and utilities
 import { Button } from '@/components/ui/button'
 import {
   Form,
+  FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-  FormDescription,
 } from '@/components/ui/form'
-import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/sonner'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
-import React from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { PhoneInput } from '@/components/ui/phone-input'
+import de from 'react-phone-number-input/locale/de'
 
 // Schema für das Mitgliedsantragsformular
 const formSchema = z.object({
@@ -48,8 +53,8 @@ export default function MitgliedPage() {
       lastName: '',
       birthDate: '',
       address: '',
-      city: '', // hinzugefügt
-      postalCode: '', // hinzugefügt
+      city: '',
+      postalCode: '',
       email: '',
       phone: '',
       status: 'new',
@@ -87,32 +92,35 @@ export default function MitgliedPage() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto max-w-md space-y-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vorname</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} placeholder="Vorname" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nachname</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} placeholder="Nachname" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <span className="flex flex-col gap-4 md:flex-row">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Vorname</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} placeholder="Vorname" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Nachname</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} placeholder="Nachname" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </span>
+
             <FormField
               control={form.control}
               name="birthDate"
@@ -139,32 +147,34 @@ export default function MitgliedPage() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Stadt</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} placeholder="Stadt" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="postalCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Postleitzahl</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} placeholder="Postleitzahl" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <span className="flex flex-col gap-4 md:flex-row">
+              <FormField
+                control={form.control}
+                name="postalCode"
+                render={({ field }) => (
+                  <FormItem className="grow">
+                    <FormLabel>Postleitzahl</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} placeholder="Postleitzahl" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem className="grow">
+                    <FormLabel>Stadt</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} placeholder="Stadt" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </span>
             <FormField
               control={form.control}
               name="email"
@@ -185,7 +195,12 @@ export default function MitgliedPage() {
                 <FormItem>
                   <FormLabel>Telefonnummer</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} placeholder="Telefonnummer" />
+                    <PhoneInput
+                      {...field}
+                      placeholder="Telefonnummer"
+                      defaultCountry="DE"
+                      labels={de}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -212,9 +227,7 @@ export default function MitgliedPage() {
                   <FormControl>
                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
-                  <FormLabel className="text-sm font-normal">
-                    Einwilligung zur Datenverarbeitung
-                  </FormLabel>
+                  <FormLabel className="mb-2">Einwilligung zur Datenverarbeitung</FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
