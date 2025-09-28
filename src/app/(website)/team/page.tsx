@@ -13,15 +13,8 @@ import type { Team } from '@/payload-types'
 
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge, badgeVariants } from '@/components/ui/badge'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Move data fetching to a separate function for better error handling and caching
 async function getTeamMembers() {

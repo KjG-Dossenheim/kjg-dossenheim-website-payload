@@ -103,7 +103,7 @@ export default buildConfig({
   collections: [Jahresplan, blogPosts, blogCategory, Team, TeamBilder, Users, Media, knallbonbonRegistration, knallbonbonEvents, membershipApplication],
   globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches, Knallbonbon],
   editor: lexicalEditor({
-    features: ({ defaultFeatures, rootFeatures }) => [
+    features: [
       BoldFeature(),
       UnderlineFeature(),
       OrderedListFeature(),

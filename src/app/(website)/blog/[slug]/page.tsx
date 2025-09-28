@@ -5,7 +5,6 @@ export const revalidate = 60 // 1 Minute
 import React from 'react'
 import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
-import Link from 'next/link'
 
 // Third-party libraries
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -16,7 +15,7 @@ import config from '@payload-config'
 import type { BlogPost } from '@/payload-types'
 
 // UI Components
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card'
+import { CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 
 // Custom Components
 import { RefreshRouteOnSave } from '@/components/utils/RefreshRouteOnSave'

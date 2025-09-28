@@ -14,7 +14,6 @@ import {
   Eye,
   Droplets,
   Wind,
-  Thermometer,
   Gauge,
 } from 'lucide-react'
 

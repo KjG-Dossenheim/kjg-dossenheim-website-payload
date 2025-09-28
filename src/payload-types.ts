@@ -191,7 +191,7 @@ export interface BlogPost {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -255,7 +255,7 @@ export interface Team {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -319,7 +319,7 @@ export interface Media {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -964,10 +964,6 @@ export interface Startseite {
   };
   meta?: {
     title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
     description?: string | null;
   };
   updatedAt?: string | null;
@@ -1000,7 +996,7 @@ export interface Adventsmarkt {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -1034,7 +1030,7 @@ export interface Martinsumzug {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -1077,7 +1073,7 @@ export interface Sommerfreizeit {
         root: {
           type: string;
           children: {
-            type: string;
+            type: any;
             version: number;
             [k: string]: unknown;
           }[];
@@ -1108,7 +1104,7 @@ export interface Sommerfreizeit {
       root: {
         type: string;
         children: {
-          type: string;
+          type: any;
           version: number;
           [k: string]: unknown;
         }[];
@@ -1127,7 +1123,7 @@ export interface Sommerfreizeit {
         root: {
           type: string;
           children: {
-            type: string;
+            type: any;
             version: number;
             [k: string]: unknown;
           }[];
@@ -1180,7 +1176,7 @@ export interface Tannenbaumaktion {
       root: {
         type: string;
         children: {
-          type: string;
+          type: any;
           version: number;
           [k: string]: unknown;
         }[];
@@ -1206,7 +1202,7 @@ export interface About {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -1286,7 +1282,7 @@ export interface Rechtlich {
       root: {
         type: string;
         children: {
-          type: string;
+          type: any;
           version: number;
           [k: string]: unknown;
         }[];
@@ -1304,7 +1300,7 @@ export interface Rechtlich {
         root: {
           type: string;
           children: {
-            type: string;
+            type: any;
             version: number;
             [k: string]: unknown;
           }[];
@@ -1321,7 +1317,7 @@ export interface Rechtlich {
         root: {
           type: string;
           children: {
-            type: string;
+            type: any;
             version: number;
             [k: string]: unknown;
           }[];
@@ -1339,7 +1335,7 @@ export interface Rechtlich {
       root: {
         type: string;
         children: {
-          type: string;
+          type: any;
           version: number;
           [k: string]: unknown;
         }[];
@@ -1384,7 +1380,6 @@ export interface StartseiteSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
-        image?: T;
         description?: T;
       };
   updatedAt?: T;
