@@ -1,5 +1,5 @@
 /** @type {import('next-sitemap').IConfig} */
-export default {
+const config = {
   siteUrl: process.env.SITE_URL,
   generateIndexSitemap: false, // (optional)
   generateRobotsTxt: true, // (optional)
@@ -9,4 +9,6 @@ export default {
       `${process.env.SITE_URL}/server-sitemap.xml`, // <==== Add here
     ],
   },
-}
+};
+
+export default config;
