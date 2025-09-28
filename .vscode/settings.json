@@ -25,5 +25,6 @@
   "tailwindCSS.experimental.classRegex": [
     ["twMerge\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["createTheme(?:<\\w+>)?\\s*\\(([^)]*)\\)", "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"]
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
