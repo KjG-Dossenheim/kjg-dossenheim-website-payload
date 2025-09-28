@@ -87,6 +87,7 @@ export default function KnallbonbonAnmeldungPage() {
         )
         setEventOptions(formattedOptions)
       } catch (error) {
+        console.error(error)
         setEventOptions([{ id: '', title: 'Fehler beim Laden der Events', date: null }])
       } finally {
         setLoading(false)

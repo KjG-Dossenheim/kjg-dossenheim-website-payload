@@ -2,22 +2,18 @@
 import React from 'react'
 import type { Metadata } from 'next'
 
-// Third-party libraries
-import { parseISO } from 'date-fns'
-
 // Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
 // UI Components
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ShootingStars } from '@/components/ui/shooting-stars'
 import { StarsBackground } from '@/components/ui/stars-background'
 
 // Icons
-import { Calendar, Clock, MapPin, Users } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 
 // Custom Components
 import Date from '@/components/common/date'
@@ -35,11 +31,6 @@ export default async function Page() {
   const martinsumzug = await payload.findGlobal({
     slug: 'martinsumzug',
   })
-
-  // Check if the event date has passed
-  const eventDate = parseISO(martinsumzug.startDate)
-  const currentDate = new globalThis.Date()
-  const isUpcoming = eventDate > currentDate
 
   return (
     <div>

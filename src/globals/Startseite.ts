@@ -3,7 +3,6 @@ import { GlobalConfig } from "payload";
 
 import {
   MetaDescriptionField,
-  MetaImageField,
   MetaTitleField,
   OverviewField,
   PreviewField,
@@ -48,9 +47,6 @@ export const Startseite: GlobalConfig = {
               imagePath: 'meta.image',
             }),
             MetaTitleField({
-            }),
-            MetaImageField({
-              relationTo: 'media',
             }),
             MetaDescriptionField({}),
             PreviewField({

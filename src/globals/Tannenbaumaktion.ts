@@ -3,7 +3,6 @@ import { GlobalConfig } from "payload";
 
 import {
   MetaDescriptionField,
-  MetaImageField,
   MetaTitleField,
   OverviewField,
   PreviewField,

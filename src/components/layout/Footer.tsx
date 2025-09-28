@@ -7,7 +7,7 @@ import { SiWhatsapp, SiFacebook, SiInstagram } from '@icons-pack/react-simple-ic
 
 import { Mail, Phone } from 'lucide-react'
 
-import { CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { CardContent, CardFooter } from '@/components/ui/card'
 
 export default async function FooterServer() {
   const payload = await getPayload({ config })

@@ -1,5 +1,4 @@
 import { GlobalConfig } from "payload";
-import { Label } from '@/components/ui/label';
 
 export const Knallbonbon: GlobalConfig = {
   slug: "knallbonbon",

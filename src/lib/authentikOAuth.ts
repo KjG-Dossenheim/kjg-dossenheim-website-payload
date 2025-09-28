@@ -1,9 +1,6 @@
-import { PayloadRequest } from "payload";
-import { OAuth2Plugin, defaultGetToken } from "payload-oauth2";
+import { OAuth2Plugin } from "payload-oauth2";
 
-////////////////////////////////////////////////////////////////////////////////
 // Authentik OAuth
-////////////////////////////////////////////////////////////////////////////////
 export const authentikOAuth = OAuth2Plugin({
   enabled:
     typeof process.env.AUTHENTIK_CLIENT_ID === "string" &&
@@ -25,7 +22,7 @@ export const authentikOAuth = OAuth2Plugin({
     "offline_access",
   ],
   providerAuthorizationUrl: process.env.AUTHENTIK_AUTHORIZATION_URL || "",
-  getUserInfo: async (accessToken: string, req: PayloadRequest) => {
+  getUserInfo: async (accessToken: string) => {
     const response = await fetch(process.env.AUTHENTIK_USERINFO_ENDPOINT || "", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
@@ -38,7 +35,7 @@ export const authentikOAuth = OAuth2Plugin({
 
     return { email: user.email, sub: user.sub, firstName, lastName };
   },
-  successRedirect: (req: PayloadRequest, token?: string) => {
+  successRedirect: () => {
     return "/admin";
   },
   failureRedirect: (req, err) => {

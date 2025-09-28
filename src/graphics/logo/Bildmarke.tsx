@@ -1,7 +1,6 @@
 import * as React from 'react'
-interface SVGComponentProps extends React.SVGProps<SVGSVGElement> {}
 
-const Bildmarke = (props: SVGComponentProps) => (
+const Bildmarke = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     width="100%"
     height="100%"

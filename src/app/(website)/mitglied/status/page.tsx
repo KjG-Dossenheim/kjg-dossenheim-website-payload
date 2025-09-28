@@ -45,8 +45,12 @@ const ApplicationStatusPage = () => {
         throw new Error('Kein Antrag gefunden oder ungültige Zugangsdaten.')
       }
       setStatus(application.status)
-    } catch (err: any) {
-      setError(err.message || 'Unbekannter Fehler.')
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Unbekannter Fehler.')
+      } else {
+        setError('Unbekannter Fehler.')
+      }
     } finally {
       setLoading(false)
     }
