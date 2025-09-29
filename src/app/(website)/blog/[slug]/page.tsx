@@ -30,6 +30,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       collection: 'blogPosts',
       draft,
       limit: 1,
+      pagination: false,
       overrideAccess: draft,
       where: {
         slug: { equals: slug },

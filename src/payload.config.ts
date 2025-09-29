@@ -67,6 +67,7 @@ import { Knallbonbon } from './globals/Knallbonbon'
 
 // Relative imports - lib
 import { authentikOAuth } from './lib/authentikOAuth'
+import { Songs } from './collections/Songs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -100,8 +101,31 @@ export default buildConfig({
       collections: [''],
     }, */
   },
-  collections: [Jahresplan, blogPosts, blogCategory, Team, TeamBilder, Users, Media, knallbonbonRegistration, knallbonbonEvents, membershipApplication],
-  globals: [Startseite, Adventsmarkt, Martinsumzug, Sommerfreizeit, Tannenbaumaktion, About, Header, Footer, Rechtliches, Knallbonbon],
+  collections: [
+    Jahresplan,
+    blogPosts,
+    blogCategory,
+    Team,
+    TeamBilder,
+    Users,
+    Media,
+    knallbonbonRegistration,
+    knallbonbonEvents,
+    membershipApplication,
+    Songs
+  ],
+  globals: [
+    Startseite,
+    Adventsmarkt,
+    Martinsumzug,
+    Sommerfreizeit,
+    Tannenbaumaktion,
+    About,
+    Header,
+    Footer,
+    Rechtliches,
+    Knallbonbon
+  ],
   editor: lexicalEditor({
     features: [
       BoldFeature(),

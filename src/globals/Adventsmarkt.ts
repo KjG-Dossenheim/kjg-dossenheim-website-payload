@@ -1,5 +1,6 @@
-
 import { GlobalConfig } from "payload";
+
+import { revalidatePath } from "next/cache";
 
 import {
   MetaDescriptionField,
@@ -141,4 +142,16 @@ export const Adventsmarkt: GlobalConfig = {
       required: true,
     },
   ],
+  hooks: {
+    afterChange: [
+      async () => {
+        try {
+          await revalidatePath('/adventsmarkt');
+          console.log('Revalidated successfully');
+        } catch (error) {
+          console.error('Failed to revalidate:', error);
+        }
+      }
+    ],
+  },
 };

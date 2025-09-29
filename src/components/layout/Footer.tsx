@@ -1,3 +1,5 @@
+export const revalidate = 600 // seconds (regenerate every 1 minute)
+
 import { getPayload } from 'payload'
 import React from 'react'
 import config from '@payload-config'

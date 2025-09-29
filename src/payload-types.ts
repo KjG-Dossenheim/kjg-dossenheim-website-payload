@@ -76,6 +76,7 @@ export interface Config {
     knallbonbonRegistration: KnallbonbonRegistration;
     knallbonbonEvents: KnallbonbonEvent;
     membershipApplication: MembershipApplication;
+    songs: Song;
     users: User;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -97,6 +98,7 @@ export interface Config {
     knallbonbonRegistration: KnallbonbonRegistrationSelect<false> | KnallbonbonRegistrationSelect<true>;
     knallbonbonEvents: KnallbonbonEventsSelect<false> | KnallbonbonEventsSelect<true>;
     membershipApplication: MembershipApplicationSelect<false> | MembershipApplicationSelect<true>;
+    songs: SongsSelect<false> | SongsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -457,6 +459,49 @@ export interface MembershipApplication {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "songs".
+ */
+export interface Song {
+  id: string;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  /**
+   * Z.B. Martinsumzug
+   */
+  theme?: ('martinsumzug' | 'allgemein') | null;
+  /**
+   * Interpret oder Band
+   */
+  artist?: string | null;
+  /**
+   * Erscheinungsjahr
+   */
+  year?: number | null;
+  /**
+   * Copyright-Informationen
+   */
+  copyright?: string | null;
+  lyrics: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
@@ -589,6 +634,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'membershipApplication';
         value: string | MembershipApplication;
+      } | null)
+    | ({
+        relationTo: 'songs';
+        value: string | Song;
       } | null)
     | ({
         relationTo: 'users';
@@ -861,6 +910,22 @@ export interface MembershipApplicationSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "songs_select".
+ */
+export interface SongsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  slugLock?: T;
+  theme?: T;
+  artist?: T;
+  year?: T;
+  copyright?: T;
+  lyrics?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -1041,6 +1106,10 @@ export interface Martinsumzug {
     };
     [k: string]: unknown;
   };
+  /**
+   * Wähle die Lieder für den Martinsumzug aus
+   */
+  songs: (string | Song)[];
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1431,6 +1500,7 @@ export interface MartinsumzugSelect<T extends boolean = true> {
         description?: T;
       };
   content?: T;
+  songs?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
