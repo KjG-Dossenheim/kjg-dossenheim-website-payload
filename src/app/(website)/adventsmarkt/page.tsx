@@ -78,7 +78,11 @@ export default async function Page() {
           {/* Countdown (only show if upcoming) */}
           {isUpcoming && (
             <div className="mb-8">
-              <Countdown targetDate={adventsmarkt.startDate} bgColor="bg-emerald-700" />
+              <Countdown
+                targetDate={adventsmarkt.startDate}
+                bgColor="bg-emerald-700"
+                textColor="text-white"
+              />
             </div>
           )}
         </div>

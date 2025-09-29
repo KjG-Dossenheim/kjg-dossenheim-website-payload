@@ -1,5 +1,7 @@
 
 import { GlobalConfig } from "payload";
+import { revalidatePath } from "next/cache";
+import layout from "@/app/(website)/layout";
 
 export const Footer: GlobalConfig = {
   slug: "footer",
@@ -104,4 +106,16 @@ export const Footer: GlobalConfig = {
       admin: { position: 'sidebar' },
     },
   ],
+  hooks: {
+    afterChange: [
+      async () => {
+        try {
+          revalidatePath('/(website)', 'layout');
+          console.log('Revalidated successfully');
+        } catch (error) {
+          console.error('Failed to revalidate:', error);
+        }
+      }
+    ],
+  },
 };

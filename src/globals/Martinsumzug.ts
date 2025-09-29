@@ -7,6 +7,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { revalidatePath } from "next/cache";
 
 export const Martinsumzug: GlobalConfig = {
   slug: "martinsumzug",
@@ -77,5 +78,28 @@ export const Martinsumzug: GlobalConfig = {
       type: 'richText',
       required: true,
     },
+    {
+      name: 'songs',
+      label: 'Lieder',
+      type: 'relationship',
+      relationTo: 'songs',
+      hasMany: true,
+      required: true,
+      admin: {
+        description: 'Wähle die Lieder für den Martinsumzug aus',
+      },
+    }
   ],
+  hooks: {
+    afterChange: [
+      async ({ doc }) => {
+        try {
+          await revalidatePath('/martinsumzug');
+          console.log('Revalidated /martinsumzug successfully');
+        } catch (error) {
+          console.error('Failed to revalidate path:', error);
+        }
+      }
+    ],
+  },
 };
