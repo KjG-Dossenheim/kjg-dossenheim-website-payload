@@ -51,7 +51,7 @@ import { blogPosts } from './collections/blogPost'
 import { blogCategory } from './collections/blogCategory'
 import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
 import { knallbonbonEvents } from './collections/knallbonbonEvents'
-import { membershipApplication } from './collections/MembershipApplication'
+import { membershipApplication } from './collections/membershipApplication'
 import { Songs } from './collections/Songs'
 
 // Relative imports - globals
