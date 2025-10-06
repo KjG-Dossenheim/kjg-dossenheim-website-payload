@@ -52,6 +52,7 @@ import { blogCategory } from './collections/blogCategory'
 import { knallbonbonRegistration } from './collections/KnallbonbonRegistration'
 import { knallbonbonEvents } from './collections/KnallbonbonEvents'
 import { membershipApplication } from './collections/MembershipApplication'
+import { Songs } from './collections/Songs'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -67,7 +68,6 @@ import { Knallbonbon } from './globals/Knallbonbon'
 
 // Relative imports - lib
 import { authentikOAuth } from './lib/authentikOAuth'
-import { Songs } from './collections/Songs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
