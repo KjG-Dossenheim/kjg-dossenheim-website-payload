@@ -7,9 +7,11 @@ export const Songs: CollectionConfig = {
     singular: 'Lied',
     plural: 'Lieder',
   },
+
   admin: {
     defaultColumns: ['title', 'year', 'artist', 'theme'],
     useAsTitle: 'title',
+    group: 'Medien',
   },
   fields: [
     {

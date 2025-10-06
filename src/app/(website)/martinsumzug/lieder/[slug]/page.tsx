@@ -16,8 +16,6 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 // UI Components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-// Custom Components
-
 // Create a React component for the blog post page
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -28,21 +26,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       slug: 'martinsumzug',
       depth: 2, // fetch relationships deeply
     })
-    console.log(martinsumzugGlobal)
     const songs = (martinsumzugGlobal.songs || []).filter(
       (s): s is Song => typeof s === 'object' && s !== null && 'slug' in s,
     )
-    console.log(songs)
     // Find the song with the matching slug
     const song = songs.find((s) => s.slug === slug)
-    console.log(song)
     if (!song) return notFound()
 
     return (
-      <div>
+      <div className="container mx-auto p-6">
         <Card className="w-fit">
           <CardHeader>
-            <CardTitle>Lied: {song.title} 🎵</CardTitle>
+            <CardTitle className="space-x-2">{song.title}</CardTitle>
             {song.year && <CardDescription>Jahr: {song.year}</CardDescription>}
             {song.artist && <CardDescription>Interpret: {song.artist}</CardDescription>}
             {song.copyright && <CardDescription>Copyright: {song.copyright}</CardDescription>}

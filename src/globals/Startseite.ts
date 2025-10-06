@@ -10,6 +10,9 @@ import {
 
 export const Startseite: GlobalConfig = {
   slug: "startseite",
+  admin: {
+    group: 'Einstellungen',
+  },
   fields: [
     {
       type: 'tabs',

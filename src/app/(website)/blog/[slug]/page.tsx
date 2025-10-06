@@ -70,7 +70,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               articleBody: typeof post.content === 'string' ? post.content : undefined,
               mainEntityOfPage: {
                 '@type': 'WebPage',
-                '@id': `${process.env.SITE_URL}/blog/${post.slug}`,
+                '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${post.slug}`,
               },
             }),
           }}

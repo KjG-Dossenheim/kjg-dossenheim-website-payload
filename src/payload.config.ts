@@ -52,6 +52,7 @@ import { blogCategory } from './collections/blogCategory'
 import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
 import { knallbonbonEvents } from './collections/knallbonbonEvents'
 import { membershipApplication } from './collections/membershipApplication'
+import { Songs } from './collections/Songs'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -67,7 +68,6 @@ import { Knallbonbon } from './globals/Knallbonbon'
 
 // Relative imports - lib
 import { authentikOAuth } from './lib/authentikOAuth'
-import { Songs } from './collections/Songs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -97,7 +97,7 @@ export default buildConfig({
     /* livePreview: {
       url: ({
         data,
-      }) => `${process.env.SITE_URL}/blog/${data.slug}`,
+      }) => `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${data.slug}`,
       collections: [''],
     }, */
   },
@@ -194,9 +194,9 @@ export default buildConfig({
       uploadsCollection: 'media',
       tabbedUI: true,
       generateURL: ({ doc }) =>
-        `${process.env.SITE_URL}/${doc.title?.toLocaleLowerCase() || ''}`,
+        `${process.env.NEXT_PUBLIC_SITE_URL}/${doc.title?.toLocaleLowerCase() || ''}`,
       generateTitle: ({ doc }) => `${doc.title || ''}`,
-      generateImage: ({ doc }) => `${process.env.SITE_URL}/api/og/?title=${encodeURIComponent(doc.title || '')}`
+      generateImage: ({ doc }) => `${process.env.NEXT_PUBLIC_SITE_URL}/api/og/?title=${encodeURIComponent(doc.title || '')}`
     }),
     /* formBuilderPlugin({
       formOverrides: {

@@ -1,5 +1,9 @@
 import type { CollectionConfig } from 'payload'
 
+import { confirmationEmailTemplate, adminNotificationEmailTemplate } from './email';
+import { render } from '@react-email/render';
+
+
 export const membershipApplication: CollectionConfig = {
   slug: 'membershipApplication',
   access: {
@@ -108,21 +112,25 @@ export const membershipApplication: CollectionConfig = {
   ],
   hooks: {
     afterChange: [
-      ({ operation, req }) => {
+      // Send email to admin
+      async ({ operation, req, doc }) => {
         if (operation === 'create') {
+          const html = await render(adminNotificationEmailTemplate(doc));
           req.payload.sendEmail({
             to: 'ben.wallner@kjg-dossenheim.org',
             subject: 'Neuer Mitgliedschaftsantrag eingegangen',
-            text: "Ein neuer Mitgliedschaftsantrag wurde eingereicht",
+            html,
           });
         }
       },
-      ({ operation, doc, req }) => {
+      // Send confirmation email to applicant
+      async ({ operation, doc, req }) => {
         if (operation === 'create') {
+          const html = await render(confirmationEmailTemplate(doc));
           req.payload.sendEmail({
             to: doc.email,
             subject: 'Dein Mitgliedschaftsantrag ist eingegangen',
-            text: "Dein Mitgliedschaftsantrag wurde eingereicht",
+            html,
           });
         }
       },
