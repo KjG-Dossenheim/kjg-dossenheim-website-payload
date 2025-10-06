@@ -11,13 +11,13 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 
 // Custom Components
-import Date from '@/components/common/date'
 import { RichText } from '@/components/utils/RichText'
 import Countdown from '@/components/common/Countdown'
 
 // UI Components
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { SparklesCore } from '@/components/ui/sparkles'
+import { formatDateLocale } from '@/components/common/formatDateLocale'
 
 async function getData() {
   const payload = await getPayload({ config })
@@ -60,13 +60,12 @@ export default async function Page() {
           {/* Main Title */}
           <div className="flex flex-col items-center justify-center gap-4 text-white">
             <h1 className="text-5xl font-bold md:text-6xl lg:text-7xl">
-              Adventsmarkt <Date dateString={adventsmarkt.startDate} formatString="yyyy" />
+              Adventsmarkt {formatDateLocale(adventsmarkt.startDate, 'yyyy')}
             </h1>
             <div className="flex flex-col items-center justify-center gap-2">
               <div className="flex flex-col items-center justify-center text-2xl font-medium md:flex-row md:gap-2 md:text-3xl">
-                <Date dateString={adventsmarkt.startDate} formatString="d. MMMM" />
-                <span>bis</span>
-                <Date dateString={adventsmarkt.endDate} formatString="d. MMMM yyyy" />
+                {formatDateLocale(adventsmarkt.startDate, 'd. MMMM')} bis{' '}
+                {formatDateLocale(adventsmarkt.endDate, 'd. MMMM yyyy')}
               </div>
               <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
                 <MapPin className="size-6" />
@@ -100,37 +99,20 @@ export default async function Page() {
           <CardContent className="flex flex-col gap-6 p-6 md:flex-row">
             <Card className="w-full">
               <CardHeader>
-                <CardTitle>
-                  <Date dateString={adventsmarkt.startDate} formatString="EEEE, d. MMMM" />
-                </CardTitle>
+                <CardTitle>{formatDateLocale(adventsmarkt.startDate, 'EEEE, d. MMMM')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>
-                  Start:{' '}
-                  <Date dateString={adventsmarkt.saturdayTimes.startTime} formatString="HH:mm" />{' '}
-                  Uhr
-                </p>
-                <p>
-                  Ende:{' '}
-                  <Date dateString={adventsmarkt.saturdayTimes.endTime} formatString="HH:mm" /> Uhr
-                </p>
+                <p>Start: {formatDateLocale(adventsmarkt.saturdayTimes.startTime, 'HH:mm')} Uhr</p>
+                <p>Ende: {formatDateLocale(adventsmarkt.saturdayTimes.endTime, 'HH:mm')} Uhr</p>
               </CardContent>
             </Card>
             <Card className="w-full">
               <CardHeader>
-                <CardTitle>
-                  <Date dateString={adventsmarkt.endDate} formatString="EEEE, d. MMMM" />
-                </CardTitle>
+                <CardTitle>{formatDateLocale(adventsmarkt.endDate, 'EEEE, d. MMMM')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>
-                  Start:{' '}
-                  <Date dateString={adventsmarkt.sundayTimes.startTime} formatString="HH:mm" /> Uhr
-                </p>
-                <p>
-                  Ende: <Date dateString={adventsmarkt.sundayTimes.endTime} formatString="HH:mm" />{' '}
-                  Uhr
-                </p>
+                <p>Start: {formatDateLocale(adventsmarkt.sundayTimes.startTime, 'HH:mm')} Uhr</p>
+                <p>Ende: {formatDateLocale(adventsmarkt.sundayTimes.endTime, 'HH:mm')} Uhr</p>
               </CardContent>
             </Card>
           </CardContent>

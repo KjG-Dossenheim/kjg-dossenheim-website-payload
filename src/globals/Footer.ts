@@ -1,7 +1,6 @@
 
 import { GlobalConfig } from "payload";
 import { revalidatePath } from "next/cache";
-import layout from "@/app/(website)/layout";
 
 export const Footer: GlobalConfig = {
   slug: "footer",
@@ -34,18 +33,9 @@ export const Footer: GlobalConfig = {
           label: "Icon",
           type: "select",
           options: [
-            {
-              label: "Facebook",
-              value: "SiFacebook",
-            },
-            {
-              label: "Instagram",
-              value: "SiInstagram",
-            },
-            {
-              label: "WhatsApp",
-              value: "SiWhatsapp",
-            },
+            { label: "WhatsApp", value: "SiWhatsapp" },
+            { label: "Facebook", value: "SiFacebook" },
+            { label: "Instagram", value: "SiInstagram" },
           ],
           required: true,
         },

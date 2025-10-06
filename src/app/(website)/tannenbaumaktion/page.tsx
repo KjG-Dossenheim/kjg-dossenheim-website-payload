@@ -17,11 +17,9 @@ import {
 } from '@/components/ui/accordion'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-// Custom Components
-import Date from '@/components/common/date'
-
 // Types
 import type { Metadata } from 'next'
+import { formatDateLocale } from '@/components/common/formatDateLocale'
 
 async function getData() {
   const payload = await getPayload({ config })
@@ -46,8 +44,8 @@ export default async function Page() {
       <div className="py-20">
         <h1 className="text-center text-3xl font-bold sm:text-5xl">Tannenbaumaktion</h1>
         <h2 className="text-center text-lg sm:text-2xl">
-          <Date dateString={tannenbaumaktion.startDate} formatString="EEEE, d. MMMM yyyy"></Date> ab{' '}
-          <Date dateString={tannenbaumaktion.startDate} formatString="H:mm"></Date> Uhr
+          {formatDateLocale(tannenbaumaktion.startDate, 'EEEE, d. MMMM yyyy')} ab{' '}
+          {formatDateLocale(tannenbaumaktion.startDate, 'H:mm')} Uhr
         </h2>
       </div>
       <section className="bg-primary py-5" id="verkaufstellen">

@@ -2,6 +2,9 @@ import { GlobalConfig } from "payload";
 
 export const Rechtliches: GlobalConfig = {
   slug: "rechtliches",
+  admin: {
+    group: 'Einstellungen',
+  },
   fields: [
     {
       type: 'tabs',

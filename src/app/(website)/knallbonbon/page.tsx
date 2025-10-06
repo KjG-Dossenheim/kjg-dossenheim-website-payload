@@ -12,7 +12,7 @@ import config from '@payload-config'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Custom Components
-import Date from '@/components/common/date'
+import { formatDateLocale } from '@/components/common/formatDateLocale'
 
 export function generateMetadata(): Metadata {
   return {
@@ -45,7 +45,7 @@ export default async function Page() {
               <CardHeader>
                 <CardTitle>{event.title}</CardTitle>
                 <CardDescription>
-                  <Date dateString={event.date} formatString="EEEE, d. MMMM yyyy 'um' H:mm" />
+                  {formatDateLocale(event.date, "EEEE, d. MMMM yyyy 'um' H:mm")}
                 </CardDescription>
                 <CardDescription>Ort: {event.location}</CardDescription>
               </CardHeader>

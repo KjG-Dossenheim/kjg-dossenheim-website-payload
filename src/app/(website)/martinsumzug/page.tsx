@@ -1,3 +1,6 @@
+// ⬇️ ISR-Zeit (in Sekunden) einstellen
+export const revalidate = 60 // 1 Minute
+
 // React and Next.js
 import React from 'react'
 import type { Metadata } from 'next'
@@ -10,17 +13,17 @@ import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
 // UI Components
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ShootingStars } from '@/components/ui/shooting-stars'
 import { StarsBackground } from '@/components/ui/stars-background'
 import { Button } from '@/components/ui/button'
 
 // Icons
-import { MapPin } from 'lucide-react'
+import { MapPin, ArrowRight } from 'lucide-react'
 
 // Custom Components
-import Date from '@/components/common/date'
 import Countdown from '@/components/common/Countdown'
+import { formatDateLocale } from '@/components/common/formatDateLocale'
 
 export function generateMetadata(): Metadata {
   return {
@@ -48,13 +51,13 @@ export default async function Page() {
         <div className="relative z-10 flex flex-col items-center justify-center">
           <div className="text-center text-white">
             <h1 className="mb-4 text-4xl font-bold md:text-5xl">
-              Martinsumzug <Date dateString={martinsumzug.startDate} formatString="yyyy" />
+              Martinsumzug {formatDateLocale(martinsumzug.startDate, 'yyyy')}
             </h1>
             <div className="flex flex-col items-center justify-center gap-4">
               <p className="mx-auto text-xl">
-                <Date dateString={martinsumzug.startDate} formatString="EEEE, d. MMMM" />
+                {formatDateLocale(martinsumzug.startDate, 'EEEE, d. MMMM')}
                 {' ab '}
-                <Date dateString={martinsumzug.startDate} formatString="HH:mm" />
+                {formatDateLocale(martinsumzug.startDate, 'HH:mm')}
               </p>
               <p className="mx-auto flex items-center justify-center gap-2 text-xl">
                 <MapPin className="size-5" />
@@ -96,25 +99,26 @@ export default async function Page() {
           <CardContent>
             <RichText data={martinsumzug.content} />
           </CardContent>
-        </Card>
-        <Card className="mx-auto max-w-lg">
-          <CardHeader>
-            <CardTitle>Lieder</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            {martinsumzug.songs?.map((song) => (
-              <Card key={song.id}>
-                <CardHeader>
-                  <h3 className="text-lg font-semibold">{song.title}</h3>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild variant="outline">
-                    <Link href={`/songs/${song.slug}`}>Zum Lied</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+          <CardContent>
+            <CardTitle>Liedtexte</CardTitle>
           </CardContent>
+          {new Date(martinsumzug.startDate).toDateString() === new Date().toDateString() ? (
+            <CardContent className="flex flex-col gap-2">
+              {martinsumzug.songs?.map((song) => (
+                <div key={song.id}>
+                  <Button asChild variant="outline" className="space-x-2">
+                    <Link href={`lieder/${song.slug}`}>
+                      {song.title} <ArrowRight className="size-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </CardContent>
+          ) : (
+            <CardContent>
+              <p>Am Tag des Martinsumzugs findet ihr hier die Liedtexte</p>
+            </CardContent>
+          )}
         </Card>
       </div>
     </div>

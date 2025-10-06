@@ -31,7 +31,6 @@ import {
 } from '@/components/ui/card'
 import { PhoneInput } from '@/components/ui/phone-input'
 import de from 'react-phone-number-input/locale/de'
-import Link from 'next/link'
 
 // Schema für das Mitgliedsantragsformular
 const formSchema = z.object({

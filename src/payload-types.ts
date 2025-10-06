@@ -1326,7 +1326,7 @@ export interface Footer {
   socialLinks: {
     title: string;
     url: string;
-    icon: 'SiFacebook' | 'SiInstagram' | 'SiWhatsapp';
+    icon: 'SiWhatsapp' | 'SiFacebook' | 'SiInstagram';
     id?: string | null;
   }[];
   legalLinks: {
