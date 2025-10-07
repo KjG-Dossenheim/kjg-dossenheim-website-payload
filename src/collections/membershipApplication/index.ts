@@ -3,7 +3,6 @@ import type { CollectionConfig } from 'payload'
 import { confirmationEmailTemplate, adminNotificationEmailTemplate } from './email';
 import { render } from '@react-email/render';
 
-
 export const membershipApplication: CollectionConfig = {
   slug: 'membershipApplication',
   access: {
