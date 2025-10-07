@@ -169,6 +169,10 @@ export default buildConfig({
     supportedLanguages: { de },
   },
   secret: process.env.PAYLOAD_SECRET || '',
+  cors: {
+    origins: [`${process.env.NEXT_PUBLIC_SITE_URL}`, 'http://localhost:8081'],
+    headers: ['x-custom-header'],
+  },
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
