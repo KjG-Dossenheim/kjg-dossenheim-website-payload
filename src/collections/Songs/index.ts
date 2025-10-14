@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { slugField } from '@/fields/slug'
+import { slugField } from 'payload'
 
 export const Songs: CollectionConfig = {
   slug: 'songs',
@@ -20,7 +20,7 @@ export const Songs: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    ...slugField(),
+    slugField({ fieldToUse: 'title' }),
     {
       name: 'theme',
       label: 'Thema',
