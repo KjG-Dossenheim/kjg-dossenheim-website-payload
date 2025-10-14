@@ -1,15 +1,19 @@
 import type { CollectionConfig } from 'payload'
-import { slugField } from '@/fields/slug'
+import { slugField } from 'payload'
 import { revalidatePost } from './hooks/revalidatePost'
 
 export const blogPosts: CollectionConfig = {
   slug: 'blogPosts',
   trash: true,
   access: {
-    read: ({ req: { user } }) => {
-      if (user) {
-        return true
-      }
+    read: ({ req }) => {
+      // If there is a user logged in,
+      // let them retrieve all documents
+      if (req.user) return true
+
+      // If there is no user,
+      // restrict the documents that are returned
+      // to only those where `_status` is equal to `published`
       return {
         _status: {
           equals: 'published',
@@ -37,24 +41,21 @@ export const blogPosts: CollectionConfig = {
     defaultColumns: ['title', 'author', 'createdAt', 'updatedAt', 'category'],
     group: 'Blog',
     // Live Preview
-    // livePreview: {
-    //   url: ({ data, req }) => {
-    //     const path = generatePreviewPath({
-    //       slug: typeof data?.slug === 'string' ? data.slug : '',
-    //       collection: 'blogPosts',
-    //       req,
-    //     })
-    //     return path
-    //   },
-    // },
+    livePreview: {
+      url: ({ data }) => {
+        return data?.slug
+          ? `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${data.slug}`
+          : ''
+      },
+    },
 
     // Preview URL
-    // preview: (data, { req }) =>
-    //   generatePreviewPath({
-    //     slug: typeof data?.slug === 'string' ? data.slug : '',
-    //     collection: 'blogPosts',
-    //     req,
-    //   }),
+    preview: (data) => {
+      if (data?.slug) {
+        return `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${data.slug}`
+      }
+      return null
+    }
   },
   fields: [
     {
@@ -100,7 +101,7 @@ export const blogPosts: CollectionConfig = {
         position: 'sidebar',
       },
     },
-    ...slugField(),
+    slugField({ fieldToUse: 'title' }),
     {
       name: 'category',
       label: 'Kategorie',

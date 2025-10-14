@@ -35,7 +35,7 @@ export default async function layout({ children }: { children: ReactNode }) {
     slug: 'header',
   })
   return (
-    <html suppressHydrationWarning lang="de">
+    <html lang="de">
       <body>
         <ThemeProvider
           attribute="class"

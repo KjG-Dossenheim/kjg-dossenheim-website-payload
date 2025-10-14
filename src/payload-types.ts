@@ -206,8 +206,11 @@ export interface BlogPost {
   };
   publishedAt?: string | null;
   author: string | User;
-  slug?: string | null;
-  slugLock?: boolean | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
   category: (string | BlogCategory)[];
   updatedAt: string;
   createdAt: string;
@@ -464,8 +467,11 @@ export interface MembershipApplication {
 export interface Song {
   id: string;
   title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
   /**
    * Z.B. Martinsumzug
    */
@@ -714,8 +720,8 @@ export interface BlogPostsSelect<T extends boolean = true> {
   content?: T;
   publishedAt?: T;
   author?: T;
+  generateSlug?: T;
   slug?: T;
-  slugLock?: T;
   category?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -914,8 +920,8 @@ export interface MembershipApplicationSelect<T extends boolean = true> {
  */
 export interface SongsSelect<T extends boolean = true> {
   title?: T;
+  generateSlug?: T;
   slug?: T;
-  slugLock?: T;
   theme?: T;
   artist?: T;
   year?: T;

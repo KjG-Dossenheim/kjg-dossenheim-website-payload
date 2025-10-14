@@ -17,24 +17,17 @@ import type { BlogPost } from '@/payload-types'
 // UI Components
 import { CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 
-// Custom Components
-import { RefreshRouteOnSave } from '@/components/utils/RefreshRouteOnSave'
-
 // Create a React component for the blog post page
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const { isEnabled: draft } = await draftMode()
   const payload = await getPayload({ config })
   try {
     const posts = await payload.find({
       collection: 'blogPosts',
-      draft,
       limit: 1,
       pagination: false,
-      overrideAccess: draft,
       where: {
         slug: { equals: slug },
-        _status: { equals: 'published' },
       },
       select: {
         publishedAt: true,
@@ -42,6 +35,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         content: true,
         title: true,
         slug: true,
+        _status: true,
       },
     })
     if (!posts?.docs?.length) return notFound()
@@ -75,7 +69,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             }),
           }}
         />
-        {draft && <RefreshRouteOnSave />}
         <CardHeader>
           <h1 className="text-4xl font-bold">{post.title}</h1>
           {post.publishedAt && (
@@ -109,13 +102,18 @@ export async function generateStaticParams() {
   const payload = await getPayload({ config })
   const { docs: blogPosts } = await payload.find({
     collection: 'blogPosts',
+    pagination: false,
     where: {
-      _status: {
-        equals: 'published',
-      },
       slug: {
         exists: true,
       },
+      _status: {
+        equals: 'published',
+      },
+    },
+    select: {
+      slug: true,
+      _status: true,
     },
   })
 
