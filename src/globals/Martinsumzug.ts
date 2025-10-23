@@ -92,10 +92,12 @@ export const Martinsumzug: GlobalConfig = {
   ],
   hooks: {
     afterChange: [
-      async ({ doc }) => {
+      async () => {
         try {
-          await revalidatePath('/martinsumzug');
+          await revalidatePath('/martinsumzug', 'page');
           console.log('Revalidated /martinsumzug successfully');
+          await revalidatePath('/martinsumzug/lieder/[slug]', 'page');
+          console.log('Revalidated /martinsumzug/lieder/[slug] successfully');
         } catch (error) {
           console.error('Failed to revalidate path:', error);
         }

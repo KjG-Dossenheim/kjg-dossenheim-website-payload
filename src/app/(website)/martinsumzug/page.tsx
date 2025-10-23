@@ -107,7 +107,7 @@ export default async function Page() {
               {martinsumzug.songs?.map((song) => (
                 <div key={song.id}>
                   <Button asChild variant="outline" className="space-x-2">
-                    <Link href={`lieder/${song.slug}`}>
+                    <Link href={`/martinsumzug/lieder/${song.slug}`}>
                       {song.title} <ArrowRight className="size-4" />
                     </Link>
                   </Button>
