@@ -1,6 +1,7 @@
 // React and Next.js
 import React, { ReactNode } from 'react'
 import type { Metadata } from 'next'
+import Script from 'next/script'
 
 // Payload CMS
 import { getPayload } from 'payload'
@@ -36,6 +37,13 @@ export default async function layout({ children }: { children: ReactNode }) {
   })
   return (
     <html lang="de">
+      <head>
+        <Script
+          defer
+          src="https://umami.kjg-dossenheim.org/getinfo"
+          data-website-id="28ba9cdf-64ba-4208-b563-ae563b100185"
+        ></Script>
+      </head>
       <body>
         <ThemeProvider
           attribute="class"

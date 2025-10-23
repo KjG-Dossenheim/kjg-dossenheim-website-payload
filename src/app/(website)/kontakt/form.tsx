@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,7 +19,6 @@ import {
 } from '@/components/ui/form'
 import { Toaster } from '@/components/ui/sonner'
 import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
 import {
   CardContent,
@@ -38,18 +36,10 @@ import { CapWidget } from '@/components/common/cap-widget'
 const formSchema = z.object({
   firstName: z.string().min(2, 'Bitte geben Sie Ihren Vornamen ein.'),
   lastName: z.string().min(2, 'Bitte geben Sie Ihren Nachnamen ein.'),
-  birthDate: z.string().min(1, 'Bitte geben Sie Ihr Geburtsdatum ein.'),
-  address: z.string().min(2, 'Bitte geben Sie Ihre Adresse ein.'),
-  city: z.string().min(1, 'Bitte geben Sie Ihre Stadt ein.'), // hinzugefügt
-  postalCode: z.string().min(1, 'Bitte geben Sie Ihre Postleitzahl ein.'), // hinzugefügt
-  email: z.string().email('Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
+  email: z.email('Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
   phone: z.string().optional(),
-  status: z.enum(['new', 'in_review', 'completed', 'rejected']),
-  notes: z.string().optional(),
+  message: z.string().min(2, 'Bitte geben Sie eine Nachricht ein.'),
   captchaToken: z.string().min(1, 'Bitte bestätigen Sie, dass Sie kein Roboter sind.'),
-  consentToDataProcessing: z.boolean().refine((val) => val, {
-    message: 'Bitte stimmen Sie der Datenverarbeitung zu.',
-  }),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -60,15 +50,10 @@ export default function MitgliedForm() {
     defaultValues: {
       firstName: '',
       lastName: '',
-      birthDate: '',
-      address: '',
-      city: '',
-      postalCode: '',
       email: '',
       phone: '',
-      status: 'new',
-      notes: '',
-      consentToDataProcessing: false,
+      message: '',
+      captchaToken: '',
     },
   })
 
@@ -97,9 +82,10 @@ export default function MitgliedForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader>
-            <CardTitle>Mitgliedsantrag</CardTitle>
+            <CardTitle>Kontakt</CardTitle>
             <CardDescription>
-              Hier können Sie einen Antrag auf Mitgliedschaft stellen.
+              Hier können Sie uns eine Nachricht senden. Wir melden uns so schnell wie möglich bei
+              Ihnen.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -125,61 +111,6 @@ export default function MitgliedForm() {
                     <FormLabel>Nachname</FormLabel>
                     <FormControl>
                       <Input type="text" {...field} placeholder="Nachname" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </span>
-
-            <FormField
-              control={form.control}
-              name="birthDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Geburtsdatum</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Adresse</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} placeholder="Adresse" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <span className="flex flex-col gap-4 md:flex-row">
-              <FormField
-                control={form.control}
-                name="postalCode"
-                render={({ field }) => (
-                  <FormItem className="grow">
-                    <FormLabel>Postleitzahl</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} placeholder="Postleitzahl" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem className="grow">
-                    <FormLabel>Stadt</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} placeholder="Stadt" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -219,28 +150,13 @@ export default function MitgliedForm() {
             />
             <FormField
               control={form.control}
-              name="notes"
+              name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Notizen</FormLabel>
+                  <FormLabel>Nachricht</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder="Notizen" />
+                    <Textarea {...field} placeholder="Nachricht" />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="consentToDataProcessing"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex flex-row items-center gap-2">
-                    <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                    </FormControl>
-                    <FormLabel>Einwilligung zur Datenverarbeitung</FormLabel>
-                  </div>
                   <FormMessage />
                 </FormItem>
               )}

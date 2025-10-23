@@ -147,7 +147,11 @@ export default function Navbar({ headerData }: NavbarProps) {
           </div>
           <div className="flex gap-2">
             <Button asChild>
-              <Link href="/mitglied" aria-label="Mitglied werden">
+              <Link
+                href="/mitglied"
+                aria-label="Mitglied werden"
+                data-umami-event="Member CTA Navbar"
+              >
                 Mitglied werden
               </Link>
             </Button>
@@ -157,6 +161,7 @@ export default function Navbar({ headerData }: NavbarProps) {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Spenden über PayPal (öffnet in neuem Fenster)"
+                data-umami-event="Donate CTA Navbar"
               >
                 Spenden
               </Link>
@@ -197,7 +202,11 @@ export default function Navbar({ headerData }: NavbarProps) {
                   </Accordion>
                   <div className="flex flex-col gap-2">
                     <Button asChild>
-                      <Link href="/mitglied" aria-label="Mitglied werden">
+                      <Link
+                        href="/mitglied"
+                        aria-label="Mitglied werden"
+                        data-umami-event="Member CTA Navbar"
+                      >
                         Mitglied werden
                       </Link>
                     </Button>
@@ -207,6 +216,7 @@ export default function Navbar({ headerData }: NavbarProps) {
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Spenden über PayPal (öffnet in neuem Fenster)"
+                        data-umami-event="Donate CTA Navbar"
                       >
                         Spenden
                       </Link>

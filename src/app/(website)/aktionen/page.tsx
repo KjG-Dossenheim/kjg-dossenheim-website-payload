@@ -30,6 +30,7 @@ import {
 
 // Custom Components
 import DateComponent from '@/components/common/date'
+import { formatDateLocale } from '@/components/common/formatDateLocale'
 
 export function generateMetadata(): Metadata {
   return {
@@ -88,15 +89,12 @@ export default async function Page() {
                     <TimelineSeparator />
                     <TimelineDate className="flex items-center gap-1.5">
                       <Calendar className="size-3.5" />
-                      <DateComponent
-                        dateString={event.startDate}
-                        formatString="EEEE, d. MMMM yyyy "
-                      />
+                      {formatDateLocale(event.startDate, 'EEEE, d. MMMM yyyy')}
                     </TimelineDate>
                     <TimelineTitle>{event.name}</TimelineTitle>
                     <TimelineIndicator />
                   </TimelineHeader>
-                  <TimelineContent>
+                  <TimelineContent className="max-w-sm">
                     {event.location && (
                       <div className="mb-2 flex items-center gap-1.5">
                         <MapPin className="size-3.5" /> {event.location}

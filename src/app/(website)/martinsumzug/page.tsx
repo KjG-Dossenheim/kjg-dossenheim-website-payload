@@ -47,7 +47,7 @@ export default async function Page() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative flex h-[40rem] w-full flex-col items-center justify-center bg-neutral-900">
+      <div className="relative flex h-160 w-full flex-col items-center justify-center bg-neutral-900">
         <div className="relative z-10 flex flex-col items-center justify-center">
           <div className="text-center text-white">
             <h1 className="mb-4 text-4xl font-bold md:text-5xl">
