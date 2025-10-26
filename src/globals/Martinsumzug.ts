@@ -20,6 +20,7 @@ export const Martinsumzug: GlobalConfig = {
       name: 'startDate',
       type: 'date',
       required: true,
+      timezone: true,
       admin: {
         position: 'sidebar',
         date: {

@@ -1088,6 +1088,7 @@ export interface Adventsmarkt {
 export interface Martinsumzug {
   id: string;
   startDate: string;
+  startDate_tz: SupportedTimezones;
   startLocation: string;
   endLocation: string;
   /**
@@ -1497,6 +1498,7 @@ export interface AdventsmarktSelect<T extends boolean = true> {
  */
 export interface MartinsumzugSelect<T extends boolean = true> {
   startDate?: T;
+  startDate_tz?: T;
   startLocation?: T;
   endLocation?: T;
   meta?:

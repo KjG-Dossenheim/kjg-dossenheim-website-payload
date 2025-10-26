@@ -82,7 +82,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     timezones: {
-      defaultTimezone: 'Europe/Berlin',
+      defaultTimezone: process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE ?? 'Etc/UTC',
     },
     dateFormat: 'dd.MM.yyyy',
     components: {

@@ -13,7 +13,7 @@ import type { BlogPost } from '@/payload-types'
 import { Calendar } from 'lucide-react'
 
 // Custom Components
-import { BlogCard } from '@/components/features/blog/BlogCard'
+import { BlogCard } from './_components/BlogCard'
 
 // Fetch blog posts from Payload CMS
 async function getBlogPosts(): Promise<BlogPost[]> {

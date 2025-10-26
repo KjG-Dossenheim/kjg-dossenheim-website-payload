@@ -3,18 +3,21 @@
 import { useEffect, useState } from 'react'
 import { SlidingNumber } from '../ui/sliding-number'
 import { Card } from '../ui/card'
-
-interface CountdownProps {
-  targetDate: string
-}
+import { toZonedTime } from 'date-fns-tz'
 
 interface CountdownProps {
   targetDate: string
   textColor?: string
   bgColor?: string
+  timezone?: string
 }
 
-export default function Countdown({ targetDate, textColor, bgColor }: CountdownProps) {
+export default function Countdown({
+  targetDate,
+  textColor,
+  bgColor,
+  timezone = process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE ?? 'Etc/UTC',
+}: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -23,10 +26,12 @@ export default function Countdown({ targetDate, textColor, bgColor }: CountdownP
   })
 
   useEffect(() => {
-    const target = new Date(targetDate).getTime()
+    const targetDateInTimezone = toZonedTime(new Date(targetDate), timezone)
+    const target = targetDateInTimezone.getTime()
 
     const interval = setInterval(() => {
-      const now = new Date().getTime()
+      const nowInTimezone = toZonedTime(new Date(), timezone)
+      const now = nowInTimezone.getTime()
       const difference = target - now
 
       if (difference <= 0) {

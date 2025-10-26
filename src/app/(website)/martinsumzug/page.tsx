@@ -13,7 +13,14 @@ import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
 // UI Components
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { ShootingStars } from '@/components/ui/shooting-stars'
 import { StarsBackground } from '@/components/ui/stars-background'
 import { Button } from '@/components/ui/button'
@@ -48,27 +55,28 @@ export default async function Page() {
     <div>
       {/* Hero Section */}
       <div className="relative flex h-160 w-full flex-col items-center justify-center bg-neutral-900">
-        <div className="relative z-10 flex flex-col items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center text-white">
+          <CardHeader>
+            <h1 className="text-4xl font-bold md:text-5xl">
               Martinsumzug {formatDateLocale(martinsumzug.startDate, 'yyyy')}
             </h1>
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="mx-auto text-xl">
-                {formatDateLocale(martinsumzug.startDate, 'EEEE, d. MMMM')}
-                {' ab '}
-                {formatDateLocale(martinsumzug.startDate, 'HH:mm')}
-              </p>
-              <p className="mx-auto flex items-center justify-center gap-2 text-xl">
-                <MapPin className="size-5" />
-                {martinsumzug.startLocation}
-              </p>
-              <p className="mx-auto text-center text-xl">
-                Begleiten Sie uns bei unserem traditionellen Martinsumzug durch Dossenheim
-              </p>
-              <Countdown targetDate={martinsumzug.startDate} />
-            </div>
-          </div>
+          </CardHeader>
+          <CardContent>
+            <p className="mx-auto text-xl">
+              {formatDateLocale(martinsumzug.startDate, 'EEEE, d. MMMM')}
+              {' ab '}
+              {formatDateLocale(martinsumzug.startDate, 'HH:mm')}
+            </p>
+          </CardContent>
+          <CardContent>
+            <Countdown targetDate={martinsumzug.startDate} />
+          </CardContent>
+          <CardFooter>
+            <p className="mx-auto flex items-center justify-center gap-2 text-xl">
+              <MapPin className="size-5" />
+              {martinsumzug.startLocation}
+            </p>
+          </CardFooter>
         </div>
         <ShootingStars
           minSpeed={10}
@@ -99,9 +107,11 @@ export default async function Page() {
           <CardContent>
             <RichText data={martinsumzug.content} />
           </CardContent>
-          <CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle>Liedtexte</CardTitle>
-          </CardContent>
+          </CardHeader>
           {new Date(martinsumzug.startDate).toDateString() === new Date().toDateString() ? (
             <CardContent className="flex flex-col gap-2">
               {martinsumzug.songs?.map((song) => (

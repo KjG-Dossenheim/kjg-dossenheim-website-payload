@@ -12,7 +12,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
   return (
     <Card className="hover:shadow-x h-full overflow-hidden shadow-md backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02]">
       {/* Card Image Placeholder */}
-      <div className="from-primary/10 to-accent/10 aspect-[4/3] overflow-hidden bg-gradient-to-br">
+      <div className="from-primary/10 to-accent/10 aspect-4/3 overflow-hidden bg-linear-to-br">
         <div className="flex h-full w-full items-center justify-center">
           <div className="text-center">
             <div className="bg-primary/20 mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full">

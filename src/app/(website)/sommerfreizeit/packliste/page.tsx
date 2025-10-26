@@ -1,3 +1,6 @@
+// ⬇️ ISR-Zeit (in Sekunden) einstellen
+export const revalidate = 60 // 1 Minute
+
 import React from 'react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
@@ -13,9 +16,6 @@ async function getData() {
     },
   })
 }
-
-// ⬇️ ISR-Zeit (in Sekunden) einstellen
-export const revalidate = 60 // 1 Minute
 
 export const metadata: Metadata = {
   title: 'Packliste',

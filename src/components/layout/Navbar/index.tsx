@@ -146,22 +146,17 @@ export default function Navbar({ headerData }: NavbarProps) {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button asChild>
-              <Link
-                href="/mitglied"
-                aria-label="Mitglied werden"
-                data-umami-event="Member CTA Navbar"
-              >
+            <Button asChild data-umami-event="Member CTA Navbar">
+              <Link href="/mitglied" aria-label="Mitglied werden">
                 Mitglied werden
               </Link>
             </Button>
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild data-umami-event="Donate CTA Navbar">
               <Link
                 href="https://www.paypal.com/donate/?hosted_button_id=VNX7B928TD4JE"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Spenden über PayPal (öffnet in neuem Fenster)"
-                data-umami-event="Donate CTA Navbar"
               >
                 Spenden
               </Link>
@@ -201,22 +196,17 @@ export default function Navbar({ headerData }: NavbarProps) {
                     {headerData.navigation.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
                   <div className="flex flex-col gap-2">
-                    <Button asChild>
-                      <Link
-                        href="/mitglied"
-                        aria-label="Mitglied werden"
-                        data-umami-event="Member CTA Navbar"
-                      >
+                    <Button asChild data-umami-event="Member CTA Navbar">
+                      <Link href="/mitglied" aria-label="Mitglied werden">
                         Mitglied werden
                       </Link>
                     </Button>
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" asChild data-umami-event="Donate CTA Navbar">
                       <Link
                         href="https://www.paypal.com/donate/?hosted_button_id=VNX7B928TD4JE"
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Spenden über PayPal (öffnet in neuem Fenster)"
-                        data-umami-event="Donate CTA Navbar"
                       >
                         Spenden
                       </Link>

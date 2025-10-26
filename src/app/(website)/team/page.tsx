@@ -82,7 +82,12 @@ function TeamMemberCard({ member }: { member: Team }) {
             </Badge>
           ))}
           {member.email && (
-            <Link href={`mailto:${member.email}`}>
+            <Link
+              href={`mailto:${member.email}`}
+              data-umami-event="Team Member Email Click"
+              data-umami-event-member={member.firstName + ' ' + member.lastName}
+              data-umami-event-email={member.email}
+            >
               <Badge className="uppercase" variant={'outline'}>
                 <Mail className="size-4" />
               </Badge>
@@ -94,6 +99,8 @@ function TeamMemberCard({ member }: { member: Team }) {
         <Link
           href={`/team/${member.id}`}
           className="flex items-center gap-2 text-sm hover:underline"
+          data-umami-event="Team Member More Info Click"
+          data-umami-event-member={member.firstName + ' ' + member.lastName}
         >
           Mehr erfahren <ArrowRight className="size-4" />
         </Link>

@@ -33,12 +33,12 @@ export default function AccommodationSection({ unterkunft }: AccommodationSectio
             </Button>
           </CardFooter>
         </div>
-        <div className="relative m-6 h-64 md:h-auto md:w-1/2">
+        <div className="relative h-64 md:h-auto md:w-1/2">
           {unterkunft.bild && typeof unterkunft.bild !== 'string' && (
             <Image
               src={unterkunft.bild.url || ''}
               alt={unterkunft.bild.alt || 'Unterkunft Bild'}
-              className="rounded-lg object-cover"
+              className="rounded-b-lg object-cover sm:rounded-l-none sm:rounded-r-lg"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               fill
               priority

@@ -102,7 +102,12 @@ export default async function Page() {
                     )}
                     {event.description && <p className="mb-3">{event.description}</p>}
                     {event.link && (
-                      <Button asChild variant="outline">
+                      <Button
+                        asChild
+                        variant="outline"
+                        data-umami-event="Event More Info CTA"
+                        data-umami-event-event={event.name}
+                      >
                         <Link href={event.link} className="gap-1.5">
                           Mehr erfahren <ArrowRight className="size-5" />
                         </Link>

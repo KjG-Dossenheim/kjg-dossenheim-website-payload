@@ -4,6 +4,7 @@ import Date from '@/components/common/date'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import Countdown from '@/components/common/Countdown'
 import { Button } from '@/components/ui/button'
+import { CardHeader } from '@/components/ui/card'
 
 interface HeroSectionProps {
   title: string
@@ -21,36 +22,36 @@ export default function HeroSection({
   anmeldungWebsite,
 }: HeroSectionProps) {
   return (
-    <section className="mx-auto space-y-12 overflow-hidden py-24 text-center">
-      <div className="space-y-4">
+    <section className="flex h-140 flex-col items-center justify-center text-center">
+      <CardHeader className="space-y-4">
         <h1 className="text-4xl leading-none font-extrabold tracking-tight md:text-5xl lg:text-6xl">
           {title}
         </h1>
         <h2 className="text-xl md:text-2xl lg:text-3xl">{motto}</h2>
-      </div>
-      <div className="space-y-2">
+      </CardHeader>
+      <CardHeader className="space-y-2">
         <Countdown targetDate={startDate} />
-        <p className="text-lg font-normal sm:px-16 lg:px-48 lg:text-xl">
+        <p className="text-lg font-normal lg:text-xl">
           <Date dateString={startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
           <Date dateString={endDate} formatString="EEEE, d. MMMM yyyy" />
         </p>
-      </div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-        <Button asChild>
+      </CardHeader>
+      <CardHeader className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center sm:gap-4">
+        <Button asChild data-umami-event="Sommerfreizeit Anmeldung Hero CTA">
           <Link href={anmeldungWebsite} target="_blank">
             <span className="flex items-center gap-2">
               Jetzt anmelden <ChevronRight />
             </span>
           </Link>
         </Button>
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" data-umami-event="Sommerfreizeit Info Hero CTA">
           <Link href="#info">
             <span className="flex items-center gap-2">
               Informationen <ChevronDown />
             </span>
           </Link>
         </Button>
-      </div>
+      </CardHeader>
     </section>
   )
 }
