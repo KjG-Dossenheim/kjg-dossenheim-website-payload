@@ -70,7 +70,7 @@ export default async function Page() {
     organizer: {
       '@type': 'Organization',
       name: process.env.NEXT_PUBLIC_SITE_NAME,
-      url: process.env.NEXT_PUBLIC_BASE_URL,
+      url: process.env.NEXT_PUBLIC_SITE_URL,
     },
   }
 
