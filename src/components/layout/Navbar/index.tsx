@@ -30,7 +30,6 @@ import Wortmarke from '@/graphics/logo/Wortmarke'
 
 // Types
 import type { Header } from '@/payload-types'
-import { unstable_cacheLife } from '../../../../.next/types/cache-life'
 
 interface NavbarProps {
   headerData: Header
