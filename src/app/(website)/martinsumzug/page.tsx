@@ -55,7 +55,7 @@ export default async function Page() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Event',
-    name: 'Martinsumzug' + formatDateLocale(martinsumzug.startDate, 'yyyy'),
+    name: `Martinsumzug ${formatDateLocale(martinsumzug.startDate, 'yyyy')}`,
     startDate: formatInTimeZone(
       martinsumzug.startDate,
       process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
