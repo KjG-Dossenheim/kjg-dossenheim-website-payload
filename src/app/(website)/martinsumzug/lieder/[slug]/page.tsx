@@ -89,7 +89,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${song.title} - Martinsumzug Lieder | KjG Dossenheim`,
+    title: `${song.title} - Martinsumzug Lieder | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     description: song.artist
       ? `${song.title} von ${song.artist} - Liedtext für den Martinsumzug`
       : `${song.title} - Liedtext für den Martinsumzug`,

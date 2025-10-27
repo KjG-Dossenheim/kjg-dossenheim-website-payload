@@ -31,11 +31,12 @@ import { MapPin, ArrowRight } from 'lucide-react'
 // Custom Components
 import Countdown from '@/components/common/Countdown'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
+import { formatInTimeZone } from 'date-fns-tz'
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Martinsumzug | KjG Dossenheim',
-    description: 'Der Martinsumzug der KjG Dossenheim',
+    title: `Martinsumzug | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    description: `Der Martinsumzug der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   }
 }
 
@@ -51,8 +52,36 @@ export default async function Page() {
     songs: Song[]
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'Martinsumzug' + formatDateLocale(martinsumzug.startDate, 'yyyy'),
+    startDate: formatInTimeZone(
+      martinsumzug.startDate,
+      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
+      "yyyy-MM-dd'T'HH:mm:ssxxx",
+    ),
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: {
+      '@type': 'Place',
+      name: martinsumzug.startLocation,
+    },
+    description: `Der Martinsumzug der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    organizer: {
+      '@type': 'Organization',
+      name: process.env.NEXT_PUBLIC_SITE_NAME,
+      url: process.env.NEXT_PUBLIC_BASE_URL,
+    },
+  }
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
       {/* Hero Section */}
       <div className="relative flex h-160 w-full flex-col items-center justify-center bg-neutral-900">
         <div className="relative z-10 flex flex-col items-center justify-center text-center text-white">
