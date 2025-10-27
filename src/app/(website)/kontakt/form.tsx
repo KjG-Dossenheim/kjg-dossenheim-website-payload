@@ -31,8 +31,9 @@ import { PhoneInput } from '@/components/ui/phone-input'
 import de from 'react-phone-number-input/locale/de'
 
 import { CapWidget } from '@/components/common/cap-widget'
+import { sendMail } from './sendMail'
 
-// Schema für das Mitgliedsantragsformular
+// Schema für das Kontaktformular
 const formSchema = z.object({
   firstName: z.string().min(2, 'Bitte geben Sie Ihren Vornamen ein.'),
   lastName: z.string().min(2, 'Bitte geben Sie Ihren Nachnamen ein.'),
@@ -44,7 +45,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-export default function MitgliedForm() {
+export default function ContactForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,17 +60,12 @@ export default function MitgliedForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const req = await fetch('/api/membershipApplication', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      })
-      if (req.ok) {
+      const email = await sendMail(values)
+      if (email) {
+        toast.success('Nachricht erfolgreich gesendet.')
         form.reset()
-        toast.success('Mitgliedsantrag erfolgreich übermittelt!')
       } else {
-        toast.error('Fehler beim Übermitteln des Antrags.')
+        toast.error('Fehler beim Senden der Nachricht.')
       }
     } catch {
       toast.error('Netzwerkfehler.')

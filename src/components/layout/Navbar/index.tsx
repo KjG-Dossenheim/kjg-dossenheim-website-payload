@@ -30,6 +30,7 @@ import Wortmarke from '@/graphics/logo/Wortmarke'
 
 // Types
 import type { Header } from '@/payload-types'
+import { unstable_cacheLife } from '../../../../.next/types/cache-life'
 
 interface NavbarProps {
   headerData: Header
@@ -56,6 +57,7 @@ function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
             className="bg-muted flex h-full w-full flex-col justify-center rounded-md p-6 no-underline outline-hidden select-none focus:shadow-md"
             href="/aktionen"
             aria-label="Jahresplan anzeigen"
+            data-umami-event="Submenu Link: Jahresplan"
           >
             <div className="my-auto text-lg font-medium">Jahresplan</div>
           </NavigationMenuLink>
@@ -67,6 +69,7 @@ function ActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
                 href={component.url}
                 className="flex-row items-center gap-2"
                 aria-label={`${component.title} Aktion`}
+                data-umami-event={`Submenu Link: ${component.title}`}
               >
                 <DynamicIcon
                   name={component.icon as IconName}
@@ -90,6 +93,7 @@ function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
         <AccordionTrigger
           className="text-md py-0 font-semibold hover:no-underline"
           aria-label="Aktionen Menü öffnen/schließen"
+          data-umami-event="Navbar Link: Aktionen"
         >
           Aktionen
         </AccordionTrigger>
@@ -100,6 +104,7 @@ function MobileActionsSubmenu({ aktionen }: { aktionen: Header['aktionen'] }) {
               className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
               href={`${subItem.url}`}
               aria-label={`${subItem.title} Aktion`}
+              data-umami-event={`Submenu Link: ${subItem.title}`}
             >
               <div>
                 <div className="text-sm font-semibold">{subItem.title}</div>
@@ -120,7 +125,13 @@ export default function Navbar({ headerData }: NavbarProps) {
         <nav className="hidden justify-between lg:flex" aria-label="Hauptnavigation">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <Link href="/" className="flex items-center pl-6" aria-label="Zur Startseite">
+            <Link
+              href="/"
+              className="flex items-center pl-6"
+              aria-label="Zur Startseite"
+              data-umami-event="Navbar Link: Startseite"
+              data-umami-event-variant="Navbar Logo"
+            >
               <Wortmarke className="h-8 w-auto" />
             </Link>
             <div className="flex items-center">
@@ -129,13 +140,18 @@ export default function Navbar({ headerData }: NavbarProps) {
                   <NavigationMenuItem>
                     <NavigationMenuLink
                       href="/"
+                      data-umami-event="Navbar Link: Startseite"
+                      data-umami-variant="Navbar Item"
                       className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
                     >
                       Startseite
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors">
+                    <NavigationMenuTrigger
+                      data-umami-event="Navbar Link: Aktionen"
+                      className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                    >
                       Aktionen
                     </NavigationMenuTrigger>
                     <ActionsSubmenu aktionen={headerData.aktionen} />
@@ -169,7 +185,13 @@ export default function Navbar({ headerData }: NavbarProps) {
         <div className="block lg:hidden">
           <nav className="flex items-center justify-between" aria-label="Mobile Navigation">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 pl-2" aria-label="Zur Startseite">
+            <Link
+              href="/"
+              className="flex items-center gap-2 pl-2"
+              aria-label="Zur Startseite"
+              data-umami-event="Navbar Link: Startseite"
+              data-umami-variant="Navbar Logo"
+            >
               <Wortmarke className="h-8 w-auto" />
             </Link>
             <Sheet>
@@ -189,7 +211,13 @@ export default function Navbar({ headerData }: NavbarProps) {
                     className="flex w-full flex-col gap-4"
                     aria-label="Navigationsmenü"
                   >
-                    <Link href="/" className="text-md font-semibold" aria-label="Zur Startseite">
+                    <Link
+                      href="/"
+                      className="text-md font-semibold"
+                      aria-label="Zur Startseite"
+                      data-umami-event="Navbar Link: Startseite"
+                      data-umami-variant="Navbar Item"
+                    >
                       Startseite
                     </Link>
                     <MobileActionsSubmenu aktionen={headerData.aktionen} />
@@ -242,6 +270,7 @@ const renderMenuItem = (item: MenuItem) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         href={item.url}
+        data-umami-event={`Navbar Link: ${item.title}`}
         className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
       >
         {item.title}
@@ -270,7 +299,12 @@ const renderMobileMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <Link key={item.title} href={item.url} className="text-md font-semibold">
+    <Link
+      key={item.title}
+      href={item.url}
+      className="text-md font-semibold"
+      data-umami-event={`Navbar Link: ${item.title}`}
+    >
       {item.title}
     </Link>
   )
@@ -282,6 +316,7 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
       className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
       href={item.url}
       aria-label={item.description ? `${item.title}: ${item.description}` : item.title}
+      data-umami-event={`Submenu Link: ${item.title}`}
     >
       <div className="text-foreground" aria-hidden="true">
         {item.icon}

@@ -16,7 +16,7 @@ import { formatDateLocale } from '@/components/common/formatDateLocale'
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Knallbonbon | KjG Dossenheim',
+    title: `Knallbonbon | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     description: 'Der Knallbonbon der Evangelischen Kirchengemeinde Dossenheim',
   }
 }

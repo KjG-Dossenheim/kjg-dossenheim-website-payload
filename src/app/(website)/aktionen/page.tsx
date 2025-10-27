@@ -29,13 +29,12 @@ import {
 } from '@/components/ui/timeline'
 
 // Custom Components
-import DateComponent from '@/components/common/date'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Aktionen | KjG Dossenheim',
-    description: 'Hier findest du alle Aktionen der KjG Dossenheim',
+    title: `Aktionen | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    description: `Hier findest du alle Aktionen der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   }
 }
 

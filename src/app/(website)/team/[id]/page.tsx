@@ -53,13 +53,13 @@ export async function generateMetadata({
   const member = await getTeamMember(id)
   if (!member) {
     return {
-      title: 'Team Member Not Found | KjG Dossenheim',
+      title: `Team Member Not Found | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
       description: '',
     }
   }
 
   return {
-    title: `${member.firstName} ${member.lastName} | KjG Dossenheim`,
+    title: `${member.firstName} ${member.lastName} | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   }
 }
 

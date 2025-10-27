@@ -18,6 +18,7 @@ import Countdown from '@/components/common/Countdown'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { SparklesCore } from '@/components/ui/sparkles'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
+import { formatInTimeZone } from 'date-fns-tz/formatInTimeZone'
 
 async function getData() {
   const payload = await getPayload({ config })
@@ -29,7 +30,7 @@ async function getData() {
 export async function generateMetadata(): Promise<Metadata> {
   const adventsmarkt = await getData()
   return {
-    title: `${adventsmarkt.meta?.title} | KjG Dossenheim`,
+    title: `${adventsmarkt.meta?.title} | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     description: `${adventsmarkt.meta?.description}`,
   }
 }
@@ -37,15 +38,51 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const adventsmarkt = await getData()
 
-  // Check if the event date has passed
-  const eventStartDate = parseISO(adventsmarkt.startDate)
-  const currentDate = new globalThis.Date()
-  const isUpcoming = eventStartDate > currentDate
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: `Adventsmarkt ${formatDateLocale(adventsmarkt.startDate, 'yyyy')}`,
+    startDate: formatInTimeZone(
+      adventsmarkt.startDate,
+      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
+      'yyyy-MM-dd',
+    ),
+    endDate: formatInTimeZone(
+      adventsmarkt.endDate,
+      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
+      'yyyy-MM-dd',
+    ),
+    location: {
+      '@type': 'Place',
+      name: 'kath. Kirche Dossenheim',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Schlüsselweg 5, 69221 Dossenheim',
+        addressLocality: 'Dossenheim',
+        postalCode: '69221',
+        addressRegion: 'Baden-Württemberg',
+        addressCountry: 'DE',
+      },
+    },
+    eventStatus: 'https://schema.org/EventScheduled',
+    description: `Die Tannenbaumaktion der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    organizer: {
+      '@type': 'Organization',
+      name: process.env.NEXT_PUBLIC_SITE_NAME,
+      url: process.env.NEXT_PUBLIC_SITE_URL,
+    },
+  }
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
       {/* Hero Section */}
-      <div className="relative flex h-[40rem] w-full flex-col items-center justify-center overflow-hidden bg-radial from-red-700 from-40% to-red-900">
+      <div className="relative flex h-160 w-full flex-col items-center justify-center overflow-hidden bg-radial from-red-700 from-40% to-red-900">
         <div className="absolute inset-0 h-screen w-full">
           <SparklesCore
             id="hero-sparkles"
@@ -74,23 +111,20 @@ export default async function Page() {
             </div>
           </div>
 
-          {/* Countdown (only show if upcoming) */}
-          {isUpcoming && (
-            <div className="mb-8">
-              <Countdown
-                targetDate={adventsmarkt.startDate}
-                bgColor="bg-emerald-700"
-                textColor="text-white"
-              />
-            </div>
-          )}
+          <div className="mb-8">
+            <Countdown
+              targetDate={adventsmarkt.startDate}
+              bgColor="bg-emerald-700"
+              textColor="text-white"
+            />
+          </div>
         </div>
       </div>
 
       {/* Content Section */}
       <section className="container mx-auto p-6">
         <Card>
-          <CardHeader className="rounded-t-lg bg-gradient-to-r from-red-700 to-emerald-700 text-white">
+          <CardHeader className="rounded-t-lg bg-linear-to-r from-red-700 to-emerald-700 text-white">
             <CardTitle className="flex items-center gap-3">
               <Snowflake className="size-6" />
               Informationen

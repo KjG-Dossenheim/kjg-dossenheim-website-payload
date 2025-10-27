@@ -20,6 +20,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 // Types
 import type { Metadata } from 'next'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
+import { formatInTimeZone } from 'date-fns-tz/formatInTimeZone'
 
 async function getData() {
   const payload = await getPayload({ config })
@@ -31,7 +32,7 @@ async function getData() {
 export async function generateMetadata(): Promise<Metadata> {
   const tannenbaumaktion = await getData()
   return {
-    title: `${tannenbaumaktion.meta?.title} | KjG Dossenheim`,
+    title: `${tannenbaumaktion.meta?.title} | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     description: `${tannenbaumaktion.meta?.description}`,
   }
 }
@@ -39,8 +40,36 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const tannenbaumaktion = await getData()
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: `Tannenbaumaktion ${formatDateLocale(tannenbaumaktion.startDate, 'yyyy')}`,
+    startDate: formatInTimeZone(
+      tannenbaumaktion.startDate,
+      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
+      "yyyy-MM-dd'T'HH:mm:ssxxx",
+    ),
+    location: {
+      '@type': 'Place',
+      name: 'Dossenheim',
+    },
+    eventStatus: 'https://schema.org/EventScheduled',
+    description: `Die Tannenbaumaktion der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    organizer: {
+      '@type': 'Organization',
+      name: process.env.NEXT_PUBLIC_SITE_NAME,
+      url: process.env.NEXT_PUBLIC_SITE_URL,
+    },
+  }
+
   return (
     <section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
       <div className="py-20">
         <h1 className="text-center text-3xl font-bold sm:text-5xl">Tannenbaumaktion</h1>
         <h2 className="text-center text-lg sm:text-2xl">

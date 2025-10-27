@@ -48,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageData()
 
   return {
-    title: `${page.meta?.title || 'Startseite'} | KjG Dossenheim`,
+    title: `${page.meta?.title || 'Startseite'} | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     description: page.meta?.description || '',
   }
 }

@@ -13,8 +13,8 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { RichText } from '@/components/utils/RichText'
 export function generateMetadata(): Metadata {
   return {
-    title: 'Über uns | KjG Dossenheim',
-    description: 'Erfahre mehr über die KjG Dossenheim',
+    title: `Über uns | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    description: `Erfahre mehr über die ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   }
 }
 

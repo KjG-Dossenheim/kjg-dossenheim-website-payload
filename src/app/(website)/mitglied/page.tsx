@@ -5,8 +5,8 @@ import type { Metadata } from 'next'
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Mitglied werden | KjG Dossenheim',
-    description: 'Stelle einen Antrag auf Mitgliedschaft bei der KjG Dossenheim.',
+    title: `Mitglied werden | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    description: `Stelle einen Antrag auf Mitgliedschaft bei der ${process.env.NEXT_PUBLIC_SITE_NAME}.`,
   }
 }
 

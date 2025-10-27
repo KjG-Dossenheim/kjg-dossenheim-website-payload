@@ -45,8 +45,8 @@ async function getTeamMembers() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Team | KjG Dossenheim',
-    description: 'Hier findest du alle Mitglieder des KjG Teams',
+    title: `Team | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    description: `Hier findest du alle Mitglieder der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   }
 }
 
@@ -116,7 +116,7 @@ export default async function TeamPage() {
     <section className="container mx-auto">
       <CardHeader>
         <CardTitle>Unser Team</CardTitle>
-        <p>Hier findest du alle Mitglieder des KjG Dossenheim Teams</p>
+        <p>Hier findest du alle Mitglieder der {process.env.NEXT_PUBLIC_SITE_NAME}</p>
       </CardHeader>
       {teamMembers.length > 0 ? (
         <div className="grid gap-6 p-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

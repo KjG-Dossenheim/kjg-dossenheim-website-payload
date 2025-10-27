@@ -17,13 +17,13 @@ import '@/styles/globals.css'
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'KjG Dossenheim',
-    description: 'Die KjG Dossenheim ist ein katholischer Jugendverband in Dossenheim',
+    title: `${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    description: `Die ${process.env.NEXT_PUBLIC_SITE_NAME} ist ein katholischer Jugendverband in Dossenheim`,
     openGraph: {
-      title: 'KjG Dossenheim',
-      description: 'Die KjG Dossenheim ist ein katholischer Jugendverband in Dossenheim',
-      url: 'https://kjg-dossenheim.org',
-      siteName: 'KjG Dossenheim',
+      title: `${process.env.NEXT_PUBLIC_SITE_NAME}`,
+      description: `Die ${process.env.NEXT_PUBLIC_SITE_NAME} ist ein katholischer Jugendverband in Dossenheim`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
+      siteName: `${process.env.NEXT_PUBLIC_SITE_NAME}`,
       locale: 'de_DE',
       type: 'website',
     },
