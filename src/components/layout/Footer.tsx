@@ -9,7 +9,7 @@ import { SiWhatsapp, SiFacebook, SiInstagram } from '@icons-pack/react-simple-ic
 
 import { Copyright, Mail, Phone } from 'lucide-react'
 
-import { CardContent, CardFooter, CardHeader, CardDescription } from '@/components/ui/card'
+import { CardFooter, CardHeader } from '@/components/ui/card'
 
 export default async function FooterServer() {
   const payload = await getPayload({ config })
@@ -103,7 +103,7 @@ export default async function FooterServer() {
         <span className="flex flex-wrap items-center justify-start gap-1">
           <Copyright className="size-4" /> {new Date().getFullYear()}
           <Link href="/" className="hover:underline">
-            Katholische junge Gemeinde Dossenheim n.e.V.
+            {process.env.NEXT_PUBLIC_SITE_FULLNAME}
           </Link>
         </span>
       </CardFooter>

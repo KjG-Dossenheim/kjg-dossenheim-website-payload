@@ -16,7 +16,6 @@ import PricingSection from './_components/PricingSection'
 import TeamSection from './_components/TeamSection'
 import { formatInTimeZone } from 'date-fns-tz/formatInTimeZone'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
-import { url } from 'inspector'
 
 async function getData() {
   const payload = await getPayload({ config })

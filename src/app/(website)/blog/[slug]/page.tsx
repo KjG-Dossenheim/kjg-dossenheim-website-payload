@@ -52,7 +52,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               '@context': 'https://schema.org',
               '@type': 'BlogPosting',
               headline: post.title,
-              datePublished: post.createdAt,
+              datePublished: post.publishedAt,
               dateModified: post.updatedAt,
               author:
                 post.author && typeof post.author !== 'string'

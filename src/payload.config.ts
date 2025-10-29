@@ -53,6 +53,8 @@ import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
 import { knallbonbonEvents } from './collections/knallbonbonEvents'
 import { membershipApplication } from './collections/membershipApplication'
 import { Songs } from './collections/Songs'
+import { sommerfreizeitAnmeldung } from './collections/sommerfreizeit/sommerfreizeitAnmeldung'
+import { sommerfreizeitUser } from './collections/sommerfreizeit/sommerfreizeitUser'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -65,6 +67,7 @@ import { Adventsmarkt } from './globals/Adventsmarkt'
 import { Martinsumzug } from './globals/Martinsumzug'
 import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 import { Knallbonbon } from './globals/Knallbonbon'
+import { aktion72Stunden } from './globals/aktionen/72stunden'
 
 // Relative imports - lib
 import { authentikOAuth } from './lib/authentikOAuth'
@@ -75,8 +78,9 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+    autoRefresh: true,
     meta: {
-      titleSuffix: 'KjG Dossenheim',
+      titleSuffix: process.env.NEXT_PUBLIC_SITE_NAME,
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -112,7 +116,9 @@ export default buildConfig({
     knallbonbonRegistration,
     knallbonbonEvents,
     membershipApplication,
-    Songs
+    Songs,
+    sommerfreizeitUser,
+    sommerfreizeitAnmeldung
   ],
   globals: [
     Startseite,
@@ -120,11 +126,12 @@ export default buildConfig({
     Martinsumzug,
     Sommerfreizeit,
     Tannenbaumaktion,
+    aktion72Stunden,
     About,
     Header,
     Footer,
     Rechtliches,
-    Knallbonbon
+    Knallbonbon,
   ],
   editor: lexicalEditor({
     features: [
@@ -182,7 +189,7 @@ export default buildConfig({
   sharp,
   email: nodemailerAdapter({
     defaultFromAddress: 'info@kjg-dossenheim.org',
-    defaultFromName: 'KjG Dossenheim',
+    defaultFromName: process.env.NEXT_PUBLIC_SITE_NAME || 'KjG',
     // Nodemailer transportOptions
     transportOptions: {
       host: process.env.SMTP_HOST,

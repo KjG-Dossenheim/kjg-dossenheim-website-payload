@@ -3,7 +3,6 @@ import React from 'react'
 import type { Metadata } from 'next'
 
 // Third-party libraries
-import { parseISO } from 'date-fns'
 import { Snowflake, MapPin } from 'lucide-react'
 
 // Payload CMS
@@ -82,7 +81,7 @@ export default async function Page() {
         }}
       />
       {/* Hero Section */}
-      <div className="relative flex h-160 w-full flex-col items-center justify-center overflow-hidden bg-radial from-red-700 from-40% to-red-900">
+      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden bg-radial from-red-700 from-40% to-red-900">
         <div className="absolute inset-0 h-screen w-full">
           <SparklesCore
             id="hero-sparkles"
@@ -111,12 +110,8 @@ export default async function Page() {
             </div>
           </div>
 
-          <div className="mb-8">
-            <Countdown
-              targetDate={adventsmarkt.startDate}
-              bgColor="bg-emerald-700"
-              textColor="text-white"
-            />
+          <div>
+            <Countdown targetDate={adventsmarkt.startDate} textColor="text-white" />
           </div>
         </div>
       </div>

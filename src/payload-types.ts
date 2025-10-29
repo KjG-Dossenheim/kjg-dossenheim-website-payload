@@ -63,6 +63,7 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
+    sommerfreizeitUser: SommerfreizeitUserAuthOperations;
     users: UserAuthOperations;
   };
   blocks: {};
@@ -77,6 +78,8 @@ export interface Config {
     knallbonbonEvents: KnallbonbonEvent;
     membershipApplication: MembershipApplication;
     songs: Song;
+    sommerfreizeitUser: SommerfreizeitUser;
+    sommerfreizeitAnmeldung: SommerfreizeitAnmeldung;
     users: User;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -99,6 +102,8 @@ export interface Config {
     knallbonbonEvents: KnallbonbonEventsSelect<false> | KnallbonbonEventsSelect<true>;
     membershipApplication: MembershipApplicationSelect<false> | MembershipApplicationSelect<true>;
     songs: SongsSelect<false> | SongsSelect<true>;
+    sommerfreizeitUser: SommerfreizeitUserSelect<false> | SommerfreizeitUserSelect<true>;
+    sommerfreizeitAnmeldung: SommerfreizeitAnmeldungSelect<false> | SommerfreizeitAnmeldungSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -114,6 +119,7 @@ export interface Config {
     martinsumzug: Martinsumzug;
     sommerfreizeit: Sommerfreizeit;
     tannenbaumaktion: Tannenbaumaktion;
+    '72stunden': Stunden;
     about: About;
     header: Header;
     footer: Footer;
@@ -126,6 +132,7 @@ export interface Config {
     martinsumzug: MartinsumzugSelect<false> | MartinsumzugSelect<true>;
     sommerfreizeit: SommerfreizeitSelect<false> | SommerfreizeitSelect<true>;
     tannenbaumaktion: TannenbaumaktionSelect<false> | TannenbaumaktionSelect<true>;
+    '72stunden': StundenSelect<false> | StundenSelect<true>;
     about: AboutSelect<false> | AboutSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
@@ -133,9 +140,13 @@ export interface Config {
     knallbonbon: KnallbonbonSelect<false> | KnallbonbonSelect<true>;
   };
   locale: null;
-  user: User & {
-    collection: 'users';
-  };
+  user:
+    | (SommerfreizeitUser & {
+        collection: 'sommerfreizeitUser';
+      })
+    | (User & {
+        collection: 'users';
+      });
   jobs: {
     tasks: {
       schedulePublish: TaskSchedulePublish;
@@ -145,6 +156,24 @@ export interface Config {
       };
     };
     workflows: unknown;
+  };
+}
+export interface SommerfreizeitUserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
   };
 }
 export interface UserAuthOperations {
@@ -508,6 +537,52 @@ export interface Song {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitUser".
+ */
+export interface SommerfreizeitUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phone?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitAnmeldung".
+ */
+export interface SommerfreizeitAnmeldung {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: 'male' | 'female' | 'diverse';
+  address: string;
+  postalCode: string;
+  city: string;
+  class?: ('3' | '4' | '5' | '6' | '7' | '8' | '9' | '10') | null;
+  krankenversicherung: string;
+  krankenversicherungArt: 'gesetzlich' | 'privat';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
@@ -646,6 +721,14 @@ export interface PayloadLockedDocument {
         value: string | Song;
       } | null)
     | ({
+        relationTo: 'sommerfreizeitUser';
+        value: string | SommerfreizeitUser;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitAnmeldung';
+        value: string | SommerfreizeitAnmeldung;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null)
@@ -654,10 +737,15 @@ export interface PayloadLockedDocument {
         value: string | PayloadJob;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'sommerfreizeitUser';
+        value: string | SommerfreizeitUser;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -667,10 +755,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'sommerfreizeitUser';
+        value: string | SommerfreizeitUser;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   key?: string | null;
   value?:
     | {
@@ -927,6 +1020,49 @@ export interface SongsSelect<T extends boolean = true> {
   year?: T;
   copyright?: T;
   lyrics?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitUser_select".
+ */
+export interface SommerfreizeitUserSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  phone?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitAnmeldung_select".
+ */
+export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  dateOfBirth?: T;
+  gender?: T;
+  address?: T;
+  postalCode?: T;
+  city?: T;
+  class?: T;
+  krankenversicherung?: T;
+  krankenversicherungArt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1265,6 +1401,32 @@ export interface Tannenbaumaktion {
     };
     id?: string | null;
   }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "72stunden".
+ */
+export interface Stunden {
+  id: string;
+  startDate: string;
+  endDate: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1618,6 +1780,18 @@ export interface TannenbaumaktionSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "72stunden_select".
+ */
+export interface StundenSelect<T extends boolean = true> {
+  startDate?: T;
+  endDate?: T;
+  content?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

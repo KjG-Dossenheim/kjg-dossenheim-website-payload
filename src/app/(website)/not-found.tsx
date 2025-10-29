@@ -23,7 +23,7 @@ export default function NotFound() {
           <p>Die von Ihnen gesuchte Seite existiert nicht.</p>
         </CardContent>
         <CardFooter>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="w-full">
             <Link href="/">Startseite</Link>
           </Button>
         </CardFooter>

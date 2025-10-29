@@ -5,6 +5,7 @@ export const revalidate = 60 // 1 Minute
 import React from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 
 // Payload CMS
 import { getPayload } from 'payload'
@@ -14,32 +15,61 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 // UI Components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-// Helper function to get Martinsumzug song IDs
-async function getMartinsumzugSongIds() {
-  const payload = await getPayload({ config })
-  const martinsumzugGlobal = await payload.findGlobal({
-    slug: 'martinsumzug',
-    depth: 0, // Only get IDs, not full objects
-  })
-
-  // Extract song IDs from the relationship
-  const songIds = (martinsumzugGlobal.songs || [])
-    .map((song) => {
-      if (typeof song === 'string') return song
-      if (typeof song === 'object' && song !== null && 'id' in song) return song.id
-      return null
-    })
-    .filter((id): id is string => id !== null)
-
-  return songIds
+// Types
+interface MartinsumzugData {
+  songIds: string[]
+  startDate: string | null
+  isToday: boolean
 }
 
-// Helper function to fetch song by slug (used by both page and metadata)
-async function getSongBySlug(slug: string) {
-  const payload = await getPayload({ config })
+// Cached helper to get Martinsumzug data (song IDs + date validation)
+const getMartinsumzugData = unstable_cache(
+  async (): Promise<MartinsumzugData> => {
+    const payload = await getPayload({ config })
+    const martinsumzugGlobal = await payload.findGlobal({
+      slug: 'martinsumzug',
+      depth: 0,
+      select: {
+        songs: true,
+        startDate: true,
+      },
+    })
 
-  // First, get the allowed song IDs from Martinsumzug global
-  const allowedSongIds = await getMartinsumzugSongIds()
+    // Extract song IDs from the relationship
+    const songIds = (martinsumzugGlobal.songs || [])
+      .map((song) => {
+        if (typeof song === 'string') return song
+        if (typeof song === 'object' && song !== null && 'id' in song) return song.id
+        return null
+      })
+      .filter((id): id is string => id !== null)
+
+    // Check if today is the Martinsumzug day
+    const startDate = martinsumzugGlobal.startDate
+    const isToday = startDate
+      ? new Date(startDate).toDateString() === new Date().toDateString()
+      : false
+
+    return { songIds, startDate, isToday }
+  },
+  ['martinsumzug-data'],
+  {
+    revalidate: 60,
+    tags: ['martinsumzug'],
+  },
+)
+
+// Helper function to fetch song by slug with validation
+async function getSongBySlug(slug: string) {
+  // Get Martinsumzug data (cached)
+  const { songIds, isToday } = await getMartinsumzugData()
+
+  // If not today or no songs configured, return null early
+  if (!isToday || songIds.length === 0) {
+    return null
+  }
+
+  const payload = await getPayload({ config })
 
   // Query songs collection with both slug and ID constraints
   const result = await payload.find({
@@ -53,13 +83,12 @@ async function getSongBySlug(slug: string) {
         },
         {
           id: {
-            in: allowedSongIds,
+            in: songIds,
           },
         },
       ],
     },
     limit: 1,
-    // Only fetch the fields we need
     select: {
       title: true,
       slug: true,
@@ -105,6 +134,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const song = await getSongBySlug(slug)
 
+  // getSongBySlug already validates the date and returns null if not today
   if (!song) return notFound()
 
   return (
@@ -127,10 +157,10 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 export async function generateStaticParams() {
   const payload = await getPayload({ config })
 
-  // Get the allowed song IDs from Martinsumzug global
-  const allowedSongIds = await getMartinsumzugSongIds()
+  // Get the allowed song IDs from Martinsumzug global (cached)
+  const { songIds } = await getMartinsumzugData()
 
-  if (allowedSongIds.length === 0) {
+  if (songIds.length === 0) {
     return []
   }
 
@@ -139,12 +169,11 @@ export async function generateStaticParams() {
     collection: 'songs',
     where: {
       id: {
-        in: allowedSongIds,
+        in: songIds,
       },
     },
     limit: 1000,
     pagination: false,
-    // Only fetch the slug field for static params
     select: {
       slug: true,
     },

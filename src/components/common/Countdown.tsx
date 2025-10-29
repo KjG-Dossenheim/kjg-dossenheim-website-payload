@@ -2,20 +2,17 @@
 
 import { useEffect, useState } from 'react'
 import { SlidingNumber } from '../ui/sliding-number'
-import { Card } from '../ui/card'
 import { toZonedTime } from 'date-fns-tz'
 
 interface CountdownProps {
   targetDate: string
   textColor?: string
-  bgColor?: string
   timezone?: string
 }
 
 export default function Countdown({
   targetDate,
   textColor,
-  bgColor,
   timezone = process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE ?? 'Etc/UTC',
 }: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState({
@@ -49,42 +46,42 @@ export default function Countdown({
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [targetDate])
+  }, [targetDate, timezone])
 
   return (
-    <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
-      <Card
-        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
-      >
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
-          <SlidingNumber value={timeLeft.days} padStart={true} />
+    <div className="mx-auto flex justify-center gap-5">
+      <div className={`${textColor}`}>
+        <span className="inline-block font-mono text-4xl">
+          <span aria-live="polite" aria-label="15">
+            <SlidingNumber value={timeLeft.days} padStart={true} />
+          </span>
         </span>
-        <span className="text-xs sm:text-sm">Tage</span>
-      </Card>
-      <Card
-        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
-      >
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
-          <SlidingNumber value={timeLeft.hours} padStart={true} />
+        <span className="sm:pl-1">Tage</span>
+      </div>
+      <div className={`${textColor}`}>
+        <span className="inline-block font-mono text-4xl">
+          <span aria-live="polite" aria-label="10">
+            <SlidingNumber value={timeLeft.hours} padStart={true} />
+          </span>
         </span>
-        <span className="text-xs sm:text-sm">Stunden</span>
-      </Card>
-      <Card
-        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
-      >
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
-          <SlidingNumber value={timeLeft.minutes} padStart={true} />
+        <span className="sm:pl-1">Stunden</span>
+      </div>
+      <div className={`${textColor}`}>
+        <span className="inline-block font-mono text-4xl">
+          <span aria-live="polite" aria-label="24">
+            <SlidingNumber value={timeLeft.minutes} padStart={true} />
+          </span>
         </span>
-        <span className="text-xs sm:text-sm">Minuten</span>
-      </Card>
-      <Card
-        className={`${bgColor} ${textColor} flex flex-col items-center rounded-lg p-2 sm:p-3 md:p-4`}
-      >
-        <span className="text-2xl font-bold sm:text-3xl md:text-4xl">
-          <SlidingNumber value={timeLeft.seconds} padStart={true} />
+        <span className="sm:pl-1">Minuten</span>
+      </div>
+      <div className={`${textColor}`}>
+        <span className="inline-block font-mono text-4xl">
+          <span aria-live="polite" aria-label={`${timeLeft.seconds}`}>
+            <SlidingNumber value={timeLeft.seconds} padStart={true} />
+          </span>
         </span>
-        <span className="text-xs sm:text-sm">Sekunden</span>
-      </Card>
+        <span className="sm:pl-1">Sekunden</span>
+      </div>
     </div>
   )
 }

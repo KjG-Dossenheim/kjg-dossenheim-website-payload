@@ -53,6 +53,10 @@
   --color-warning: hsl(var(--warning));
   --color-warning-foreground: hsl(var(--warning-foreground));
 
+  /* BDKJ Colors */
+  --color-bdkj-green: hsl(var(--bdkj-green));
+  --color-bdkj-yellow: hsl(var(--bdkj-yellow));
+
   --color-error-50: #f4eaed;
   --color-error-100: #ead5dc;
   --color-error-200: #d5abb9;
@@ -246,6 +250,11 @@
     --warning: 39 100% 50%;
 
     --warning-foreground: 240 5% 98%;
+
+    /* BDKJ Colors */
+    --bdkj-green: 81.2, 100%, 36.08%;
+
+    --bdkj-yellow: 33.65, 100%, 50%;
 
     --chart-1: 12 76% 61%;
 

@@ -13,14 +13,7 @@ import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
 // UI Components
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ShootingStars } from '@/components/ui/shooting-stars'
 import { StarsBackground } from '@/components/ui/stars-background'
 import { Button } from '@/components/ui/button'
@@ -75,7 +68,7 @@ export default async function Page() {
   }
 
   return (
-    <div>
+    <section>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -125,41 +118,43 @@ export default async function Page() {
           maxTwinkleSpeed={1}
         />
       </div>
-      <div className="container mx-auto flex flex-col gap-6 p-6">
-        <Card className="mx-auto max-w-lg">
-          <CardHeader>
-            <h2 className="flex items-center gap-2 text-2xl font-semibold">
-              <span className="bg-primary h-8 w-1 rounded-full"></span>
-              Über die Veranstaltung
-            </h2>
-          </CardHeader>
-          <CardContent>
-            <RichText data={martinsumzug.content} />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Liedtexte</CardTitle>
-          </CardHeader>
-          {new Date(martinsumzug.startDate).toDateString() === new Date().toDateString() ? (
-            <CardContent className="flex flex-col gap-2">
-              {martinsumzug.songs?.map((song) => (
-                <div key={song.id}>
-                  <Button asChild variant="outline" className="space-x-2">
-                    <Link href={`/martinsumzug/lieder/${song.slug}`}>
-                      {song.title} <ArrowRight className="size-4" />
-                    </Link>
-                  </Button>
-                </div>
-              ))}
-            </CardContent>
-          ) : (
+      <section className="container mx-auto p-6">
+        <div className="flex flex-col gap-6 md:flex-row">
+          <Card>
+            <CardHeader>
+              <h2 className="flex items-center gap-2 text-2xl font-semibold">
+                <span className="bg-primary h-8 w-1 rounded-full"></span>
+                Über die Veranstaltung
+              </h2>
+            </CardHeader>
             <CardContent>
-              <p>Am Tag des Martinsumzugs findet ihr hier die Liedtexte</p>
+              <RichText data={martinsumzug.content} />
             </CardContent>
-          )}
-        </Card>
-      </div>
-    </div>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Liedtexte</CardTitle>
+            </CardHeader>
+            {new Date(martinsumzug.startDate).toDateString() === new Date().toDateString() ? (
+              <CardContent className="flex flex-col gap-2">
+                {martinsumzug.songs?.map((song) => (
+                  <div key={song.id}>
+                    <Button asChild variant="outline" className="space-x-2">
+                      <Link href={`/martinsumzug/lieder/${song.slug}`}>
+                        {song.title} <ArrowRight className="size-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                ))}
+              </CardContent>
+            ) : (
+              <CardContent>
+                <p>Am Tag des Martinsumzugs findet ihr hier die Liedtexte</p>
+              </CardContent>
+            )}
+          </Card>
+        </div>
+      </section>
+    </section>
   )
 }

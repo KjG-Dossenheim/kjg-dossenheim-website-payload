@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight } from 'lucide-react'
 import Countdown from '@/components/common/Countdown'
 import { Button } from '@/components/ui/button'
 import { CardHeader } from '@/components/ui/card'
+import { SparklesText } from '@/components/ui/sparkles-text'
 
 interface HeroSectionProps {
   title: string
@@ -24,8 +25,14 @@ export default function HeroSection({
   return (
     <section className="flex h-140 flex-col items-center justify-center text-center">
       <CardHeader className="space-y-4">
-        <h1 className="text-4xl leading-none font-extrabold tracking-tight md:text-5xl lg:text-6xl">
-          {title}
+        <h1 className="text-4xl leading-none font-extrabold md:text-5xl lg:text-6xl">
+          <SparklesText
+            animationDuration={1.5}
+            regenerationInterval={200}
+            lifespanRange={{ min: 10, max: 20 }}
+          >
+            {title}
+          </SparklesText>
         </h1>
         <h2 className="text-xl md:text-2xl lg:text-3xl">{motto}</h2>
       </CardHeader>
