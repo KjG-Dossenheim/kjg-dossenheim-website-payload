@@ -1,0 +1,31 @@
+name: Build Docker Nixpack
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Nixpacks
+        run: |
+          curl -sSL https://nixpacks.com/install.sh | bash
+          echo "$HOME/.nixpacks/bin" >> "$GITHUB_PATH"
+
+      - name: Show Nixpacks version
+        run: nixpacks --version
+
+      - name: Build Docker image with Nixpacks
+        env:
+          IMAGE_NAME: kjg-dossenheim-website
+        run: |
+          nixpacks build . \
+            --name "${IMAGE_NAME}" \
+            --tag "${IMAGE_NAME}:nixpack-${{ github.sha }}"
