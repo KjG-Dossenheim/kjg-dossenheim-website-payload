@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build Docker Image
 
 on:
   workflow_dispatch:
@@ -6,16 +6,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Use a GitHub Environment to scope secrets/approvals
+    # Assumption: you have an Environment named "production" in your repo settings
+    environment: GitHub-action
+
+    # Expose secrets as environment variables for steps below
+    env:
+      DATABASE_URI: ${{ secrets.DATABASE_URI }}
+      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+      S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+      S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Create .env file
-      run:  |
-        echo "DATABASE_URI=${{ secrets.DATABASE_URI }}" >> .env
-        echo "PAYLOAD_SECRET=${{ secrets.PAYLOAD_SECRET }}
-        echo "S3_ACCESS_KEY_ID=${{ secrets.S3_ACCESS_KEY_ID }}" >> .env
-        echo "S3_SECRET_ACCESS_KEY=${{ secrets.S3_SECRET_ACCESS_KEY }}
-        echo "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" >> .env
-        echo "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" >> .env
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v4
+      - name: Create .env file
+        run: |
+          # Use a here-doc to avoid quoting issues and ensure a valid .env
+          cat > .env << 'EOF'
+          DATABASE_URI=${DATABASE_URI}
+          PAYLOAD_SECRET=${PAYLOAD_SECRET}
+          S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+          S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+          CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
+          S3_BUCKET_NAME=${S3_BUCKET_NAME}
+          EOF
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
