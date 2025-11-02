@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     # Use a GitHub Environment to scope secrets/approvals
     # Assumption: you have an Environment named "production" in your repo settings
-    environment: GitHub-action
+    environment: production
 
     # Expose secrets as environment variables for steps below
     env:
