@@ -10,7 +10,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build args for feature flags
-NEXT_PUBLIC_ENABLE=GENERIC
+ENV NEXT_PUBLIC_ENABLE=GENERIC
 
 # Dummy values for build (replaced at runtime)
 ENV DATABASE_URI="mongodb://localhost:27017/build-placeholder"
