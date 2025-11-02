@@ -23,6 +23,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@icons-pack/react-simple-icons": "^13.8.0",
     "@netlify/plugin-nextjs": "^5.14.3",
+    "@next/bundle-analyzer": "^16.0.1",
     "@payloadcms/admin-bar": "^3.61.1",
     "@payloadcms/db-mongodb": "^3.61.1",
     "@payloadcms/email-nodemailer": "^3.61.1",

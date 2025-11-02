@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - esbuild
+  - rclone.js
+  - sharp
+  - workerd
