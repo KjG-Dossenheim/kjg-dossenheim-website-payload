@@ -57,11 +57,11 @@ export default async function Page() {
       limit: 50, // Add reasonable limit to prevent excessive data fetching
       select: {
         id: true,
-        name: true,
+        title: true,
         startDate: true,
         description: true,
         location: true,
-        link: true,
+        url: true,
       },
     })
 
@@ -81,7 +81,11 @@ export default async function Page() {
         </CardHeader>
         <CardContent>
           {relevantEvents.length > 0 ? (
-            <Timeline defaultValue={defaultTimelineValue} orientation="vertical">
+            <Timeline
+              defaultValue={defaultTimelineValue}
+              orientation="vertical"
+              className="max-w-md"
+            >
               {relevantEvents.map((event: Jahresplan, index: number) => (
                 <TimelineItem key={event.id} step={index + 1}>
                   <TimelineHeader>
@@ -90,29 +94,32 @@ export default async function Page() {
                       <Calendar className="size-3.5" />
                       {formatDateLocale(event.startDate, 'EEEE, d. MMMM yyyy')}
                     </TimelineDate>
-                    <TimelineTitle>{event.name}</TimelineTitle>
+                    <TimelineTitle>{event.title}</TimelineTitle>
+                    {event.location && (
+                      <TimelineDate>
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="size-3.5" /> {event.location}
+                        </div>
+                      </TimelineDate>
+                    )}
                     <TimelineIndicator />
                   </TimelineHeader>
-                  <TimelineContent className="max-w-sm">
-                    {event.location && (
-                      <div className="mb-2 flex items-center gap-1.5">
-                        <MapPin className="size-3.5" /> {event.location}
-                      </div>
-                    )}
+                  <TimelineContent>
                     {event.description && <p className="mb-3">{event.description}</p>}
-                    {event.link && (
-                      <Button
-                        asChild
-                        variant="outline"
-                        data-umami-event="Event More Info CTA"
-                        data-umami-event-event={event.name}
-                      >
-                        <Link href={event.link} className="gap-1.5">
-                          Mehr erfahren <ArrowRight className="size-5" />
-                        </Link>
-                      </Button>
-                    )}
                   </TimelineContent>
+                  {event.url && (
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-fit"
+                      data-umami-event="Event More Info CTA"
+                      data-umami-event-event={event.title}
+                    >
+                      <Link href={event.url} className="gap-1.5">
+                        Mehr erfahren <ArrowRight className="size-5" />
+                      </Link>
+                    </Button>
+                  )}
                 </TimelineItem>
               ))}
             </Timeline>
