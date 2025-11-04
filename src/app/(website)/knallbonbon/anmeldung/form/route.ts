@@ -91,7 +91,6 @@ export async function POST(request: Request) {
           child: formValues.child?.map((child) => ({
             ...child,
           })),
-          captchaToken,
         }),
       )
 

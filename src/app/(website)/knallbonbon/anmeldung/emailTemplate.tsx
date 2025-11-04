@@ -8,7 +8,7 @@ const pickupInfoLabels: Record<NonNullable<FormValues['child'][number]['pickupIn
   goesAlone: 'Geht allein nach Hause',
 }
 
-export function confirmationEmailTemplate(props: FormValues) {
+export function confirmationEmailTemplate(props: Omit<FormValues, 'captchaToken'>) {
   return (
     <MailBase>
       <Heading>Anmeldung erhalten</Heading>
@@ -53,7 +53,7 @@ export function confirmationEmailTemplate(props: FormValues) {
   )
 }
 
-export function adminNotificationEmailTemplate(props: FormValues) {
+export function adminNotificationEmailTemplate(props: Omit<FormValues, 'captchaToken'>) {
   return (
     <MailBase>
       <Heading>Neue Anmeldung</Heading>
