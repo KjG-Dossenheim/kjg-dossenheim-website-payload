@@ -22,7 +22,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTrigger, SheetFooter } from '@/components/ui/sheet'
 
 // Custom Components
 import { ModeToggle } from '@/components/common/theme-toggle'
@@ -149,23 +149,22 @@ const MobileActionsSubmenu = React.memo(function MobileActionsSubmenu({
   return (
     <AccordionItem value="Aktionen" className="border-b-0">
       <AccordionTrigger
-        className="text-md py-0 font-semibold hover:no-underline"
+        className="text-md hover:bg-muted hover:underline-none rounded-md p-2 font-semibold"
         aria-label="Aktionen Menü öffnen/schließen"
       >
         Aktionen
       </AccordionTrigger>
-      <AccordionContent className="mt-2" role="list" aria-label="Aktionen Liste">
+      <AccordionContent className="p-0" role="list" aria-label="Aktionen Liste">
         {aktionen?.map((subItem) => (
           <Link
             key={subItem.id}
-            className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
+            className="hover:bg-muted flex flex-row items-center gap-2 rounded-md p-2 leading-none no-underline transition-colors outline-none select-none"
             href={subItem.url}
             aria-label={`${subItem.title} Aktion`}
             data-umami-event={`Submenu Link: ${subItem.title}`}
           >
-            <div>
-              <div className="text-sm font-semibold">{subItem.title}</div>
-            </div>
+            <DynamicIcon name={subItem.icon as IconName} className="size-4" aria-hidden="true" />
+            {subItem.title}{' '}
           </Link>
         ))}
       </AccordionContent>
@@ -247,17 +246,17 @@ const MobileNavigation = React.memo(function MobileNavigation({
               </Button>
             </SheetTrigger>
           </div>
-          <SheetContent className="overflow-y-auto" aria-label="Mobile Navigationsmenü">
-            <div className="flex flex-col gap-6">
+          <SheetContent aria-label="Mobile Navigationsmenü" className="flex flex-col">
+            <div className="flex-1 overflow-y-auto">
               <Accordion
                 type="single"
                 collapsible
-                className="flex w-full flex-col gap-4"
+                className="flex w-full flex-col"
                 aria-label="Navigationsmenü"
               >
                 <Link
                   href="/"
-                  className="text-md font-semibold"
+                  className="text-md hover:bg-muted rounded-md p-2 font-semibold"
                   aria-label="Zur Startseite"
                   data-umami-event="Navbar Link: Startseite"
                   data-umami-variant="Navbar Item"
@@ -269,10 +268,10 @@ const MobileNavigation = React.memo(function MobileNavigation({
                   <MobileMenuItem key={item.id || item.title} item={item} />
                 ))}
               </Accordion>
-              <div className="flex flex-col gap-2">
-                <CTAButtons />
-              </div>
             </div>
+            <SheetFooter className="mt-auto flex flex-col gap-2">
+              <CTAButtons />
+            </SheetFooter>
           </SheetContent>
         </Sheet>
       </nav>
@@ -328,7 +327,7 @@ const MobileMenuItem = React.memo(function MobileMenuItem({ item }: { item: Navi
     return (
       <AccordionItem value={item.title} className="border-b-0">
         <AccordionTrigger
-          className="text-md py-0 font-semibold hover:no-underline"
+          className="text-md hover:bg-muted rounded-md p-3 font-semibold"
           aria-label={`${item.title} Menü öffnen/schließen`}
         >
           {item.title}
@@ -345,7 +344,7 @@ const MobileMenuItem = React.memo(function MobileMenuItem({ item }: { item: Navi
   return (
     <Link
       href={item.url}
-      className="text-md font-semibold"
+      className="text-md hover:bg-muted rounded-md p-2 font-semibold"
       data-umami-event={`Navbar Link: ${item.title}`}
     >
       {item.title}
@@ -361,7 +360,7 @@ const DesktopSubMenuLink = React.memo(function DesktopSubMenuLink({
 }) {
   return (
     <Link
-      className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
+      className="hover:bg-muted hover:text-accent-foreground flex flex-row gap-2 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
       href={item.url}
       aria-label={item.title}
       data-umami-event={`Submenu Link: ${item.title}`}
@@ -381,7 +380,7 @@ const MobileSubMenuLink = React.memo(function MobileSubMenuLink({
 }) {
   return (
     <Link
-      className="hover:bg-muted hover:text-accent-foreground flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
+      className="hover:bg-muted hover:text-accent-foreground flex flex-row gap-1 rounded-md p-2 leading-none no-underline transition-colors outline-none select-none"
       href={item.url}
       aria-label={item.title}
       data-umami-event={`Submenu Link: ${item.title}`}
