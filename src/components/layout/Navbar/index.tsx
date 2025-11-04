@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 // Lucide Icons
-import { Menu } from 'lucide-react'
+import { HandCoins, Menu, Signature } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import type { IconName } from 'lucide-react/dynamic'
 
@@ -162,7 +162,8 @@ export default function Navbar({ headerData }: NavbarProps) {
           </div>
           <div className="flex gap-2">
             <Button asChild data-umami-event="Member CTA Navbar">
-              <Link href="/mitglied" aria-label="Mitglied werden">
+              <Link href="/mitglied" aria-label="Mitglied werden" className="space-y-2">
+                <Signature />
                 Mitglied werden
               </Link>
             </Button>
@@ -172,7 +173,9 @@ export default function Navbar({ headerData }: NavbarProps) {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Spenden über PayPal (öffnet in neuem Fenster)"
+                className="space-y-2"
               >
+                <HandCoins />
                 Spenden
               </Link>
             </Button>
@@ -224,7 +227,8 @@ export default function Navbar({ headerData }: NavbarProps) {
                   </Accordion>
                   <div className="flex flex-col gap-2">
                     <Button asChild data-umami-event="Member CTA Navbar">
-                      <Link href="/mitglied" aria-label="Mitglied werden">
+                      <Link href="/mitglied" aria-label="Mitglied werden" className="space-y-2">
+                        <Signature />
                         Mitglied werden
                       </Link>
                     </Button>
@@ -234,7 +238,9 @@ export default function Navbar({ headerData }: NavbarProps) {
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Spenden über PayPal (öffnet in neuem Fenster)"
+                        className="space-y-2"
                       >
+                        <HandCoins />
                         Spenden
                       </Link>
                     </Button>

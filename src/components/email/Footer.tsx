@@ -15,10 +15,7 @@ export const MailFooter = () => (
       <tr className="w-full">
         <td align="center">
           <Text className="my-[8px] text-[16px] leading-[24px] font-semibold text-gray-900">
-            Acme corporation
-          </Text>
-          <Text className="mt-[4px] mb-0 text-[16px] leading-[24px] text-gray-500">
-            Think different
+            {process.env.NEXT_PUBLIC_SITE_NAME}
           </Text>
         </td>
       </tr>
@@ -31,16 +28,6 @@ export const MailFooter = () => (
                   alt="Facebook"
                   height="36"
                   src="https://react.email/static/facebook-logo.png"
-                  width="36"
-                />
-              </Link>
-            </Column>
-            <Column className="pr-[8px]">
-              <Link href="https://whatsapp.com/channel/0029VaDWauKIyPtOOGIy2i1M">
-                <Img
-                  alt="WhatsApp"
-                  height="36"
-                  src="https://react.email/static/x-logo.png"
                   width="36"
                 />
               </Link>
@@ -64,7 +51,7 @@ export const MailFooter = () => (
             Anne Frank Straße 22, 69221 Dossenheim
           </Text>
           <Text className="mt-[4px] mb-0 text-[16px] leading-[24px] font-semibold text-gray-500">
-            info@kjg-dossenheim.org +123456789
+            info@kjg-dossenheim.org
           </Text>
         </td>
       </tr>

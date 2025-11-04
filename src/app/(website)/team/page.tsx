@@ -15,7 +15,7 @@ import config from '@payload-config'
 import type { Team } from '@/payload-types'
 
 // UI Components
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import {
   Card,
@@ -25,6 +25,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+
+import { createAvatar } from '@dicebear/core'
+import { bigEarsNeutral } from '@dicebear/collection'
 
 // Move data fetching to a separate function for better error handling and caching
 async function getTeamMembers() {
@@ -64,10 +67,15 @@ function TeamMemberCard({ member }: { member: Team }) {
               alt={`${member.firstName} ${member.lastName}`}
             />
           ) : (
-            <AvatarFallback className="flex-col gap-2 rounded-lg">
-              <p className="text-4xl leading-none font-extralight">{member.firstName}</p>
-              <p className="text-4xl leading-none font-extralight">{member.lastName}</p>
-            </AvatarFallback>
+            <AvatarImage
+              className="bg-primary/20 object-cover"
+              src={createAvatar(bigEarsNeutral, {
+                seed: `${member.firstName} ${member.lastName}`,
+                backgroundColor: ['transparent'],
+                randomizeIds: true,
+              }).toDataUri()}
+              alt={`${member.firstName} ${member.lastName}`}
+            />
           )}
         </Avatar>
       </CardHeader>
@@ -78,31 +86,31 @@ function TeamMemberCard({ member }: { member: Team }) {
         <CardDescription className="flex flex-wrap gap-2">
           {member.position.map((position) => (
             <Badge className="uppercase" key={position} variant={'outline'}>
-              {position}
+              <p>{position}</p>
             </Badge>
           ))}
           {member.email && (
-            <Link
-              href={`mailto:${member.email}`}
-              data-umami-event="Team Member Email Click"
-              data-umami-event-member={member.firstName + ' ' + member.lastName}
-              data-umami-event-email={member.email}
-            >
-              <Badge className="uppercase" variant={'outline'}>
+            <Badge className="uppercase" variant={'outline'}>
+              <Link
+                href={`mailto:${member.email}`}
+                data-umami-event="Team Member Email Click"
+                data-umami-event-member={member.firstName + ' ' + member.lastName}
+                data-umami-event-email={member.email}
+              >
                 <Mail className="size-4" />
-              </Badge>
-            </Link>
+              </Link>
+            </Badge>
           )}
         </CardDescription>
       </CardContent>
       <CardFooter>
         <Link
           href={`/team/${member.id}`}
-          className="flex items-center gap-2 text-sm hover:underline"
+          className="flex items-center gap-2 hover:underline"
           data-umami-event="Team Member More Info Click"
           data-umami-event-member={member.firstName + ' ' + member.lastName}
         >
-          Mehr erfahren <ArrowRight className="size-4" />
+          Mehr erfahren <ArrowRight />
         </Link>
       </CardFooter>
     </Card>

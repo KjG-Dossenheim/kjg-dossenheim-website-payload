@@ -8,21 +8,15 @@ export const Jahresplan: CollectionConfig = {
   },
   defaultSort: 'startDate',
   admin: {
-    useAsTitle: 'name',
-    defaultColumns: ['name', 'startDate', 'endDate', 'location'],
-    listSearchableFields: ['name', 'startDate', 'endDate'],
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'startDate', 'endDate', 'location'],
+    listSearchableFields: ['title', 'startDate', 'endDate'],
     pagination: {
       defaultLimit: 25,
     },
     group: 'Aktionen',
   },
   fields: [
-    {
-      name: 'name',
-      label: 'Name',
-      type: 'text',
-      required: true,
-    },
     {
       name: 'title',
       label: 'Title',
@@ -48,11 +42,6 @@ export const Jahresplan: CollectionConfig = {
     {
       name: 'location',
       label: 'Ort',
-      type: 'text',
-    },
-    {
-      name: 'link',
-      label: 'Link',
       type: 'text',
     },
     {

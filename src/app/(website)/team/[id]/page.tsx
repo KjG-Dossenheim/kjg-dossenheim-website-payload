@@ -15,6 +15,9 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
+import { createAvatar } from '@dicebear/core'
+import { bigEarsNeutral } from '@dicebear/collection'
+
 // UI Components
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -83,10 +86,16 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
                 alt={`${member.firstName} ${member.lastName}`}
               />
             ) : (
-              <AvatarFallback className="text-xl">
-                {member.firstName.charAt(0)}
-                {member.lastName.charAt(0)}
-              </AvatarFallback>
+              <AvatarImage
+                className="bg-primary/20 object-cover"
+                src={createAvatar(bigEarsNeutral, {
+                  seed: `${member.firstName} ${member.lastName}`,
+                  backgroundColor: ['transparent'],
+                  scale: 70,
+                  randomizeIds: true,
+                }).toDataUri()}
+                alt={`${member.firstName} ${member.lastName}`}
+              />
             )}
           </Avatar>
           <CardHeader>

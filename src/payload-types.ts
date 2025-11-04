@@ -200,13 +200,11 @@ export interface UserAuthOperations {
  */
 export interface Jahresplan {
   id: string;
-  name: string;
   title: string;
   startDate: string;
   endDate?: string | null;
   description?: string | null;
   location?: string | null;
-  link?: string | null;
   url?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -440,15 +438,24 @@ export interface Media {
  */
 export interface KnallbonbonRegistration {
   id: string;
-  firstNameParent: string;
-  lastNameParent: string;
-  firstNameChild: string;
-  lastNameChild: string;
+  event: string | KnallbonbonEvent;
+  firstName: string;
+  lastName: string;
   email: string;
   phone?: string | null;
   address?: string | null;
-  photoConsent: boolean;
-  event: string | KnallbonbonEvent;
+  child?:
+    | {
+        firstName: string;
+        lastName: string;
+        dateOfBirth?: string | null;
+        gender?: ('male' | 'female' | 'diverse' | 'noInfo') | null;
+        pickupInfo?: ('pickedUp' | 'goesAlone') | null;
+        photoConsent?: boolean | null;
+        healthInfo?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -793,13 +800,11 @@ export interface PayloadMigration {
  * via the `definition` "jahresplan_select".
  */
 export interface JahresplanSelect<T extends boolean = true> {
-  name?: T;
   title?: T;
   startDate?: T;
   endDate?: T;
   description?: T;
   location?: T;
-  link?: T;
   url?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -963,15 +968,24 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "knallbonbonRegistration_select".
  */
 export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
-  firstNameParent?: T;
-  lastNameParent?: T;
-  firstNameChild?: T;
-  lastNameChild?: T;
+  event?: T;
+  firstName?: T;
+  lastName?: T;
   email?: T;
   phone?: T;
   address?: T;
-  photoConsent?: T;
-  event?: T;
+  child?:
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        dateOfBirth?: T;
+        gender?: T;
+        pickupInfo?: T;
+        photoConsent?: T;
+        healthInfo?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

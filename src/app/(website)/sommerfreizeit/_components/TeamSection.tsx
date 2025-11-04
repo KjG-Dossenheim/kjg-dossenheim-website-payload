@@ -2,41 +2,68 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { Mail } from 'lucide-react'
-import { Card, CardHeader } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 import type { Team } from '@/payload-types'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+
+import { createAvatar } from '@dicebear/core'
+import { bigEarsNeutral } from '@dicebear/collection'
 
 interface TeamSectionProps {
   team: (Team | string)[]
 }
 
+function isTeam(member: Team | string): member is Team {
+  return typeof member !== 'string'
+}
+
 export default function TeamSection({ team }: TeamSectionProps) {
   return (
     <section id="team">
-      <h1 className="p-6 text-center text-4xl font-bold">Unser Team</h1>
-      <div className="flex flex-wrap justify-center gap-4">
-        {team.map((member, index) => (
-          <Link
-            key={typeof member === 'string' ? `member-${index}` : member.id}
-            href={typeof member !== 'string' ? `/team/${member.id}` : '#'}
-            className="block"
-          >
-            <Card className="my-auto cursor-pointer transition-shadow hover:shadow-md">
-              <CardHeader className="max-w-sm">
-                {typeof member !== 'string' && (
-                  <div className="flex items-center gap-2">
-                    <div className="text-xl font-bold">
-                      {`${member.firstName} ${member.lastName}`}
-                    </div>
-                    {member.email && <Mail className="size-5" />}
-                  </div>
+      <CardHeader>
+        <h1 className="text-center text-4xl font-bold">Unser Team</h1>
+      </CardHeader>
+      <CardContent className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {team.filter(isTeam).map((member, index) => (
+          <Card key={index}>
+            <CardHeader>
+              <Avatar className="aspect-2/3 size-full rounded-lg">
+                {typeof member.profilePicture === 'object' && member.profilePicture !== null ? (
+                  <AvatarImage
+                    className="object-cover"
+                    src={(member.profilePicture as { url: string }).url}
+                    alt={`${member.firstName} ${member.lastName}`}
+                  />
+                ) : (
+                  <AvatarImage
+                    className="bg-primary/20 object-cover"
+                    src={createAvatar(bigEarsNeutral, {
+                      seed: `${member.firstName} ${member.lastName}`,
+                      backgroundColor: ['transparent'],
+                      scale: 70,
+                      randomizeIds: true,
+                    }).toDataUri()}
+                    alt={`${member.firstName} ${member.lastName}`}
+                  />
                 )}
-              </CardHeader>
-            </Card>
-          </Link>
+              </Avatar>
+            </CardHeader>
+            <CardFooter>
+              <CardTitle className="font-handwriting text-center">
+                {member.firstName} {member.lastName}
+              </CardTitle>
+            </CardFooter>
+          </Card>
         ))}
-      </div>
+      </CardContent>
     </section>
   )
 }

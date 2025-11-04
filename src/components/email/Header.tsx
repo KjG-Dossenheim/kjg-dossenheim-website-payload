@@ -16,23 +16,35 @@ export const MailHeader = () => (
         <table>
           <tr>
             <td className="px-[8px]">
-              <Link className="text-gray-600 [text-decoration:none]" href="#">
-                About
+              <Link
+                className="text-gray-600 [text-decoration:none]"
+                href={process.env.NEXT_PUBLIC_SITE_URL + '/about' || '#'}
+              >
+                Über uns
               </Link>
             </td>
             <td className="px-[8px]">
-              <Link className="text-gray-600 [text-decoration:none]" href="#">
+              <Link
+                className="text-gray-600 [text-decoration:none]"
+                href={process.env.NEXT_PUBLIC_SITE_URL + '/blog' || '#'}
+              >
                 Blog
               </Link>
             </td>
             <td className="px-[8px]">
-              <Link className="text-gray-600 [text-decoration:none]" href="#">
-                Company
+              <Link
+                className="text-gray-600 [text-decoration:none]"
+                href={process.env.NEXT_PUBLIC_SITE_URL + '/team' || '#'}
+              >
+                Team
               </Link>
             </td>
             <td className="px-[8px]">
-              <Link className="text-gray-600 [text-decoration:none]" href="#">
-                Features
+              <Link
+                className="text-gray-600 [text-decoration:none]"
+                href={process.env.NEXT_PUBLIC_SITE_URL + '/aktionen' || '#'}
+              >
+                Aktionen
               </Link>
             </td>
           </tr>

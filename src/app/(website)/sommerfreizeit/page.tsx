@@ -85,7 +85,7 @@ export default async function Page() {
       ),
     })),
     eventStatus: 'https://schema.org/EventScheduled',
-    description: `Die Tannenbaumaktion der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    description: `Die Sommerfreizeit der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     organizer: {
       '@type': 'Organization',
       name: process.env.NEXT_PUBLIC_SITE_NAME,
@@ -105,10 +105,7 @@ export default async function Page() {
 
       <AgeRangeSection {...sommerfreizeit} />
 
-      <section
-        className="container mx-auto space-y-6 p-6 sm:space-y-8 sm:p-8 lg:space-y-10 lg:p-10"
-        id="info"
-      >
+      <section className="container mx-auto" id="info">
         <PricingSection
           pricing={sommerfreizeit.allgemein.pricing}
           anmeldungWebsite={sommerfreizeit.anmeldungWebsite}

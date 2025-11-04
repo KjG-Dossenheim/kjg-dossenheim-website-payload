@@ -15,6 +15,15 @@ import { ThemeProvider } from '@/components/common/theme-provider'
 // Styles
 import '@/styles/globals.css'
 
+// Fonts
+import { Caveat } from 'next/font/google'
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-caveat',
+})
+
 export function generateMetadata(): Metadata {
   return {
     title: `${process.env.NEXT_PUBLIC_SITE_NAME}`,
@@ -36,7 +45,7 @@ export default async function layout({ children }: { children: ReactNode }) {
     slug: 'header',
   })
   return (
-    <html lang="de">
+    <html lang="de" className={`${caveat.variable}`}>
       <head>
         <Script
           defer

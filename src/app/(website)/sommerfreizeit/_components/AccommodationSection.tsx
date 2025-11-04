@@ -16,7 +16,7 @@ interface AccommodationSectionProps {
 
 export default function AccommodationSection({ unterkunft }: AccommodationSectionProps) {
   return (
-    <section className="mx-auto max-w-(--breakpoint-md)">
+    <section className="mx-auto max-w-(--breakpoint-md) p-6">
       <Card className="flex h-full w-full flex-col md:flex-row">
         <div className="flex flex-1 flex-col">
           <CardHeader>

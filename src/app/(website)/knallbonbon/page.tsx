@@ -3,16 +3,20 @@ export const revalidate = 60 // seconds (regenerate every 1 minute)
 // React and Next.js
 import React from 'react'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 // Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
 // UI Components
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Custom Components
 import { formatDateLocale } from '@/components/common/formatDateLocale'
+import { Button } from '@/components/ui/button'
+import LogoEvangelisch from '@/graphics/logo/LogoEvangelisch'
+import { User } from 'lucide-react'
 
 export function generateMetadata(): Metadata {
   return {
@@ -33,12 +37,13 @@ export default async function Page() {
   })
 
   return (
-    <section className="container mx-auto p-6">
+    <section className="container mx-auto">
       <CardHeader>
+        <LogoEvangelisch className="mb-3 h-auto w-50" />
         <CardTitle>{knallbonbon.title}</CardTitle>
         <p>{knallbonbon.description}</p>
       </CardHeader>
-      <div className="mx-auto max-w-md px-6">
+      <div className="max-w-md px-6">
         {knallbonbonEvents.docs.length > 0 ? (
           knallbonbonEvents.docs.map((event) => (
             <Card key={event.id}>
@@ -55,6 +60,14 @@ export default async function Page() {
                   <p>{event.additionalInfo}</p>
                 </div>
               )}
+              <CardFooter>
+                <Button asChild>
+                  <Link href="/knallbonbon/anmeldung" className="space-y-2">
+                    <User />
+                    Anmelden
+                  </Link>
+                </Button>
+              </CardFooter>
             </Card>
           ))
         ) : (
