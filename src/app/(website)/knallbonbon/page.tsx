@@ -12,12 +12,21 @@ import type { Knallbonbon, KnallbonbonEvent } from '@/payload-types'
 
 // UI Components
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { QRCode } from '@/components/ui/shadcn-io/qr-code'
 
 // Custom Components
 import { formatDateLocale } from '@/components/common/formatDateLocale'
-import { Button } from '@/components/ui/button'
 import LogoEvangelisch from '@/graphics/logo/LogoEvangelisch'
-import { User } from 'lucide-react'
+import { User, QrCode, Mail } from 'lucide-react'
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 export function generateMetadata(): Metadata {
   return {
@@ -45,11 +54,27 @@ function EventCard({ event }: { event: KnallbonbonEvent }) {
       )}
       <CardFooter>
         <Button asChild>
-          <Link href="/knallbonbon/anmeldung" className="inline-flex items-center gap-2">
-            <User className="h-4 w-4" />
+          <Link href="/knallbonbon/anmeldung">
+            <User />
             Anmelden
           </Link>
         </Button>
+        <Dialog>
+          <Button asChild variant="outline" className="ml-2">
+            <DialogTrigger>
+              <QrCode />
+              QR Code
+            </DialogTrigger>
+          </Button>
+          <DialogContent className="w-sm">
+            <DialogHeader>
+              <DialogTitle>Scanne den QR-Code</DialogTitle>
+            </DialogHeader>
+            <div>
+              <QRCode data={`${process.env.NEXT_PUBLIC_SITE_URL}/knallbonbon/anmeldung`} />
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   )
@@ -84,22 +109,32 @@ export default async function Page() {
     }),
   ])
 
-  const hasEvents = knallbonbonEvents.docs.length > 0
-
   return (
     <section>
       {/* Hero Section */}
-      <section className="from-primary/10 via-background to-background relative bg-linear-to-b">
-        <div className="container mx-auto p-6">
-          <div className="flex flex-col items-center text-center">
-            <LogoEvangelisch className="h-auto w-40 pb-8 md:w-52" />
-            <h1 className="mb-4 text-4xl leading-none font-extrabold tracking-tight md:text-5xl lg:text-6xl">
-              {knallbonbon.title}
-            </h1>
-            <p className="text-muted-foreground mb-8 max-w-2xl text-lg font-normal sm:px-16 lg:text-xl">
-              {knallbonbon.description}
-            </p>
-          </div>
+      <section className="container mx-auto p-6">
+        <div className="flex flex-col items-center text-center">
+          <LogoEvangelisch className="h-auto w-40 pb-8 md:w-52" />
+          <h1 className="mb-4 text-4xl leading-none font-extrabold tracking-tight md:text-5xl lg:text-6xl">
+            {knallbonbon.title}
+          </h1>
+          <p className="text-muted-foreground mb-8 max-w-2xl text-lg font-normal sm:px-16 lg:text-xl">
+            {knallbonbon.description}
+          </p>
+        </div>
+        <div className="flex justify-center">
+          <Button asChild>
+            <Link href="/knallbonbon/anmeldung">
+              <User />
+              Jetzt anmelden
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="ml-4">
+            <Link href="mailto:info@evangelischejugend.org">
+              <Mail />
+              Kontaktieren
+            </Link>
+          </Button>
         </div>
       </section>
 
@@ -107,7 +142,7 @@ export default async function Page() {
       <section id="veranstaltungen" className="container mx-auto p-6">
         <h2 className="mb-8 text-3xl font-bold tracking-tight">Kommende Veranstaltungen</h2>
         <div className="max-w-md">
-          {hasEvents ? (
+          {knallbonbonEvents.docs.length > 0 ? (
             knallbonbonEvents.docs.map((event) => <EventCard key={event.id} event={event} />)
           ) : (
             <NoEventsCard />

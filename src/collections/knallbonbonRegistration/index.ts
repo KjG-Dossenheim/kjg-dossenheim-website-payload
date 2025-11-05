@@ -8,7 +8,7 @@ export const knallbonbonRegistration: CollectionConfig = {
   },
   admin: {
     group: 'Knallbonbon',
-    defaultColumns: ['firstNameParent', 'lastNameParent', 'email', 'event'],
+    defaultColumns: ['firstName', 'lastName', 'email', 'event'],
     groupBy: true,
   },
   fields: [

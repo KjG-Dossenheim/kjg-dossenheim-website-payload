@@ -128,12 +128,7 @@ export default function ContactForm() {
                 <FormItem>
                   <FormLabel>Telefonnummer</FormLabel>
                   <FormControl>
-                    <PhoneInput
-                      {...field}
-                      placeholder="Telefonnummer"
-                      defaultCountry="DE"
-                      labels={de}
-                    />
+                    <PhoneInput {...field} placeholder="Telefonnummer" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

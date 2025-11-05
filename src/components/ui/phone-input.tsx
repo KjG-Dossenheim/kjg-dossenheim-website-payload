@@ -3,6 +3,8 @@ import { CheckIcon, ChevronsUpDown } from 'lucide-react'
 import * as RPNInput from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
 
+import de from 'react-phone-number-input/locale/de'
+
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -35,6 +37,8 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> = React.forwa
       inputComponent={InputComponent}
       smartCaret={false}
       value={value || undefined}
+      labels={de}
+      defaultCountry="DE"
       /**
        * Handles the onChange event.
        *

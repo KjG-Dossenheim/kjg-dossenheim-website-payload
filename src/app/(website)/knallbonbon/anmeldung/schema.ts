@@ -1,5 +1,17 @@
 import { z } from 'zod'
 
+export const GENDER_OPTIONS = [
+  { value: 'male', label: 'Männlich' },
+  { value: 'female', label: 'Weiblich' },
+  { value: 'diverse', label: 'Divers' },
+  { value: 'noInfo', label: 'Keine Angabe' },
+] as const
+
+export const PICKUP_OPTIONS = [
+  { value: 'pickedUp', label: 'Wird abgeholt' },
+  { value: 'goesAlone', label: 'Darf alleine nach Hause gehen' },
+] as const
+
 export const childSchema = z.object({
   firstName: z.string().min(2, 'Bitte geben Sie den Vornamen des Kindes ein.'),
   lastName: z.string().min(2, 'Bitte geben Sie den Nachnamen des Kindes ein.'),

@@ -1,12 +1,8 @@
 import * as React from 'react'
 import { Text, Heading } from '@react-email/components'
 import { MailBase } from '@/components/email/Base'
-import { FormValues } from './schema'
-
-const pickupInfoLabels: Record<NonNullable<FormValues['child'][number]['pickupInfo']>, string> = {
-  pickedUp: 'Wird abgeholt',
-  goesAlone: 'Geht allein nach Hause',
-}
+import { FormValues, PICKUP_OPTIONS, GENDER_OPTIONS } from './schema'
+import { format } from 'date-fns-tz/format'
 
 export function confirmationEmailTemplate(props: Omit<FormValues, 'captchaToken'>) {
   return (
@@ -31,12 +27,19 @@ export function confirmationEmailTemplate(props: Omit<FormValues, 'captchaToken'
               <ul>
                 <li>Vorname: {child.firstName}</li>
                 <li>Nachname: {child.lastName}</li>
-                <li>Geburtsdatum: {child.dateOfBirth}</li>
-                <li>Geschlecht: {child.gender}</li>
+                <li>Geburtsdatum: {format(child.dateOfBirth, 'dd.MM.yyyy')}</li>
+                <li>
+                  Geschlecht:{' '}
+                  {child.gender
+                    ? GENDER_OPTIONS.find((option) => option.value === child.gender)?.label
+                    : 'Keine Angabe'}
+                </li>
                 <li>Fotoeinwilligung: {child.photoConsent ? 'Ja' : 'Nein'}</li>
                 <li>
                   Abholinfo:{' '}
-                  {child.pickupInfo ? pickupInfoLabels[child.pickupInfo] : 'Keine Angabe'}
+                  {child.pickupInfo
+                    ? PICKUP_OPTIONS.find((option) => option.value === child.pickupInfo)?.label
+                    : 'Keine Angabe'}
                 </li>
                 <li>Gesundheitsinformationen: {child.healthInfo || 'Keine Angabe'}</li>
               </ul>
@@ -71,12 +74,19 @@ export function adminNotificationEmailTemplate(props: Omit<FormValues, 'captchaT
               <ul>
                 <li>Vorname: {child.firstName}</li>
                 <li>Nachname: {child.lastName}</li>
-                <li>Geburtsdatum: {child.dateOfBirth}</li>
-                <li>Geschlecht: {child.gender}</li>
+                <li>Geburtsdatum: {format(child.dateOfBirth, 'dd.MM.yyyy')}</li>
+                <li>
+                  Geschlecht:{' '}
+                  {child.gender
+                    ? GENDER_OPTIONS.find((option) => option.value === child.gender)?.label
+                    : 'Keine Angabe'}
+                </li>
                 <li>Fotoeinwilligung: {child.photoConsent ? 'Ja' : 'Nein'}</li>
                 <li>
                   Abholinfo:{' '}
-                  {child.pickupInfo ? pickupInfoLabels[child.pickupInfo] : 'Keine Angabe'}
+                  {child.pickupInfo
+                    ? PICKUP_OPTIONS.find((option) => option.value === child.pickupInfo)?.label
+                    : 'Keine Angabe'}
                 </li>
                 <li>Gesundheitsinformationen: {child.healthInfo || 'Keine Angabe'}</li>
               </ul>
