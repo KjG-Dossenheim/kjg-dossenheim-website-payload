@@ -3,6 +3,9 @@
 // React and React Hooks
 import React, { memo, useCallback, useMemo, useRef, useEffect } from 'react'
 
+// Next.js
+import { useSearchParams } from 'next/navigation'
+
 // Third-party libraries
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import type { Control } from 'react-hook-form'
@@ -271,6 +274,8 @@ const INITIAL_CHILD_VALUES = {
 
 export function KnallbonbonAnmeldungForm() {
   const { eventOptions, loading } = useKnallbonbonEvents()
+  const searchParams = useSearchParams()
+  const eventFromUrl = searchParams.get('event')
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -283,6 +288,7 @@ export function KnallbonbonAnmeldungForm() {
       phone: '',
       address: '',
       captchaToken: '',
+      event: eventFromUrl || '',
       child: [INITIAL_CHILD_VALUES],
     },
   })

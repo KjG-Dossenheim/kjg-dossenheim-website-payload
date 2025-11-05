@@ -12,7 +12,7 @@ import { MapPin, Calendar, ArrowRight } from 'lucide-react'
 // Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import type { Jahresplan } from '@/payload-types'
+import type { Jahresplan, KnallbonbonEvent } from '@/payload-types'
 
 // UI Components
 import { Button } from '@/components/ui/button'
@@ -38,6 +38,17 @@ export function generateMetadata(): Metadata {
   }
 }
 
+// Unified event type for timeline display
+type TimelineEvent = {
+  id: string | number
+  title: string
+  date: string
+  description?: string | null
+  location?: string | null
+  url?: string | null
+  source: 'jahresplan' | 'knallbonbon'
+}
+
 export default async function Page() {
   try {
     const payload = await getPayload({ config })
@@ -46,7 +57,8 @@ export default async function Page() {
     const sixMonthsAgo = new Date()
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 
-    const { docs: relevantEvents } = await payload.find({
+    // Fetch Jahresplan events
+    const { docs: jahresplanEvents } = await payload.find({
       collection: 'jahresplan',
       where: {
         startDate: {
@@ -54,7 +66,7 @@ export default async function Page() {
         },
       },
       sort: 'startDate',
-      limit: 50, // Add reasonable limit to prevent excessive data fetching
+      limit: 50,
       select: {
         id: true,
         title: true,
@@ -65,14 +77,59 @@ export default async function Page() {
       },
     })
 
+    // Fetch Knallbonbon events
+    const { docs: knallbonbonEvents } = await payload.find({
+      collection: 'knallbonbonEvents',
+      where: {
+        date: {
+          greater_than_equal: sixMonthsAgo.toISOString(),
+        },
+      },
+      sort: 'date',
+      limit: 50,
+      select: {
+        id: true,
+        title: true,
+        date: true,
+        additionalInfo: true,
+        location: true,
+      },
+    })
+
+    // Normalize events to unified format
+    const normalizedJahresplan: TimelineEvent[] = jahresplanEvents.map((event: Jahresplan) => ({
+      id: event.id,
+      title: event.title,
+      date: event.startDate,
+      description: event.description,
+      location: event.location,
+      url: event.url,
+      source: 'jahresplan' as const,
+    }))
+
+    const normalizedKnallbonbon: TimelineEvent[] = knallbonbonEvents.map(
+      (event: KnallbonbonEvent) => ({
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        description: event.additionalInfo,
+        location: event.location,
+        url: '/knallbonbon',
+        source: 'knallbonbon' as const,
+      }),
+    )
+
+    // Merge and sort all events by date
+    const allEvents = [...normalizedJahresplan, ...normalizedKnallbonbon].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    )
+
     // Find the index of the first future event (defaultValue is 1-based)
     const now = new Date()
-    const firstFutureEventIndex = relevantEvents.findIndex(
-      (event: Jahresplan) => new Date(event.startDate) > now,
-    )
+    const firstFutureEventIndex = allEvents.findIndex((event) => new Date(event.date) > now)
     // If no future events found, default to the last event, otherwise use the future event index + 1 (1-based)
     const defaultTimelineValue =
-      firstFutureEventIndex === -1 ? relevantEvents.length : firstFutureEventIndex + 1
+      firstFutureEventIndex === -1 ? allEvents.length : firstFutureEventIndex + 1
 
     return (
       <section className="container mx-auto">
@@ -80,19 +137,19 @@ export default async function Page() {
           <CardTitle>Aktionen</CardTitle>
         </CardHeader>
         <CardContent>
-          {relevantEvents.length > 0 ? (
+          {allEvents.length > 0 ? (
             <Timeline
               defaultValue={defaultTimelineValue}
               orientation="vertical"
               className="max-w-md"
             >
-              {relevantEvents.map((event: Jahresplan, index: number) => (
-                <TimelineItem key={event.id} step={index + 1}>
+              {allEvents.map((event: TimelineEvent, index: number) => (
+                <TimelineItem key={`${event.source}-${event.id}`} step={index + 1}>
                   <TimelineHeader>
                     <TimelineSeparator />
                     <TimelineDate className="flex items-center gap-1.5">
                       <Calendar className="size-3.5" />
-                      {formatDateLocale(event.startDate, 'EEEE, d. MMMM yyyy')}
+                      {formatDateLocale(event.date, 'EEEE, d. MMMM yyyy')}
                     </TimelineDate>
                     <TimelineTitle>{event.title}</TimelineTitle>
                     {event.location && (

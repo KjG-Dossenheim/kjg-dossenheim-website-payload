@@ -54,7 +54,7 @@ function EventCard({ event }: { event: KnallbonbonEvent }) {
       )}
       <CardFooter>
         <Button asChild>
-          <Link href="/knallbonbon/anmeldung">
+          <Link href={`/knallbonbon/anmeldung?event=${event.id}`}>
             <User />
             Anmelden
           </Link>
@@ -71,7 +71,9 @@ function EventCard({ event }: { event: KnallbonbonEvent }) {
               <DialogTitle>Scanne den QR-Code</DialogTitle>
             </DialogHeader>
             <div>
-              <QRCode data={`${process.env.NEXT_PUBLIC_SITE_URL}/knallbonbon/anmeldung`} />
+              <QRCode
+                data={`${process.env.NEXT_PUBLIC_SITE_URL}/knallbonbon/anmeldung?event=${event.id}`}
+              />
             </div>
           </DialogContent>
         </Dialog>
