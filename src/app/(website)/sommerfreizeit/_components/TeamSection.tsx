@@ -2,14 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 import type { Team } from '@/payload-types'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
@@ -34,33 +27,35 @@ export default function TeamSection({ team }: TeamSectionProps) {
       <CardContent className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {team.filter(isTeam).map((member, index) => (
           <Card key={index}>
-            <CardHeader>
-              <Avatar className="aspect-2/3 size-full rounded-lg">
-                {typeof member.profilePicture === 'object' && member.profilePicture !== null ? (
-                  <AvatarImage
-                    className="object-cover"
-                    src={(member.profilePicture as { url: string }).url}
-                    alt={`${member.firstName} ${member.lastName}`}
-                  />
-                ) : (
-                  <AvatarImage
-                    className="bg-primary/20 object-cover"
-                    src={createAvatar(bigEarsNeutral, {
-                      seed: `${member.firstName} ${member.lastName}`,
-                      backgroundColor: ['transparent'],
-                      scale: 70,
-                      randomizeIds: true,
-                    }).toDataUri()}
-                    alt={`${member.firstName} ${member.lastName}`}
-                  />
-                )}
-              </Avatar>
-            </CardHeader>
-            <CardFooter>
-              <CardTitle className="font-handwriting text-center">
-                {member.firstName} {member.lastName}
-              </CardTitle>
-            </CardFooter>
+            <Link href={`/team/${member.id}`}>
+              <CardHeader>
+                <Avatar className="aspect-2/3 size-full rounded-lg">
+                  {typeof member.profilePicture === 'object' && member.profilePicture !== null ? (
+                    <AvatarImage
+                      className="object-cover"
+                      src={(member.profilePicture as { url: string }).url}
+                      alt={`${member.firstName} ${member.lastName}`}
+                    />
+                  ) : (
+                    <AvatarImage
+                      className="bg-primary/20 object-cover"
+                      src={createAvatar(bigEarsNeutral, {
+                        seed: `${member.firstName} ${member.lastName}`,
+                        backgroundColor: ['transparent'],
+                        scale: 70,
+                        randomizeIds: true,
+                      }).toDataUri()}
+                      alt={`${member.firstName} ${member.lastName}`}
+                    />
+                  )}
+                </Avatar>
+              </CardHeader>
+              <CardFooter>
+                <CardTitle className="font-handwriting text-center">
+                  {member.firstName} {member.lastName}
+                </CardTitle>
+              </CardFooter>
+            </Link>
           </Card>
         ))}
       </CardContent>

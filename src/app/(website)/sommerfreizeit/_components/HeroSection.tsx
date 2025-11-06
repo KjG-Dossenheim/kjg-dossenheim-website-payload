@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Date from '@/components/common/date'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ChevronDown, User } from 'lucide-react'
 import Countdown from '@/components/common/Countdown'
 import { Button } from '@/components/ui/button'
 import { CardHeader } from '@/components/ui/card'
@@ -45,12 +45,12 @@ export default function HeroSection({
       <CardHeader className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center sm:gap-4">
         <Button asChild data-umami-event="Sommerfreizeit Anmeldung Hero CTA">
           <Link href={anmeldungWebsite} target="_blank" className="space-x-2">
-            <ChevronRight /> Jetzt anmelden
+            Jetzt anmelden <User />
           </Link>
         </Button>
         <Button asChild variant="outline" data-umami-event="Sommerfreizeit Info Hero CTA">
           <Link href="#info" className="space-x-2">
-            <ChevronDown /> Informationen
+            Informationen <ChevronDown />
           </Link>
         </Button>
       </CardHeader>

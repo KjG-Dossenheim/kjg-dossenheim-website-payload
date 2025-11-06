@@ -24,15 +24,18 @@ import { OrderedListFeatureClient as OrderedListFeatureClient_e70f5e05f09f93e00b
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { default as default_4c24903d5dfc5c876247d215825039b7 } from '@/components/admin/afterList/KnallbonbonRegistrationOverview'
+import { default as default_dc64ac1200bb1ea12cfc81b4913ff297 } from '@/components/admin/beforeList/KnallbonbonRegistrationStats'
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/components/admin/rowLable/ArrayRowLabelName.tsx'
 import { default as default_3114f6896e65c6486d201259c98e238e } from 'src/components/admin/rowLable/ArrayRowLabel.tsx'
-import { default as default_9fdad4af80370aada0e2c21ec48e4c70 } from '../../../graphics/Icon'
-import { default as default_d90c735eee50c28b024b50ad94a64ff8 } from '../../../graphics/Logo'
+import { default as default_a8ed57560afaff4535f43ca83a9fecbd } from '@/graphics/Icon'
+import { default as default_d3e265f969641a4ccf3d5a195904e268 } from '@/graphics/Logo'
 import { AuthentikOAuthLoginButton as AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914 } from '@/components/admin/button/AuthentikOAuthLoginButton'
+import { default as default_d4a5371c3bfcd973abc37a1ee6c57fde } from '@/components/admin/beforeNavLinks/NavLogo'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
@@ -62,14 +65,17 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
+  "@/components/admin/afterList/KnallbonbonRegistrationOverview#default": default_4c24903d5dfc5c876247d215825039b7,
+  "@/components/admin/beforeList/KnallbonbonRegistrationStats#default": default_dc64ac1200bb1ea12cfc81b4913ff297,
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "src/components/admin/rowLable/ArrayRowLabelName.tsx#default": default_5cb5d3602d1dd126d163c6a2e3af8809,
   "src/components/admin/rowLable/ArrayRowLabel.tsx#default": default_3114f6896e65c6486d201259c98e238e,
-  "./graphics/Icon#default": default_9fdad4af80370aada0e2c21ec48e4c70,
-  "./graphics/Logo#default": default_d90c735eee50c28b024b50ad94a64ff8,
+  "@/graphics/Icon#default": default_a8ed57560afaff4535f43ca83a9fecbd,
+  "@/graphics/Logo#default": default_d3e265f969641a4ccf3d5a195904e268,
   "@/components/admin/button/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton": AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914,
+  "@/components/admin/beforeNavLinks/NavLogo#default": default_d4a5371c3bfcd973abc37a1ee6c57fde,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

@@ -113,9 +113,9 @@ export default async function Page() {
 
         <AccommodationSection {...sommerfreizeit} />
 
-        <TeamSection team={sommerfreizeit.allgemein.teamFreizeit} />
-
         <FeaturesSection eigenschaften={sommerfreizeit.allgemein.eigenschaften} />
+
+        <TeamSection team={sommerfreizeit.allgemein.teamFreizeit} />
 
         <ContactSection />
       </section>

@@ -1,7 +1,7 @@
 import { Section, Row, Column, Img, Link } from '@react-email/components'
 
 export const MailHeader = () => (
-  <Section className="my-[40px] px-[32px] py-[40px]">
+  <Section className="bg-primary my-[40px] px-[32px] py-[40px]">
     <Row>
       <Column align="center">
         <Img

@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
-import { formatDate, parse } from 'date-fns'
 import { de } from 'react-day-picker/locale'
+
+import React, { useState } from 'react'
+
 import { CalendarIcon } from 'lucide-react'
+import { parse, formatDate } from 'date-fns'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -43,6 +45,7 @@ export function DatePickerInput({
         ref={inputRef}
         value={value || ''}
         autoComplete="bday"
+        inputMode="numeric"
         placeholder="TT.MM.JJJJ"
         onChange={(e) => {
           const inputValue = e.target.value

@@ -91,6 +91,9 @@ export interface Config {
     blogCategory: {
       relatedPosts: 'blogPosts';
     };
+    knallbonbonEvents: {
+      participants: 'knallbonbonRegistration';
+    };
   };
   collectionsSelect: {
     jahresplan: JahresplanSelect<false> | JahresplanSelect<true>;
@@ -444,15 +447,16 @@ export interface KnallbonbonRegistration {
   firstName: string;
   lastName: string;
   email: string;
-  phone?: string | null;
+  phone: string;
   address?: string | null;
   child?:
     | {
         firstName: string;
         lastName: string;
-        dateOfBirth?: string | null;
-        gender?: ('male' | 'female' | 'diverse' | 'noInfo') | null;
-        pickupInfo?: ('pickedUp' | 'goesAlone') | null;
+        dateOfBirth: string;
+        age?: number | null;
+        gender: 'male' | 'female' | 'diverse' | 'noInfo';
+        pickupInfo: 'pickedUp' | 'goesAlone';
         photoConsent?: boolean | null;
         healthInfo?: string | null;
         id?: string | null;
@@ -474,6 +478,14 @@ export interface KnallbonbonEvent {
    * Weitere Details zum Termin, z.B. Treffpunkt oder besondere Hinweise.
    */
   additionalInfo?: string | null;
+  /**
+   * Verknüpfte Anmeldungen zu diesem Termin anzeigen.
+   */
+  participants?: {
+    docs?: (string | KnallbonbonRegistration)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -995,6 +1007,7 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
         firstName?: T;
         lastName?: T;
         dateOfBirth?: T;
+        age?: T;
         gender?: T;
         pickupInfo?: T;
         photoConsent?: T;
@@ -1013,6 +1026,7 @@ export interface KnallbonbonEventsSelect<T extends boolean = true> {
   date?: T;
   location?: T;
   additionalInfo?: T;
+  participants?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -10,6 +10,26 @@ interface CountdownProps {
   timezone?: string
 }
 
+/**
+ * A countdown timer component that displays the remaining time until a target date.
+ *
+ * @component
+ * @param {CountdownProps} props - The component props
+ * @param {string | Date} props.targetDate - The target date to count down to
+ * @param {string} props.textColor - CSS class(es) for the text color styling
+ * @param {string} [props.timezone='Etc/UTC'] - The timezone for the countdown calculation, defaults to NEXT_PUBLIC_DEFAULT_TIMEZONE environment variable or 'Etc/UTC'
+ *
+ * @returns {JSX.Element} A responsive countdown display showing days, hours, minutes, and seconds with animated sliding numbers
+ *
+ * @example
+ * ```tsx
+ * <Countdown
+ *   targetDate="2024-12-31T23:59:59"
+ *   textColor="text-white"
+ *   timezone="Europe/Berlin"
+ * />
+ * ```
+ */
 export default function Countdown({
   targetDate,
   textColor,

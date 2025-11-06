@@ -10,6 +10,10 @@ export const knallbonbonRegistration: CollectionConfig = {
     group: 'Knallbonbon',
     defaultColumns: ['firstName', 'lastName', 'email', 'event'],
     groupBy: true,
+    components: {
+      beforeList: ['@/components/admin/beforeList/KnallbonbonRegistrationStats'],
+      afterList: ['@/components/admin/afterList/KnallbonbonRegistrationOverview'],
+    },
   },
   fields: [
     {
@@ -41,6 +45,7 @@ export const knallbonbonRegistration: CollectionConfig = {
       name: 'phone',
       label: 'Telefonnummer',
       type: 'text',
+      required: true,
     },
     {
       name: 'address',
@@ -69,11 +74,42 @@ export const knallbonbonRegistration: CollectionConfig = {
           name: 'dateOfBirth',
           label: 'Geburtsdatum des Kindes',
           type: 'date',
+          required: true,
+        },
+        {
+          name: 'age',
+          label: 'Alter',
+          type: 'number',
+          admin: {
+            readOnly: true,
+          },
+          hooks: {
+            beforeChange: [
+              async ({ siblingData, req }) => {
+                if (siblingData.dateOfBirth && req.data?.event) {
+                  const event = await req.payload.findByID({
+                    collection: 'knallbonbonEvents',
+                    id: typeof req.data.event === 'object' ? req.data.event.id : req.data.event,
+                  })
+                  const birthDate = new Date(siblingData.dateOfBirth)
+                  const eventdate = event?.date ? new Date(event.date) : new Date()
+                  let age = eventdate.getFullYear() - birthDate.getFullYear()
+                  const monthDiff = eventdate.getMonth() - birthDate.getMonth()
+                  if (monthDiff < 0 || (monthDiff === 0 && eventdate.getDate() < birthDate.getDate())) {
+                    age--
+                  }
+                  return age
+                }
+                return undefined
+              },
+            ],
+          },
         },
         {
           label: 'Geschlecht des Kindes',
           type: 'select',
           name: 'gender',
+          required: true,
           options: [
             { label: 'Männlich', value: 'male' },
             { label: 'Weiblich', value: 'female' },
@@ -85,6 +121,7 @@ export const knallbonbonRegistration: CollectionConfig = {
           name: 'pickupInfo',
           label: 'Abholung',
           type: 'select',
+          required: true,
           options: [
             { label: 'Wird abgeholt', value: 'pickedUp' },
             { label: 'Darf alleine nach Hause gehen', value: 'goesAlone' },

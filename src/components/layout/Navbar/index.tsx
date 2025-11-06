@@ -58,7 +58,7 @@ const NavbarLogo = React.memo(function NavbarLogo() {
   return (
     <Link
       href="/"
-      className="flex items-center pl-6"
+      className="flex items-center"
       aria-label="Zur Startseite"
       data-umami-event="Navbar Link: Startseite"
       data-umami-event-variant="Navbar Logo"

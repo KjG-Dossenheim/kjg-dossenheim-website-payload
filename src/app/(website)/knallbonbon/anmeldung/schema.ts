@@ -18,7 +18,7 @@ export const childSchema = z.object({
   dateOfBirth: z.string().min(10, 'Bitte geben Sie das Geburtsdatum des Kindes ein.'),
   photoConsent: z.boolean(),
   gender: z.enum(['male', 'female', 'diverse', 'noInfo']),
-  pickupInfo: z.enum(['pickedUp', 'goesAlone']).optional(),
+  pickupInfo: z.enum(['pickedUp', 'goesAlone']),
   healthInfo: z
     .string()
     .max(500, 'Bitte geben Sie die Gesundheitsinformationen des Kindes ein.'),

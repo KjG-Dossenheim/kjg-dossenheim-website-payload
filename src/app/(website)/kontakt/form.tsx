@@ -3,7 +3,6 @@
 // External libraries
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 
@@ -28,7 +27,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { PhoneInput } from '@/components/ui/phone-input'
-import de from 'react-phone-number-input/locale/de'
 
 import { CapWidget } from '@/components/common/cap-widget'
 import { sendMail } from './sendMail'

@@ -50,5 +50,17 @@ export const knallbonbonEvents: CollectionConfig = {
         description: 'Weitere Details zum Termin, z.B. Treffpunkt oder besondere Hinweise.',
       },
     },
+    {
+      name: 'participants',
+      label: 'Anmeldungen',
+      type: 'join',
+      collection: 'knallbonbonRegistration',
+      on: 'event',
+      admin: {
+        description: 'Verknüpfte Anmeldungen zu diesem Termin anzeigen.',
+        allowCreate: false,
+        defaultColumns: ['firstName', 'lastName', 'email'],
+      },
+    },
   ],
 }

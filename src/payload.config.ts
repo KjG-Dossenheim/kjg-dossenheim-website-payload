@@ -94,9 +94,12 @@ export default buildConfig({
         "@/components/admin/button/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton",
       ],
       graphics: {
-        Logo: './graphics/Logo',
-        Icon: './graphics/Icon',
+        Logo: '@/graphics/Logo',
+        Icon: '@/graphics/Icon',
       },
+      beforeNavLinks: [
+        '@/components/admin/beforeNavLinks/NavLogo',
+      ],
     },
     /* livePreview: {
       url: ({

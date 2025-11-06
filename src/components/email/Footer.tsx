@@ -1,7 +1,7 @@
 import { Section, Img, Text, Row, Column, Link } from '@react-email/components'
 
 export const MailFooter = () => (
-  <Section className="text-center">
+  <Section className="bg-primary text-center">
     <table className="w-full">
       <tr className="w-full">
         <td align="center">

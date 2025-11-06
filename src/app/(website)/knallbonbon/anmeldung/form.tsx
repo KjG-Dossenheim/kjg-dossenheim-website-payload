@@ -11,6 +11,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import type { Control } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import { parse, format } from 'date-fns'
 
 // UI Components
 import { Button } from '@/components/ui/button'
@@ -347,10 +348,30 @@ export function KnallbonbonAnmeldungForm() {
   const onSubmit = useCallback(
     async (values: FormValues) => {
       try {
+        // Transform German date format (d.MM.yyyy) to ISO format (yyyy-MM-dd)
+        const transformedValues = {
+          ...values,
+          child: values.child.map((child) => {
+            let isoDateOfBirth = child.dateOfBirth
+            if (child.dateOfBirth && child.dateOfBirth.includes('.')) {
+              try {
+                const parsedDate = parse(child.dateOfBirth, 'd.MM.yyyy', new Date())
+                isoDateOfBirth = format(parsedDate, 'yyyy-MM-dd')
+              } catch (error) {
+                console.error('Error parsing date:', error)
+              }
+            }
+            return {
+              ...child,
+              dateOfBirth: isoDateOfBirth,
+            }
+          }),
+        }
+
         const response = await fetch('/knallbonbon/anmeldung/form', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(values),
+          body: JSON.stringify(transformedValues),
         })
         const result = await response.json().catch(() => ({}))
 
