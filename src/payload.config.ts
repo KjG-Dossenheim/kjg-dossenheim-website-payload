@@ -100,6 +100,13 @@ export default buildConfig({
       beforeNavLinks: [
         '@/components/admin/beforeNavLinks/NavLogo',
       ],
+      Nav: '@/components/admin/Nav/CustomNavBasic',
+      views: {
+        knallbonbon: {
+          path: '/knallbonbon',
+          Component: '@/components/admin/views/KnallbonbonView',
+        },
+      },
     },
     /* livePreview: {
       url: ({

@@ -472,12 +472,22 @@ export interface KnallbonbonRegistration {
 export interface KnallbonbonEvent {
   id: string;
   title: string;
+  /**
+   * Datum und Uhrzeit der Veranstaltung
+   */
   date: string;
+  /**
+   * Veranstaltungsort
+   */
   location: string;
   /**
    * Weitere Details zum Termin, z.B. Treffpunkt oder besondere Hinweise.
    */
   additionalInfo?: string | null;
+  /**
+   * Lege eine maximale Anzahl an Teilnehmern für diesen Termin fest. Lass es leer, wenn es keine Begrenzung geben soll.
+   */
+  maxParticipants?: number | null;
   /**
    * Verknüpfte Anmeldungen zu diesem Termin anzeigen.
    */
@@ -486,6 +496,11 @@ export interface KnallbonbonEvent {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  participantCount: number;
+  /**
+   * Automatisch gesetzt, wenn die maximale Teilnehmerzahl erreicht ist.
+   */
+  isFull?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1026,7 +1041,10 @@ export interface KnallbonbonEventsSelect<T extends boolean = true> {
   date?: T;
   location?: T;
   additionalInfo?: T;
+  maxParticipants?: T;
   participants?: T;
+  participantCount?: T;
+  isFull?: T;
   updatedAt?: T;
   createdAt?: T;
 }

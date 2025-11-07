@@ -1,10 +1,18 @@
 import type { CollectionConfig } from 'payload'
+import {
+  updateEventParticipantCountAfterChange,
+  updateEventParticipantCountAfterDelete,
+} from './hooks/updateEventParticipantCount'
 
 export const knallbonbonRegistration: CollectionConfig = {
   slug: 'knallbonbonRegistration',
   labels: {
     singular: 'Anmeldung',
     plural: 'Anmeldungen',
+  },
+  hooks: {
+    afterChange: [updateEventParticipantCountAfterChange],
+    afterDelete: [updateEventParticipantCountAfterDelete],
   },
   admin: {
     group: 'Knallbonbon',

@@ -1,10 +1,14 @@
 import type { CollectionConfig } from 'payload'
+import { populateParticipantCount } from './hooks/populateParticipantCount'
 
 export const knallbonbonEvents: CollectionConfig = {
   slug: 'knallbonbonEvents',
   labels: {
     singular: 'Termin',
     plural: 'Termine',
+  },
+  hooks: {
+    beforeChange: [populateParticipantCount],
   },
   access: {
     read: () => true,
@@ -27,6 +31,8 @@ export const knallbonbonEvents: CollectionConfig = {
       type: 'date',
       required: true,
       admin: {
+        position: 'sidebar',
+        description: 'Datum und Uhrzeit der Veranstaltung',
         date: {
           pickerAppearance: 'dayAndTime',
           displayFormat: 'dd.MM.yyyy HH:mm',
@@ -39,6 +45,10 @@ export const knallbonbonEvents: CollectionConfig = {
       label: 'Ort',
       type: 'text',
       required: true,
+      admin: {
+        description: 'Veranstaltungsort',
+        position: 'sidebar',
+      },
     },
     {
       name: 'additionalInfo',
@@ -48,6 +58,16 @@ export const knallbonbonEvents: CollectionConfig = {
       admin: {
         rows: 2,
         description: 'Weitere Details zum Termin, z.B. Treffpunkt oder besondere Hinweise.',
+      },
+    },
+    {
+      name: 'maxParticipants',
+      label: 'Maximale Teilnehmerzahl',
+      type: 'number',
+      required: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Lege eine maximale Anzahl an Teilnehmern für diesen Termin fest. Lass es leer, wenn es keine Begrenzung geben soll.',
       },
     },
     {
@@ -62,5 +82,26 @@ export const knallbonbonEvents: CollectionConfig = {
         defaultColumns: ['firstName', 'lastName', 'email'],
       },
     },
+    {
+      name: 'participantCount',
+      label: 'Teilnehmerzahl',
+      type: 'number',
+      defaultValue: 0,
+      required: true,
+      admin: {
+        hidden: true,
+        readOnly: true,
+      },
+    },
+    {
+      label: 'Ausgebucht',
+      name: 'isFull',
+      type: 'checkbox',
+      admin: {
+        hidden: true,
+        readOnly: true,
+        description: 'Automatisch gesetzt, wenn die maximale Teilnehmerzahl erreicht ist.',
+      },
+    }
   ],
 }

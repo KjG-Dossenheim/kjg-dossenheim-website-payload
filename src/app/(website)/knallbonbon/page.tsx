@@ -1,4 +1,4 @@
-export const revalidate = 60 // seconds (regenerate every 1 minute)
+export const revalidate = 60
 
 // React and Next.js
 import React from 'react'
@@ -13,6 +13,7 @@ import type { Knallbonbon, KnallbonbonEvent } from '@/payload-types'
 // UI Components
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
 import { QRCode } from '@/components/ui/shadcn-io/qr-code'
 
 // Custom Components
@@ -36,7 +37,13 @@ export function generateMetadata(): Metadata {
 }
 
 // Extracted event card component for better readability and performance
-function EventCard({ event }: { event: KnallbonbonEvent }) {
+function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: number }) {
+  const spotsLeft =
+    event.maxParticipants && event.participantCount != null
+      ? event.maxParticipants - event.participantCount
+      : null
+  const isFull = event.isFull || (spotsLeft !== null && spotsLeft <= 0)
+
   return (
     <Card key={event.id} className="mb-4">
       <CardHeader>
@@ -53,12 +60,22 @@ function EventCard({ event }: { event: KnallbonbonEvent }) {
         </div>
       )}
       <CardFooter>
-        <Button asChild>
-          <Link href={`/knallbonbon/anmeldung?event=${event.id}`}>
-            <User />
-            Anmelden
-          </Link>
-        </Button>
+        <ButtonGroup>
+          <Button asChild={!isFull} disabled={isFull}>
+            <Link
+              href={`/knallbonbon/anmeldung?event=${event.id}`}
+              className="flex flex-row items-center gap-2"
+            >
+              <User />
+              {isFull ? 'Ausgebucht' : 'Anmelden'}
+            </Link>
+          </Button>
+          {!isFull && (
+            <Button variant="outline">
+              {spotsLeft} {spotsLeft === 1 ? 'Platz' : 'Plätze'}
+            </Button>
+          )}
+        </ButtonGroup>
         <Dialog>
           <Button asChild variant="outline" className="ml-2">
             <DialogTrigger>
@@ -111,6 +128,34 @@ export default async function Page() {
     }),
   ])
 
+  // Fetch registration counts for each event (counting children, not registrations)
+  const eventRegistrationCounts = await Promise.all(
+    knallbonbonEvents.docs.map(async (event) => {
+      const registrations = await payload.find({
+        collection: 'knallbonbonRegistration',
+        where: {
+          event: {
+            equals: event.id,
+          },
+        },
+        limit: 1000, // Fetch all registrations to count children
+      })
+      // Count total number of children across all registrations
+      const totalChildren = registrations.docs.reduce((total, registration) => {
+        return total + (registration.child?.length || 0)
+      }, 0)
+      return {
+        eventId: event.id,
+        count: totalChildren,
+      }
+    }),
+  )
+
+  // Create a map for easy lookup
+  const registrationCountMap = new Map(
+    eventRegistrationCounts.map((item) => [item.eventId, item.count]),
+  )
+
   return (
     <section>
       {/* Hero Section */}
@@ -145,7 +190,13 @@ export default async function Page() {
         <h2 className="mb-8 text-3xl font-bold tracking-tight">Kommende Veranstaltungen</h2>
         <div className="max-w-md">
           {knallbonbonEvents.docs.length > 0 ? (
-            knallbonbonEvents.docs.map((event) => <EventCard key={event.id} event={event} />)
+            knallbonbonEvents.docs.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                registrationCount={registrationCountMap.get(event.id) || 0}
+              />
+            ))
           ) : (
             <NoEventsCard />
           )}

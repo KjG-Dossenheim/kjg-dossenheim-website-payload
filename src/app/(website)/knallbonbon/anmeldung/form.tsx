@@ -320,16 +320,23 @@ export function KnallbonbonAnmeldungForm() {
 
   const eventRadioOptions = useMemo(
     () =>
-      eventOptions.map((opt) => (
+      eventOptions.map((eventOption) => (
         <Field
           orientation="horizontal"
-          key={opt.id}
+          key={eventOption.id}
           className="flex cursor-pointer items-center gap-2"
         >
-          <RadioGroupItem value={opt.id} id={`event-${opt.id}`} disabled={!opt.id} />
-          <FieldLabel htmlFor={`event-${opt.id}`} className="font-normal">
-            {opt.title} – {opt.dateLabel}
-          </FieldLabel>
+          <RadioGroupItem
+            value={eventOption.id}
+            id={`event-${eventOption.id}`}
+            disabled={!eventOption.id}
+          />
+          <div className="flex flex-col">
+            <FieldLabel htmlFor={`event-${eventOption.id}`} className="font-normal">
+              {eventOption.title} – {eventOption.dateLabel}{' '}
+            </FieldLabel>
+            <FieldDescription>{eventOption.freeSpots} Plätze frei</FieldDescription>
+          </div>
         </Field>
       )),
     [eventOptions],
