@@ -99,7 +99,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@next/eslint-plugin-next": "^15.5.6",
-    "@tailwindcss/postcss": "^4.1.16",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/culori": "^4.0.1",
     "@types/node": "^24.10.0",
     "@types/qrcode": "^1.5.6",
@@ -112,7 +112,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "shadcn": "^3.5.0",
-    "tailwindcss": "^4.1.16",
+    "tailwindcss": "^4.1.17",
     "typescript": "5.9.2"
   },
   "engines": {
