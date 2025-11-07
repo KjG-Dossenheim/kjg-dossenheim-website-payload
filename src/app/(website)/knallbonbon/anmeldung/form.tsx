@@ -270,7 +270,7 @@ const INITIAL_CHILD_VALUES = {
   photoConsent: false,
   gender: 'noInfo' as const,
   healthInfo: '',
-  pickupInfo: undefined,
+  pickupInfo: 'pickedUp' as const,
 }
 
 export function KnallbonbonAnmeldungForm() {

@@ -39,7 +39,7 @@ export function ModeToggle() {
     return (
       <Button variant="outline" size="icon">
         <SunMoon className="size-4" />
-        <span className="sr-only">Loading theme toggle</span>
+        <span className="sr-only">Lade Theme-Umschalter</span>
       </Button>
     )
   }
@@ -49,15 +49,15 @@ export function ModeToggle() {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
           <ThemeIcon className="size-4" />
-          <span className="sr-only">Toggle theme</span>
+          <span className="sr-only">Theme umschalten</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={handleThemeChange('light')} className="flex items-center gap-2">
-          <Sun className="size-4" /> Light
+          <Sun className="size-4" /> Hell
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleThemeChange('dark')} className="flex items-center gap-2">
-          <Moon className="size-4" /> Dark
+          <Moon className="size-4" /> Dunkel
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleThemeChange('system')} className="flex items-center gap-2">
           <SunMoon className="size-4" /> System

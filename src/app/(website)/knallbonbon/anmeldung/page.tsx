@@ -1,5 +1,3 @@
-'use client'
-
 // React
 import React, { Suspense } from 'react'
 
@@ -9,6 +7,15 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 // Form Component
 import { KnallbonbonAnmeldungForm } from './form'
+
+import type { Metadata } from 'next'
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Knallbonbon Anmeldung | ' + process.env.NEXT_PUBLIC_SITE_NAME,
+    description: 'Melden Sie sich für das Knallbonbon Event an',
+  }
+}
 
 export default function KnallbonbonAnmeldungPage() {
   return (

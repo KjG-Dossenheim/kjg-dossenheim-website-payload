@@ -23,5 +23,16 @@ export const Knallbonbon: GlobalConfig = {
         rows: 3,
       },
     },
+    {
+      label: 'Team',
+      name: 'team',
+      type: 'relationship',
+      relationTo: 'team',
+      hasMany: true,
+      required: true,
+      admin: {
+        description: 'Wähle die Teammitglieder aus, die für Knallbonbon verantwortlich sind.',
+      },
+    },
   ],
 };

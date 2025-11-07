@@ -1650,6 +1650,10 @@ export interface Knallbonbon {
    * Kurze Beschreibung, die auf der Website angezeigt wird.
    */
   description: string;
+  /**
+   * Wähle die Teammitglieder aus, die für Knallbonbon verantwortlich sind.
+   */
+  team: (string | Team)[];
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1957,6 +1961,7 @@ export interface RechtlichesSelect<T extends boolean = true> {
 export interface KnallbonbonSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  team?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
