@@ -8,7 +8,7 @@ type MembershipApplicationData = MembershipApplication & {
   captchaToken: string
 }
 
-export async function createMembershipApplication(data: MembershipApplicationData) {
+export async function createMembershipApplication(data: Omit<MembershipApplicationData, 'id' | 'updatedAt' | 'createdAt'>) {
   try {
     // Validate captcha token
     if (!data.captchaToken) {
