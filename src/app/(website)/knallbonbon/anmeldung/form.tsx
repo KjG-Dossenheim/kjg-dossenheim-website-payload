@@ -263,6 +263,7 @@ const ChildFieldset = memo(function ChildFieldset({
 ChildFieldset.displayName = 'ChildFieldset'
 
 const MAX_CHILDREN = 5
+
 const INITIAL_CHILD_VALUES = {
   firstName: '',
   lastName: '',
@@ -329,7 +330,7 @@ export function KnallbonbonAnmeldungForm() {
           <RadioGroupItem
             value={eventOption.id}
             id={`event-${eventOption.id}`}
-            disabled={!eventOption.id}
+            disabled={!eventOption.id || eventOption.isFull}
           />
           <div className="flex flex-col">
             <FieldLabel htmlFor={`event-${eventOption.id}`} className="font-normal">
@@ -375,7 +376,7 @@ export function KnallbonbonAnmeldungForm() {
           }),
         }
 
-        const response = await fetch('/knallbonbon/anmeldung/form', {
+        const response = await fetch('/knallbonbon/anmeldung/send-form', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(transformedValues),

@@ -119,41 +119,37 @@ export default async function Page() {
         />
       </div>
       <section className="container mx-auto p-6">
-        <div className="flex flex-col gap-6 md:flex-row">
-          <Card>
-            <CardHeader>
-              <h2 className="flex items-center gap-2 text-2xl font-semibold">
-                <span className="bg-primary h-8 w-1 rounded-full"></span>
-                Über die Veranstaltung
-              </h2>
-            </CardHeader>
-            <CardContent>
-              <RichText data={martinsumzug.content} />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Liedtexte</CardTitle>
-            </CardHeader>
-            {new Date(martinsumzug.startDate).toDateString() === new Date().toDateString() ? (
-              <CardContent className="flex flex-col gap-2">
-                {martinsumzug.songs?.map((song) => (
-                  <div key={song.id}>
-                    <Button asChild variant="outline" className="space-x-2">
-                      <Link href={`/martinsumzug/lieder/${song.slug}`}>
-                        {song.title} <ArrowRight className="size-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                ))}
-              </CardContent>
-            ) : (
-              <CardContent>
-                <p>Am Tag des Martinsumzugs findet ihr hier die Liedtexte</p>
-              </CardContent>
-            )}
-          </Card>
-        </div>
+        <Card className="mx-auto max-w-md">
+          <CardHeader>
+            <h2 className="flex items-center gap-2 text-2xl font-semibold">
+              <span className="bg-primary h-8 w-1 rounded-full"></span>
+              Über die Veranstaltung
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <RichText data={martinsumzug.content} />
+          </CardContent>
+          <CardFooter>
+            <CardTitle>Liedtexte</CardTitle>
+          </CardFooter>
+          {new Date(martinsumzug.startDate).toDateString() === new Date().toDateString() ? (
+            <CardFooter className="flex flex-col items-start justify-start gap-2">
+              {martinsumzug.songs?.map((song) => (
+                <div key={song.id}>
+                  <Button asChild variant="outline">
+                    <Link href={`/martinsumzug/lieder/${song.slug}`}>
+                      {song.title} <ArrowRight className="size-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </CardFooter>
+          ) : (
+            <CardFooter>
+              <p>Am Tag des Martinsumzugs findet ihr hier die Liedtexte</p>
+            </CardFooter>
+          )}
+        </Card>
       </section>
     </section>
   )

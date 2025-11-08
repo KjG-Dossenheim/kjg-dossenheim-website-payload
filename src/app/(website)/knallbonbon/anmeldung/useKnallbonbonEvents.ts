@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import type { KnallbonbonEvent } from '@/payload-types';
+import { PayloadSDK } from '@payloadcms/sdk'
+import type { Config } from '@/payload-types'
 
 export type EventOption = {
   id: string
@@ -10,13 +11,10 @@ export type EventOption = {
   freeSpots: number
 }
 
-interface KnallbonbonEventResponse {
-  docs: KnallbonbonEvent[]
-}
-
 /**
  * Custom hook to fetch and format Knallbonbon events
  * Handles loading state, error handling, and data formatting
+ * Uses Payload CMS SDK for type-safe API calls
  */
 export function useKnallbonbonEvents() {
   const [eventOptions, setEventOptions] = useState<EventOption[]>([])
@@ -37,15 +35,22 @@ export function useKnallbonbonEvents() {
       setError(null)
 
       try {
-        const response = await fetch('/api/knallbonbonEvents')
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-        const data = await response.json()
+        // Initialize Payload SDK client with proper typing
+        const sdk = new PayloadSDK<Config>({
+          baseURL: `${process.env.NEXT_PUBLIC_SITE_URL}/api`,
+          fetch: fetch.bind(window),
+        })
+
+        // Fetch events using the SDK
+        const data = await sdk.find({
+          collection: 'knallbonbonEvents',
+          sort: '-date',
+          limit: 100,
+        })
 
         const now = new Date()
 
-        const formattedOptions = (data as KnallbonbonEventResponse).docs
+        const formattedOptions = data.docs
           .filter((event) => {
             // Filter out events without a date
             if (!event.date) return false
@@ -53,9 +58,6 @@ export function useKnallbonbonEvents() {
             // Filter out events that have already started
             const eventDate = new Date(event.date)
             if (eventDate <= now) return false
-
-            // Filter out events with no spots left
-            if (event.isFull == true) return false
 
             return true
           })

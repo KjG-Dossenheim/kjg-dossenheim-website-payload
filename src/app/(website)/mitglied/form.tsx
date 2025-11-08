@@ -3,9 +3,10 @@
 // External libraries
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import { createMembershipApplication } from './actions'
+import { formSchema, type FormValues } from './schema'
 
 // Internal components and utilities
 import { Button } from '@/components/ui/button'
@@ -33,26 +34,6 @@ import de from 'react-phone-number-input/locale/de'
 
 import { CapWidget } from '@/components/common/cap-widget'
 
-// Schema für das Mitgliedsantragsformular
-const formSchema = z.object({
-  firstName: z.string().min(2, 'Bitte geben Sie Ihren Vornamen ein.'),
-  lastName: z.string().min(2, 'Bitte geben Sie Ihren Nachnamen ein.'),
-  birthDate: z.string().min(1, 'Bitte geben Sie Ihr Geburtsdatum ein.'),
-  address: z.string().min(2, 'Bitte geben Sie Ihre Adresse ein.'),
-  city: z.string().min(1, 'Bitte geben Sie Ihre Stadt ein.'), // hinzugefügt
-  postalCode: z.string().min(1, 'Bitte geben Sie Ihre Postleitzahl ein.'), // hinzugefügt
-  email: z.string().email('Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
-  phone: z.string().optional(),
-  status: z.enum(['new', 'in_review', 'completed', 'rejected']),
-  notes: z.string().optional(),
-  captchaToken: z.string().min(1, 'Bitte bestätigen Sie, dass Sie kein Roboter sind.'),
-  consentToDataProcessing: z.boolean().refine((val) => val, {
-    message: 'Bitte stimmen Sie der Datenverarbeitung zu.',
-  }),
-})
-
-type FormValues = z.infer<typeof formSchema>
-
 export default function MitgliedForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -73,17 +54,13 @@ export default function MitgliedForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const req = await fetch('/api/membershipApplication', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      })
-      if (req.ok) {
+      const result = await createMembershipApplication(values)
+
+      if (result.success) {
         form.reset()
         toast.success('Mitgliedsantrag erfolgreich übermittelt!')
       } else {
-        toast.error('Fehler beim Übermitteln des Antrags.')
+        toast.error(result.error || 'Fehler beim Übermitteln des Antrags.')
       }
     } catch {
       toast.error('Netzwerkfehler.')

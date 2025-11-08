@@ -40,6 +40,7 @@ import { de } from '@payloadcms/translations/languages/de'
 
 // Relative imports - blocks
 // import { Gallery } from './blocks/gallery/config'
+import { Lyrics } from './blocks/lyrics/'
 
 // Relative imports - collections
 import { Users } from './collections/Users'
@@ -178,7 +179,7 @@ export default buildConfig({
       FixedToolbarFeature(),
       UploadFeature(),
       BlocksFeature({
-        // blocks: [Gallery],
+        blocks: [Lyrics],
       })
     ]
   }),
