@@ -38,51 +38,49 @@ export async function KnallbonbonRegistrationStats(props: BeforeListServerProps)
     })
 
     return (
-      <Gutter className="space-y-8 py-6">
+      <Gutter className="grid gap-6 py-6 pb-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Overview Stats */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle className="font-medium">Gesamt Anmeldungen</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{totalRegistrations}</div>
-              <p className="mt-1.5">Registrierte Familien</p>
-            </CardContent>
-          </Card>
+        <Card>
+          <CardHeader>
+            <h3>Gesamt Anmeldungen</h3>
+          </CardHeader>
+          <CardContent>
+            <h1 className="text-primary font-bold">{totalRegistrations}</h1>
+            <p className="mt-1.5">Registrierte Familien</p>
+          </CardContent>
+        </Card>
 
-          <Card className="transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle className="font-medium">Gesamt Kinder</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{totalChildren}</div>
-              <p className="mt-1.5">Angemeldete Kinder</p>
-            </CardContent>
-          </Card>
+        <Card>
+          <CardHeader>
+            <h3>Gesamt Kinder</h3>
+          </CardHeader>
+          <CardContent>
+            <h1 className="text-primary font-bold">{totalChildren}</h1>
+            <p className="mt-1.5">Angemeldete Kinder</p>
+          </CardContent>
+        </Card>
 
-          <Card className="transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle className="font-medium">Aktive Termine</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{events.docs.length}</div>
-              <p className="mt-1.5">Verfügbare Events</p>
-            </CardContent>
-          </Card>
+        <Card>
+          <CardHeader>
+            <h3>Aktive Termine</h3>
+          </CardHeader>
+          <CardContent>
+            <h1 className="text-primary font-bold">{events.docs.length}</h1>
+            <p className="mt-1.5">Verfügbare Events</p>
+          </CardContent>
+        </Card>
 
-          <Card className="transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle className="font-medium">Ø Kinder pro Anmeldung</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">
-                {totalRegistrations > 0 ? (totalChildren / totalRegistrations).toFixed(1) : '0'}
-              </div>
-              <p className="mt-1.5">Durchschnittlich</p>
-            </CardContent>
-          </Card>
-        </div>
+        <Card>
+          <CardHeader>
+            <h3>Ø Kinder pro Anmeldung</h3>
+          </CardHeader>
+          <CardContent>
+            <h1 className="text-primary font-bold">
+              {totalRegistrations > 0 ? (totalChildren / totalRegistrations).toFixed(1) : '0'}
+            </h1>
+            <p className="mt-1.5">Durchschnittlich</p>
+          </CardContent>
+        </Card>
       </Gutter>
     )
   } catch (error) {
@@ -91,7 +89,7 @@ export async function KnallbonbonRegistrationStats(props: BeforeListServerProps)
       <Gutter className="py-6">
         <Card className="shadow-sm">
           <CardHeader>
-            <CardTitle>Fehler beim Laden der Statistiken</CardTitle>
+            <h3>Fehler beim Laden der Statistiken</h3>
           </CardHeader>
           <CardContent>
             <p className="text-yellow-700">

@@ -1,17 +1,10 @@
 import React from 'react'
 import type { AfterListServerProps } from 'payload'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Calendar, Activity } from 'lucide-react'
 import { Gutter } from '@payloadcms/ui'
-import { GenderStackedBar } from '@/components/admin/afterList/GenderStackedBar'
-import { AgeStackedBar } from '@/components/admin/afterList/AgeStackedBar'
+import { GenderStackedBar } from './GenderStackedBar'
+import { AgeStackedBar } from './AgeStackedBar'
 
 export async function KnallbonbonRegistrationOverview(props: AfterListServerProps) {
   const { payload } = props
@@ -88,7 +81,7 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
         {/* Event-specific Stats */}
         {events.docs.length > 0 && (
           <div className="space-y-6">
-            <h3 className="text-xl font-semibold">Anmeldungen pro Termin</h3>
+            <h2>Anmeldungen pro Termin</h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {events.docs.map((event) => {
                 const eventId = event.id
@@ -104,8 +97,8 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
                 return (
                   <Card key={eventId} className="transition-all hover:shadow-md">
                     <CardHeader>
-                      <CardTitle className="font-semibold">{event.title}</CardTitle>
-                      <CardDescription className="flex items-center gap-1.5">
+                      <h3>{event.title}</h3>
+                      <p className="flex items-center gap-1.5">
                         <Calendar className="h-3.5 w-3.5" />
                         {new Date(event.date).toLocaleDateString('de-DE', {
                           day: '2-digit',
@@ -114,32 +107,26 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
                           hour: '2-digit',
                           minute: '2-digit',
                         })}
-                      </CardDescription>
+                      </p>
                     </CardHeader>
                     <CardContent className="flex flex-row gap-2">
-                      <Card className="w-full">
-                        <CardHeader>
-                          <CardTitle>Anmeldungen</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-3xl font-bold">
-                          {registrationCount}
-                        </CardContent>
-                      </Card>
-                      <Card className="w-full">
-                        <CardHeader>
-                          <CardTitle>Kinder</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-3xl font-bold">{childrenCount}</CardContent>
-                      </Card>
+                      <div className="bg-muted flex w-full flex-col items-center justify-center gap-1 rounded-lg px-2 py-3.5">
+                        <h1 className="text-primary font-bold">{registrationCount}</h1>
+                        <h4 className="text-accent-foreground">Anmeldungen</h4>
+                      </div>
+                      <div className="bg-muted flex w-full flex-col items-center justify-center gap-1 rounded-lg px-2 py-3.5">
+                        <h1 className="text-primary font-bold">{childrenCount}</h1>
+                        <h4 className="text-accent-foreground">Kinder</h4>
+                      </div>
                     </CardContent>
                     <CardFooter className="flex-col gap-6">
                       <div className="w-full space-y-2">
-                        <CardTitle>Geschlechterverteilung</CardTitle>
+                        <h4>Geschlechterverteilung</h4>
                         <GenderStackedBar counts={genderCounts} />
                       </div>
                       {ageData.length > 0 && (
                         <div className="w-full space-y-2">
-                          <CardTitle>Altersverteilung</CardTitle>
+                          <h4>Altersverteilung</h4>
                           <AgeStackedBar data={ageData} />
                         </div>
                       )}

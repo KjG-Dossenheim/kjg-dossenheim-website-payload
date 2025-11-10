@@ -21,6 +21,11 @@ export const knallbonbonRegistration: CollectionConfig = {
     components: {
       beforeList: ['@/components/admin/beforeList/KnallbonbonRegistrationStats'],
       afterList: ['@/components/admin/afterList/KnallbonbonRegistrationOverview'],
+      views: {
+        list: {
+          actions: ['@/components/admin/actions/KnallbonbonRegistrationExportAction'],
+        },
+      },
     },
   },
   fields: [
@@ -58,6 +63,16 @@ export const knallbonbonRegistration: CollectionConfig = {
     {
       name: 'address',
       label: 'Adresse',
+      type: 'text',
+    },
+    {
+      name: 'postalCode',
+      label: 'Postleitzahl',
+      type: 'text',
+    },
+    {
+      name: 'city',
+      label: 'Stadt',
       type: 'text',
     },
     {

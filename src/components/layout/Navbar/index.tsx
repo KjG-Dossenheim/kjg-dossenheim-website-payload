@@ -80,7 +80,7 @@ const CTAButtons = React.memo(function CTAButtons() {
       </Button>
       <Button variant="outline" asChild data-umami-event="Donate CTA Navbar">
         <Link
-          href="https://www.paypal.com/donate/?hosted_button_id=VNX7B928TD4JE"
+          href="https://www.paypal.com/donate/?hosted_button_id=VNX7B928TD4JE&locale.x=de_DE"
           target="_blank"
           rel="noreferrer"
           aria-label="Spenden über PayPal (öffnet in neuem Fenster)"

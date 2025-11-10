@@ -274,6 +274,31 @@ const INITIAL_CHILD_VALUES = {
   pickupInfo: 'pickedUp' as const,
 }
 
+/**
+ * Renders the Knallbonbon event registration form.
+ *
+ * This component provides:
+ * - Event selection loaded via `useKnallbonbonEvents`, indicating availability and free spots.
+ * - Contact information fields with validation (first name, last name, address, phone, email).
+ * - Debounced field validation for email and phone to reduce validation noise.
+ * - A dynamic list of child entries managed via `useFieldArray`, with add/remove controls and a configurable maximum.
+ * - A CAPTCHA widget that must be solved before submission is enabled.
+ * - Toast notifications for success and error states.
+ *
+ * Behavior:
+ * - Prefills the selected event from the `event` URL search parameter, if present.
+ * - Validates fields using `zodResolver` with `react-hook-form`, validating on blur and re-validating on blur.
+ * - Transforms each child's `dateOfBirth` from German format (`d.MM.yyyy`) to ISO (`yyyy-MM-dd`) before submission.
+ * - Submits the form as JSON to `/knallbonbon/anmeldung/send-form` and handles server responses,
+ *   including special handling for an `invalid-captcha` error.
+ * - Disables submission while submitting or when the CAPTCHA token is missing.
+ *
+ * Accessibility:
+ * - Applies `aria-invalid` for invalid fields and shows inline error messages.
+ * - Displays skeleton placeholders while event options are loading.
+ *
+ * @returns JSX element rendering the full registration form UI.
+ */
 export function KnallbonbonAnmeldungForm() {
   const { eventOptions, loading } = useKnallbonbonEvents()
   const searchParams = useSearchParams()
@@ -328,7 +353,7 @@ export function KnallbonbonAnmeldungForm() {
           className="flex cursor-pointer items-center gap-2"
         >
           <RadioGroupItem
-            value={eventOption.id}
+            value={eventOption.isFull ? '' : eventOption.id}
             id={`event-${eventOption.id}`}
             disabled={!eventOption.id || eventOption.isFull}
           />
@@ -336,7 +361,11 @@ export function KnallbonbonAnmeldungForm() {
             <FieldLabel htmlFor={`event-${eventOption.id}`} className="font-normal">
               {eventOption.title} – {eventOption.dateLabel}{' '}
             </FieldLabel>
-            <FieldDescription>{eventOption.freeSpots} Plätze frei</FieldDescription>
+            {eventOption.isFull ? (
+              <FieldDescription>Ausgebucht</FieldDescription>
+            ) : eventOption.maxParticipants !== undefined && eventOption.maxParticipants > 0 ? (
+              <FieldDescription>{eventOption.freeSpots} Plätze frei</FieldDescription>
+            ) : null}
           </div>
         </Field>
       )),
@@ -496,6 +525,40 @@ export function KnallbonbonAnmeldungForm() {
                       {...field}
                       aria-invalid={fieldState.invalid}
                       autoComplete="street-address"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+              <Controller
+                control={form.control}
+                name="postalCode"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="postal-code">Postleitzahl</FieldLabel>
+                    <Input
+                      id="postal-code"
+                      type="text"
+                      {...field}
+                      aria-invalid={fieldState.invalid}
+                      autoComplete="postal-code"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+              <Controller
+                control={form.control}
+                name="city"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="city">Stadt</FieldLabel>
+                    <Input
+                      id="city"
+                      type="text"
+                      {...field}
+                      aria-invalid={fieldState.invalid}
+                      autoComplete="address-level2"
                     />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>

@@ -31,8 +31,19 @@ export const formSchema = z.object({
   phone: z.e164('Bitte geben Sie eine gültige Telefonnummer ein.'),
   event: z.string().min(1, 'Bitte wählen Sie eine Veranstaltung aus.'),
   address: z.string().optional(),
+  city: z.string().optional(),
+  postalCode: z.string().optional(),
   child: z.array(childSchema),
   captchaToken: z.string().min(1, 'Bitte bestätigen Sie, dass Sie kein Roboter sind.'),
 })
+
+export type EventOption = {
+  id: string
+  title: string
+  dateLabel: string
+  isFull: boolean
+  freeSpots: number
+  maxParticipants?: number
+}
 
 export type FormValues = z.infer<typeof formSchema>

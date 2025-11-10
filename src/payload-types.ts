@@ -449,6 +449,8 @@ export interface KnallbonbonRegistration {
   email: string;
   phone: string;
   address?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
   child?:
     | {
         firstName: string;
@@ -1016,6 +1018,8 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   address?: T;
+  postalCode?: T;
+  city?: T;
   child?:
     | T
     | {

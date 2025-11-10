@@ -14,7 +14,7 @@ export const MailFooter = () => (
       </tr>
       <tr className="w-full">
         <td align="center">
-          <Text className="my-[8px] text-[16px] leading-[24px] font-semibold text-gray-900">
+          <Text className="my-[8px] text-[16px] leading-[24px] font-semibold text-white">
             {process.env.NEXT_PUBLIC_SITE_NAME}
           </Text>
         </td>
@@ -47,10 +47,10 @@ export const MailFooter = () => (
       </tr>
       <tr>
         <td align="center">
-          <Text className="my-[8px] text-[16px] leading-[24px] font-semibold text-gray-500">
+          <Text className="my-[8px] text-[16px] leading-[24px] font-semibold text-white">
             Anne Frank Straße 22, 69221 Dossenheim
           </Text>
-          <Text className="mt-[4px] mb-0 text-[16px] leading-[24px] font-semibold text-gray-500">
+          <Text className="mt-[4px] mb-0 text-[16px] leading-[24px] font-semibold text-white">
             info@kjg-dossenheim.org
           </Text>
         </td>

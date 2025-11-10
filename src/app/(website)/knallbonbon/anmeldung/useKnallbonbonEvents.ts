@@ -2,14 +2,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { PayloadSDK } from '@payloadcms/sdk'
 import type { Config } from '@/payload-types'
-
-export type EventOption = {
-  id: string
-  title: string
-  dateLabel: string
-  isFull: boolean
-  freeSpots: number
-}
+import type { EventOption } from './schema'
 
 /**
  * Custom hook to fetch and format Knallbonbon events
@@ -73,6 +66,7 @@ export function useKnallbonbonEvents() {
               freeSpots: event.maxParticipants
                 ? Math.max(event.maxParticipants - (event.participantCount || 0), 0)
                 : 0,
+              maxParticipants: event.maxParticipants ?? undefined,
             }
           })
 

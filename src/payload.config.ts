@@ -101,11 +101,20 @@ export default buildConfig({
       beforeNavLinks: [
         '@/components/admin/beforeNavLinks/NavLogo',
       ],
-      Nav: '@/components/admin/Nav/CustomNavBasic',
+      // Nav: '@/components/admin/Nav/CustomNavBasic',
+      settingsMenu: ['@/components/admin/settingsMenu/MySettingsMenu'],
       views: {
         knallbonbon: {
           path: '/knallbonbon',
           Component: '@/components/admin/views/KnallbonbonView',
+        },
+        settings: {
+          path: '/settings',
+          Component: '@/components/admin/views/SettingsView',
+        },
+        emailPreview: {
+          path: '/email-preview',
+          Component: '@/components/admin/views/PreviewEmailView',
         },
       },
     },
