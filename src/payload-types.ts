@@ -1674,6 +1674,10 @@ export interface Martinsumzug {
     };
     [k: string]: unknown;
   };
+  /**
+   * Wähle die Lieder für den Martinsumzug aus
+   */
+  songs: (string | Song)[];
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2095,6 +2099,7 @@ export interface MartinsumzugSelect<T extends boolean = true> {
         description?: T;
       };
   content?: T;
+  songs?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
