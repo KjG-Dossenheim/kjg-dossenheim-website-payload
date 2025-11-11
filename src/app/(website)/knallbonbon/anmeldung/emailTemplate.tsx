@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Text, Heading } from '@react-email/components'
-import { MailBase } from '@/components/email/Base'
+import MailBase from '@/components/email/Base'
 import { FormValues, PICKUP_OPTIONS, GENDER_OPTIONS } from './schema'
 import { format } from 'date-fns-tz/format'
 

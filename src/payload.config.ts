@@ -7,7 +7,7 @@ import sharp from 'sharp'
 import { buildConfig } from 'payload'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-// import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import {
   BoldFeature,
@@ -72,6 +72,8 @@ import { aktion72Stunden } from './globals/aktionen/72stunden'
 
 // Relative imports - lib
 import { authentikOAuth } from './lib/authentikOAuth'
+import { FormBlock } from './blocks/FormBlock/config'
+import { Code } from './blocks/Code/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -188,7 +190,7 @@ export default buildConfig({
       FixedToolbarFeature(),
       UploadFeature(),
       BlocksFeature({
-        blocks: [Lyrics],
+        blocks: [FormBlock, Code],
       })
     ]
   }),
@@ -229,7 +231,7 @@ export default buildConfig({
       generateTitle: ({ doc }) => `${doc.title || ''}`,
       generateImage: ({ doc }) => `${process.env.NEXT_PUBLIC_SITE_URL}/api/og/?title=${encodeURIComponent(doc.title || '')}`
     }),
-    /* formBuilderPlugin({
+    formBuilderPlugin({
       formOverrides: {
         slug: 'forms',
         labels: {
@@ -237,7 +239,7 @@ export default buildConfig({
           plural: 'Formulare',
         },
       },
-    }), */
+    }),
     s3Storage({
       collections: {
         media: true,

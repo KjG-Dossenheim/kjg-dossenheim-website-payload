@@ -1,6 +1,6 @@
 import { Section, Img, Text, Row, Column, Link } from '@react-email/components'
 
-export const MailFooter = () => (
+const MailFooter = () => (
   <Section className="bg-primary text-center">
     <table className="w-full">
       <tr className="w-full">
@@ -58,3 +58,5 @@ export const MailFooter = () => (
     </table>
   </Section>
 )
+
+export default MailFooter

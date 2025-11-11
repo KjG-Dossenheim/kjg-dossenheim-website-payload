@@ -4,10 +4,9 @@ export const revalidate = 60 // 1 Minute
 // React and Next.js
 import React from 'react'
 import { notFound } from 'next/navigation'
-import { draftMode } from 'next/headers'
 
 // Third-party libraries
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText } from '@/components/utils/RichText'
 
 // Payload CMS
 import { getPayload } from 'payload'

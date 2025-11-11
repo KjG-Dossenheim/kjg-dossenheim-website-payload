@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Text, Heading } from '@react-email/components'
-import { MailBase } from '@/components/email/Base'
+import MailBase from '@/components/email/Base'
 
 export function confirmationEmailTemplate(props: any) {
   return (

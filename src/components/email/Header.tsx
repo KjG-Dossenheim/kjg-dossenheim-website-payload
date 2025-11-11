@@ -1,6 +1,6 @@
 import { Section, Row, Column, Img, Link } from '@react-email/components'
 
-export const MailHeader = () => (
+const MailHeader = () => (
   <Section className="bg-primary my-[40px] px-[32px] py-[40px]">
     <Row>
       <Column align="center">
@@ -17,7 +17,7 @@ export const MailHeader = () => (
           <tr>
             <td className="px-[8px]">
               <Link
-                className="[text-decoration:none]"
+                className="text-white [text-decoration:none]"
                 href={process.env.NEXT_PUBLIC_SITE_URL + '/about' || '#'}
               >
                 Über uns
@@ -25,7 +25,7 @@ export const MailHeader = () => (
             </td>
             <td className="px-[8px]">
               <Link
-                className="[text-decoration:none]"
+                className="text-white [text-decoration:none]"
                 href={process.env.NEXT_PUBLIC_SITE_URL + '/blog' || '#'}
               >
                 Blog
@@ -33,7 +33,7 @@ export const MailHeader = () => (
             </td>
             <td className="px-[8px]">
               <Link
-                className="[text-decoration:none]"
+                className="text-white [text-decoration:none]"
                 href={process.env.NEXT_PUBLIC_SITE_URL + '/team' || '#'}
               >
                 Team
@@ -41,7 +41,7 @@ export const MailHeader = () => (
             </td>
             <td className="px-[8px]">
               <Link
-                className="[text-decoration:none]"
+                className="text-white [text-decoration:none]"
                 href={process.env.NEXT_PUBLIC_SITE_URL + '/aktionen' || '#'}
               >
                 Aktionen
@@ -53,3 +53,5 @@ export const MailHeader = () => (
     </Row>
   </Section>
 )
+
+export default MailHeader

@@ -70,7 +70,7 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
               {isFull ? 'Ausgebucht' : 'Anmelden'}
             </Link>
           </Button>
-          {!isFull && (
+          {!isFull && spotsLeft !== null && (
             <Button variant="outline">
               {spotsLeft} {spotsLeft === 1 ? 'Platz' : 'Plätze'}
             </Button>
