@@ -15,6 +15,36 @@ export async function createMembershipApplication(data: Omit<MembershipApplicati
       return { success: false, error: 'Captcha-Validierung fehlgeschlagen.' }
     }
 
+    // Verify the captcha token server-side
+    try {
+      const captchaResult = await fetch(`${process.env.NEXT_PUBLIC_CAPTCHA_URL}validate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: data.captchaToken,
+          keepToken: false
+        })
+      })
+
+      if (!captchaResult.ok) {
+        console.error('CAPTCHA validation failed with status:', captchaResult.status)
+        const text = await captchaResult.text()
+        console.error('Response body:', text)
+        return { success: false, error: 'Captcha-Validierung fehlgeschlagen.' }
+      }
+
+      const validation = await captchaResult.json()
+      console.log('CAPTCHA validation result:', validation)
+
+      // Check if validation was successful
+      if (!validation.success) {
+        return { success: false, error: 'Captcha-Validierung fehlgeschlagen.' }
+      }
+    } catch (captchaError) {
+      console.error('CAPTCHA validation error:', captchaError)
+      return { success: false, error: 'Captcha-Validierung fehlgeschlagen.' }
+    }
+
     // Get Payload instance
     const payload = await getPayload({ config })
 

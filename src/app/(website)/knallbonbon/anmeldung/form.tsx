@@ -50,6 +50,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { CapWidget } from '@/components/common/cap-widget'
 import { formSchema, type FormValues, GENDER_OPTIONS, PICKUP_OPTIONS } from './schema'
 import { useKnallbonbonEvents } from './useKnallbonbonEvents'
+import { submitKnallbonbonRegistration } from './actions'
 
 import { PhoneInput } from '@/components/ui/phone-input'
 import { DatePickerInput } from '@/components/ui/date-picker-input'
@@ -289,7 +290,7 @@ const INITIAL_CHILD_VALUES = {
  * - Prefills the selected event from the `event` URL search parameter, if present.
  * - Validates fields using `zodResolver` with `react-hook-form`, validating on blur and re-validating on blur.
  * - Transforms each child's `dateOfBirth` from German format (`d.MM.yyyy`) to ISO (`yyyy-MM-dd`) before submission.
- * - Submits the form as JSON to `/knallbonbon/anmeldung/send-form` and handles server responses,
+ * - Submits the form using a server action and handles server responses,
  *   including special handling for an `invalid-captcha` error.
  * - Disables submission while submitting or when the CAPTCHA token is missing.
  *
@@ -405,23 +406,18 @@ export function KnallbonbonAnmeldungForm() {
           }),
         }
 
-        const response = await fetch('/knallbonbon/anmeldung/send-form', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(transformedValues),
-        })
-        const result = await response.json().catch(() => ({}))
+        const result = await submitKnallbonbonRegistration(transformedValues)
 
-        if (response.ok) {
+        if (result.success) {
           form.reset()
           toast.success('Anmeldung erfolgreich!')
         } else {
-          if (result?.error === 'invalid-captcha') {
+          if (result.error === 'invalid-captcha') {
             toast.error('Bitte bestätigen Sie die Captcha-Prüfung erneut.')
             form.setValue('captchaToken', '', { shouldValidate: true })
             return
           }
-          const message = typeof result?.message === 'string' ? result.message : undefined
+          const message = typeof result.message === 'string' ? result.message : undefined
           toast.error(message ?? 'Fehler bei der Anmeldung.')
         }
       } catch (error) {
@@ -640,7 +636,9 @@ export function KnallbonbonAnmeldungForm() {
                 <FieldLabel>Spam-Schutz</FieldLabel>
                 <input type="hidden" {...form.register('captchaToken')} />
                 <CapWidget
-                  endpoint="https://captcha.gurl.eu.org/api/"
+                  endpoint={
+                    process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'
+                  }
                   onSolve={handleCaptchaSolve}
                   locale={{
                     initial: 'Ich bin (k)ein Roboter',

@@ -228,7 +228,7 @@ export default function MitgliedForm() {
               <Input type="hidden" {...form.register('captchaToken')} />
 
               <CapWidget
-                endpoint="https://captcha.gurl.eu.org/api/"
+                endpoint={process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'}
                 style={
                   {
                     '--cap-background': 'hsl(var(--background))',

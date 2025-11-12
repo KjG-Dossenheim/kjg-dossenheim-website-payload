@@ -1,33 +1,36 @@
-import { NextResponse } from 'next/server'
+'use server'
+
 import { render } from '@react-email/render'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-import { formSchema } from '../../anmeldung/schema'
-
-
-import {
-  adminNotificationEmailTemplate,
-  confirmationEmailTemplate,
-} from '../../anmeldung/emailTemplate'
-
-const CAPTCHA_VERIFY_ENDPOINT = 'https://captcha.gurl.eu.org/api/validate'
+import { formSchema } from './schema'
+import { adminNotificationEmailTemplate, confirmationEmailTemplate } from './emailTemplate'
 
 type VerificationResponse = {
   success: boolean
 }
 
 async function verifyCaptchaToken(token: string): Promise<boolean> {
+
   if (!token) {
     return false
   }
 
   try {
-    const response = await fetch(CAPTCHA_VERIFY_ENDPOINT, {
+    const captchaUrl = process.env.NEXT_PUBLIC_CAPTCHA_URL
+    if (!captchaUrl) {
+      console.error('CAPTCHA_URL is not configured')
+      return false
+    }
+
+    const response = await fetch(`${captchaUrl}validate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
-      cache: 'no-store',
+      body: JSON.stringify({
+        token: token,
+        keepToken: false,
+      }),
     })
 
     if (!response.ok) {
@@ -43,30 +46,28 @@ async function verifyCaptchaToken(token: string): Promise<boolean> {
   }
 }
 
-export async function POST(request: Request) {
+export async function submitKnallbonbonRegistration(formData: unknown) {
   try {
-    const body = await request.json()
-    const parsed = formSchema.safeParse(body)
+    const parsed = formSchema.safeParse(formData)
 
     if (!parsed.success) {
-      return NextResponse.json(
-        {
-          error: 'validation-error',
-          message: 'Bitte prüfen Sie Ihre Eingaben.',
-          issues: parsed.error.flatten(),
-        },
-        { status: 400 },
-      )
+      return {
+        success: false,
+        error: 'validation-error',
+        message: 'Bitte prüfen Sie Ihre Eingaben.',
+        issues: parsed.error.flatten(),
+      }
     }
 
     const { captchaToken, ...formValues } = parsed.data
     const isValidCaptcha = await verifyCaptchaToken(captchaToken)
 
     if (!isValidCaptcha) {
-      return NextResponse.json(
-        { error: 'invalid-captcha', message: 'Bitte bestätigen Sie die Captcha-Prüfung erneut.' },
-        { status: 400 },
-      )
+      return {
+        success: false,
+        error: 'invalid-captcha',
+        message: 'Bitte bestätigen Sie die Captcha-Prüfung erneut.',
+      }
     }
 
     const payloadClient = await getPayload({ config })
@@ -103,12 +104,13 @@ export async function POST(request: Request) {
       console.error('Error sending confirmation email:', error)
     }
 
-    return NextResponse.json({ success: true }, { status: 201 })
+    return { success: true }
   } catch (error) {
     console.error('Unexpected error while submitting registration:', error)
-    return NextResponse.json(
-      { error: 'server-error', message: 'Fehler beim Verarbeiten der Anmeldung.' },
-      { status: 500 },
-    )
+    return {
+      success: false,
+      error: 'server-error',
+      message: 'Fehler beim Verarbeiten der Anmeldung.',
+    }
   }
 }
