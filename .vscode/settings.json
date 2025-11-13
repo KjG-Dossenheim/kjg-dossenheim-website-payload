@@ -26,5 +26,13 @@
     ["twMerge\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["createTheme(?:<\\w+>)?\\s*\\(([^)]*)\\)", "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"]
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/.hg/store/**": true,
+    "**/.git/**": true,
+    "**/node_modules/**": true,
+    "**/.vscode/**": true
+  }
 }

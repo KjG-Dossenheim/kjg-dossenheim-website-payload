@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { KnallbonbonAbmeldenForm } from './form'
 import type { Metadata } from 'next'
 
@@ -12,7 +12,9 @@ export function generateMetadata(): Metadata {
 export default function KnallbonbonAbmeldenPage() {
   return (
     <section className="mx-auto max-w-2xl p-6">
-      <KnallbonbonAbmeldenForm />
+      <Suspense fallback={<div className="p-4 text-center">Lädt...</div>}>
+        <KnallbonbonAbmeldenForm />
+      </Suspense>
     </section>
   )
 }
