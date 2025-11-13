@@ -7,7 +7,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 })
 
 const nextConfig = {
-  output: 'standalone',
+  // output: 'standalone',
   images: {
     remotePatterns: [
       {
