@@ -21,6 +21,9 @@ export const knallbonbonRegistration: CollectionConfig = {
     components: {
       beforeList: ['@/components/admin/beforeList/KnallbonbonRegistrationStats'],
       afterList: ['@/components/admin/afterList/KnallbonbonRegistrationOverview'],
+      edit: {
+        beforeDocumentControls: ['@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'],
+      },
       views: {
         list: {
           actions: ['@/components/admin/actions/KnallbonbonRegistrationExportAction'],
@@ -35,9 +38,6 @@ export const knallbonbonRegistration: CollectionConfig = {
       type: 'relationship',
       required: true,
       relationTo: 'knallbonbonEvents',
-      admin: {
-        readOnly: true
-      }
     },
     {
       name: 'firstName',

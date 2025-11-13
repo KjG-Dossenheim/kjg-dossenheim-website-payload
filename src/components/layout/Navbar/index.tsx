@@ -109,7 +109,7 @@ const ActionsSubmenu = React.memo(function ActionsSubmenu({
       >
         <NavigationMenuItem className="row-span-2">
           <NavigationMenuLink
-            className="bg-primary flex h-full w-full flex-col justify-center rounded-md p-6 no-underline outline-hidden select-none focus:shadow-md"
+            className="bg-muted flex h-full w-full flex-col justify-center rounded-md p-6 no-underline outline-hidden select-none focus:shadow-md"
             href="/aktionen"
             aria-label="Jahresplan anzeigen"
             data-umami-event="Submenu Link: Jahresplan"

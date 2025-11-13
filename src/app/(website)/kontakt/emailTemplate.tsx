@@ -3,7 +3,7 @@ import { Text, Heading } from '@react-email/components'
 import MailBase from '@/components/email/Base'
 import { FormValues } from './schema'
 
-export function confirmationEmailTemplate(props: FormValues) {
+export function confirmationEmailTemplate(props: Omit<FormValues, 'captchaToken'>) {
   return (
     <MailBase>
       <Heading>Nachricht erhalten</Heading>
@@ -16,7 +16,7 @@ export function confirmationEmailTemplate(props: FormValues) {
   )
 }
 
-export function adminNotificationEmailTemplate(props: FormValues) {
+export function adminNotificationEmailTemplate(props: Omit<FormValues, 'captchaToken'>) {
   return (
     <MailBase>
       <Text>Neuer Mitgliedschaftsantrag eingegangen</Text>

@@ -5,6 +5,7 @@ import { Calendar, Activity } from 'lucide-react'
 import { Gutter } from '@payloadcms/ui'
 import { GenderStackedBar } from './GenderStackedBar'
 import { AgeStackedBar } from './AgeStackedBar'
+import { SendEmailButton } from './SendEmailButton'
 
 export async function KnallbonbonRegistrationOverview(props: AfterListServerProps) {
   const { payload } = props
@@ -119,17 +120,28 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
                         <h4 className="text-accent-foreground">Kinder</h4>
                       </div>
                     </CardContent>
-                    <CardFooter className="flex-col gap-6">
-                      <div className="w-full space-y-2">
-                        <h4>Geschlechterverteilung</h4>
-                        <GenderStackedBar counts={genderCounts} />
-                      </div>
-                      {ageData.length > 0 && (
+                    {childrenCount > 0 && (
+                      <CardFooter className="flex-col gap-6">
+                        <div className="w-full space-y-2">
+                          <h4>Geschlechterverteilung</h4>
+                          <GenderStackedBar counts={genderCounts} />
+                        </div>
+                      </CardFooter>
+                    )}
+                    {ageData.length > 0 && (
+                      <CardFooter>
                         <div className="w-full space-y-2">
                           <h4>Altersverteilung</h4>
                           <AgeStackedBar data={ageData} />
                         </div>
-                      )}
+                      </CardFooter>
+                    )}
+                    <CardFooter>
+                      <SendEmailButton
+                        eventId={eventId}
+                        eventTitle={event.title}
+                        registrationCount={registrationCount}
+                      />
                     </CardFooter>
                   </Card>
                 )

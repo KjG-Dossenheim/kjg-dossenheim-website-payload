@@ -1,6 +1,6 @@
 import React from 'react'
 import type { BeforeListServerProps } from 'payload'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Gutter } from '@payloadcms/ui'
 
 export async function KnallbonbonRegistrationStats(props: BeforeListServerProps) {

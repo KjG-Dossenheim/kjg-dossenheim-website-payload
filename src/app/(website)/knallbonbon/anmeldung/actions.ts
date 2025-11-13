@@ -72,12 +72,20 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
 
     const payloadClient = await getPayload({ config })
 
+    // Fetch event details to get the event title
+    const event = await payloadClient.findByID({
+      collection: 'knallbonbonEvents',
+      id: formValues.event,
+    })
+
     await payloadClient.create({
       collection: 'knallbonbonRegistration',
       data: formValues,
     })
 
-    const adminNotificationHtml = await render(adminNotificationEmailTemplate(formValues))
+    const adminNotificationHtml = await render(
+      adminNotificationEmailTemplate(formValues, event.title),
+    )
 
     await payloadClient.sendEmail({
       to: 'ben.wallner@kjg-dossenheim.org',
@@ -87,12 +95,15 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
 
     try {
       const confirmationHtml = await render(
-        confirmationEmailTemplate({
-          ...formValues,
-          child: formValues.child?.map((child) => ({
-            ...child,
-          })),
-        }),
+        confirmationEmailTemplate(
+          {
+            ...formValues,
+            child: formValues.child?.map((child) => ({
+              ...child,
+            })),
+          },
+          event.title,
+        ),
       )
 
       await payloadClient.sendEmail({

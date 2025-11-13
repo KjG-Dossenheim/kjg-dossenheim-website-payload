@@ -18,7 +18,7 @@ import {
 type EmailTemplate = {
   name: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component: React.ComponentType<any>
+  component: (props: any) => React.ReactElement | Promise<React.ReactElement>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sampleData: any
 }
@@ -52,7 +52,7 @@ const emailTemplates: EmailTemplate[] = [
   },
   {
     name: 'Knallbonbon Registration - Confirmation',
-    component: knallbonbonConfirmation,
+    component: (props) => knallbonbonConfirmation(props, 'test'),
     sampleData: {
       firstName: 'Anna',
       lastName: 'Schmidt',
@@ -74,7 +74,7 @@ const emailTemplates: EmailTemplate[] = [
   },
   {
     name: 'Knallbonbon Registration - Admin Notification',
-    component: knallbonbonAdmin,
+    component: (props) => knallbonbonAdmin(props, 'test'),
     sampleData: {
       firstName: 'Anna',
       lastName: 'Schmidt',

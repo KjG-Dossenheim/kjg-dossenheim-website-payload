@@ -52,15 +52,6 @@ export function DatePickerInput({
 
   return (
     <div className="relative flex gap-2">
-      <style>
-        {`
-          input[type="date"]::-webkit-inner-spin-button,
-          input[type="date"]::-webkit-calendar-picker-indicator {
-            display: none;
-            -webkit-appearance: none;
-          }
-        `}
-      </style>
       <Input
         id={id}
         ref={inputRef}
@@ -94,6 +85,7 @@ export function DatePickerInput({
         }}
         aria-invalid={invalid}
         type="date"
+        className="[&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
       />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
