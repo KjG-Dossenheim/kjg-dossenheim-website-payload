@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 export default function ContactSection() {
   return (
-    <section className="mx-auto w-full px-4 md:px-6">
+    <section className="mx-auto w-full p-6">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tighter">Kontakt</h1>

@@ -38,7 +38,7 @@ export default function TeamSection({ team }: TeamSectionProps) {
                     />
                   ) : (
                     <AvatarImage
-                      className="bg-primary/20 object-cover"
+                      className="bg-primary object-cover"
                       src={createAvatar(bigEarsNeutral, {
                         seed: `${member.firstName} ${member.lastName}`,
                         backgroundColor: ['transparent'],

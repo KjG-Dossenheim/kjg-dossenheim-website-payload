@@ -17,6 +17,7 @@ import '@/styles/globals.css'
 
 // Fonts
 import { Caveat } from 'next/font/google'
+import { WebVitals } from '@/utilities/web-vitals'
 
 const caveat = Caveat({
   subsets: ['latin'],
@@ -54,6 +55,7 @@ export default async function layout({ children }: { children: ReactNode }) {
         ></Script>
       </head>
       <body>
+        <WebVitals />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

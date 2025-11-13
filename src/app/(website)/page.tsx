@@ -13,35 +13,20 @@ import config from '@payload-config'
 // UI Components
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardTitle } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Reusable function to get page data
 async function getPageData() {
   const payload = await getPayload({ config })
-  const [page, blogPosts, team] = await Promise.all([
+  const [page, team] = await Promise.all([
     payload.findGlobal({ slug: 'startseite' }),
-    payload.find({
-      collection: 'blogPosts',
-      limit: 3,
-      sort: '-publishedAt',
-      where: {
-        _status: {
-          equals: 'published',
-        },
-      },
-      select: {
-        title: true,
-        slug: true,
-        publishedAt: true,
-      },
-    }),
     payload.find({
       collection: 'team',
       limit: 50,
     }),
   ])
 
-  return { page, blogPosts, team }
+  return { page, team }
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -54,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const { page, blogPosts, team } = await getPageData()
+  const { page, team } = await getPageData()
 
   return (
     <section className="container mx-auto px-4 py-20 lg:py-32">
@@ -94,49 +79,6 @@ export default async function Page() {
         </Button>
       </div>
 
-      {/* Latest Blog Posts Section */}
-      {blogPosts.docs.length > 0 && (
-        <div className="mt-20">
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Aktuelle Beiträge</h2>
-            <Button asChild variant="outline">
-              <Link href="/blog">
-                Alle Beiträge
-                <ChevronRight className="ml-2 size-4" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {blogPosts.docs.map((post) => (
-              <article
-                key={post.id}
-                className="group hover:bg-muted/50 rounded-lg border p-6 transition-colors"
-              >
-                <Link href={`/blog/${post.slug}`}>
-                  <div className="mb-3">
-                    <time className="text-muted-foreground text-sm">
-                      {post.publishedAt
-                        ? new Date(post.publishedAt).toLocaleDateString('de-DE', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })
-                        : 'Unbekanntes Datum'}
-                    </time>
-                  </div>
-                  <h3 className="mb-2 text-xl font-semibold group-hover:underline">{post.title}</h3>
-                  <div className="mt-4 flex items-center text-sm font-medium">
-                    Weiterlesen
-                    <ChevronRight className="ml-1 size-4" />
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Team Section */}
       {team.docs.length > 0 && (
         <div className="mt-20">
@@ -146,10 +88,12 @@ export default async function Page() {
           <div className="flex flex-wrap justify-center gap-4">
             {team.docs.map((member) => (
               <Link key={member.id} href={`/team/${member.id}`}>
-                <Card className="hover:bg-accent p-6">
-                  <CardTitle>
-                    {member.firstName} {member.lastName}
-                  </CardTitle>
+                <Card className="hover:bg-accent">
+                  <CardHeader>
+                    <CardTitle>
+                      {member.firstName} {member.lastName}
+                    </CardTitle>
+                  </CardHeader>
                 </Card>
               </Link>
             ))}

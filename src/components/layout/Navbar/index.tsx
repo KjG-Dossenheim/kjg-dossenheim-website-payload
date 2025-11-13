@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 // Lucide Icons
-import { HandCoins, Menu, Signature } from 'lucide-react'
+import { Calendar, HandCoins, Menu, Signature } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import type { IconName } from 'lucide-react/dynamic'
 
@@ -22,7 +22,14 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
-import { Sheet, SheetContent, SheetTrigger, SheetFooter } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 
 // Custom Components
 import { ModeToggle } from '@/components/common/theme-toggle'
@@ -107,23 +114,26 @@ const ActionsSubmenu = React.memo(function ActionsSubmenu({
         role="list"
         aria-label="Aktionen Untermenü"
       >
-        <NavigationMenuItem className="row-span-2">
-          <NavigationMenuLink
-            className="bg-muted flex h-full w-full flex-col justify-center rounded-md p-6 no-underline outline-hidden select-none focus:shadow-md"
-            href="/aktionen"
-            aria-label="Jahresplan anzeigen"
-            data-umami-event="Submenu Link: Jahresplan"
-          >
-            <div className="my-auto text-lg font-medium">Jahresplan</div>
+        <li className="row-span-2">
+          <NavigationMenuLink asChild>
+            <Link
+              href="/aktionen"
+              className="hover:bg-accent hover:text-accent-foreground flex h-full w-full flex-col justify-center rounded-md bg-linear-to-b p-4 no-underline outline-hidden transition-all duration-200 select-none focus:shadow-md md:p-6"
+            >
+              Jahresplan
+            </Link>
           </NavigationMenuLink>
-        </NavigationMenuItem>
+        </li>
         {aktionen?.map((component) => (
-          <NavigationMenuItem key={component.id} className="flex flex-row items-center">
-            <NavigationMenuLink asChild>
+          <li key={component.id}>
+            <NavigationMenuLink
+              asChild
+              className="data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-muted-foreground flex flex-col gap-1 rounded-sm p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4"
+            >
               <Link
                 href={component.url}
-                className="flex flex-row items-center gap-2"
                 aria-label={`${component.title} Aktion`}
+                className="hover:bg-accent flex flex-row items-center gap-2 rounded-md p-2 transition-colors"
               >
                 <DynamicIcon
                   name={component.icon as IconName}
@@ -133,7 +143,7 @@ const ActionsSubmenu = React.memo(function ActionsSubmenu({
                 {component.title}
               </Link>
             </NavigationMenuLink>
-          </NavigationMenuItem>
+          </li>
         ))}
       </ul>
     </NavigationMenuContent>
@@ -149,16 +159,20 @@ const MobileActionsSubmenu = React.memo(function MobileActionsSubmenu({
   return (
     <AccordionItem value="Aktionen" className="border-b-0">
       <AccordionTrigger
-        className="text-md hover:bg-muted hover:underline-none rounded-md p-2 font-semibold"
+        className="text-md hover:bg-muted hover:underline-none rounded-md p-0 font-semibold"
         aria-label="Aktionen Menü öffnen/schließen"
       >
         Aktionen
       </AccordionTrigger>
-      <AccordionContent className="p-0" role="list" aria-label="Aktionen Liste">
+      <AccordionContent
+        className="flex flex-col gap-2 p-0 pt-2"
+        role="list"
+        aria-label="Aktionen Liste"
+      >
         {aktionen?.map((subItem) => (
           <Link
             key={subItem.id}
-            className="hover:bg-muted flex flex-row items-center gap-2 rounded-md p-2 leading-none no-underline transition-colors outline-none select-none"
+            className="hover:bg-muted flex flex-row items-center gap-2 rounded-md leading-none no-underline transition-colors outline-none select-none"
             href={subItem.url}
             aria-label={`${subItem.title} Aktion`}
             data-umami-event={`Submenu Link: ${subItem.title}`}
@@ -183,7 +197,7 @@ const DesktopNavigation = React.memo(function DesktopNavigation({
       <div className="flex items-center gap-6">
         <NavbarLogo />
         <div className="flex items-center">
-          <NavigationMenu>
+          <NavigationMenu className="bg-background">
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink
@@ -195,7 +209,7 @@ const DesktopNavigation = React.memo(function DesktopNavigation({
                   Startseite
                 </NavigationMenuLink>
               </NavigationMenuItem>
-              <NavigationMenuItem>
+              <NavigationMenuItem data-state="open">
                 <NavigationMenuTrigger
                   data-umami-event="Navbar Link: Aktionen"
                   className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
@@ -247,23 +261,33 @@ const MobileNavigation = React.memo(function MobileNavigation({
             </SheetTrigger>
           </div>
           <SheetContent aria-label="Mobile Navigationsmenü" className="flex flex-col">
-            <div className="flex-1 overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>Menü</SheetTitle>
+            </SheetHeader>
+            <div className="grid flex-1 auto-rows-min gap-2 px-4">
+              <Link
+                href="/"
+                className="text-md hover:bg-muted rounded-md font-semibold"
+                aria-label="Zur Startseite"
+                data-umami-event="Navbar Link: Startseite"
+                data-umami-variant="Navbar Item"
+              >
+                Startseite
+              </Link>
               <Accordion
                 type="single"
                 collapsible
-                className="flex w-full flex-col"
+                className="flex w-full flex-col gap-2"
                 aria-label="Navigationsmenü"
               >
-                <Link
-                  href="/"
-                  className="text-md hover:bg-muted rounded-md p-2 font-semibold"
-                  aria-label="Zur Startseite"
-                  data-umami-event="Navbar Link: Startseite"
-                  data-umami-variant="Navbar Item"
-                >
-                  Startseite
-                </Link>
                 <MobileActionsSubmenu aktionen={headerData.aktionen} />
+              </Accordion>
+              <Accordion
+                type="single"
+                collapsible
+                className="flex w-full flex-col gap-2"
+                aria-label="Navigationsmenü"
+              >
                 {headerData.navigation.map((item) => (
                   <MobileMenuItem key={item.id || item.title} item={item} />
                 ))}
@@ -327,7 +351,7 @@ const MobileMenuItem = React.memo(function MobileMenuItem({ item }: { item: Navi
     return (
       <AccordionItem value={item.title} className="border-b-0">
         <AccordionTrigger
-          className="text-md hover:bg-muted rounded-md p-3 font-semibold"
+          className="text-md hover:bg-muted rounded-md p-0 font-semibold"
           aria-label={`${item.title} Menü öffnen/schließen`}
         >
           {item.title}
@@ -344,7 +368,7 @@ const MobileMenuItem = React.memo(function MobileMenuItem({ item }: { item: Navi
   return (
     <Link
       href={item.url}
-      className="text-md hover:bg-muted rounded-md p-2 font-semibold"
+      className="text-md hover:bg-muted rounded-md font-semibold"
       data-umami-event={`Navbar Link: ${item.title}`}
     >
       {item.title}

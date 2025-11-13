@@ -55,3 +55,5 @@ public/sitemap.xml
 public/robots.txt
 /.vscode
 src/app/(website)/knallbonbon/anmeldung/OPTIMIZATIONS.md
+lighthouse-report.html
+lighthouse-report.json
