@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { Text, Heading } from '@react-email/components'
 import MailBase from '@/components/email/Base'
+import { FormValues } from './schema'
 
-export function confirmationEmailTemplate(props: any) {
+export function confirmationEmailTemplate(props: FormValues) {
   return (
     <MailBase>
       <Heading>Nachricht erhalten</Heading>
@@ -15,7 +16,7 @@ export function confirmationEmailTemplate(props: any) {
   )
 }
 
-export function adminNotificationEmailTemplate(props: any) {
+export function adminNotificationEmailTemplate(props: FormValues) {
   return (
     <MailBase>
       <Text>Neuer Mitgliedschaftsantrag eingegangen</Text>

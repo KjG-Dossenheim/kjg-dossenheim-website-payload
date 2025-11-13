@@ -1,9 +1,9 @@
 import { de } from 'react-day-picker/locale'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { CalendarIcon } from 'lucide-react'
-import { parse, formatDate } from 'date-fns'
+import { format } from 'date-fns'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -38,32 +38,62 @@ export function DatePickerInput({
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date | undefined>(value ? new Date(value) : undefined)
 
+  // Sync date state when value prop changes
+  useEffect(() => {
+    if (value) {
+      const parsedDate = new Date(value)
+      if (isValidDate(parsedDate)) {
+        setDate(parsedDate)
+      }
+    } else {
+      setDate(undefined)
+    }
+  }, [value])
+
   return (
     <div className="relative flex gap-2">
+      <style>
+        {`
+          input[type="date"]::-webkit-inner-spin-button,
+          input[type="date"]::-webkit-calendar-picker-indicator {
+            display: none;
+            -webkit-appearance: none;
+          }
+        `}
+      </style>
       <Input
         id={id}
         ref={inputRef}
         value={value || ''}
         autoComplete="bday"
         inputMode="numeric"
-        placeholder="TT.MM.JJJJ"
         onChange={(e) => {
-          const inputValue = e.target.value
-          onChange(inputValue)
-          // Try to parse the date in German format (d.MM.yyyy)
-          const parsedDate = parse(inputValue, 'd.MM.yyyy', new Date())
-          if (isValidDate(parsedDate)) {
-            setDate(parsedDate)
+          const newValue = e.target.value
+          onChange(newValue)
+          if (newValue) {
+            const parsedDate = new Date(newValue)
+            if (isValidDate(parsedDate)) {
+              setDate(parsedDate)
+            }
+          } else {
+            setDate(undefined)
           }
         }}
         onBlur={onBlur}
         onKeyDown={(event) => {
-          if (event.key === 'ArrowDown') {
+          // Open calendar with keyboard shortcuts
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
             event.preventDefault()
             setOpen(true)
           }
+          // Close calendar with Escape
+          if (event.key === 'Escape' && open) {
+            event.preventDefault()
+            setOpen(false)
+          }
         }}
         aria-invalid={invalid}
+        type="date"
       />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -71,9 +101,16 @@ export function DatePickerInput({
             type="button"
             variant="ghost"
             className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
+            onKeyDown={(event) => {
+              // Open calendar with Enter or Space
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                setOpen(true)
+              }
+            }}
           >
             <CalendarIcon />
-            <span className="sr-only">Datum auswählen</span>
+            <span className="sr-only">Datum auswählen (Enter oder Leertaste zum Öffnen)</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -91,7 +128,7 @@ export function DatePickerInput({
             onSelect={(selectedDate) => {
               if (selectedDate) {
                 setDate(selectedDate)
-                onChange(formatDate(selectedDate, 'd.MM.yyyy'))
+                onChange(format(selectedDate, 'yyyy-MM-dd'))
               }
               setOpen(false)
             }}

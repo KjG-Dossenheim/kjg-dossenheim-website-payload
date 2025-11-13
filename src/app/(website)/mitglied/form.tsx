@@ -33,6 +33,7 @@ import { PhoneInput } from '@/components/ui/phone-input'
 import de from 'react-phone-number-input/locale/de'
 
 import { CapWidget } from '@/components/common/cap-widget'
+import { DatePickerInput } from '@/components/ui/date-picker-input'
 
 export default function MitgliedForm() {
   const form = useForm<FormValues>({
@@ -114,9 +115,15 @@ export default function MitgliedForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Geburtsdatum</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
+                  <DatePickerInput
+                    id={`birthDate`}
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    inputRef={field.ref}
+                    invalid={!!form.formState.errors.birthDate}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

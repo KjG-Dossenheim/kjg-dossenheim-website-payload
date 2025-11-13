@@ -459,6 +459,7 @@ export interface KnallbonbonRegistration {
     | {
         firstName: string;
         lastName: string;
+        fullName?: string | null;
         dateOfBirth: string;
         age?: number | null;
         gender: 'male' | 'female' | 'diverse' | 'noInfo';
@@ -1228,6 +1229,7 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
     | {
         firstName?: T;
         lastName?: T;
+        fullName?: T;
         dateOfBirth?: T;
         age?: T;
         gender?: T;

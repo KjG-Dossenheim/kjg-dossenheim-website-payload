@@ -35,45 +35,69 @@ export const knallbonbonRegistration: CollectionConfig = {
       type: 'relationship',
       required: true,
       relationTo: 'knallbonbonEvents',
+      admin: {
+        readOnly: true
+      }
     },
     {
       name: 'firstName',
       label: 'Vorname',
       type: 'text',
       required: true,
+      admin: {
+        position: "sidebar"
+      }
     },
     {
       name: 'lastName',
       label: 'Nachname',
       type: 'text',
       required: true,
+      admin: {
+        position: "sidebar"
+      }
     },
     {
       name: 'email',
       label: 'E-Mail',
       type: 'email',
       required: true,
+      admin: {
+        position: "sidebar"
+      }
     },
     {
       name: 'phone',
       label: 'Telefonnummer',
       type: 'text',
       required: true,
+      admin: {
+        position: "sidebar"
+      }
     },
     {
       name: 'address',
       label: 'Adresse',
       type: 'text',
+      admin: {
+        position: "sidebar"
+      }
     },
     {
       name: 'postalCode',
       label: 'Postleitzahl',
       type: 'text',
+      admin: {
+        position: "sidebar"
+      }
     },
     {
       name: 'city',
       label: 'Stadt',
       type: 'text',
+      admin: {
+        position: "sidebar"
+      }
     },
     {
       name: 'child',
@@ -94,6 +118,23 @@ export const knallbonbonRegistration: CollectionConfig = {
           required: true,
         },
         {
+          name: 'fullName',
+          label: 'Name',
+          type: 'text',
+          admin: {
+            hidden: true,
+          },
+          hooks: {
+            beforeChange: [
+              async ({ siblingData }) => {
+                const firstName = siblingData.firstName || ''
+                const lastName = siblingData.lastName || ''
+                return `${firstName} ${lastName}`.trim()
+              },
+            ],
+          },
+        },
+        {
           name: 'dateOfBirth',
           label: 'Geburtsdatum des Kindes',
           type: 'date',
@@ -108,17 +149,13 @@ export const knallbonbonRegistration: CollectionConfig = {
           },
           hooks: {
             beforeChange: [
-              async ({ siblingData, req }) => {
-                if (siblingData.dateOfBirth && req.data?.event) {
-                  const event = await req.payload.findByID({
-                    collection: 'knallbonbonEvents',
-                    id: typeof req.data.event === 'object' ? req.data.event.id : req.data.event,
-                  })
+              async ({ siblingData }) => {
+                if (siblingData.dateOfBirth) {
                   const birthDate = new Date(siblingData.dateOfBirth)
-                  const eventdate = event?.date ? new Date(event.date) : new Date()
-                  let age = eventdate.getFullYear() - birthDate.getFullYear()
-                  const monthDiff = eventdate.getMonth() - birthDate.getMonth()
-                  if (monthDiff < 0 || (monthDiff === 0 && eventdate.getDate() < birthDate.getDate())) {
+                  const currentDate = new Date()
+                  let age = currentDate.getFullYear() - birthDate.getFullYear()
+                  const monthDiff = currentDate.getMonth() - birthDate.getMonth()
+                  if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
                     age--
                   }
                   return age

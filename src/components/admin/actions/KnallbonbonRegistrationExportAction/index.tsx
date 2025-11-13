@@ -18,14 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card'
+import { CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 
 export const KnallbonbonRegistrationExportAction: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false)

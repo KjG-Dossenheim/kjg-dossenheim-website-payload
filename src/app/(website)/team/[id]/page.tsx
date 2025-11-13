@@ -19,7 +19,7 @@ import { createAvatar } from '@dicebear/core'
 import { bigEarsNeutral } from '@dicebear/collection'
 
 // UI Components
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {

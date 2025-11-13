@@ -103,7 +103,6 @@ const CapWidget = forwardRef<HTMLDivElement, CapWidgetProps>(
       let mounted = true
 
       const loadWidget = async () => {
-        // @ts-ignore
         await import('@cap.js/widget')
 
         if (mounted) {
