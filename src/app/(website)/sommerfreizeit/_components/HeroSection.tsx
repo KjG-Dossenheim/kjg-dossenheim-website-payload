@@ -1,11 +1,15 @@
 import React from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import Date from '@/components/common/date'
 import { ChevronDown, User } from 'lucide-react'
-import Countdown from '@/components/common/Countdown'
 import { Button } from '@/components/ui/button'
 import { CardHeader } from '@/components/ui/card'
 import { SparklesText } from '@/components/ui/sparkles-text'
+
+const Countdown = dynamic(() => import('@/components/common/Countdown'), {
+  loading: () => <div className="h-16 animate-pulse rounded bg-gray-200" />,
+})
 
 interface HeroSectionProps {
   title: string
