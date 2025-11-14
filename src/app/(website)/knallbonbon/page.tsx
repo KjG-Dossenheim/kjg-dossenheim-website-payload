@@ -4,6 +4,7 @@ export const revalidate = 60
 import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 
 // Payload CMS
 import { getPayload } from 'payload'
@@ -14,20 +15,28 @@ import type { Knallbonbon, KnallbonbonEvent } from '@/payload-types'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
-import { QRCode } from '@/components/ui/shadcn-io/qr-code'
 
 // Custom Components
 import { formatDateLocale } from '@/components/common/formatDateLocale'
 import LogoEvangelisch from '@/graphics/logo/LogoEvangelisch'
 import { User, QrCode, Mail } from 'lucide-react'
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+// Dynamically imported components
+const Dialog = dynamic(() => import('@/components/ui/dialog').then((mod) => mod.Dialog))
+const DialogContent = dynamic(() =>
+  import('@/components/ui/dialog').then((mod) => mod.DialogContent),
+)
+const DialogHeader = dynamic(() => import('@/components/ui/dialog').then((mod) => mod.DialogHeader))
+const DialogTitle = dynamic(() => import('@/components/ui/dialog').then((mod) => mod.DialogTitle))
+const DialogTrigger = dynamic(() =>
+  import('@/components/ui/dialog').then((mod) => mod.DialogTrigger),
+)
+const QRCode = dynamic(
+  () => import('@/components/ui/shadcn-io/qr-code').then((mod) => mod.QRCode),
+  {
+    loading: () => <div className="h-[200px] w-[200px] animate-pulse rounded bg-gray-200" />,
+  },
+)
 
 export function generateMetadata(): Metadata {
   return {

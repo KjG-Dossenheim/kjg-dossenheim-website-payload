@@ -1,7 +1,21 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 import type { Form } from '@/payload-types'
 
-import { FormClient } from './Component.Client'
+const FormClient = dynamic(
+  () => import('./Component.Client').then((mod) => ({ default: mod.FormClient })),
+  {
+    loading: () => (
+      <div className="p-8">
+        <div className="space-y-4">
+          <div className="h-12 animate-pulse rounded bg-gray-200" />
+          <div className="h-12 animate-pulse rounded bg-gray-200" />
+          <div className="h-12 animate-pulse rounded bg-gray-200" />
+        </div>
+      </div>
+    ),
+  },
+)
 
 export type FormBlockProps = {
   form: Form

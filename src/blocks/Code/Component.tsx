@@ -1,6 +1,13 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 
-import { Code } from './Component.client'
+const Code = dynamic(() => import('./Component.client').then((mod) => ({ default: mod.Code })), {
+  loading: () => (
+    <div className="border-border rounded border bg-black p-4">
+      <div className="h-32 animate-pulse rounded bg-gray-800" />
+    </div>
+  ),
+})
 
 export type CodeBlockProps = {
   code: string

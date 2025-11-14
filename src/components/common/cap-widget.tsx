@@ -77,8 +77,8 @@ const CapWidget = forwardRef<HTMLDivElement, CapWidgetProps>(
     )
 
     const handleError = useCallback(
-      (e: Event) => {
-        const customEvent = e as CustomEvent<{ message?: string }>
+      (event: Event) => {
+        const customEvent = event as CustomEvent<{ message?: string }>
         const message = customEvent.detail?.message
         if (!message) return
         onError?.(message)
@@ -109,8 +109,6 @@ const CapWidget = forwardRef<HTMLDivElement, CapWidgetProps>(
           setLoading(false)
         }
       }
-
-      // 只在客户端执行
       if (typeof window !== 'undefined') {
         loadWidget()
       }
@@ -160,12 +158,13 @@ const CapWidget = forwardRef<HTMLDivElement, CapWidgetProps>(
           {
             '--cap-background': 'var(--background)',
             '--cap-border-color': 'var(--border)',
-            '--cap-border-radius': '14px',
+            '--cap-border-radius': 'var(--radius)',
             '--cap-color': 'var(--foreground)',
             '--cap-checkbox-border': '1px solid var(--ring)',
-            '--cap-checkbox-background': 'var(--secondary)',
+            '--cap-checkbox-background': 'var(--primary-foreground)',
             '--cap-spinner-color': 'var(--primary)',
             '--cap-spinner-background-color': 'var(--primary-foreground)',
+            '--cap-widget-width': 'var(--container-2xs)',
             ...style,
           } as React.CSSProperties
         }

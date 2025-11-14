@@ -71,7 +71,7 @@ import { Knallbonbon } from './globals/Knallbonbon'
 import { aktion72Stunden } from './globals/aktionen/72stunden'
 
 // Relative imports - lib
-import { authentikOAuth } from './lib/authentikOAuth'
+import { authentikOAuth } from './utilities/authentikOAuth'
 import { FormBlock } from './blocks/FormBlock/config'
 import { Code } from './blocks/Code/config'
 

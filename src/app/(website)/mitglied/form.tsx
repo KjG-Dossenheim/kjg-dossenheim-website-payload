@@ -69,7 +69,7 @@ export default function MitgliedForm() {
   }
 
   return (
-    <section className="mx-auto max-w-lg">
+    <section className="mx-auto max-w-md">
       <Toaster richColors />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -236,19 +236,6 @@ export default function MitgliedForm() {
 
               <CapWidget
                 endpoint={process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'}
-                style={
-                  {
-                    '--cap-background': 'hsl(var(--background))',
-                    '--cap-border-color': 'hsl(var(--border))',
-                    '--cap-border-radius': 'var(--radius)',
-                    '--cap-color': 'hsl(var(--foreground))',
-                    '--cap-checkbox-border': '1px solid hsl(var(--ring))',
-                    '--cap-checkbox-background': 'hsl(var(--primary-foreground))',
-                    '--cap-spinner-color': 'hsl(var(--primary))',
-                    '--cap-spinner-background-color': 'hsl(var(--primary-foreground))',
-                    '--cap-widget-width': '250px',
-                  } as React.CSSProperties
-                }
                 onSolve={(token) => {
                   form.setValue('captchaToken', token, { shouldValidate: true, shouldDirty: true })
                   console.log(`Challenge succeeded, token : ${token}`)

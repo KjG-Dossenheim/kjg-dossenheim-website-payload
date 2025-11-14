@@ -1,6 +1,13 @@
-import React, { Suspense } from 'react'
-import { KnallbonbonAbmeldenForm } from './form'
+import React from 'react'
+import dynamic from 'next/dynamic'
 import type { Metadata } from 'next'
+
+const KnallbonbonAbmeldenForm = dynamic(
+  () => import('./form').then((mod) => ({ default: mod.KnallbonbonAbmeldenForm })),
+  {
+    loading: () => <div className="p-4 text-center">Lädt...</div>,
+  },
+)
 
 export function generateMetadata(): Metadata {
   return {
@@ -12,9 +19,7 @@ export function generateMetadata(): Metadata {
 export default function KnallbonbonAbmeldenPage() {
   return (
     <section className="mx-auto max-w-2xl p-6">
-      <Suspense fallback={<div className="p-4 text-center">Lädt...</div>}>
-        <KnallbonbonAbmeldenForm />
-      </Suspense>
+      <KnallbonbonAbmeldenForm />
     </section>
   )
 }

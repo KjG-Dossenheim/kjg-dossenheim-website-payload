@@ -1,6 +1,16 @@
 import React from 'react'
-import ContactForm from './form'
+import dynamic from 'next/dynamic'
 import type { Metadata } from 'next'
+
+const ContactForm = dynamic(() => import('./form'), {
+  loading: () => (
+    <div className="container mx-auto p-6">
+      <div className="mx-auto max-w-2xl">
+        <div className="h-96 animate-pulse rounded-lg bg-gray-200" />
+      </div>
+    </div>
+  ),
+})
 
 export function generateMetadata(): Metadata {
   return {

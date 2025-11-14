@@ -153,19 +153,6 @@ export default function ContactForm() {
 
               <CapWidget
                 endpoint="https://captcha.gurl.eu.org/api/"
-                style={
-                  {
-                    '--cap-background': 'hsl(var(--background))',
-                    '--cap-border-color': 'hsl(var(--border))',
-                    '--cap-border-radius': 'var(--radius)',
-                    '--cap-color': 'hsl(var(--foreground))',
-                    '--cap-checkbox-border': '1px solid hsl(var(--ring))',
-                    '--cap-checkbox-background': 'hsl(var(--primary-foreground))',
-                    '--cap-spinner-color': 'hsl(var(--primary))',
-                    '--cap-spinner-background-color': 'hsl(var(--primary-foreground))',
-                    '--cap-widget-width': '250px',
-                  } as React.CSSProperties
-                }
                 onSolve={(token) => {
                   form.setValue('captchaToken', token, { shouldValidate: true, shouldDirty: true })
                   console.log(`Challenge succeeded, token : ${token}`)

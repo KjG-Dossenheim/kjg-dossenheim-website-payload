@@ -650,19 +650,6 @@ export function KnallbonbonAnmeldungForm() {
                     solvedAria: 'Überprüfung erfolgreich',
                     errorAria: 'Überprüfung fehlgeschlagen, bitte versuchen Sie es erneut',
                   }}
-                  style={
-                    {
-                      '--cap-background': 'hsl(var(--background))',
-                      '--cap-border-color': 'hsl(var(--border))',
-                      '--cap-border-radius': 'var(--radius)',
-                      '--cap-color': 'hsl(var(--foreground))',
-                      '--cap-checkbox-border': '1px solid hsl(var(--ring))',
-                      '--cap-checkbox-background': 'hsl(var(--primary-foreground))',
-                      '--cap-spinner-color': 'hsl(var(--primary))',
-                      '--cap-spinner-background-color': 'hsl(var(--primary-foreground))',
-                      '--cap-widget-width': '250px',
-                    } as React.CSSProperties
-                  }
                 />
                 <FieldDescription>
                   Bitte lösen Sie das CAPTCHA, um die Anmeldung abzuschließen.
