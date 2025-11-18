@@ -13,7 +13,8 @@ export const Gallery: Block = {
       type: "upload",
       relationTo: "media",
       required: true,
-      hasMany: true
+      hasMany: true,
+      minRows: 2,
     },
   ],
 }

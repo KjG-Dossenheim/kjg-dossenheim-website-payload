@@ -47,6 +47,16 @@ async function getTeamMember(id: string) {
   }
 }
 
+// Helper function to generate avatar data URI (cached at build time)
+function generateAvatarDataUri(firstName: string, lastName: string): string {
+  return createAvatar(bigEarsNeutral, {
+    seed: `${firstName} ${lastName}`,
+    backgroundColor: ['transparent'],
+    scale: 70,
+    randomizeIds: true,
+  }).toDataUri()
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -88,12 +98,7 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
             ) : (
               <AvatarImage
                 className="bg-primary/20 object-cover"
-                src={createAvatar(bigEarsNeutral, {
-                  seed: `${member.firstName} ${member.lastName}`,
-                  backgroundColor: ['transparent'],
-                  scale: 70,
-                  randomizeIds: true,
-                }).toDataUri()}
+                src={generateAvatarDataUri(member.firstName, member.lastName)}
                 alt={`${member.firstName} ${member.lastName}`}
               />
             )}

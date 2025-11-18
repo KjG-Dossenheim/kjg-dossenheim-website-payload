@@ -5,11 +5,17 @@ import Date from '@/components/common/date'
 import { ChevronDown, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CardHeader } from '@/components/ui/card'
-import { SparklesText } from '@/components/ui/sparkles-text'
 
 const Countdown = dynamic(() => import('@/components/common/Countdown'), {
   loading: () => <div className="h-16 animate-pulse rounded bg-gray-200" />,
 })
+
+const SparklesText = dynamic(
+  () => import('@/components/ui/sparkles-text').then((mod) => ({ default: mod.SparklesText })),
+  {
+    loading: () => <div className="text-4xl font-bold md:text-5xl lg:text-6xl" />,
+  },
+)
 
 interface HeroSectionProps {
   title: string

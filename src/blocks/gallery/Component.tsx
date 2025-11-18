@@ -16,3 +16,8 @@ export default function GalleryBlockServer({
     </div>
   )
 }
+
+export type GalleryBlockProps = {
+  images: Array<{ url: string; alt: string }>
+  blockType: 'gallery'
+}

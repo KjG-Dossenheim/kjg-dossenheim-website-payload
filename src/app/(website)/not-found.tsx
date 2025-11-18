@@ -1,8 +1,14 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import Aurora from '@/components/Aurora'
+import dynamic from 'next/dynamic'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+
+const Aurora = dynamic(() => import('@/components/Aurora'), {
+  loading: () => (
+    <div className="h-full w-full animate-pulse bg-gradient-to-br from-blue-500/10 to-purple-500/10" />
+  ),
+})
 
 export const metadata: Metadata = {
   title: 'Not Found',

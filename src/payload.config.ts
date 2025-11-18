@@ -39,8 +39,10 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import { de } from '@payloadcms/translations/languages/de'
 
 // Relative imports - blocks
-// import { Gallery } from './blocks/gallery/config'
 // import { Lyrics } from './blocks/lyrics/'
+import { FormBlock } from './blocks/FormBlock/config'
+import { Code } from './blocks/Code/config'
+import { Gallery } from './blocks/gallery/config'
 
 // Relative imports - collections
 import { Users } from './collections/Users'
@@ -56,6 +58,8 @@ import { membershipApplication } from './collections/membershipApplication'
 import { Songs } from './collections/Songs'
 import { sommerfreizeitAnmeldung } from './collections/sommerfreizeit/sommerfreizeitAnmeldung'
 import { sommerfreizeitUser } from './collections/sommerfreizeit/sommerfreizeitUser'
+import { sommerfreizeitFeedback } from './collections/sommerfreizeit/sommerfreizeitFeedback'
+import { Feedback } from './collections/Feedback'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -72,8 +76,6 @@ import { aktion72Stunden } from './globals/aktionen/72stunden'
 
 // Relative imports - lib
 import { authentikOAuth } from './utilities/authentikOAuth'
-import { FormBlock } from './blocks/FormBlock/config'
-import { Code } from './blocks/Code/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -138,6 +140,7 @@ export default buildConfig({
     knallbonbonRegistration,
     knallbonbonEvents,
     membershipApplication,
+    Feedback,
     Songs,
     sommerfreizeitUser,
     sommerfreizeitAnmeldung
@@ -190,7 +193,7 @@ export default buildConfig({
       FixedToolbarFeature(),
       UploadFeature(),
       BlocksFeature({
-        blocks: [FormBlock, Code],
+        blocks: [FormBlock, Code, Gallery],
       })
     ]
   }),

@@ -29,6 +29,8 @@ async function getPageData() {
   return { page, team }
 }
 
+export const revalidate = 300 // Revalidate every 5 minutes
+
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageData()
 

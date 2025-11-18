@@ -77,6 +77,7 @@ export interface Config {
     knallbonbonRegistration: KnallbonbonRegistration;
     knallbonbonEvents: KnallbonbonEvent;
     membershipApplication: MembershipApplication;
+    feedback: Feedback;
     songs: Song;
     sommerfreizeitUser: SommerfreizeitUser;
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldung;
@@ -107,6 +108,7 @@ export interface Config {
     knallbonbonRegistration: KnallbonbonRegistrationSelect<false> | KnallbonbonRegistrationSelect<true>;
     knallbonbonEvents: KnallbonbonEventsSelect<false> | KnallbonbonEventsSelect<true>;
     membershipApplication: MembershipApplicationSelect<false> | MembershipApplicationSelect<true>;
+    feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     songs: SongsSelect<false> | SongsSelect<true>;
     sommerfreizeitUser: SommerfreizeitUserSelect<false> | SommerfreizeitUserSelect<true>;
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldungSelect<false> | SommerfreizeitAnmeldungSelect<true>;
@@ -529,6 +531,33 @@ export interface MembershipApplication {
   status: 'new' | 'in_review' | 'completed' | 'rejected';
   notes?: string | null;
   consentToDataProcessing: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback".
+ */
+export interface Feedback {
+  id: string;
+  /**
+   * Optional - Ihr Name
+   */
+  name?: string | null;
+  /**
+   * Optional - Wenn Sie eine Antwort wünschen
+   */
+  email?: string | null;
+  /**
+   * Bewertung von 1 (schlecht) bis 5 (ausgezeichnet)
+   */
+  rating: number;
+  category?: ('general' | 'website' | 'event' | 'service' | 'other') | null;
+  /**
+   * Ihr Feedback
+   */
+  message: string;
+  status: 'new' | 'in_review' | 'completed';
   updatedAt: string;
   createdAt: string;
 }
@@ -968,6 +997,10 @@ export interface PayloadLockedDocument {
         value: string | MembershipApplication;
       } | null)
     | ({
+        relationTo: 'feedback';
+        value: string | Feedback;
+      } | null)
+    | ({
         relationTo: 'songs';
         value: string | Song;
       } | null)
@@ -1274,6 +1307,20 @@ export interface MembershipApplicationSelect<T extends boolean = true> {
   status?: T;
   notes?: T;
   consentToDataProcessing?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback_select".
+ */
+export interface FeedbackSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  rating?: T;
+  category?: T;
+  message?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

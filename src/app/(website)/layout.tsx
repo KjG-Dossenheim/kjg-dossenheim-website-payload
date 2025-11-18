@@ -1,5 +1,5 @@
 // React and Next.js
-import React, { ReactNode } from 'react'
+import React, { ReactNode, cache } from 'react'
 import type { Metadata } from 'next'
 import Script from 'next/script'
 
@@ -23,6 +23,8 @@ const caveat = Caveat({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-caveat',
+  display: 'swap',
+  preload: true,
 })
 
 export function generateMetadata(): Metadata {
@@ -40,22 +42,24 @@ export function generateMetadata(): Metadata {
   }
 }
 
-export default async function layout({ children }: { children: ReactNode }) {
+const getHeaderData = cache(async () => {
   const payload = await getPayload({ config })
-  const header = await payload.findGlobal({
-    slug: 'header',
-  })
+  return payload.findGlobal({ slug: 'header' })
+})
+
+export default async function layout({ children }: { children: ReactNode }) {
+  const header = await getHeaderData()
   return (
     <html lang="de" className={`${caveat.variable}`}>
       <head>
         <Script
-          defer
+          strategy="lazyOnload"
           src="https://umami.kjg-dossenheim.org/getinfo"
           data-website-id="28ba9cdf-64ba-4208-b563-ae563b100185"
-        ></Script>
+        />
       </head>
       <body>
-        <WebVitals />
+        {process.env.NODE_ENV === 'development' && <WebVitals />}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

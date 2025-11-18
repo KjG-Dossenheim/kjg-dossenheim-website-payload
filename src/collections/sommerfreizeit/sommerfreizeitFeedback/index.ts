@@ -9,6 +9,11 @@ export const sommerfreizeitFeedback: CollectionConfig = {
   admin: {
     group: 'Sommerfreizeit',
   },
+  access: {
+    read: () => true,
+    create: () => true,
+    update: () => false,
+  },
   fields: [
     {
       name: 'age',

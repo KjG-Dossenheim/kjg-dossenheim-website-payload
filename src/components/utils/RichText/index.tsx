@@ -7,6 +7,7 @@ import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical
 import { DefaultNodeTypes, SerializedBlockNode } from '@payloadcms/richtext-lexical'
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 import { FormBlock, FormBlockProps } from '@/blocks/FormBlock/Component'
+import { Gallery, GalleryBlockProps } from '@/blocks/gallery/Component'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -20,6 +21,9 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     formBlock: ({ node }: { node: SerializedBlockNode<FormBlockProps> }) => (
       <FormBlock className="col-start-2" {...node.fields} />
+    ),
+    gallery: ({ node }: { node: SerializedBlockNode<GalleryBlockProps> }) => (
+      <Gallery className="col-start-2" {...node.fields} />
     ),
   },
 })

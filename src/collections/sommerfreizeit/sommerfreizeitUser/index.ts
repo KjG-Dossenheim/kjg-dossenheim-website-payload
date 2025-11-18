@@ -3,6 +3,9 @@ import type { CollectionConfig } from 'payload'
 export const sommerfreizeitUser: CollectionConfig = {
   slug: 'sommerfreizeitUser',
   auth: true,
+  access: {
+    create: () => true,
+  },
   admin: {
     useAsTitle: 'email',
     group: 'Sommerfreizeit',

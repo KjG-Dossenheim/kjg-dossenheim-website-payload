@@ -2,13 +2,13 @@
 
 import React from 'react'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { CardHeader, CardContent } from '@/components/ui/card'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { CardHeader, CardContent } from '@/components/ui/card'
 
 interface Feature {
   id?: string | null | undefined
