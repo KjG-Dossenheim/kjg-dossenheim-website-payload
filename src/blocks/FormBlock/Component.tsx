@@ -1,6 +1,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import type { Form } from '@/payload-types'
+import { cn } from '@/lib/utils'
 
 const FormClient = dynamic(
   () => import('./Component.Client').then((mod) => ({ default: mod.FormClient })),
@@ -44,7 +45,7 @@ type Props = FormBlockProps & {
 
 export const FormBlock: React.FC<Props> = ({ className, form, introContent }) => {
   return (
-    <div className={[className, 'not-prose'].filter(Boolean).join(' ')}>
+    <div className={cn(className, 'not-prose')}>
       <FormClient form={form} introContent={introContent} />
     </div>
   )
