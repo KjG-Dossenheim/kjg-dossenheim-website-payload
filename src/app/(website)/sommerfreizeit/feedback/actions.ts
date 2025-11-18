@@ -14,7 +14,7 @@ export async function submitFeedback(data: FeedbackFormData) {
 
     // Create the feedback entry
     await payload.create({
-      collection: 'sommerfreizeitFeedback',
+      collection: "sommerfreizeitFeedback",
       data: {
         age: validatedData.age,
         rating: validatedData.rating,

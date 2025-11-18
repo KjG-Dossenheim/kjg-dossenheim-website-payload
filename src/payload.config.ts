@@ -143,7 +143,8 @@ export default buildConfig({
     Feedback,
     Songs,
     sommerfreizeitUser,
-    sommerfreizeitAnmeldung
+    sommerfreizeitAnmeldung,
+    sommerfreizeitFeedback
   ],
   globals: [
     Startseite,

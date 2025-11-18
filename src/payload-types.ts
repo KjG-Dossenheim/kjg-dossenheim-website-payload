@@ -81,6 +81,7 @@ export interface Config {
     songs: Song;
     sommerfreizeitUser: SommerfreizeitUser;
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldung;
+    sommerfreizeitFeedback: SommerfreizeitFeedback;
     forms: Form;
     'form-submissions': FormSubmission;
     users: User;
@@ -112,6 +113,7 @@ export interface Config {
     songs: SongsSelect<false> | SongsSelect<true>;
     sommerfreizeitUser: SommerfreizeitUserSelect<false> | SommerfreizeitUserSelect<true>;
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldungSelect<false> | SommerfreizeitAnmeldungSelect<true>;
+    sommerfreizeitFeedback: SommerfreizeitFeedbackSelect<false> | SommerfreizeitFeedbackSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -655,6 +657,18 @@ export interface SommerfreizeitAnmeldung {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFeedback".
+ */
+export interface SommerfreizeitFeedback {
+  id: string;
+  age: number;
+  rating: number;
+  comments?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms".
  */
 export interface Form {
@@ -1011,6 +1025,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'sommerfreizeitAnmeldung';
         value: string | SommerfreizeitAnmeldung;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitFeedback';
+        value: string | SommerfreizeitFeedback;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1380,6 +1398,17 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   class?: T;
   krankenversicherung?: T;
   krankenversicherungArt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFeedback_select".
+ */
+export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
+  age?: T;
+  rating?: T;
+  comments?: T;
   updatedAt?: T;
   createdAt?: T;
 }
