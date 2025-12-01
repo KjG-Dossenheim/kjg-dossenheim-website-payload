@@ -8,16 +8,16 @@ import type { KnallbonbonRegistration, KnallbonbonEvent } from '@/payload-types'
 type ChildData = {
   firstName: string
   lastName: string
-  age?: number
+  age?: number | null
   gender?: 'male' | 'female' | 'diverse' | 'noInfo'
   dateOfBirth: string
-  healthInfo?: string
+  healthInfo?: string | null
   pickupInfo?: 'pickedUp' | 'goesAlone'
-  photoConsent?: boolean
+  photoConsent?: boolean | null
   parentName: string
   parentEmail: string
   parentPhone: string
-  isWaitlist: boolean
+  isWaitlist: boolean | null
 }
 
 type EventWithChildren = {
@@ -59,12 +59,12 @@ export function ChildrenListClient({ registrations, events }: ChildrenListClient
           children.push({
             firstName: child.firstName || '',
             lastName: child.lastName || '',
-            age: child.age,
+            age: child.age || null,
             gender: child.gender,
             dateOfBirth: child.dateOfBirth || '',
-            healthInfo: child.healthInfo,
+            healthInfo: child.healthInfo || null,
             pickupInfo: child.pickupInfo,
-            photoConsent: child.photoConsent,
+            photoConsent: child.photoConsent || null,
             parentName: `${reg.firstName} ${reg.lastName}`,
             parentEmail: reg.email || '',
             parentPhone: reg.phone || '',
@@ -108,11 +108,31 @@ export function ChildrenListClient({ registrations, events }: ChildrenListClient
     <Gutter>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--base) * 2)' }}>
         {eventsWithChildren.map((eventGroup) => (
-          <div key={eventGroup.eventId} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--base)' }}>
+          <div
+            key={eventGroup.eventId}
+            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--base)' }}
+          >
             {/* Event Header */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(var(--base) / 2)', flexWrap: 'wrap' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>{eventGroup.eventTitle}</h2>
-              <span style={{ fontSize: '0.875rem', color: 'var(--theme-elevation-500)', display: 'flex', alignItems: 'center', gap: 'calc(var(--base) / 4)' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'calc(var(--base) / 2)',
+                flexWrap: 'wrap',
+              }}
+            >
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>
+                {eventGroup.eventTitle}
+              </h2>
+              <span
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--theme-elevation-500)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'calc(var(--base) / 4)',
+                }}
+              >
                 <Calendar style={{ width: '14px', height: '14px' }} />
                 {new Date(eventGroup.eventDate).toLocaleDateString('de-DE', {
                   day: '2-digit',
@@ -123,7 +143,8 @@ export function ChildrenListClient({ registrations, events }: ChildrenListClient
                 })}
               </span>
               <span style={{ fontSize: '0.875rem', color: 'var(--theme-elevation-500)' }}>
-                ({eventGroup.children.length} {eventGroup.children.length === 1 ? 'Kind' : 'Kinder'})
+                ({eventGroup.children.length} {eventGroup.children.length === 1 ? 'Kind' : 'Kinder'}
+                )
               </span>
             </div>
 
@@ -152,8 +173,21 @@ export function ChildrenListClient({ registrations, events }: ChildrenListClient
                 >
                   {/* Child Header */}
                   <div style={{ marginBottom: 'var(--base)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(var(--base) / 2)', marginBottom: 'calc(var(--base) / 4)' }}>
-                      <Baby style={{ width: '16px', height: '16px', color: 'var(--theme-elevation-500)' }} />
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'calc(var(--base) / 2)',
+                        marginBottom: 'calc(var(--base) / 4)',
+                      }}
+                    >
+                      <Baby
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          color: 'var(--theme-elevation-500)',
+                        }}
+                      />
                       <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>
                         {child.firstName} {child.lastName}
                       </h3>
@@ -229,13 +263,19 @@ export function ChildrenListClient({ registrations, events }: ChildrenListClient
                     )}
                     {child.photoConsent !== undefined && (
                       <div>
-                        <span style={{ color: 'var(--theme-elevation-500)' }}>Fotoeinwilligung:</span>{' '}
-                        <span style={{ fontWeight: 500 }}>{child.photoConsent ? 'Ja' : 'Nein'}</span>
+                        <span style={{ color: 'var(--theme-elevation-500)' }}>
+                          Fotoeinwilligung:
+                        </span>{' '}
+                        <span style={{ fontWeight: 500 }}>
+                          {child.photoConsent ? 'Ja' : 'Nein'}
+                        </span>
                       </div>
                     )}
                     {child.healthInfo && (
                       <div>
-                        <span style={{ color: 'var(--theme-elevation-500)' }}>Gesundheitsinfo:</span>{' '}
+                        <span style={{ color: 'var(--theme-elevation-500)' }}>
+                          Gesundheitsinfo:
+                        </span>{' '}
                         <div
                           style={{
                             marginTop: 'calc(var(--base) / 4)',
@@ -254,9 +294,28 @@ export function ChildrenListClient({ registrations, events }: ChildrenListClient
 
                   {/* Parent Info */}
                   <div style={{ fontSize: '0.875rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(var(--base) / 4)', marginBottom: 'calc(var(--base) / 4)' }}>
-                      <User style={{ width: '14px', height: '14px', color: 'var(--theme-elevation-500)' }} />
-                      <span style={{ color: 'var(--theme-elevation-500)', fontSize: '0.75rem', fontWeight: 500 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'calc(var(--base) / 4)',
+                        marginBottom: 'calc(var(--base) / 4)',
+                      }}
+                    >
+                      <User
+                        style={{
+                          width: '14px',
+                          height: '14px',
+                          color: 'var(--theme-elevation-500)',
+                        }}
+                      />
+                      <span
+                        style={{
+                          color: 'var(--theme-elevation-500)',
+                          fontSize: '0.75rem',
+                          fontWeight: 500,
+                        }}
+                      >
                         Elternteil
                       </span>
                     </div>

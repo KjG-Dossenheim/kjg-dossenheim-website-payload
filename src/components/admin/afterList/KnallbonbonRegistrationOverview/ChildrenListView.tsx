@@ -8,16 +8,16 @@ import type { KnallbonbonRegistration, KnallbonbonEvent } from '@/payload-types'
 type ChildData = {
   firstName: string
   lastName: string
-  age?: number
+  age?: number | null
   gender?: 'male' | 'female' | 'diverse' | 'noInfo'
   dateOfBirth: string
-  healthInfo?: string
+  healthInfo?: string | null
   pickupInfo?: 'pickedUp' | 'goesAlone'
-  photoConsent?: boolean
+  photoConsent?: boolean | null
   parentName: string
   parentEmail: string
   parentPhone: string
-  isWaitlist: boolean
+  isWaitlist: boolean | null
 }
 
 type EventWithChildren = {
