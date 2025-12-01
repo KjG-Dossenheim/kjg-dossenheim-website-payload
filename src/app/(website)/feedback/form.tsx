@@ -104,9 +104,7 @@ export default function FeedbackForm() {
                   <FormControl>
                     <Input type="email" {...field} placeholder="ihre.email@beispiel.de" />
                   </FormControl>
-                  <FormDescription>
-                    Nur angeben, wenn Sie eine Antwort wünschen
-                  </FormDescription>
+                  <FormDescription>Nur angeben, wenn Sie eine Antwort wünschen</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -131,7 +129,7 @@ export default function FeedbackForm() {
                         >
                           <Star
                             className={`h-8 w-8 ${
-                              star <= (hoveredRating || field.value)
+                              star <= (hoveredRating || field.value || 0)
                                 ? 'fill-yellow-400 text-yellow-400'
                                 : 'text-gray-300'
                             }`}
