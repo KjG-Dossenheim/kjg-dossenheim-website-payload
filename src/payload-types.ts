@@ -459,6 +459,10 @@ export interface KnallbonbonRegistration {
   address?: string | null;
   postalCode?: string | null;
   city?: string | null;
+  /**
+   * Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)
+   */
+  isWaitlist?: boolean | null;
   child?:
     | {
         firstName: string;
@@ -1275,6 +1279,7 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
   address?: T;
   postalCode?: T;
   city?: T;
+  isWaitlist?: T;
   child?:
     | T
     | {

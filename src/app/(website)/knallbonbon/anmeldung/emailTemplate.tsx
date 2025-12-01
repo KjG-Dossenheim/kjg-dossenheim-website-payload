@@ -7,13 +7,14 @@ import { format } from 'date-fns-tz/format'
 export function confirmationEmailTemplate(
   props: Omit<FormValues, 'captchaToken'>,
   eventTitle: string,
+  isWaitlist: boolean = false,
 ) {
   return (
     <MailBase>
       <Container className="px-6 py-8">
         {/* Header */}
         <Heading className="mb-6 text-center text-3xl font-bold text-gray-900">
-          Anmeldung erhalten
+          {isWaitlist ? 'Anmeldung auf Warteliste' : 'Anmeldung erhalten'}
         </Heading>
 
         <Hr className="my-6 border-gray-200" />
@@ -24,13 +25,51 @@ export function confirmationEmailTemplate(
             Hallo {props.firstName},
           </Text>
 
+          {isWaitlist ? (
+            <Text
+              className="text-base leading-relaxed text-gray-700"
+              style={{ marginBottom: '20px' }}
+            >
+              Vielen Dank für Deine Anmeldung zum{' '}
+              <strong className="text-gray-900">{eventTitle}</strong> der evangelischen Jugend
+              Dossenheim.{' '}
+              <strong className="text-orange-600">
+                Da die Veranstaltung bereits ausgebucht ist, wurde Deine Anmeldung auf die
+                Warteliste gesetzt.
+              </strong>{' '}
+              Wir werden uns bei Dir melden, sobald ein Platz frei wird.
+            </Text>
+          ) : (
+            <Text
+              className="text-base leading-relaxed text-gray-700"
+              style={{ marginBottom: '20px' }}
+            >
+              Vielen Dank für Deine Anmeldung zum{' '}
+              <strong className="text-gray-900">{eventTitle}</strong> der evangelischen Jugend
+              Dossenheim. Hier sind die Details Deiner Anmeldung:
+            </Text>
+          )}
+
+          {isWaitlist && (
+            <div
+              className="rounded-lg border border-orange-200 bg-orange-50 p-5"
+              style={{ marginBottom: '20px' }}
+            >
+              <Text className="mb-2 text-sm font-semibold text-orange-900">
+                ⚠️ Warteliste-Information
+              </Text>
+              <Text className="text-sm text-orange-800">
+                Deine Anmeldung befindet sich auf der Warteliste. Wir informieren Dich
+                umgehend per E-Mail, wenn ein Platz für Dich frei wird.
+              </Text>
+            </div>
+          )}
+
           <Text
             className="text-base leading-relaxed text-gray-700"
             style={{ marginBottom: '20px' }}
           >
-            Vielen Dank für Deine Anmeldung zum{' '}
-            <strong className="text-gray-900">{eventTitle}</strong> der evangelischen Jugend
-            Dossenheim. Hier sind die Details Deiner Anmeldung:
+            Hier sind die Details Deiner Anmeldung:
           </Text>
 
           {/* Contact Information */}
@@ -160,13 +199,14 @@ export function confirmationEmailTemplate(
 export function adminNotificationEmailTemplate(
   props: Omit<FormValues, 'captchaToken'>,
   eventTitle: string,
+  isWaitlist: boolean = false,
 ) {
   return (
     <MailBase>
       <Container className="px-6 py-8">
         {/* Header */}
         <Heading className="mb-6 text-center text-3xl font-bold text-gray-900">
-          Neue Anmeldung
+          {isWaitlist ? 'Neue Wartelisten-Anmeldung' : 'Neue Anmeldung'}
         </Heading>
 
         <Hr className="my-6 border-gray-200" />
@@ -179,7 +219,28 @@ export function adminNotificationEmailTemplate(
           >
             Es ist eine neue Anmeldung für das{' '}
             <strong className="text-gray-900">{eventTitle}</strong> eingegangen.
+            {isWaitlist && (
+              <strong className="text-orange-600">
+                {' '}
+                Diese Anmeldung wurde auf die Warteliste gesetzt, da die Veranstaltung bereits
+                ausgebucht ist.
+              </strong>
+            )}
           </Text>
+
+          {isWaitlist && (
+            <div
+              className="rounded-lg border border-orange-200 bg-orange-50 p-5"
+              style={{ marginBottom: '20px' }}
+            >
+              <Text className="mb-2 text-sm font-semibold text-orange-900">
+                ⚠️ Warteliste
+              </Text>
+              <Text className="text-sm text-orange-800">
+                Diese Anmeldung befindet sich auf der Warteliste.
+              </Text>
+            </div>
+          )}
 
           {/* Contact Information */}
           <div

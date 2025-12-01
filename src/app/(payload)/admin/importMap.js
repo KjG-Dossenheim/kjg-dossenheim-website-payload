@@ -41,6 +41,7 @@ import { AuthentikOAuthLoginButton as AuthentikOAuthLoginButton_851deaf6a5adc1fb
 import { default as default_d4a5371c3bfcd973abc37a1ee6c57fde } from '@/components/admin/beforeNavLinks/NavLogo'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { default as default_dc666a1c9de79eb038891952d0ae6201 } from '@/components/admin/views/KnallbonbonView'
+import { default as default_d30cca7ce73d9ec45a55480bce6e5ee5 } from '@/components/admin/views/KnallbonbonChildrenView'
 import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/components/admin/views/SettingsView'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
 
@@ -88,6 +89,7 @@ export const importMap = {
   "@/components/admin/beforeNavLinks/NavLogo#default": default_d4a5371c3bfcd973abc37a1ee6c57fde,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@/components/admin/views/KnallbonbonView#default": default_dc666a1c9de79eb038891952d0ae6201,
+  "@/components/admin/views/KnallbonbonChildrenView#default": default_d30cca7ce73d9ec45a55480bce6e5ee5,
   "@/components/admin/views/SettingsView#default": default_ab50c006cc520cf36af67ec593724ed8,
   "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc
 }

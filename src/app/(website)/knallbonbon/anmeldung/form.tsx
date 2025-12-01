@@ -354,16 +354,18 @@ export function KnallbonbonAnmeldungForm() {
           className="flex cursor-pointer items-center gap-2"
         >
           <RadioGroupItem
-            value={eventOption.isFull ? '' : eventOption.id}
+            value={eventOption.id}
             id={`event-${eventOption.id}`}
-            disabled={!eventOption.id || eventOption.isFull}
+            disabled={!eventOption.id}
           />
           <div className="flex flex-col">
             <FieldLabel htmlFor={`event-${eventOption.id}`} className="font-normal">
               {eventOption.title} – {eventOption.dateLabel}{' '}
             </FieldLabel>
             {eventOption.isFull ? (
-              <FieldDescription>Ausgebucht</FieldDescription>
+              <FieldDescription className="text-primary">
+                Ausgebucht – Anmeldung auf Warteliste möglich
+              </FieldDescription>
             ) : eventOption.maxParticipants !== undefined && eventOption.maxParticipants > 0 ? (
               <FieldDescription>{eventOption.freeSpots} Plätze frei</FieldDescription>
             ) : null}
@@ -410,7 +412,13 @@ export function KnallbonbonAnmeldungForm() {
 
         if (result.success) {
           form.reset()
-          toast.success('Anmeldung erfolgreich!')
+          if (result.isWaitlist) {
+            toast.success(
+              'Anmeldung auf Warteliste erfolgreich! Du erhältst eine E-Mail, sobald ein Platz frei wird.',
+            )
+          } else {
+            toast.success('Anmeldung erfolgreich!')
+          }
         } else {
           if (result.error === 'invalid-captcha') {
             toast.error('Bitte bestätigen Sie die Captcha-Prüfung erneut.')
@@ -669,7 +677,7 @@ export function KnallbonbonAnmeldungForm() {
           disabled={form.formState.isSubmitting || !form.watch('captchaToken')}
           form="knallbonbon-form"
         >
-          <Send /> Absenden
+          <Send /> {form.formState.isSubmitting ? 'Senden...' : 'Anmeldung absenden'}
         </Button>
       </CardFooter>
       <CardFooter>

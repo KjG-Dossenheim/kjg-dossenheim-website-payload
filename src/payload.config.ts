@@ -112,6 +112,10 @@ export default buildConfig({
           path: '/knallbonbon',
           Component: '@/components/admin/views/KnallbonbonView',
         },
+        knallbonbonChildren: {
+          path: '/KnallbonbonChildrenView',
+          Component: '@/components/admin/views/KnallbonbonChildrenView',
+        },
         settings: {
           path: '/settings',
           Component: '@/components/admin/views/SettingsView',

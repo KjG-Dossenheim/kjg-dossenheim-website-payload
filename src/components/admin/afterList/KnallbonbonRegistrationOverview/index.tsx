@@ -77,7 +77,7 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
       }
     })
 
-    return (
+    const statsView = (
       <Gutter className="space-y-8 py-6">
         {/* Event-specific Stats */}
         {events.docs.length > 0 && (
@@ -151,6 +151,8 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
         )}
       </Gutter>
     )
+
+    return statsView
   } catch (error) {
     console.error('Error loading Knallbonbon statistics:', error)
     return (

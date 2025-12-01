@@ -72,24 +72,42 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
 
     const payloadClient = await getPayload({ config })
 
-    // Fetch event details to get the event title
+    // Fetch event details to get the event title and check availability
     const event = await payloadClient.findByID({
       collection: 'knallbonbonEvents',
       id: formValues.event,
     })
 
+    // Calculate total children in this registration
+    const childrenCount = formValues.child?.length || 0
+
+    // Determine if this registration should be on the waitlist
+    let isWaitlist = false
+    if (event.maxParticipants) {
+      const currentCount = event.participantCount || 0
+      const availableSpots = event.maxParticipants - currentCount
+
+      // If there aren't enough spots for all children, put on waitlist
+      if (availableSpots < childrenCount) {
+        isWaitlist = true
+      }
+    }
+
     await payloadClient.create({
       collection: 'knallbonbonRegistration',
-      data: formValues,
+      data: {
+        ...formValues,
+        isWaitlist,
+      },
     })
 
     const adminNotificationHtml = await render(
-      adminNotificationEmailTemplate(formValues, event.title),
+      adminNotificationEmailTemplate(formValues, event.title, isWaitlist),
     )
 
     await payloadClient.sendEmail({
       to: 'ben.wallner@kjg-dossenheim.org',
-      subject: 'Neue Knallbonbon-Anmeldung',
+      subject: `Neue Knallbonbon-Anmeldung${isWaitlist ? ' (Warteliste)' : ''}`,
       html: adminNotificationHtml,
     })
 
@@ -103,19 +121,22 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
             })),
           },
           event.title,
+          isWaitlist,
         ),
       )
 
       await payloadClient.sendEmail({
         to: formValues.email,
-        subject: 'Vielen Dank für deine Anmeldung',
+        subject: isWaitlist
+          ? 'Deine Anmeldung auf der Warteliste'
+          : 'Vielen Dank für deine Anmeldung',
         html: confirmationHtml,
       })
     } catch (error) {
       console.error('Error sending confirmation email:', error)
     }
 
-    return { success: true }
+    return { success: true, isWaitlist }
   } catch (error) {
     console.error('Unexpected error while submitting registration:', error)
     return {

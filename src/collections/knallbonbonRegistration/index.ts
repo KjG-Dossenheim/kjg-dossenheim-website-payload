@@ -19,7 +19,9 @@ export const knallbonbonRegistration: CollectionConfig = {
     defaultColumns: ['firstName', 'lastName', 'email', 'event'],
     groupBy: true,
     components: {
-      beforeList: ['@/components/admin/beforeList/KnallbonbonRegistrationStats'],
+      beforeList: [
+        '@/components/admin/beforeList/KnallbonbonRegistrationStats',
+      ],
       afterList: ['@/components/admin/afterList/KnallbonbonRegistrationOverview'],
       edit: {
         beforeDocumentControls: ['@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'],
@@ -98,6 +100,16 @@ export const knallbonbonRegistration: CollectionConfig = {
       admin: {
         position: "sidebar"
       }
+    },
+    {
+      name: 'isWaitlist',
+      label: 'Warteliste',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)',
+      },
     },
     {
       name: 'child',

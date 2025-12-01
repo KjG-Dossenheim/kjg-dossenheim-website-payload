@@ -70,13 +70,13 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
       )}
       <CardFooter>
         <ButtonGroup>
-          <Button asChild={!isFull} disabled={isFull}>
+          <Button asChild>
             <Link
               href={`/knallbonbon/anmeldung?event=${event.id}`}
               className="flex flex-row items-center gap-2"
             >
               <User />
-              {isFull ? 'Ausgebucht' : 'Anmelden'}
+              {isFull ? 'Warteliste' : 'Anmelden'}
             </Link>
           </Button>
           {!isFull && spotsLeft !== null && (

@@ -44,6 +44,7 @@ export type EventOption = {
   isFull: boolean
   freeSpots: number
   maxParticipants?: number
+  allowWaitlist?: boolean
 }
 
 export type FormValues = z.infer<typeof formSchema>
