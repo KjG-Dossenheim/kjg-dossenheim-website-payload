@@ -6,7 +6,6 @@ import { Button, Gutter } from '@payloadcms/ui'
 import { GenderStackedBar } from './GenderStackedBar'
 import { AgeStackedBar } from './AgeStackedBar'
 import { SendEmailButton } from './SendEmailButton'
-import Link from 'next/link'
 
 export async function KnallbonbonRegistrationOverview(props: AfterListServerProps) {
   const { payload } = props

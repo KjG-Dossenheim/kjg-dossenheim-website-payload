@@ -25,7 +25,7 @@ export default function ConfirmationPage() {
       }
 
       try {
-        const response = await fetch(`/knallbonbon/bestatigen/${registrationId}?token=${token}`)
+        const response = await fetch(`/api/knallbonbon/confirm/${registrationId}?token=${token}`)
         const data = await response.json()
 
         if (data.success) {

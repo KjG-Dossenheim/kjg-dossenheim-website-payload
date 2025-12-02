@@ -35,10 +35,10 @@ function secureCompare(a: string, b: string): boolean {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { registrationId: string } },
+  { params }: { params: Promise<{ registrationId: string }> },
 ) {
   try {
-    const { registrationId } = params
+    const { registrationId } = await params
     const searchParams = request.nextUrl.searchParams
     const token = searchParams.get('token')
 
