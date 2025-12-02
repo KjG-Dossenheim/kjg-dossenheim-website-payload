@@ -13,6 +13,7 @@ import {
 interface Feature {
   id?: string | null | undefined
   title: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   description?: any
 }
 

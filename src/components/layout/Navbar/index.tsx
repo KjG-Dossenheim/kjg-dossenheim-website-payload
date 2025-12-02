@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 // Lucide Icons
-import { Calendar, HandCoins, Menu, Signature } from 'lucide-react'
+import { HandCoins, Menu, Signature } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import type { IconName } from 'lucide-react/dynamic'
 

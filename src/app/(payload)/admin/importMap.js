@@ -24,9 +24,8 @@ import { OrderedListFeatureClient as OrderedListFeatureClient_e70f5e05f09f93e00b
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
-import { default as default_4c24903d5dfc5c876247d215825039b7 } from '@/components/admin/afterList/KnallbonbonRegistrationOverview'
-import { default as default_dc64ac1200bb1ea12cfc81b4913ff297 } from '@/components/admin/beforeList/KnallbonbonRegistrationStats'
 import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'
+import { default as default_dc666a1c9de79eb038891952d0ae6201 } from '@/components/admin/views/KnallbonbonView'
 import { default as default_e9870ce8b8785709855b706589c5da87 } from '@/components/admin/actions/KnallbonbonRegistrationExportAction'
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
@@ -40,8 +39,8 @@ import { default as default_d3e265f969641a4ccf3d5a195904e268 } from '@/graphics/
 import { AuthentikOAuthLoginButton as AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914 } from '@/components/admin/button/AuthentikOAuthLoginButton'
 import { default as default_d4a5371c3bfcd973abc37a1ee6c57fde } from '@/components/admin/beforeNavLinks/NavLogo'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
-import { default as default_dc666a1c9de79eb038891952d0ae6201 } from '@/components/admin/views/KnallbonbonView'
 import { default as default_d30cca7ce73d9ec45a55480bce6e5ee5 } from '@/components/admin/views/KnallbonbonChildrenView'
+import { default as default_17f24f48023a47a76043f9ddfde73b77 } from '@/components/admin/views/KnallbonbonView/WaitlistView'
 import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/components/admin/views/SettingsView'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
 
@@ -72,9 +71,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
-  "@/components/admin/afterList/KnallbonbonRegistrationOverview#default": default_4c24903d5dfc5c876247d215825039b7,
-  "@/components/admin/beforeList/KnallbonbonRegistrationStats#default": default_dc64ac1200bb1ea12cfc81b4913ff297,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail#default": default_ecfd65651f73f4e70148c6a3f45da9ef,
+  "@/components/admin/views/KnallbonbonView#default": default_dc666a1c9de79eb038891952d0ae6201,
   "@/components/admin/actions/KnallbonbonRegistrationExportAction#default": default_e9870ce8b8785709855b706589c5da87,
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
@@ -88,8 +86,8 @@ export const importMap = {
   "@/components/admin/button/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton": AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914,
   "@/components/admin/beforeNavLinks/NavLogo#default": default_d4a5371c3bfcd973abc37a1ee6c57fde,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
-  "@/components/admin/views/KnallbonbonView#default": default_dc666a1c9de79eb038891952d0ae6201,
   "@/components/admin/views/KnallbonbonChildrenView#default": default_d30cca7ce73d9ec45a55480bce6e5ee5,
+  "@/components/admin/views/KnallbonbonView/WaitlistView#default": default_17f24f48023a47a76043f9ddfde73b77,
   "@/components/admin/views/SettingsView#default": default_ab50c006cc520cf36af67ec593724ed8,
   "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc
 }

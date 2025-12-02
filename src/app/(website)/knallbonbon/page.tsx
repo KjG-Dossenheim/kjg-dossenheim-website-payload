@@ -132,7 +132,12 @@ export default async function Page() {
     }) as Promise<Knallbonbon>,
     payload.find({
       collection: 'knallbonbonEvents',
-      sort: '-date',
+      where: {
+        date: {
+          greater_than_equal: new Date().toISOString(),
+        },
+      },
+      sort: 'date',
       limit: 100,
     }),
   ])

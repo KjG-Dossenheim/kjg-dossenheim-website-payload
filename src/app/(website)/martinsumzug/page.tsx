@@ -41,6 +41,7 @@ export default async function Page() {
   })) as {
     startDate: string
     startLocation: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     content: any
     songs: Song[]
   }

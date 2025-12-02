@@ -126,6 +126,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
+  fallbackLocale: null;
   globals: {
     startseite: Startseite;
     adventsmarkt: Adventsmarkt;
@@ -138,6 +139,7 @@ export interface Config {
     footer: Footer;
     rechtliches: Rechtlich;
     knallbonbon: Knallbonbon;
+    knallbonbonSettings: KnallbonbonSetting;
   };
   globalsSelect: {
     startseite: StartseiteSelect<false> | StartseiteSelect<true>;
@@ -151,6 +153,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     rechtliches: RechtlichesSelect<false> | RechtlichesSelect<true>;
     knallbonbon: KnallbonbonSelect<false> | KnallbonbonSelect<true>;
+    knallbonbonSettings: KnallbonbonSettingsSelect<false> | KnallbonbonSettingsSelect<true>;
   };
   locale: null;
   user:
@@ -463,6 +466,18 @@ export interface KnallbonbonRegistration {
    * Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)
    */
   isWaitlist?: boolean | null;
+  /**
+   * Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde
+   */
+  promotionSentAt?: string | null;
+  /**
+   * Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)
+   */
+  confirmationDeadline?: string | null;
+  /**
+   * Zeitpunkt der Bestätigung durch Eltern
+   */
+  confirmedAt?: string | null;
   child?:
     | {
         firstName: string;
@@ -1280,6 +1295,9 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
   postalCode?: T;
   city?: T;
   isWaitlist?: T;
+  promotionSentAt?: T;
+  confirmationDeadline?: T;
+  confirmedAt?: T;
   child?:
     | T
     | {
@@ -2116,6 +2134,23 @@ export interface Knallbonbon {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonSettings".
+ */
+export interface KnallbonbonSetting {
+  id: string;
+  /**
+   * Anzahl der Tage, die Eltern Zeit haben, um ihre Teilnahme zu bestätigen, nachdem sie von der Warteliste befördert wurden.
+   */
+  confirmationDeadlineDays: number;
+  /**
+   * Wenn aktiviert, werden Wartelisten-Anmeldungen automatisch befördert, wenn Plätze frei werden.
+   */
+  enableAutoPromotion?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "startseite_select".
  */
 export interface StartseiteSelect<T extends boolean = true> {
@@ -2419,6 +2454,17 @@ export interface KnallbonbonSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   team?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonSettings_select".
+ */
+export interface KnallbonbonSettingsSelect<T extends boolean = true> {
+  confirmationDeadlineDays?: T;
+  enableAutoPromotion?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

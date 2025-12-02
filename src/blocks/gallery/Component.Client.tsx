@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 type Props = {
@@ -23,8 +24,7 @@ export const GalleryClient: React.FC<Props> = ({ images = [], className = '' }) 
           {col.map((image, index) => (
             <div key={`${colIndex}-${index}`} className="rounded-(--radius-base)">
               {/* Using native img to preserve natural aspect ratio without cropping */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={image.url}
                 alt={image.alt}
                 className="h-auto max-w-full"

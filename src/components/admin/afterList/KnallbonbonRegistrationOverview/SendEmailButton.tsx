@@ -73,7 +73,7 @@ export function SendEmailButton({ eventId, eventTitle, registrationCount }: Send
             Sende...
           </>
         ) : (
-          <>E-Mail an alle senden</>
+          <>E-Mail</>
         )}
       </Button>
       <Modal slug={modalSlug} className="flex items-center justify-center backdrop-blur-sm">

@@ -16,19 +16,20 @@ export const knallbonbonRegistration: CollectionConfig = {
   },
   admin: {
     group: 'Knallbonbon',
-    defaultColumns: ['firstName', 'lastName', 'email', 'event'],
-    groupBy: true,
+    /* defaultColumns: ['firstName', 'lastName', 'email', 'event'],
+    groupBy: true, */
     components: {
-      beforeList: [
+      /* beforeList: [
         '@/components/admin/beforeList/KnallbonbonRegistrationStats',
       ],
-      afterList: ['@/components/admin/afterList/KnallbonbonRegistrationOverview'],
+      afterList: ['@/components/admin/afterList/KnallbonbonRegistrationOverview'], */
       edit: {
         beforeDocumentControls: ['@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'],
       },
       views: {
         list: {
           actions: ['@/components/admin/actions/KnallbonbonRegistrationExportAction'],
+          Component: '@/components/admin/views/KnallbonbonView',
         },
       },
     },
@@ -40,6 +41,9 @@ export const knallbonbonRegistration: CollectionConfig = {
       type: 'relationship',
       required: true,
       relationTo: 'knallbonbonEvents',
+      access: {
+        create: () => false,
+      },
     },
     {
       name: 'firstName',
@@ -109,6 +113,48 @@ export const knallbonbonRegistration: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)',
+      },
+    },
+    {
+      name: 'promotionSentAt',
+      label: 'Promotion Email gesendet am',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'dd.MM.yyyy HH:mm',
+        },
+      },
+    },
+    {
+      name: 'confirmationDeadline',
+      label: 'Bestätigungsfrist',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'dd.MM.yyyy HH:mm',
+        },
+      },
+    },
+    {
+      name: 'confirmedAt',
+      label: 'Bestätigt am',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Zeitpunkt der Bestätigung durch Eltern',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'dd.MM.yyyy HH:mm',
+        },
       },
     },
     {

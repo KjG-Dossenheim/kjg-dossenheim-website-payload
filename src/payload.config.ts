@@ -72,6 +72,7 @@ import { Adventsmarkt } from './globals/Adventsmarkt'
 import { Martinsumzug } from './globals/Martinsumzug'
 import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 import { Knallbonbon } from './globals/Knallbonbon'
+import { knallbonbonSettings } from './globals/knallbonbonSettings'
 import { aktion72Stunden } from './globals/aktionen/72stunden'
 
 // Relative imports - lib
@@ -113,8 +114,12 @@ export default buildConfig({
           Component: '@/components/admin/views/KnallbonbonView',
         },
         knallbonbonChildren: {
-          path: '/KnallbonbonChildrenView',
+          path: '/knallbonbon/list-children',
           Component: '@/components/admin/views/KnallbonbonChildrenView',
+        },
+        knallbonbonWaitlist: {
+          path: '/knallbonbon/waitlist',
+          Component: '@/components/admin/views/KnallbonbonView/WaitlistView',
         },
         settings: {
           path: '/settings',
@@ -162,6 +167,7 @@ export default buildConfig({
     Footer,
     Rechtliches,
     Knallbonbon,
+    knallbonbonSettings,
   ],
   editor: lexicalEditor({
     features: [

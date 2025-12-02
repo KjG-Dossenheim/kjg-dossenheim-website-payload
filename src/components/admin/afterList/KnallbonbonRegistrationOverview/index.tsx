@@ -1,11 +1,12 @@
 import React from 'react'
 import type { AfterListServerProps } from 'payload'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Calendar, Activity } from 'lucide-react'
-import { Gutter } from '@payloadcms/ui'
+import { Calendar, Activity, Group } from 'lucide-react'
+import { Button, Gutter } from '@payloadcms/ui'
 import { GenderStackedBar } from './GenderStackedBar'
 import { AgeStackedBar } from './AgeStackedBar'
 import { SendEmailButton } from './SendEmailButton'
+import Link from 'next/link'
 
 export async function KnallbonbonRegistrationOverview(props: AfterListServerProps) {
   const { payload } = props
@@ -96,7 +97,7 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
                   .map(([age, value]) => ({ age: parseInt(age), value }))
                   .sort((a, b) => a.age - b.age)
                 return (
-                  <Card key={eventId} className="transition-all hover:shadow-md">
+                  <Card key={eventId} className="justify-between transition-all hover:shadow-md">
                     <CardHeader>
                       <h3>{event.title}</h3>
                       <p className="flex items-center gap-1.5">
@@ -120,28 +121,43 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
                         <h4 className="text-accent-foreground">Kinder</h4>
                       </div>
                     </CardContent>
-                    {childrenCount > 0 && (
-                      <CardFooter className="flex-col gap-6">
-                        <div className="w-full space-y-2">
-                          <h4>Geschlechterverteilung</h4>
-                          <GenderStackedBar counts={genderCounts} />
-                        </div>
-                      </CardFooter>
-                    )}
-                    {ageData.length > 0 && (
-                      <CardFooter>
-                        <div className="w-full space-y-2">
-                          <h4>Altersverteilung</h4>
-                          <AgeStackedBar data={ageData} />
-                        </div>
-                      </CardFooter>
-                    )}
+                    <CardFooter className="flex-col gap-6">
+                      <div className="w-full space-y-2">
+                        <h4>Geschlechterverteilung</h4>
+                        <GenderStackedBar counts={genderCounts} />
+                      </div>
+                    </CardFooter>
                     <CardFooter>
+                      <div className="w-full space-y-2">
+                        <h4>Altersverteilung</h4>
+                        <AgeStackedBar data={ageData} />
+                      </div>
+                    </CardFooter>
+                    <CardFooter className="grid grid-cols-2 gap-2">
                       <SendEmailButton
                         eventId={eventId}
                         eventTitle={event.title}
                         registrationCount={registrationCount}
                       />
+                      <Button
+                        url={`/admin/knallbonbon/list-children?event=${encodeURIComponent(eventId)}`}
+                        el="anchor"
+                        buttonStyle="secondary"
+                        icon={<Group className="size-4" />}
+                        className="m-0 w-full"
+                      >
+                        Anmeldungen
+                      </Button>
+                      <Button
+                        url={`/admin/knallbonbon/waitlist?event=${encodeURIComponent(eventId)}`}
+                        el="anchor"
+                        buttonStyle="secondary"
+                        icon={<Activity className="size-4" />}
+                        className="m-0 w-full"
+                        disabled={childrenCount === 0}
+                      >
+                        Warteliste
+                      </Button>
                     </CardFooter>
                   </Card>
                 )
