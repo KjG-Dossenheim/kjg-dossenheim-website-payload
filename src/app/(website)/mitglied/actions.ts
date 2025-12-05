@@ -22,7 +22,7 @@ export async function createMembershipApplication(data: Omit<MembershipApplicati
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token: data.captchaToken,
-          keepToken: false
+          keepToken: true
         })
       })
 

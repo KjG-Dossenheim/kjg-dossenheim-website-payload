@@ -27,7 +27,7 @@ async function verifyCaptchaToken(token: string): Promise<boolean> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         token: token,
-        keepToken: false,
+        keepToken: true,
       }),
     })
 
