@@ -80,9 +80,16 @@ export const sendRegistrationEmailsJob = {
       }
 
       req.payload.logger.info('All registration emails sent successfully')
+
+      return {
+        output: {},
+      }
     } catch (error) {
       req.payload.logger.error('Error in sendRegistrationEmails job:', error)
-      throw error
+      return {
+        state: 'failed' as const,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
+      }
     }
   },
   inputSchema: [
@@ -103,4 +110,4 @@ export const sendRegistrationEmailsJob = {
     },
   ],
   retries: 3,
-} as const
+} satisfies import('payload').TaskConfig

@@ -41,11 +41,18 @@ export const cleanupExpiredConfirmationsJob = {
       await cleanupExpiredConfirmations(req.payload, req)
 
       req.payload.logger.info('Cleanup job completed successfully')
+
+      return {
+        output: {},
+      }
     } catch (error) {
       req.payload.logger.error('Error in cleanup job:', error)
-      throw error
+      return {
+        state: 'failed' as const,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
+      }
     }
   },
   inputSchema: [],
   retries: 3,
-} as const
+} satisfies import('payload').TaskConfig
