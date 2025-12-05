@@ -1,7 +1,6 @@
 import { Button, Gutter } from '@payloadcms/ui'
 import React from 'react'
 import { redirect } from 'next/navigation'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import type { ListViewServerProps, AfterListServerProps, BeforeListServerProps } from 'payload'
 import { KnallbonbonRegistrationOverview } from '@/components/admin/afterList/KnallbonbonRegistrationOverview'
 import { KnallbonbonRegistrationStats } from '@/components/admin/beforeList/KnallbonbonRegistrationStats'

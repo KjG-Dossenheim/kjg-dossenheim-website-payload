@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { confirmRegistrationAction } from './actions'
 
 type ConfirmationState = 'loading' | 'success' | 'error' | 'already_confirmed' | 'deadline_expired' | 'insufficient_spots'
 
@@ -25,8 +26,7 @@ export default function ConfirmationPage() {
       }
 
       try {
-        const response = await fetch(`/api/knallbonbon/confirm/${registrationId}?token=${token}`)
-        const data = await response.json()
+        const data = await confirmRegistrationAction(registrationId, token)
 
         if (data.success) {
           setState('success')

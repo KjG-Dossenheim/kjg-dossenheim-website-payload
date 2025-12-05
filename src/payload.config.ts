@@ -78,6 +78,11 @@ import { aktion72Stunden } from './globals/aktionen/72stunden'
 // Relative imports - lib
 import { authentikOAuth } from './utilities/authentikOAuth'
 
+// Relative imports - jobs
+import { cleanupExpiredConfirmationsJob } from './jobs/cleanupExpiredConfirmations'
+import { sendRegistrationEmailsJob } from './jobs/sendRegistrationEmails'
+import { sendConfirmationEmailsJob } from './jobs/sendConfirmationEmails'
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -222,6 +227,13 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
+  jobs: {
+    tasks: [
+      cleanupExpiredConfirmationsJob,
+      sendRegistrationEmailsJob,
+      sendConfirmationEmailsJob,
+    ],
+  },
   sharp,
   email: nodemailerAdapter({
     defaultFromAddress: 'info@kjg-dossenheim.org',

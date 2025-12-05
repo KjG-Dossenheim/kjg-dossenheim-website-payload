@@ -1,11 +1,9 @@
 'use server'
 
-import { render } from '@react-email/render'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
 import { formSchema } from './schema'
-import { adminNotificationEmailTemplate, confirmationEmailTemplate } from './emailTemplate'
 
 type VerificationResponse = {
   success: boolean
@@ -101,40 +99,16 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
       },
     })
 
-    const adminNotificationHtml = await render(
-      adminNotificationEmailTemplate(formValues, event.title, isWaitlist),
-    )
-
-    await payloadClient.sendEmail({
-      to: 'ben.wallner@kjg-dossenheim.org',
-      subject: `Neue Knallbonbon-Anmeldung${isWaitlist ? ' (Warteliste)' : ''}`,
-      html: adminNotificationHtml,
+    // Queue email sending job to run asynchronously
+    // This improves response time and handles email failures gracefully
+    await payloadClient.jobs.queue({
+      task: 'sendRegistrationEmails',
+      input: {
+        formValues,
+        eventTitle: event.title,
+        isWaitlist,
+      },
     })
-
-    try {
-      const confirmationHtml = await render(
-        confirmationEmailTemplate(
-          {
-            ...formValues,
-            child: formValues.child?.map((child) => ({
-              ...child,
-            })),
-          },
-          event.title,
-          isWaitlist,
-        ),
-      )
-
-      await payloadClient.sendEmail({
-        to: formValues.email,
-        subject: isWaitlist
-          ? 'Deine Anmeldung auf der Warteliste'
-          : 'Vielen Dank für deine Anmeldung',
-        html: confirmationHtml,
-      })
-    } catch (error) {
-      console.error('Error sending confirmation email:', error)
-    }
 
     return { success: true, isWaitlist }
   } catch (error) {

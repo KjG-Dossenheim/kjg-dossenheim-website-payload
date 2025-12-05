@@ -159,7 +159,10 @@ export const knallbonbonRegistration: CollectionConfig = {
     },
     {
       name: 'child',
-      label: 'Kind',
+      labels: {
+        singular: 'Kind',
+        plural: 'Kinder',
+      },
       type: 'array',
       minRows: 1,
       fields: [

@@ -165,6 +165,9 @@ export interface Config {
       });
   jobs: {
     tasks: {
+      cleanupExpiredConfirmations: CleanupExpiredConfirmationsJob;
+      sendRegistrationEmails: SendRegistrationEmailsJob;
+      sendConfirmationEmails: SendConfirmationEmailsJob;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -946,7 +949,12 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug:
+          | 'inline'
+          | 'cleanupExpiredConfirmations'
+          | 'sendRegistrationEmails'
+          | 'sendConfirmationEmails'
+          | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -979,7 +987,15 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?:
+    | (
+        | 'inline'
+        | 'cleanupExpiredConfirmations'
+        | 'sendRegistrationEmails'
+        | 'sendConfirmationEmails'
+        | 'schedulePublish'
+      )
+    | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -2468,6 +2484,53 @@ export interface KnallbonbonSettingsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CleanupExpiredConfirmationsJob".
+ */
+export interface CleanupExpiredConfirmationsJob {
+  input?: unknown;
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SendRegistrationEmailsJob".
+ */
+export interface SendRegistrationEmailsJob {
+  input: {
+    formValues:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    eventTitle: string;
+    isWaitlist: boolean;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SendConfirmationEmailsJob".
+ */
+export interface SendConfirmationEmailsJob {
+  input: {
+    registration:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    eventTitle: string;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
