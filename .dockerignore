@@ -1,0 +1,63 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Next.js
+.next
+out
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+**/__tests__
+
+# Development
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+CLAUDE.md
+*.md
+
+# CI/CD
+.github
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Email development
+.react-email
+
+# Misc
+.prettierrc.json
+components.json
+netlify.toml
+docker-compose.yml
+Dockerfile

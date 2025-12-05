@@ -25,6 +25,17 @@ jobs:
         with:
           driver: docker-container
 
+      # Inject cache mounts before build
+      - name: Inject cache into Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.2
+        with:
+          cache-map: |
+            {
+              "pnpm": "/tmp/.buildkit-cache/pnpm",
+              "next-cache": "/tmp/.buildkit-cache/next-cache"
+            }
+          skip-extraction: ${{ github.ref != 'refs/heads/main' }}
+
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -49,3 +60,14 @@ jobs:
             NEXT_PUBLIC_ENABLE=GENERIC
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Extract cache mounts after build
+      - name: Extract cache from Docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.2
+        with:
+          cache-map: |
+            {
+              "pnpm": "/tmp/.buildkit-cache/pnpm",
+              "next-cache": "/tmp/.buildkit-cache/next-cache"
+            }
+          skip-extraction: ${{ github.ref != 'refs/heads/main' }}
