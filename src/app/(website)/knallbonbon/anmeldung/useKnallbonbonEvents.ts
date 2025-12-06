@@ -29,13 +29,8 @@ export function useKnallbonbonEvents() {
 
       try {
         // Initialize Payload SDK client with proper typing
-        // Use relative URL or fallback to window.location.origin for client-side compatibility
-        const baseURL = typeof window !== 'undefined'
-          ? `${window.location.origin}/api`
-          : `${process.env.NEXT_PUBLIC_SITE_URL}/api`
-
         const sdk = new PayloadSDK<Config>({
-          baseURL,
+          baseURL: `${process.env.NEXT_PUBLIC_SITE_URL}/api`,
           fetch: fetch.bind(window),
         })
 
