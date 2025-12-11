@@ -24,7 +24,7 @@ export const knallbonbonRegistration: CollectionConfig = {
       ],
       afterList: ['@/components/admin/afterList/KnallbonbonRegistrationOverview'], */
       edit: {
-        beforeDocumentControls: ['@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'],
+        beforeDocumentControls: ['@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail', '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'],
       },
       views: {
         list: {
@@ -116,48 +116,6 @@ export const knallbonbonRegistration: CollectionConfig = {
         position: 'sidebar',
         description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)',
         readOnly: true,
-      },
-    },
-    {
-      name: 'promotionSentAt',
-      label: 'Promotion Email gesendet am (DEPRECATED)',
-      type: 'date',
-      admin: {
-        position: 'sidebar',
-        readOnly: true,
-        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde',
-        date: {
-          pickerAppearance: 'dayAndTime',
-          displayFormat: 'dd.MM.yyyy HH:mm',
-        },
-      },
-    },
-    {
-      name: 'confirmationDeadline',
-      label: 'Bestätigungsfrist (DEPRECATED)',
-      type: 'date',
-      admin: {
-        position: 'sidebar',
-        readOnly: true,
-        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)',
-        date: {
-          pickerAppearance: 'dayAndTime',
-          displayFormat: 'dd.MM.yyyy HH:mm',
-        },
-      },
-    },
-    {
-      name: 'confirmedAt',
-      label: 'Bestätigt am (DEPRECATED)',
-      type: 'date',
-      admin: {
-        position: 'sidebar',
-        readOnly: true,
-        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt der Bestätigung durch Eltern',
-        date: {
-          pickerAppearance: 'dayAndTime',
-          displayFormat: 'dd.MM.yyyy HH:mm',
-        },
       },
     },
     {

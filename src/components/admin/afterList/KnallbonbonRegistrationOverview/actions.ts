@@ -3,7 +3,7 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { render } from '@react-email/render'
-import { emailTemplate } from '@/collections/knallbonbonRegistration/beforeDocumentControls/emailTemplate'
+import { emailTemplate } from '@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail/emailTemplate'
 
 type SendEmailResult = {
   success: boolean

@@ -96,8 +96,7 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
       await payloadClient.create({
         collection: 'knallbonbonWaitlist',
         data: {
-          // Reference IDs (registrationId will be set when confirmed and moved)
-          registrationId: '', // Empty until confirmed
+          // Reference IDs
           eventId: formValues.event,
           eventTitle: event.title,
 

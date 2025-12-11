@@ -47,19 +47,6 @@ export const columns: ColumnDef<ChildData>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => {
-      const isWaitlist = row.original.isWaitlist
-      return (
-        <div className="flex items-center gap-2">
-          <div className="font-medium">{row.getValue('lastName')}</div>
-          {isWaitlist && (
-            <Badge variant="outline" className="border-orange-300 bg-orange-100 text-orange-800">
-              Warteliste
-            </Badge>
-          )}
-        </div>
-      )
-    },
   },
   {
     accessorKey: 'firstName',

@@ -25,6 +25,7 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
 import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'
+import { default as default_98a00ed7a1da5fc44dc587f84bf0657c } from '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'
 import { default as default_dc666a1c9de79eb038891952d0ae6201 } from '@/components/admin/views/KnallbonbonView'
 import { default as default_e9870ce8b8785709855b706589c5da87 } from '@/components/admin/actions/KnallbonbonRegistrationExportAction'
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
@@ -72,6 +73,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail#default": default_ecfd65651f73f4e70148c6a3f45da9ef,
+  "@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist#default": default_98a00ed7a1da5fc44dc587f84bf0657c,
   "@/components/admin/views/KnallbonbonView#default": default_dc666a1c9de79eb038891952d0ae6201,
   "@/components/admin/actions/KnallbonbonRegistrationExportAction#default": default_e9870ce8b8785709855b706589c5da87,
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,

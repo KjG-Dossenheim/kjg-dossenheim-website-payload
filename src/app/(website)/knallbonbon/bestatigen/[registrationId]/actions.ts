@@ -129,18 +129,16 @@ export async function confirmRegistrationAction(
         city: entry.city,
         child: entry.children, // Copy children array from waitlist
         isWaitlist: false, // No longer on waitlist
-        confirmedAt: now.toISOString(),
       },
     })
 
-    // Update waitlist entry with registration reference and confirmed status
+    // Update waitlist entry with confirmed status
     await payload.update({
       collection: 'knallbonbonWaitlist',
       id: entry.id,
       data: {
         status: 'confirmed',
         confirmedAt: now.toISOString(),
-        registrationId: newRegistration.id, // Link to created registration
       },
     })
 

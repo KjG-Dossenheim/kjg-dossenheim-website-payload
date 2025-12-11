@@ -83,7 +83,6 @@ import { authentikOAuth } from './utilities/authentikOAuth'
 import { cleanupExpiredConfirmationsJob } from './jobs/cleanupExpiredConfirmations'
 import { sendRegistrationEmailsJob } from './jobs/sendRegistrationEmails'
 import { sendConfirmationEmailsJob } from './jobs/sendConfirmationEmails'
-import { migrateWaitlistDataJob } from './jobs/migrateWaitlistData'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -235,7 +234,6 @@ export default buildConfig({
       cleanupExpiredConfirmationsJob,
       sendRegistrationEmailsJob,
       sendConfirmationEmailsJob,
-      migrateWaitlistDataJob,
     ],
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {

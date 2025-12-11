@@ -21,18 +21,6 @@ export const knallbonbonWaitlist: CollectionConfig = {
     afterDelete: [recalculateQueuePositionsAfterDelete],
   },
   fields: [
-    // Registration reference (for linking only, not for display)
-    {
-      name: 'registrationId',
-      label: 'Registrierungs-ID',
-      type: 'text',
-      required: true,
-      index: true,
-      admin: {
-        description: 'Referenz zur ursprünglichen Registrierung',
-        readOnly: true,
-      },
-    },
     {
       name: 'eventId',
       label: 'Veranstaltungs-ID',
@@ -54,7 +42,6 @@ export const knallbonbonWaitlist: CollectionConfig = {
         readOnly: true,
       },
     },
-    // Parent/Guardian Information (copied from registration)
     {
       name: 'parentName',
       label: 'Eltern Name',
@@ -132,7 +119,6 @@ export const knallbonbonWaitlist: CollectionConfig = {
         readOnly: true,
       },
     },
-    // Children (copied from registration)
     {
       name: 'children',
       labels: {

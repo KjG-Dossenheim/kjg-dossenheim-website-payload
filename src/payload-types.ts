@@ -170,7 +170,6 @@ export interface Config {
       cleanupExpiredConfirmations: CleanupExpiredConfirmationsJob;
       sendRegistrationEmails: SendRegistrationEmailsJob;
       sendConfirmationEmails: SendConfirmationEmailsJob;
-      migrateWaitlistData: MigrateWaitlistData;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -472,18 +471,6 @@ export interface KnallbonbonRegistration {
    * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)
    */
   isWaitlist?: boolean | null;
-  /**
-   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde
-   */
-  promotionSentAt?: string | null;
-  /**
-   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)
-   */
-  confirmationDeadline?: string | null;
-  /**
-   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt der Bestätigung durch Eltern
-   */
-  confirmedAt?: string | null;
   child?:
     | {
         firstName: string;
@@ -546,10 +533,6 @@ export interface KnallbonbonEvent {
  */
 export interface KnallbonbonWaitlist {
   id: string;
-  /**
-   * Referenz zur ursprünglichen Registrierung
-   */
-  registrationId: string;
   /**
    * Referenz zur Veranstaltung
    */
@@ -1032,7 +1015,6 @@ export interface PayloadJob {
           | 'cleanupExpiredConfirmations'
           | 'sendRegistrationEmails'
           | 'sendConfirmationEmails'
-          | 'migrateWaitlistData'
           | 'schedulePublish';
         taskID: string;
         input?:
@@ -1072,7 +1054,6 @@ export interface PayloadJob {
         | 'cleanupExpiredConfirmations'
         | 'sendRegistrationEmails'
         | 'sendConfirmationEmails'
-        | 'migrateWaitlistData'
         | 'schedulePublish'
       )
     | null;
@@ -1395,9 +1376,6 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
   postalCode?: T;
   city?: T;
   isWaitlist?: T;
-  promotionSentAt?: T;
-  confirmationDeadline?: T;
-  confirmedAt?: T;
   child?:
     | T
     | {
@@ -1436,7 +1414,6 @@ export interface KnallbonbonEventsSelect<T extends boolean = true> {
  * via the `definition` "knallbonbonWaitlist_select".
  */
 export interface KnallbonbonWaitlistSelect<T extends boolean = true> {
-  registrationId?: T;
   eventId?: T;
   eventTitle?: T;
   parentName?: T;
@@ -2654,14 +2631,6 @@ export interface SendConfirmationEmailsJob {
       | null;
     eventTitle: string;
   };
-  output?: unknown;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MigrateWaitlistData".
- */
-export interface MigrateWaitlistData {
-  input?: unknown;
   output?: unknown;
 }
 /**
