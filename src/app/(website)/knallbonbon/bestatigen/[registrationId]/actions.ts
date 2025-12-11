@@ -6,13 +6,14 @@ import { createHash } from 'crypto'
 
 /**
  * Generate confirmation token for validation
+ * Now uses waitlist entry ID instead of registration ID
  */
-function generateConfirmationToken(registrationId: string, createdAt: string): string {
+function generateConfirmationToken(waitlistEntryId: string, createdAt: string): string {
   const secret = process.env.PAYLOAD_SECRET
   if (!secret) {
     throw new Error('PAYLOAD_SECRET is not defined')
   }
-  return createHash('sha256').update(`${registrationId}${secret}${createdAt}`).digest('hex')
+  return createHash('sha256').update(`${waitlistEntryId}${secret}${createdAt}`).digest('hex')
 }
 
 /**
@@ -34,7 +35,7 @@ type ConfirmationResult =
   | { success: false; error: string; message: string }
 
 export async function confirmRegistrationAction(
-  registrationId: string,
+  waitlistEntryId: string,
   token: string,
 ): Promise<ConfirmationResult> {
   try {
@@ -44,26 +45,34 @@ export async function confirmRegistrationAction(
 
     const payload = await getPayload({ config })
 
-    // Fetch registration with event details
-    const registration = await payload.findByID({
-      collection: 'knallbonbonRegistration',
-      id: registrationId,
-      depth: 1,
+    // Find waitlist entry by ID
+    const entry = await payload.findByID({
+      collection: 'knallbonbonWaitlist',
+      id: waitlistEntryId,
     })
 
-    if (!registration) {
-      return { success: false, error: 'not_found', message: 'Registration not found' }
+    if (!entry) {
+      return { success: false, error: 'not_found', message: 'Waitlist entry not found' }
     }
 
     // Validate token
-    const expectedToken = generateConfirmationToken(registration.id, registration.createdAt)
+    const expectedToken = generateConfirmationToken(entry.id, entry.createdAt)
     if (!secureCompare(token, expectedToken)) {
-      console.error('Invalid confirmation token for registration:', registrationId)
+      console.error('Invalid confirmation token for waitlist entry:', waitlistEntryId)
       return { success: false, error: 'invalid_token', message: 'Invalid token' }
     }
 
+    // Check if in promoted state
+    if (entry.status !== 'promoted') {
+      return {
+        success: false,
+        error: 'not_promoted',
+        message: 'Diese Anmeldung wurde nicht befördert oder wurde bereits bestätigt.',
+      }
+    }
+
     // Check if already confirmed (prevent replay)
-    if (registration.confirmedAt) {
+    if (entry.confirmedAt) {
       return {
         success: false,
         error: 'already_confirmed',
@@ -73,7 +82,7 @@ export async function confirmRegistrationAction(
 
     // Check if deadline has passed
     const now = new Date()
-    if (registration.confirmationDeadline && new Date(registration.confirmationDeadline) < now) {
+    if (entry.confirmationDeadline && new Date(entry.confirmationDeadline) < now) {
       return {
         success: false,
         error: 'deadline_expired',
@@ -81,30 +90,18 @@ export async function confirmRegistrationAction(
       }
     }
 
-    // Check if still on waitlist
-    if (!registration.isWaitlist) {
-      return {
-        success: false,
-        error: 'not_on_waitlist',
-        message: 'Diese Anmeldung ist nicht auf der Warteliste.',
-      }
-    }
-
     // Fetch event to check if spots are still available
-    const event =
-      typeof registration.event === 'object'
-        ? registration.event
-        : await payload.findByID({
-            collection: 'knallbonbonEvents',
-            id: registration.event,
-          })
+    const event = await payload.findByID({
+      collection: 'knallbonbonEvents',
+      id: entry.eventId,
+    })
 
     if (!event) {
       return { success: false, error: 'event_not_found', message: 'Event not found' }
     }
 
     // Check if event still has enough spots for all children
-    const childrenCount = registration.child?.length || 0
+    const childrenCount = entry.childrenCount || 0
     const currentParticipantCount = event.participantCount || 0
     const availableSpots = event.maxParticipants
       ? event.maxParticipants - currentParticipantCount
@@ -118,29 +115,49 @@ export async function confirmRegistrationAction(
       }
     }
 
-    // All validations passed - confirm the registration
-    await payload.update({
+    // All validations passed - create registration from waitlist data
+    const newRegistration = await payload.create({
       collection: 'knallbonbonRegistration',
-      id: registrationId,
       data: {
+        event: entry.eventId,
+        firstName: entry.firstName,
+        lastName: entry.lastName,
+        email: entry.email,
+        phone: entry.phone,
+        address: entry.address,
+        postalCode: entry.postalCode,
+        city: entry.city,
+        child: entry.children, // Copy children array from waitlist
+        isWaitlist: false, // No longer on waitlist
         confirmedAt: now.toISOString(),
-        isWaitlist: false, // Remove from waitlist
       },
     })
 
-    console.log(`Registration ${registrationId} confirmed successfully`)
+    // Update waitlist entry with registration reference and confirmed status
+    await payload.update({
+      collection: 'knallbonbonWaitlist',
+      id: entry.id,
+      data: {
+        status: 'confirmed',
+        confirmedAt: now.toISOString(),
+        registrationId: newRegistration.id, // Link to created registration
+      },
+    })
 
-    // Queue confirmation email sending job to run asynchronously
-    // This improves response time and handles email failures gracefully
+    console.log(
+      `Waitlist entry ${entry.id} confirmed successfully, created registration ${newRegistration.id}`,
+    )
+
+    // Queue confirmation email sending job
     await payload.jobs.queue({
       task: 'sendConfirmationEmails',
       input: {
-        registration: JSON.parse(JSON.stringify(registration)), // Serialize for job queue
-        eventTitle: event.title,
+        registration: JSON.parse(JSON.stringify(newRegistration)), // Serialize for job queue
+        eventTitle: entry.eventTitle,
       },
     })
 
-    // The afterChange hook will automatically:
+    // The afterChange hook on knallbonbonRegistration will automatically:
     // 1. Update participant count
     // 2. Check if more promotions are needed
     // 3. Promote next person in line if spots available
@@ -148,7 +165,7 @@ export async function confirmRegistrationAction(
     return {
       success: true,
       message: 'Ihre Teilnahme wurde erfolgreich bestätigt!',
-      eventTitle: event.title,
+      eventTitle: entry.eventTitle,
     }
   } catch (error) {
     console.error('Error confirming registration:', error)

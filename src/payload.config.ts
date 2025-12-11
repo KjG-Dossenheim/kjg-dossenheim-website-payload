@@ -54,6 +54,7 @@ import { blogPosts } from './collections/blogPost'
 import { blogCategory } from './collections/blogCategory'
 import { knallbonbonRegistration } from './collections/knallbonbonRegistration'
 import { knallbonbonEvents } from './collections/knallbonbonEvents'
+import { knallbonbonWaitlist } from './collections/knallbonbonWaitlist'
 import { membershipApplication } from './collections/membershipApplication'
 import { Songs } from './collections/Songs'
 import { sommerfreizeitAnmeldung } from './collections/sommerfreizeit/sommerfreizeitAnmeldung'
@@ -82,6 +83,7 @@ import { authentikOAuth } from './utilities/authentikOAuth'
 import { cleanupExpiredConfirmationsJob } from './jobs/cleanupExpiredConfirmations'
 import { sendRegistrationEmailsJob } from './jobs/sendRegistrationEmails'
 import { sendConfirmationEmailsJob } from './jobs/sendConfirmationEmails'
+import { migrateWaitlistDataJob } from './jobs/migrateWaitlistData'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -153,6 +155,7 @@ export default buildConfig({
     Media,
     knallbonbonRegistration,
     knallbonbonEvents,
+    knallbonbonWaitlist,
     membershipApplication,
     Feedback,
     Songs,
@@ -232,6 +235,22 @@ export default buildConfig({
       cleanupExpiredConfirmationsJob,
       sendRegistrationEmailsJob,
       sendConfirmationEmailsJob,
+      migrateWaitlistDataJob,
+    ],
+    jobsCollectionOverrides: ({ defaultJobsCollection }) => {
+      if (!defaultJobsCollection.admin) {
+        defaultJobsCollection.admin = {}
+      }
+
+      defaultJobsCollection.admin.hidden = false
+      return defaultJobsCollection
+    },
+    autoRun: [
+      {
+        cron: '* * * * *', // every minute
+        limit: 100,
+        queue: 'default',
+      },
     ],
   },
   sharp,

@@ -1,5 +1,5 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
-import { promoteFromWaitlist } from './promoteFromWaitlist'
+import { promoteFromWaitlist } from '@/collections/knallbonbonWaitlist/hooks/promoteFromWaitlist'
 
 /**
  * Hook to update the event's participantCount after a registration is created or updated

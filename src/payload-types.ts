@@ -76,6 +76,7 @@ export interface Config {
     media: Media;
     knallbonbonRegistration: KnallbonbonRegistration;
     knallbonbonEvents: KnallbonbonEvent;
+    knallbonbonWaitlist: KnallbonbonWaitlist;
     membershipApplication: MembershipApplication;
     feedback: Feedback;
     songs: Song;
@@ -108,6 +109,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     knallbonbonRegistration: KnallbonbonRegistrationSelect<false> | KnallbonbonRegistrationSelect<true>;
     knallbonbonEvents: KnallbonbonEventsSelect<false> | KnallbonbonEventsSelect<true>;
+    knallbonbonWaitlist: KnallbonbonWaitlistSelect<false> | KnallbonbonWaitlistSelect<true>;
     membershipApplication: MembershipApplicationSelect<false> | MembershipApplicationSelect<true>;
     feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     songs: SongsSelect<false> | SongsSelect<true>;
@@ -168,6 +170,7 @@ export interface Config {
       cleanupExpiredConfirmations: CleanupExpiredConfirmationsJob;
       sendRegistrationEmails: SendRegistrationEmailsJob;
       sendConfirmationEmails: SendConfirmationEmailsJob;
+      migrateWaitlistData: MigrateWaitlistData;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -466,19 +469,19 @@ export interface KnallbonbonRegistration {
   postalCode?: string | null;
   city?: string | null;
   /**
-   * Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)
+   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)
    */
   isWaitlist?: boolean | null;
   /**
-   * Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde
+   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde
    */
   promotionSentAt?: string | null;
   /**
-   * Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)
+   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)
    */
   confirmationDeadline?: string | null;
   /**
-   * Zeitpunkt der Bestätigung durch Eltern
+   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt der Bestätigung durch Eltern
    */
   confirmedAt?: string | null;
   child?:
@@ -534,6 +537,81 @@ export interface KnallbonbonEvent {
    * Automatisch gesetzt, wenn die maximale Teilnehmerzahl erreicht ist.
    */
   isFull?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonWaitlist".
+ */
+export interface KnallbonbonWaitlist {
+  id: string;
+  /**
+   * Referenz zur ursprünglichen Registrierung
+   */
+  registrationId: string;
+  /**
+   * Referenz zur Veranstaltung
+   */
+  eventId: string;
+  /**
+   * Name der Veranstaltung (Snapshot)
+   */
+  eventTitle: string;
+  /**
+   * Vor- und Nachname des Elternteils
+   */
+  parentName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
+  children: {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    age?: number | null;
+    gender: 'male' | 'female' | 'diverse' | 'noInfo';
+    pickupInfo: 'pickedUp' | 'goesAlone';
+    photoConsent?: boolean | null;
+    healthInfo?: string | null;
+    id?: string | null;
+  }[];
+  /**
+   * Anzahl der Kinder in dieser Anmeldung
+   */
+  childrenCount: number;
+  /**
+   * Aktueller Status des Wartelisten-Eintrags
+   */
+  status: 'pending' | 'promoted' | 'confirmed' | 'expired' | 'cancelled';
+  /**
+   * Position in der FIFO-Warteschlange (niedrigere Nummer = früher in der Reihe)
+   */
+  queuePosition: number;
+  /**
+   * Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde
+   */
+  promotionSentAt?: string | null;
+  /**
+   * Frist bis zur Bestätigung der Teilnahme
+   */
+  confirmationDeadline?: string | null;
+  /**
+   * Zeitpunkt der Bestätigung durch Eltern
+   */
+  confirmedAt?: string | null;
+  /**
+   * Zeitpunkt der Stornierung
+   */
+  cancelledAt?: string | null;
+  /**
+   * Zeitpunkt, wann die Bestätigungsfrist abgelaufen ist
+   */
+  expiredAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -954,6 +1032,7 @@ export interface PayloadJob {
           | 'cleanupExpiredConfirmations'
           | 'sendRegistrationEmails'
           | 'sendConfirmationEmails'
+          | 'migrateWaitlistData'
           | 'schedulePublish';
         taskID: string;
         input?:
@@ -993,6 +1072,7 @@ export interface PayloadJob {
         | 'cleanupExpiredConfirmations'
         | 'sendRegistrationEmails'
         | 'sendConfirmationEmails'
+        | 'migrateWaitlistData'
         | 'schedulePublish'
       )
     | null;
@@ -1040,6 +1120,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'knallbonbonEvents';
         value: string | KnallbonbonEvent;
+      } | null)
+    | ({
+        relationTo: 'knallbonbonWaitlist';
+        value: string | KnallbonbonWaitlist;
       } | null)
     | ({
         relationTo: 'membershipApplication';
@@ -1344,6 +1428,46 @@ export interface KnallbonbonEventsSelect<T extends boolean = true> {
   participants?: T;
   participantCount?: T;
   isFull?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knallbonbonWaitlist_select".
+ */
+export interface KnallbonbonWaitlistSelect<T extends boolean = true> {
+  registrationId?: T;
+  eventId?: T;
+  eventTitle?: T;
+  parentName?: T;
+  firstName?: T;
+  lastName?: T;
+  email?: T;
+  phone?: T;
+  address?: T;
+  postalCode?: T;
+  city?: T;
+  children?:
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        dateOfBirth?: T;
+        age?: T;
+        gender?: T;
+        pickupInfo?: T;
+        photoConsent?: T;
+        healthInfo?: T;
+        id?: T;
+      };
+  childrenCount?: T;
+  status?: T;
+  queuePosition?: T;
+  promotionSentAt?: T;
+  confirmationDeadline?: T;
+  confirmedAt?: T;
+  cancelledAt?: T;
+  expiredAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2530,6 +2654,14 @@ export interface SendConfirmationEmailsJob {
       | null;
     eventTitle: string;
   };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MigrateWaitlistData".
+ */
+export interface MigrateWaitlistData {
+  input?: unknown;
   output?: unknown;
 }
 /**

@@ -91,13 +91,45 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
       }
     }
 
-    await payloadClient.create({
-      collection: 'knallbonbonRegistration',
-      data: {
-        ...formValues,
-        isWaitlist,
-      },
-    })
+    // If waitlisted, create ONLY in waitlist collection (will be moved to registration on confirmation)
+    if (isWaitlist) {
+      await payloadClient.create({
+        collection: 'knallbonbonWaitlist',
+        data: {
+          // Reference IDs (registrationId will be set when confirmed and moved)
+          registrationId: '', // Empty until confirmed
+          eventId: formValues.event,
+          eventTitle: event.title,
+
+          // Parent/Guardian Information (snapshot)
+          parentName: `${formValues.firstName} ${formValues.lastName}`,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          email: formValues.email,
+          phone: formValues.phone,
+          address: formValues.address,
+          postalCode: formValues.postalCode,
+          city: formValues.city,
+
+          // Children (snapshot)
+          children: formValues.child,
+          childrenCount: childrenCount,
+
+          // Waitlist Status
+          status: 'pending',
+          queuePosition: 999999, // Will be recalculated by hook
+        },
+      })
+    } else {
+      // If NOT waitlisted, create directly in registration collection
+      await payloadClient.create({
+        collection: 'knallbonbonRegistration',
+        data: {
+          ...formValues,
+          isWaitlist: false,
+        },
+      })
+    }
 
     // Queue email sending job to run asynchronously
     // This improves response time and handles email failures gracefully

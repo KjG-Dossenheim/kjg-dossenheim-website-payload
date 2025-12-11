@@ -105,24 +105,27 @@ export const knallbonbonRegistration: CollectionConfig = {
         position: "sidebar"
       }
     },
+    // DEPRECATED: The following fields are deprecated and will be removed in a future version
+    // Waitlist data is now stored in the separate knallbonbonWaitlist collection
     {
       name: 'isWaitlist',
-      label: 'Warteliste',
+      label: 'Warteliste (DEPRECATED)',
       type: 'checkbox',
       defaultValue: false,
       admin: {
         position: 'sidebar',
-        description: 'Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)',
+        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)',
+        readOnly: true,
       },
     },
     {
       name: 'promotionSentAt',
-      label: 'Promotion Email gesendet am',
+      label: 'Promotion Email gesendet am (DEPRECATED)',
       type: 'date',
       admin: {
         position: 'sidebar',
         readOnly: true,
-        description: 'Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde',
+        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt, wann die Benachrichtigung über verfügbare Plätze gesendet wurde',
         date: {
           pickerAppearance: 'dayAndTime',
           displayFormat: 'dd.MM.yyyy HH:mm',
@@ -131,12 +134,12 @@ export const knallbonbonRegistration: CollectionConfig = {
     },
     {
       name: 'confirmationDeadline',
-      label: 'Bestätigungsfrist',
+      label: 'Bestätigungsfrist (DEPRECATED)',
       type: 'date',
       admin: {
         position: 'sidebar',
         readOnly: true,
-        description: 'Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)',
+        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Frist bis zur Bestätigung der Teilnahme (automatisch gesetzt)',
         date: {
           pickerAppearance: 'dayAndTime',
           displayFormat: 'dd.MM.yyyy HH:mm',
@@ -145,12 +148,12 @@ export const knallbonbonRegistration: CollectionConfig = {
     },
     {
       name: 'confirmedAt',
-      label: 'Bestätigt am',
+      label: 'Bestätigt am (DEPRECATED)',
       type: 'date',
       admin: {
         position: 'sidebar',
         readOnly: true,
-        description: 'Zeitpunkt der Bestätigung durch Eltern',
+        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Zeitpunkt der Bestätigung durch Eltern',
         date: {
           pickerAppearance: 'dayAndTime',
           displayFormat: 'dd.MM.yyyy HH:mm',

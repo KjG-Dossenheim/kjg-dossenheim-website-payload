@@ -1,4 +1,4 @@
-import { cleanupExpiredConfirmations } from '@/collections/knallbonbonRegistration/hooks/cleanupExpiredConfirmations'
+import { cleanupExpiredConfirmations } from '@/collections/knallbonbonWaitlist/hooks/cleanupExpiredConfirmations'
 
 /**
  * Job to cleanup expired waitlist confirmations
