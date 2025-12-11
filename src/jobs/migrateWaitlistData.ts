@@ -67,7 +67,7 @@ export const migrateWaitlistDataJob: TaskConfig = {
               id: eventId,
             })
             eventTitle = event.title || eventTitle
-          } catch (error) {
+          } catch (_error) {
             req.payload.logger.warn(
               `[Migration] Could not fetch event ${eventId}, using default title`,
             )
@@ -91,8 +91,8 @@ export const migrateWaitlistDataJob: TaskConfig = {
           }
 
           // Determine status based on current state
-          let status = 'pending'
-          let expiredAt = null
+          let status: 'pending' | 'promoted' | 'confirmed' | 'expired' | 'cancelled' = 'pending'
+          let expiredAt: string | null = null
 
           if (registration.confirmedAt) {
             status = 'confirmed'
@@ -173,7 +173,9 @@ export const migrateWaitlistDataJob: TaskConfig = {
         },
       }
     } catch (error) {
-      req.payload.logger.error('[Migration] Critical error in migration job:', error)
+      req.payload.logger.error(
+        `[Migration] Critical error in migration job: ${error instanceof Error ? error.message : String(error)}`,
+      )
       return {
         state: 'failed' as const,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',

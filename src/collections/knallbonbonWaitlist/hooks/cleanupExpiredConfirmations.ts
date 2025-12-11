@@ -94,7 +94,9 @@ export async function cleanupExpiredConfirmations(
 
           payload.logger.info('[Waitlist] Sent admin expiration notification')
         } catch (error) {
-          payload.logger.error('[Waitlist] Failed to send admin expiration notification:', error)
+          payload.logger.error(
+            `[Waitlist] Failed to send admin expiration notification: ${error instanceof Error ? error.message : String(error)}`,
+          )
         }
 
         // Track event for promotion check
@@ -103,8 +105,7 @@ export async function cleanupExpiredConfirmations(
         }
       } catch (error) {
         payload.logger.error(
-          `[Waitlist] Failed to process expired entry ${entry.id}:`,
-          error,
+          `[Waitlist] Failed to process expired entry ${entry.id}: ${error instanceof Error ? error.message : String(error)}`,
         )
       }
     }
@@ -123,7 +124,9 @@ export async function cleanupExpiredConfirmations(
       `[Waitlist] Cleanup complete: ${expiredEntries.docs.length} expired confirmation(s) processed`,
     )
   } catch (error) {
-    payload.logger.error('[Waitlist] Error in cleanupExpiredConfirmations:', error)
+    payload.logger.error(
+      `[Waitlist] Error in cleanupExpiredConfirmations: ${error instanceof Error ? error.message : String(error)}`,
+    )
   }
 }
 

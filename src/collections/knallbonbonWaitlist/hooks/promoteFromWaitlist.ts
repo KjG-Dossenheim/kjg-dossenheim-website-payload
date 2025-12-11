@@ -170,8 +170,7 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
         req.payload.logger.info(`[Waitlist] Sent spot-available email to ${entry.email}`)
       } catch (error) {
         req.payload.logger.error(
-          `[Waitlist] Failed to send spot-available email to ${entry.email}:`,
-          error,
+          `[Waitlist] Failed to send spot-available email to ${entry.email}: ${error instanceof Error ? error.message : String(error)}`,
         )
       }
 
@@ -200,7 +199,9 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
 
         req.payload.logger.info('[Waitlist] Sent admin promotion notification')
       } catch (error) {
-        req.payload.logger.error('[Waitlist] Failed to send admin promotion notification:', error)
+        req.payload.logger.error(
+          `[Waitlist] Failed to send admin promotion notification: ${error instanceof Error ? error.message : String(error)}`,
+        )
       }
 
       availableSpots -= childrenCount
@@ -221,7 +222,9 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
       )
     }
   } catch (error) {
-    req.payload.logger.error('[Waitlist] Error in promoteFromWaitlist:', error)
+    req.payload.logger.error(
+      `[Waitlist] Error in promoteFromWaitlist: ${error instanceof Error ? error.message : String(error)}`,
+    )
     // Don't throw - we don't want to break the main operation
   }
 }
