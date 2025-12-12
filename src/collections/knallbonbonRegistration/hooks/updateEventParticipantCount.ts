@@ -1,5 +1,4 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
-import { promoteFromWaitlist } from '@/collections/knallbonbonWaitlist/hooks/promoteFromWaitlist'
 
 /**
  * Hook to update the event's participantCount after a registration is created or updated
@@ -65,12 +64,6 @@ export const updateEventParticipantCountAfterChange: CollectionAfterChangeHook =
     console.log(
       `Updated participant count for event ${eventId}: ${totalChildren} children across ${registrations.totalDocs} registrations (${operation})${isFull ? ' - Event is now full!' : ''}`,
     )
-
-    // Check if waitlist promotion should be triggered
-    if (!isFull && event.maxParticipants) {
-      console.log('Event has available spots, checking waitlist for promotion...')
-      await promoteFromWaitlist(req, eventId)
-    }
   } catch (error) {
     console.error('Failed to update event participant count:', error)
   }
@@ -141,12 +134,6 @@ export const updateEventParticipantCountAfterDelete: CollectionAfterDeleteHook =
     console.log(
       `Updated participant count for event ${eventId} after deletion: ${totalChildren} children across ${registrations.totalDocs} registrations${isFull ? ' - Event is now full!' : ''}`,
     )
-
-    // Check if waitlist promotion should be triggered
-    if (!isFull && event.maxParticipants) {
-      console.log('Event has available spots after deletion, checking waitlist for promotion...')
-      await promoteFromWaitlist(req, eventId)
-    }
   } catch (error) {
     console.error('Failed to update event participant count after deletion:', error)
   }

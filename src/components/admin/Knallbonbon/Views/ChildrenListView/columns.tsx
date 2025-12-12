@@ -119,13 +119,7 @@ export const columns: ColumnDef<ChildData>[] = [
     cell: ({ row }) => {
       const healthInfo = row.getValue('healthInfo') as string | null
       if (!healthInfo) return '-'
-      return (
-        <div className="max-w-xs">
-          <div className="truncate rounded border border-orange-200 bg-orange-50 px-2 py-1 text-sm">
-            {healthInfo}
-          </div>
-        </div>
-      )
+      return healthInfo
     },
   },
 ]

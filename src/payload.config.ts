@@ -117,15 +117,15 @@ export default buildConfig({
       views: {
         knallbonbon: {
           path: '/knallbonbon',
-          Component: '@/components/admin/views/KnallbonbonView',
+          Component: '@/components/admin/Knallbonbon/Views/DefaultView',
         },
         knallbonbonChildren: {
           path: '/knallbonbon/list-children',
-          Component: '@/components/admin/views/KnallbonbonChildrenView',
+          Component: '@/components/admin/Knallbonbon/Views/ChildrenListView',
         },
         knallbonbonWaitlist: {
           path: '/knallbonbon/waitlist',
-          Component: '@/components/admin/views/KnallbonbonView/WaitlistView',
+          Component: '@/components/admin/Knallbonbon/Views/WaitlistView',
         },
         settings: {
           path: '/settings',

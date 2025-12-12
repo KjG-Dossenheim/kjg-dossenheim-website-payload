@@ -2,7 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 export const knallbonbonSettings: GlobalConfig = {
   slug: 'knallbonbonSettings',
-  label: 'Knallbonbon Einstellungen',
+  label: 'Einstellungen',
   admin: {
     group: 'Knallbonbon',
   },
@@ -18,16 +18,6 @@ export const knallbonbonSettings: GlobalConfig = {
       admin: {
         description:
           'Anzahl der Tage, die Eltern Zeit haben, um ihre Teilnahme zu bestätigen, nachdem sie von der Warteliste befördert wurden.',
-      },
-    },
-    {
-      name: 'enableAutoPromotion',
-      label: 'Automatische Beförderung aktivieren',
-      type: 'checkbox',
-      defaultValue: true,
-      admin: {
-        description:
-          'Wenn aktiviert, werden Wartelisten-Anmeldungen automatisch befördert, wenn Plätze frei werden.',
       },
     },
   ],

@@ -12,6 +12,7 @@ export const knallbonbonWaitlist: CollectionConfig = {
     group: 'Knallbonbon',
     defaultColumns: ['parentName', 'event', 'status', 'queuePosition', 'promotionSentAt'],
     useAsTitle: 'parentName',
+    hidden: true, // Hide from main admin sidebar
   },
   access: {
     create: () => true, // Allow public creation (handled with care in application logic)

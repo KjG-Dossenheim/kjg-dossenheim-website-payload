@@ -467,10 +467,6 @@ export interface KnallbonbonRegistration {
   address?: string | null;
   postalCode?: string | null;
   city?: string | null;
-  /**
-   * DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)
-   */
-  isWaitlist?: boolean | null;
   child?:
     | {
         firstName: string;
@@ -1371,7 +1367,6 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
   address?: T;
   postalCode?: T;
   city?: T;
-  isWaitlist?: T;
   child?:
     | T
     | {
@@ -2254,10 +2249,6 @@ export interface KnallbonbonSetting {
    * Anzahl der Tage, die Eltern Zeit haben, um ihre Teilnahme zu bestätigen, nachdem sie von der Warteliste befördert wurden.
    */
   confirmationDeadlineDays: number;
-  /**
-   * Wenn aktiviert, werden Wartelisten-Anmeldungen automatisch befördert, wenn Plätze frei werden.
-   */
-  enableAutoPromotion?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2576,7 +2567,6 @@ export interface KnallbonbonSelect<T extends boolean = true> {
  */
 export interface KnallbonbonSettingsSelect<T extends boolean = true> {
   confirmationDeadlineDays?: T;
-  enableAutoPromotion?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -104,6 +104,15 @@ const styles = StyleSheet.create({
     right: 30,
     width: 120,
   },
+  pageNumber: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    fontSize: 10,
+    color: '#666',
+  },
 })
 
 // Create Document Component
@@ -139,8 +148,8 @@ export const RegistrationsDocument: React.FC<{ registrations: Registration[] }> 
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        {/* Top-right Evangelische Jugend logo */}
-        <View style={styles.logoContainer} fixed>
+        {/* Top-right Evangelische Jugend logo - only on first page */}
+        <View style={styles.logoContainer}>
           <Svg viewBox="0 0 309 191">
             <Path
               fill="#005e7e"
@@ -159,6 +168,11 @@ export const RegistrationsDocument: React.FC<{ registrations: Registration[] }> 
             />
           </Svg>
         </View>
+
+        {/* Page numbers on all pages */}
+        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (
+          `Seite ${pageNumber} von ${totalPages}`
+        )} fixed />
         <Text style={styles.title}>Teilnehmerliste - {eventTitle}</Text>
         {eventDate && <Text style={styles.eventInfo}>{eventDate}</Text>}
         <Text style={styles.summary}>

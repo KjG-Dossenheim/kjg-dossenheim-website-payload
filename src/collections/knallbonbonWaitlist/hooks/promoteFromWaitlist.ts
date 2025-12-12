@@ -44,15 +44,10 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
       return
     }
 
-    // Fetch settings to check if auto-promotion is enabled
+    // Fetch settings for confirmation deadline
     const settings = await req.payload.findGlobal({
       slug: 'knallbonbonSettings',
     })
-
-    if (!settings.enableAutoPromotion) {
-      req.payload.logger.info('[Waitlist] Auto-promotion is disabled in settings, skipping')
-      return
-    }
 
     const confirmationDeadlineDays = settings.confirmationDeadlineDays || 7
 

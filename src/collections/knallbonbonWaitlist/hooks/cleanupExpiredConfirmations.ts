@@ -1,7 +1,6 @@
 import type { PayloadRequest } from 'payload'
 import { render } from '@react-email/render'
 import { adminExpirationNotificationEmailTemplate } from '@/app/(website)/knallbonbon/anmeldung/emailTemplate'
-import { promoteFromWaitlist } from './promoteFromWaitlist'
 
 /**
  * Cleanup expired waitlist promotion confirmations
@@ -16,12 +15,8 @@ import { promoteFromWaitlist } from './promoteFromWaitlist'
  * - Update status to 'expired'
  * - Set expiredAt timestamp
  * - Send admin notification
- * - Trigger promotion for next person in line
  */
-export async function cleanupExpiredConfirmations(
-  payload: any,
-  req?: PayloadRequest,
-): Promise<void> {
+export async function cleanupExpiredConfirmations(payload: any): Promise<void> {
   try {
     payload.logger.info('[Waitlist] Starting cleanup of expired waitlist confirmations...')
 
@@ -49,14 +44,10 @@ export async function cleanupExpiredConfirmations(
       `[Waitlist] Found ${expiredEntries.docs.length} expired confirmation(s)`,
     )
 
-    // Track unique events that need promotion check
-    const eventsToPromote = new Set<string>()
-
     // Process each expired entry
     for (const entry of expiredEntries.docs) {
       try {
         // Get event data from relationship
-        const eventId = typeof entry.event === 'string' ? entry.event : entry.event?.id
         const eventTitle = typeof entry.event === 'object' ? entry.event.title : 'Unknown Event'
 
         // Update entry status to expired
@@ -99,25 +90,10 @@ export async function cleanupExpiredConfirmations(
             `[Waitlist] Failed to send admin expiration notification: ${error instanceof Error ? error.message : String(error)}`,
           )
         }
-
-        // Track event for promotion check
-        if (eventId) {
-          eventsToPromote.add(eventId)
-        }
       } catch (error) {
         payload.logger.error(
           `[Waitlist] Failed to process expired entry ${entry.id}: ${error instanceof Error ? error.message : String(error)}`,
         )
-      }
-    }
-
-    // Trigger promotion for affected events
-    if (eventsToPromote.size > 0 && req) {
-      payload.logger.info(
-        `[Waitlist] Triggering waitlist promotion for ${eventsToPromote.size} event(s)`,
-      )
-      for (const eventId of eventsToPromote) {
-        await promoteFromWaitlist(req, eventId)
       }
     }
 
@@ -135,5 +111,5 @@ export async function cleanupExpiredConfirmations(
  * Wrapper for use in Payload hooks
  */
 export async function cleanupExpiredConfirmationsHook(req: PayloadRequest): Promise<void> {
-  await cleanupExpiredConfirmations(req.payload, req)
+  await cleanupExpiredConfirmations(req.payload)
 }

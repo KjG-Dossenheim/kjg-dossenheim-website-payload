@@ -1,7 +1,8 @@
 import React from 'react'
 import type { AfterListServerProps } from 'payload'
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Calendar, Activity, Group } from 'lucide-react'
+import { Calendar, Activity, Group, Plus } from 'lucide-react'
 import { Button, Gutter } from '@payloadcms/ui'
 import { GenderStackedBar } from './GenderStackedBar'
 import { AgeStackedBar } from './AgeStackedBar'
@@ -161,6 +162,17 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
                   </Card>
                 )
               })}
+              {/* Add New Event Card */}
+              <Card className="flex items-center justify-center transition-all hover:shadow-md">
+                <Link
+                  href="/admin/collections/knallbonbonEvents/create"
+                  className="flex h-full w-full flex-col items-center justify-center gap-4 p-8 text-center"
+                >
+                  <div className="bg-primary/10 text-primary hover:bg-primary/20 flex h-20 w-20 items-center justify-center rounded-full transition-colors">
+                    <Plus className="h-10 w-10" />
+                  </div>
+                </Link>
+              </Card>
             </div>
           </div>
         )}

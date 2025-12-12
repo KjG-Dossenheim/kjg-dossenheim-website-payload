@@ -28,8 +28,8 @@ export const knallbonbonRegistration: CollectionConfig = {
       },
       views: {
         list: {
-          actions: ['@/components/admin/actions/KnallbonbonRegistrationExportAction'],
-          Component: '@/components/admin/views/KnallbonbonView',
+          actions: ['@/components/admin/Knallbonbon/Actions/ExportAction'],
+          Component: '@/components/admin/Knallbonbon/Views/DefaultView',
         },
       },
     },
@@ -42,7 +42,7 @@ export const knallbonbonRegistration: CollectionConfig = {
       required: true,
       relationTo: 'knallbonbonEvents',
       access: {
-        create: () => false,
+        update: () => false,
       },
     },
     {
@@ -104,19 +104,6 @@ export const knallbonbonRegistration: CollectionConfig = {
       admin: {
         position: "sidebar"
       }
-    },
-    // DEPRECATED: The following fields are deprecated and will be removed in a future version
-    // Waitlist data is now stored in the separate knallbonbonWaitlist collection
-    {
-      name: 'isWaitlist',
-      label: 'Warteliste (DEPRECATED)',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
-        position: 'sidebar',
-        description: 'DEPRECATED - Bitte verwenden Sie stattdessen waitlistEntry. Anmeldung auf der Warteliste (automatisch gesetzt, wenn Event ausgebucht ist)',
-        readOnly: true,
-      },
     },
     {
       name: 'child',
