@@ -71,12 +71,12 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
       `[Waitlist] Event ${event.title} has ${availableSpots} available spots, checking waitlist...`,
     )
 
-    // Fetch waitlist entries - self-contained, no relationships needed
+    // Fetch waitlist entries - with event relationship populated
     const waitlistEntries = await req.payload.find({
       collection: 'knallbonbonWaitlist',
       where: {
         and: [
-          { eventId: { equals: eventId } },
+          { event: { equals: eventId } },
           {
             or: [
               { status: { equals: 'pending' } },
@@ -87,6 +87,7 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
       },
       sort: 'queuePosition', // FIFO order
       limit: 100,
+      depth: 1, // Populate event relationship
     })
 
     if (waitlistEntries.docs.length === 0) {
@@ -142,7 +143,7 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
         },
       })
 
-      // Send email to parents using data from waitlist entry (self-contained)
+      // Send email to parents using data from waitlist entry
       try {
         // Create a registration-like object from waitlist data for email template
         const registrationData = {
@@ -152,10 +153,13 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
           child: entry.children,
         }
 
+        // Get event title from relationship
+        const eventTitle = typeof entry.event === 'object' ? entry.event.title : event.title
+
         const spotAvailableHtml = await render(
           spotAvailableEmailTemplate(
             registrationData,
-            entry.eventTitle,
+            eventTitle,
             confirmationUrl,
             confirmationDeadline,
           ),
@@ -163,7 +167,7 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
 
         await req.payload.sendEmail({
           to: entry.email,
-          subject: `Gute Nachricht! Ein Platz ist frei geworden - ${entry.eventTitle}`,
+          subject: `Gute Nachricht! Ein Platz ist frei geworden - ${eventTitle}`,
           html: spotAvailableHtml,
         })
 
@@ -183,17 +187,20 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
           child: entry.children,
         }
 
+        // Get event title from relationship
+        const eventTitle = typeof entry.event === 'object' ? entry.event.title : event.title
+
         const adminNotificationHtml = await render(
           adminPromotionNotificationEmailTemplate(
             registrationData,
-            entry.eventTitle,
+            eventTitle,
             confirmationDeadline,
           ),
         )
 
         await req.payload.sendEmail({
           to: 'ben.wallner@kjg-dossenheim.org',
-          subject: `Neue Wartelisten-Beförderung: ${entry.eventTitle}`,
+          subject: `Neue Wartelisten-Beförderung: ${eventTitle}`,
           html: adminNotificationHtml,
         })
 

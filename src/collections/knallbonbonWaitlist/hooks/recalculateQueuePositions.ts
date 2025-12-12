@@ -8,7 +8,7 @@ export const recalculateQueuePositionsAfterChange: CollectionAfterChangeHook = a
   doc,
   req,
 }) => {
-  const eventId = doc.eventId
+  const eventId = typeof doc.event === 'string' ? doc.event : doc.event?.id
 
   if (!eventId) return doc
 
@@ -23,7 +23,7 @@ export const recalculateQueuePositionsAfterDelete: CollectionAfterDeleteHook = a
   doc,
   req,
 }) => {
-  const eventId = doc.eventId
+  const eventId = typeof doc.event === 'string' ? doc.event : doc.event?.id
 
   if (!eventId) return doc
 
@@ -47,7 +47,7 @@ async function recalculatePositionsForEvent(req: any, eventId: string): Promise<
       collection: 'knallbonbonWaitlist',
       where: {
         and: [
-          { eventId: { equals: eventId } },
+          { event: { equals: eventId } },
           { status: { equals: 'pending' } },
         ],
       },

@@ -37,6 +37,7 @@ export async function cleanupExpiredConfirmations(
         ],
       },
       limit: 100,
+      depth: 1, // Populate event relationship
     })
 
     if (expiredEntries.docs.length === 0) {
@@ -54,9 +55,9 @@ export async function cleanupExpiredConfirmations(
     // Process each expired entry
     for (const entry of expiredEntries.docs) {
       try {
-        // Use self-contained data from waitlist entry
-        const eventId = entry.eventId
-        const eventTitle = entry.eventTitle || 'Unknown Event'
+        // Get event data from relationship
+        const eventId = typeof entry.event === 'string' ? entry.event : entry.event?.id
+        const eventTitle = typeof entry.event === 'object' ? entry.event.title : 'Unknown Event'
 
         // Update entry status to expired
         await payload.update({

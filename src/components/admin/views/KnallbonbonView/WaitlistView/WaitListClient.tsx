@@ -11,9 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import type { KnallbonbonEvent, KnallbonbonRegistration } from '@/payload-types'
+import type { KnallbonbonEvent, KnallbonbonWaitlist } from '@/payload-types'
 
-type Child = NonNullable<KnallbonbonRegistration['child']>[number] & {
+type Child = NonNullable<KnallbonbonWaitlist['children']>[number] & {
   parentEmail?: string
   parentName?: string
   eventId?: string
@@ -31,7 +31,7 @@ export function WaitlistClient({
   events = [],
   initialEventId,
 }: {
-  registrations?: KnallbonbonRegistration[]
+  registrations?: KnallbonbonWaitlist[]
   events?: KnallbonbonEvent[]
   initialEventId?: string
 }) {
@@ -53,10 +53,10 @@ export function WaitlistClient({
   }
 
   const children: Child[] = registrations.flatMap((reg) =>
-    (reg.child ?? []).map((child) => ({
+    (reg.children ?? []).map((child) => ({
       ...child,
       parentEmail: reg.email,
-      parentName: `${reg.firstName} ${reg.lastName}`,
+      parentName: reg.parentName || `${reg.firstName} ${reg.lastName}`,
       eventId: typeof reg.event === 'string' ? reg.event : reg.event?.id,
     })),
   )

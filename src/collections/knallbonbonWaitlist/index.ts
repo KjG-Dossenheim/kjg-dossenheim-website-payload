@@ -10,7 +10,7 @@ export const knallbonbonWaitlist: CollectionConfig = {
   },
   admin: {
     group: 'Knallbonbon',
-    defaultColumns: ['parentName', 'eventId', 'status', 'queuePosition', 'promotionSentAt'],
+    defaultColumns: ['parentName', 'event', 'status', 'queuePosition', 'promotionSentAt'],
     useAsTitle: 'parentName',
   },
   access: {
@@ -22,23 +22,14 @@ export const knallbonbonWaitlist: CollectionConfig = {
   },
   fields: [
     {
-      name: 'eventId',
-      label: 'Veranstaltungs-ID',
-      type: 'text',
+      name: 'event',
+      label: 'Veranstaltung',
+      type: 'relationship',
+      relationTo: 'knallbonbonEvents',
       required: true,
       index: true,
       admin: {
         description: 'Referenz zur Veranstaltung',
-        readOnly: true,
-      },
-    },
-    {
-      name: 'eventTitle',
-      label: 'Veranstaltung',
-      type: 'text',
-      required: true,
-      admin: {
-        description: 'Name der Veranstaltung (Snapshot)',
         readOnly: true,
       },
     },

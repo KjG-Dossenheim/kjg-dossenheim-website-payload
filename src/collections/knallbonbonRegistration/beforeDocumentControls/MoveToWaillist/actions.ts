@@ -58,7 +58,7 @@ export async function moveRegistrationToWaitlist(
     const existingWaitlistEntries = await payload.find({
       collection: 'knallbonbonWaitlist',
       where: {
-        eventId: {
+        event: {
           equals: eventId,
         },
       },
@@ -74,8 +74,7 @@ export async function moveRegistrationToWaitlist(
     const waitlistEntry = await payload.create({
       collection: 'knallbonbonWaitlist',
       data: {
-        eventId: eventId,
-        eventTitle: event.title,
+        event: eventId,
         parentName,
         firstName: registration.firstName,
         lastName: registration.lastName,

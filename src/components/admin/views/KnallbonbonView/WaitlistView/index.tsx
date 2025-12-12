@@ -3,30 +3,21 @@ import { DefaultTemplate } from '@payloadcms/next/templates'
 import { redirect } from 'next/navigation'
 import { WaitlistClient } from './WaitListClient'
 
-export async function WaitlistView({
-  initPageResult,
-  params,
-  searchParams,
-}: AdminViewServerProps) {
+export async function WaitlistView({ initPageResult, params, searchParams }: AdminViewServerProps) {
   const {
     req: { user, payload },
   } = initPageResult
 
   // Authentication check
   if (!user) {
-    redirect('/admin/login?redirect=/admin/collections/knallbonbonRegistration/waitlist')
+    redirect('/admin/login?redirect=/admin/knallbonbon/waitlist')
   }
 
   const registrations = await payload.find({
-    collection: 'knallbonbonRegistration',
+    collection: 'knallbonbonWaitlist',
     depth: 1,
     where: {
       and: [
-        {
-          isWaitlist: {
-            equals: true,
-          },
-        },
         ...(searchParams?.event
           ? [
               {
@@ -58,9 +49,7 @@ export async function WaitlistView({
       <WaitlistClient
         registrations={registrations.docs}
         events={events.docs}
-        initialEventId={
-          typeof searchParams?.event === 'string' ? searchParams.event : undefined
-        }
+        initialEventId={typeof searchParams?.event === 'string' ? searchParams.event : undefined}
       />
     </DefaultTemplate>
   )

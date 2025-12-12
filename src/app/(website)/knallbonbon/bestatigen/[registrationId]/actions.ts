@@ -45,10 +45,11 @@ export async function confirmRegistrationAction(
 
     const payload = await getPayload({ config })
 
-    // Find waitlist entry by ID
+    // Find waitlist entry by ID with event relationship populated
     const entry = await payload.findByID({
       collection: 'knallbonbonWaitlist',
       id: waitlistEntryId,
+      depth: 1,
     })
 
     if (!entry) {
@@ -90,10 +91,11 @@ export async function confirmRegistrationAction(
       }
     }
 
-    // Fetch event to check if spots are still available
-    const event = await payload.findByID({
+    // Get event from relationship
+    const eventId = typeof entry.event === 'string' ? entry.event : entry.event.id
+    const event = typeof entry.event === 'object' ? entry.event : await payload.findByID({
       collection: 'knallbonbonEvents',
-      id: entry.eventId,
+      id: eventId,
     })
 
     if (!event) {
@@ -119,7 +121,7 @@ export async function confirmRegistrationAction(
     const newRegistration = await payload.create({
       collection: 'knallbonbonRegistration',
       data: {
-        event: entry.eventId,
+        event: eventId,
         firstName: entry.firstName,
         lastName: entry.lastName,
         email: entry.email,
@@ -151,7 +153,7 @@ export async function confirmRegistrationAction(
       task: 'sendConfirmationEmails',
       input: {
         registration: JSON.parse(JSON.stringify(newRegistration)), // Serialize for job queue
-        eventTitle: entry.eventTitle,
+        eventTitle: event.title,
       },
     })
 
@@ -163,7 +165,7 @@ export async function confirmRegistrationAction(
     return {
       success: true,
       message: 'Ihre Teilnahme wurde erfolgreich bestätigt!',
-      eventTitle: entry.eventTitle,
+      eventTitle: event.title,
     }
   } catch (error) {
     console.error('Error confirming registration:', error)

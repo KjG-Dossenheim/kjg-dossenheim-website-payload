@@ -96,9 +96,8 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
       await payloadClient.create({
         collection: 'knallbonbonWaitlist',
         data: {
-          // Reference IDs
-          eventId: formValues.event,
-          eventTitle: event.title,
+          // Event relationship
+          event: formValues.event,
 
           // Parent/Guardian Information (snapshot)
           parentName: `${formValues.firstName} ${formValues.lastName}`,

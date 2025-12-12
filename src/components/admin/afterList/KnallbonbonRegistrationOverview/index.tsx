@@ -148,7 +148,7 @@ export async function KnallbonbonRegistrationOverview(props: AfterListServerProp
                         Anmeldungen
                       </Button>
                       <Button
-                        url={`/admin/collections/knallbonbonWaitlist`}
+                        url={`/admin/knallbonbon/waitlist?event=${encodeURIComponent(eventId)}`}
                         el="anchor"
                         buttonStyle="secondary"
                         icon={<Activity className="size-4" />}

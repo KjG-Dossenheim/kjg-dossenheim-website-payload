@@ -536,11 +536,7 @@ export interface KnallbonbonWaitlist {
   /**
    * Referenz zur Veranstaltung
    */
-  eventId: string;
-  /**
-   * Name der Veranstaltung (Snapshot)
-   */
-  eventTitle: string;
+  event: string | KnallbonbonEvent;
   /**
    * Vor- und Nachname des Elternteils
    */
@@ -1414,8 +1410,7 @@ export interface KnallbonbonEventsSelect<T extends boolean = true> {
  * via the `definition` "knallbonbonWaitlist_select".
  */
 export interface KnallbonbonWaitlistSelect<T extends boolean = true> {
-  eventId?: T;
-  eventTitle?: T;
+  event?: T;
   parentName?: T;
   firstName?: T;
   lastName?: T;
