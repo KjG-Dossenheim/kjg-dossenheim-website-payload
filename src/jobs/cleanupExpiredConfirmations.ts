@@ -38,7 +38,7 @@ export const cleanupExpiredConfirmationsJob = {
     try {
       req.payload.logger.info('Starting scheduled cleanup of expired confirmations...')
 
-      await cleanupExpiredConfirmations(req.payload, req)
+      await cleanupExpiredConfirmations(req.payload)
 
       req.payload.logger.info('Cleanup job completed successfully')
 

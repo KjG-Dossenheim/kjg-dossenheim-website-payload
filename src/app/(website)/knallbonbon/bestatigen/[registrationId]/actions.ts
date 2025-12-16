@@ -130,7 +130,6 @@ export async function confirmRegistrationAction(
         postalCode: entry.postalCode,
         city: entry.city,
         child: entry.children, // Copy children array from waitlist
-        isWaitlist: false, // No longer on waitlist
       },
     })
 

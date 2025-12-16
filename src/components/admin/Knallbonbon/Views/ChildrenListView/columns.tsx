@@ -18,7 +18,6 @@ export type ChildData = {
   parentName: string
   parentEmail: string
   parentPhone: string
-  isWaitlist: boolean | null
 }
 
 const GENDER_LABELS = {

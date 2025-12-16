@@ -124,7 +124,6 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
         collection: 'knallbonbonRegistration',
         data: {
           ...formValues,
-          isWaitlist: false,
         },
       })
     }

@@ -44,7 +44,6 @@ export function ChildrenListClient({ registrations, events }: ChildrenListClient
             parentName: `${reg.firstName} ${reg.lastName}`,
             parentEmail: reg.email || '',
             parentPhone: reg.phone || '',
-            isWaitlist: reg.isWaitlist || false,
           })
         })
       }
