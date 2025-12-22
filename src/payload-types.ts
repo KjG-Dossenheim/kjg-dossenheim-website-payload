@@ -717,6 +717,7 @@ export interface SommerfreizeitUser {
  */
 export interface SommerfreizeitAnmeldung {
   id: string;
+  user: string | SommerfreizeitUser;
   firstName: string;
   lastName: string;
   dateOfBirth: string;
@@ -1518,6 +1519,7 @@ export interface SommerfreizeitUserSelect<T extends boolean = true> {
  * via the `definition` "sommerfreizeitAnmeldung_select".
  */
 export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
+  user?: T;
   firstName?: T;
   lastName?: T;
   dateOfBirth?: T;

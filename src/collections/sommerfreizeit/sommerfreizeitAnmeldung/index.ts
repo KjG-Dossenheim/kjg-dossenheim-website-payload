@@ -10,8 +10,25 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
     group: 'Sommerfreizeit',
     defaultColumns: ['firstName', 'lastName', 'dateOfBirth'],
     groupBy: true,
+    hidden: true,
+    components: {
+      views: {
+        edit: {
+          Default: {
+            Component: '@/components/admin/Sommerfreizeit/Views/Anmeldungen/Edit',
+          },
+        },
+      },
+    },
   },
   fields: [
+    {
+      name: "user",
+      type: "relationship",
+      relationTo: "sommerfreizeitUser",
+      label: "Benutzer",
+      required: true,
+    },
     {
       name: 'firstName',
       label: 'Vorname',

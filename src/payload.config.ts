@@ -127,6 +127,18 @@ export default buildConfig({
           path: '/knallbonbon/waitlist',
           Component: '@/components/admin/Knallbonbon/Views/WaitlistView',
         },
+        sommerfreizeit: {
+          path: '/sommerfreizeit',
+          Component: '@/components/admin/Sommerfreizeit',
+        },
+        sommerfreizeitAnmeldung: {
+          path: '/sommerfreizeit/anmeldungen',
+          Component: '@/components/admin/Sommerfreizeit/Views/Anmeldungen',
+        },
+        sommerfreizeitFeedback: {
+          path: '/sommerfreizeit/feedback',
+          Component: '@/components/admin/Sommerfreizeit/Views/Feedback',
+        },
         settings: {
           path: '/settings',
           Component: '@/components/admin/views/SettingsView',

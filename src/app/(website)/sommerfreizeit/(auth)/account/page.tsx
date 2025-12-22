@@ -12,7 +12,7 @@ export default async function KontoPage() {
   const { user } = await payload.auth({ headers })
 
   if (!user || user.collection !== 'sommerfreizeitUser') {
-    redirect(`/login`)
+    redirect(`/sommerfreizeit/login`)
   }
 
   return (

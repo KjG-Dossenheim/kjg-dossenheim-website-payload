@@ -28,6 +28,7 @@ import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collectio
 import { default as default_98a00ed7a1da5fc44dc587f84bf0657c } from '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'
 import { default as default_5aa9f2157222a9673aadf0b556aefd79 } from '@/components/admin/Knallbonbon/Views/DefaultView'
 import { default as default_543488da7a3cf2c9ab7168d32f6f86a3 } from '@/components/admin/Knallbonbon/Actions/ExportAction'
+import { default as default_b65c031a715bea3a51ddabf7cc2aaa78 } from '@/components/admin/Sommerfreizeit/Views/Anmeldungen/Edit'
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
@@ -42,6 +43,9 @@ import { default as default_d4a5371c3bfcd973abc37a1ee6c57fde } from '@/component
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { default as default_290e0a8c59d7e067b68e692ff1af72ee } from '@/components/admin/Knallbonbon/Views/ChildrenListView'
 import { default as default_eb46b223f8c1acb340a8fe94711c71e2 } from '@/components/admin/Knallbonbon/Views/WaitlistView'
+import { default as default_1867e6467b500b6d4765a80f0bb16754 } from '@/components/admin/Sommerfreizeit'
+import { default as default_e5e89d4d33bfd7d5ef7ceaf3731d1591 } from '@/components/admin/Sommerfreizeit/Views/Anmeldungen'
+import { default as default_47fcee3a922ae55de6f283e413f95de1 } from '@/components/admin/Sommerfreizeit/Views/Feedback'
 import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/components/admin/views/SettingsView'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
 
@@ -76,6 +80,7 @@ export const importMap = {
   "@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist#default": default_98a00ed7a1da5fc44dc587f84bf0657c,
   "@/components/admin/Knallbonbon/Views/DefaultView#default": default_5aa9f2157222a9673aadf0b556aefd79,
   "@/components/admin/Knallbonbon/Actions/ExportAction#default": default_543488da7a3cf2c9ab7168d32f6f86a3,
+  "@/components/admin/Sommerfreizeit/Views/Anmeldungen/Edit#default": default_b65c031a715bea3a51ddabf7cc2aaa78,
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
@@ -90,6 +95,9 @@ export const importMap = {
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@/components/admin/Knallbonbon/Views/ChildrenListView#default": default_290e0a8c59d7e067b68e692ff1af72ee,
   "@/components/admin/Knallbonbon/Views/WaitlistView#default": default_eb46b223f8c1acb340a8fe94711c71e2,
+  "@/components/admin/Sommerfreizeit#default": default_1867e6467b500b6d4765a80f0bb16754,
+  "@/components/admin/Sommerfreizeit/Views/Anmeldungen#default": default_e5e89d4d33bfd7d5ef7ceaf3731d1591,
+  "@/components/admin/Sommerfreizeit/Views/Feedback#default": default_47fcee3a922ae55de6f283e413f95de1,
   "@/components/admin/views/SettingsView#default": default_ab50c006cc520cf36af67ec593724ed8,
   "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc
 }
