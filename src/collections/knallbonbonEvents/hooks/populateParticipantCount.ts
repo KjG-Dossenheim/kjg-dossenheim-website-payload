@@ -8,23 +8,14 @@ export const populateParticipantCount: CollectionBeforeChangeHook = async ({ dat
     const registrations = await req.payload.find({
       collection: 'knallbonbonRegistration',
       where: {
-        and: [
-          {
-            event: {
-              equals: eventId,
-            },
-          },
-          {
-            isWaitlist: {
-              not_equals: true,
-            },
-          },
-        ],
+        event: {
+          equals: eventId,
+        },
       },
       limit: 1000, // Fetch all registrations to count children
     })
 
-    // Count total number of children across all registrations (excluding waitlist)
+    // Count total number of children across all registrations
     const totalChildren = registrations.docs.reduce((total, registration) => {
       return total + (registration.child?.length || 0)
     }, 0)

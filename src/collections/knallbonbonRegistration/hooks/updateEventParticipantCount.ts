@@ -17,27 +17,18 @@ export const updateEventParticipantCountAfterChange: CollectionAfterChangeHook =
   }
 
   try {
-    // Fetch all registrations for this event (excluding waitlist)
+    // Fetch all registrations for this event
     const registrations = await req.payload.find({
       collection: 'knallbonbonRegistration',
       where: {
-        and: [
-          {
-            event: {
-              equals: eventId,
-            },
-          },
-          {
-            isWaitlist: {
-              not_equals: true,
-            },
-          },
-        ],
+        event: {
+          equals: eventId,
+        },
       },
       limit: 1000, // Fetch all registrations to count children
     })
 
-    // Count total number of children across all registrations (excluding waitlist)
+    // Count total number of children across all registrations
     const totalChildren = registrations.docs.reduce((total, registration) => {
       return total + (registration.child?.length || 0)
     }, 0)
@@ -87,27 +78,18 @@ export const updateEventParticipantCountAfterDelete: CollectionAfterDeleteHook =
   }
 
   try {
-    // Fetch all remaining registrations for this event (excluding waitlist)
+    // Fetch all remaining registrations for this event
     const registrations = await req.payload.find({
       collection: 'knallbonbonRegistration',
       where: {
-        and: [
-          {
-            event: {
-              equals: eventId,
-            },
-          },
-          {
-            isWaitlist: {
-              not_equals: true,
-            },
-          },
-        ],
+        event: {
+          equals: eventId,
+        },
       },
       limit: 1000, // Fetch all registrations to count children
     })
 
-    // Count total number of children across all registrations (excluding waitlist)
+    // Count total number of children across all registrations
     const totalChildren = registrations.docs.reduce((total, registration) => {
       return total + (registration.child?.length || 0)
     }, 0)
