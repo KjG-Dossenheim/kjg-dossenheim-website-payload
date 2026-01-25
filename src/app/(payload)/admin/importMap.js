@@ -44,6 +44,7 @@ import { default as default_290e0a8c59d7e067b68e692ff1af72ee } from '@/component
 import { default as default_eb46b223f8c1acb340a8fe94711c71e2 } from '@/components/admin/Knallbonbon/Views/WaitlistView'
 import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/components/admin/views/SettingsView'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
+import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -91,5 +92,6 @@ export const importMap = {
   "@/components/admin/Knallbonbon/Views/ChildrenListView#default": default_290e0a8c59d7e067b68e692ff1af72ee,
   "@/components/admin/Knallbonbon/Views/WaitlistView#default": default_eb46b223f8c1acb340a8fe94711c71e2,
   "@/components/admin/views/SettingsView#default": default_ab50c006cc520cf36af67ec593724ed8,
-  "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc
+  "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc,
+  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }
