@@ -62,11 +62,14 @@ export function useKnallbonbonEvents() {
               id: event.id,
               title: String(event.title || 'Unbekannte Veranstaltung'),
               dateLabel,
+              date: event.date ?? undefined,
               isFull: event.isFull || false,
               freeSpots: event.maxParticipants
                 ? Math.max(event.maxParticipants - (event.participantCount || 0), 0)
                 : 0,
               maxParticipants: event.maxParticipants ?? undefined,
+              minAge: event.minAge ?? undefined,
+              maxAge: event.maxAge ?? undefined,
             }
           })
 

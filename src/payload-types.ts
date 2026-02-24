@@ -158,13 +158,7 @@ export interface Config {
     knallbonbonSettings: KnallbonbonSettingsSelect<false> | KnallbonbonSettingsSelect<true>;
   };
   locale: null;
-  user:
-    | (SommerfreizeitUser & {
-        collection: 'sommerfreizeitUser';
-      })
-    | (User & {
-        collection: 'users';
-      });
+  user: SommerfreizeitUser | User;
   jobs: {
     tasks: {
       cleanupExpiredConfirmations: CleanupExpiredConfirmationsJob;
@@ -295,6 +289,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -508,6 +503,14 @@ export interface KnallbonbonEvent {
    */
   maxParticipants?: number | null;
   /**
+   * Mindestalter der Kinder zum Veranstaltungsdatum. Leer lassen für keine Begrenzung.
+   */
+  minAge?: number | null;
+  /**
+   * Höchstalter der Kinder zum Veranstaltungsdatum. Leer lassen für keine Begrenzung.
+   */
+  maxAge?: number | null;
+  /**
    * Verknüpfte Anmeldungen zu diesem Termin anzeigen.
    */
   participants?: {
@@ -710,6 +713,7 @@ export interface SommerfreizeitUser {
       }[]
     | null;
   password?: string | null;
+  collection: 'sommerfreizeitUser';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1394,6 +1398,8 @@ export interface KnallbonbonEventsSelect<T extends boolean = true> {
   location?: T;
   additionalInfo?: T;
   maxParticipants?: T;
+  minAge?: T;
+  maxAge?: T;
   participants?: T;
   participantCount?: T;
   isFull?: T;

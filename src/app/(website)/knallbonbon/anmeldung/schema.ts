@@ -41,10 +41,13 @@ export type EventOption = {
   id: string
   title: string
   dateLabel: string
+  date?: string
   isFull: boolean
   freeSpots: number
   maxParticipants?: number
   allowWaitlist?: boolean
+  minAge?: number
+  maxAge?: number
 }
 
 export type FormValues = z.infer<typeof formSchema>

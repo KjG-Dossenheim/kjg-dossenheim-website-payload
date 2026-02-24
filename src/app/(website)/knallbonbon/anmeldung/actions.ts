@@ -9,6 +9,13 @@ type VerificationResponse = {
   success: boolean
 }
 
+function calcAgeAtDate(birthDate: Date, referenceDate: Date): number {
+  let age = referenceDate.getFullYear() - birthDate.getFullYear()
+  const m = referenceDate.getMonth() - birthDate.getMonth()
+  if (m < 0 || (m === 0 && referenceDate.getDate() < birthDate.getDate())) age--
+  return age
+}
+
 async function verifyCaptchaToken(token: string): Promise<boolean> {
 
   if (!token) {
@@ -75,6 +82,30 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
       collection: 'knallbonbonEvents',
       id: formValues.event,
     })
+
+    // Validate child ages against event age limits
+    if ((event.minAge != null || event.maxAge != null) && event.date) {
+      const eventDate = new Date(event.date)
+      for (const child of formValues.child ?? []) {
+        if (!child.dateOfBirth) continue
+        const birthDate = new Date(child.dateOfBirth)
+        const ageAtEvent = calcAgeAtDate(birthDate, eventDate)
+        if (event.minAge != null && ageAtEvent < event.minAge) {
+          return {
+            success: false,
+            error: 'age-limit',
+            message: `Ein Kind ist zu jung für diese Veranstaltung (Mindestalter: ${event.minAge} Jahre).`,
+          }
+        }
+        if (event.maxAge != null && ageAtEvent > event.maxAge) {
+          return {
+            success: false,
+            error: 'age-limit',
+            message: `Ein Kind ist zu alt für diese Veranstaltung (Höchstalter: ${event.maxAge} Jahre).`,
+          }
+        }
+      }
+    }
 
     // Calculate total children in this registration
     const childrenCount = formValues.child?.length || 0

@@ -71,6 +71,28 @@ export const knallbonbonEvents: CollectionConfig = {
       },
     },
     {
+      name: 'minAge',
+      label: 'Mindestalter (Jahre)',
+      type: 'number',
+      required: false,
+      min: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Mindestalter der Kinder zum Veranstaltungsdatum. Leer lassen für keine Begrenzung.',
+      },
+    },
+    {
+      name: 'maxAge',
+      label: 'Höchstalter (Jahre)',
+      type: 'number',
+      required: false,
+      min: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Höchstalter der Kinder zum Veranstaltungsdatum. Leer lassen für keine Begrenzung.',
+      },
+    },
+    {
       name: 'participants',
       label: 'Anmeldungen',
       type: 'join',
