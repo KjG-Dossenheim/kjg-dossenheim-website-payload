@@ -23,7 +23,7 @@ import { UnorderedListFeatureClient as UnorderedListFeatureClient_e70f5e05f09f93
 import { OrderedListFeatureClient as OrderedListFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'
 import { default as default_98a00ed7a1da5fc44dc587f84bf0657c } from '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'
 import { default as default_5aa9f2157222a9673aadf0b556aefd79 } from '@/components/admin/Knallbonbon/Views/DefaultView'
@@ -44,7 +44,7 @@ import { default as default_290e0a8c59d7e067b68e692ff1af72ee } from '@/component
 import { default as default_eb46b223f8c1acb340a8fe94711c71e2 } from '@/components/admin/Knallbonbon/Views/WaitlistView'
 import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/components/admin/views/SettingsView'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
-import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -72,7 +72,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#OrderedListFeatureClient": OrderedListFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
-  "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
+  "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail#default": default_ecfd65651f73f4e70148c6a3f45da9ef,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist#default": default_98a00ed7a1da5fc44dc587f84bf0657c,
   "@/components/admin/Knallbonbon/Views/DefaultView#default": default_5aa9f2157222a9673aadf0b556aefd79,
@@ -93,5 +93,5 @@ export const importMap = {
   "@/components/admin/Knallbonbon/Views/WaitlistView#default": default_eb46b223f8c1acb340a8fe94711c71e2,
   "@/components/admin/views/SettingsView#default": default_ab50c006cc520cf36af67ec593724ed8,
   "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc,
-  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
