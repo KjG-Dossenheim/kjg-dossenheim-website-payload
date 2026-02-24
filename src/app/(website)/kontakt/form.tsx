@@ -152,7 +152,7 @@ export default function ContactForm() {
               <Input type="hidden" {...form.register('captchaToken')} />
 
               <CapWidget
-                endpoint="https://captcha.gurl.eu.org/api/"
+                endpoint={process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'}
                 onSolve={(token) => {
                   form.setValue('captchaToken', token, { shouldValidate: true, shouldDirty: true })
                   console.log(`Challenge succeeded, token : ${token}`)

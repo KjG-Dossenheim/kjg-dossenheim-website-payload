@@ -16,7 +16,7 @@ type VerificationResponse = {
   success: boolean
 }
 
-const CAPTCHA_VERIFY_ENDPOINT = 'https://captcha.gurl.eu.org/api/verify'
+const CAPTCHA_VERIFY_ENDPOINT = `${process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'}validate`
 
 async function verifyCaptchaToken(token: string): Promise<boolean> {
   if (!token) {
@@ -29,7 +29,7 @@ async function verifyCaptchaToken(token: string): Promise<boolean> {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token, keepToken: true }),
       cache: 'no-store',
     })
 
