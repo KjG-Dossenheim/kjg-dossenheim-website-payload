@@ -16,7 +16,9 @@ import { adminExpirationNotificationEmailTemplate } from '@/app/(website)/knallb
  * - Set expiredAt timestamp
  * - Send admin notification
  */
-export async function cleanupExpiredConfirmations(payload: any): Promise<void> {
+export async function cleanupExpiredConfirmations(
+  payload: PayloadRequest['payload'],
+): Promise<void> {
   try {
     payload.logger.info('[Waitlist] Starting cleanup of expired waitlist confirmations...')
 

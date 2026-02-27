@@ -3,6 +3,8 @@ import {
   confirmationSuccessEmailTemplate,
   adminConfirmationNotificationEmailTemplate,
 } from '@/app/(website)/knallbonbon/anmeldung/emailTemplate'
+import type { KnallbonbonRegistration } from '@/payload-types'
+import type { PayloadRequest } from 'payload'
 
 /**
  * Job to send confirmation emails asynchronously
@@ -16,14 +18,17 @@ import {
  */
 
 type SendConfirmationEmailsInput = {
-  registration: any
+  registration: Pick<KnallbonbonRegistration, 'id' | 'firstName' | 'lastName' | 'email'> & {
+    phone?: string
+    child?: KnallbonbonRegistration['child']
+  }
   eventTitle: string
 }
 
 export const sendConfirmationEmailsJob = {
   slug: 'sendConfirmationEmails',
   interfaceName: 'SendConfirmationEmailsJob',
-  handler: async ({ req, input }: any) => {
+  handler: async ({ req, input }: { req: PayloadRequest; input: unknown }) => {
     try {
       const { registration, eventTitle } = input as SendConfirmationEmailsInput
 
@@ -45,7 +50,8 @@ export const sendConfirmationEmailsJob = {
 
         req.payload.logger.info(`Sent confirmation success email to ${registration.email}`)
       } catch (error) {
-        req.payload.logger.error('Failed to send confirmation success email:', error)
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        req.payload.logger.error(`Failed to send confirmation success email: ${errorMessage}`)
         // Don't throw - we still want to try sending the admin email
       }
 
@@ -63,7 +69,8 @@ export const sendConfirmationEmailsJob = {
 
         req.payload.logger.info('Sent admin confirmation notification')
       } catch (error) {
-        req.payload.logger.error('Failed to send admin confirmation notification:', error)
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        req.payload.logger.error(`Failed to send admin confirmation notification: ${errorMessage}`)
         throw error // Throw here so job can be retried
       }
 
@@ -73,7 +80,8 @@ export const sendConfirmationEmailsJob = {
         output: {},
       }
     } catch (error) {
-      req.payload.logger.error('Error in sendConfirmationEmails job:', error)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      req.payload.logger.error(`Error in sendConfirmationEmails job: ${errorMessage}`)
       return {
         state: 'failed' as const,
         errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',

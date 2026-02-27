@@ -1,4 +1,5 @@
 import { cleanupExpiredConfirmations } from '@/collections/knallbonbonWaitlist/hooks/cleanupExpiredConfirmations'
+import type { PayloadRequest } from 'payload'
 
 /**
  * Job to cleanup expired waitlist confirmations
@@ -34,7 +35,7 @@ import { cleanupExpiredConfirmations } from '@/collections/knallbonbonWaitlist/h
 export const cleanupExpiredConfirmationsJob = {
   slug: 'cleanupExpiredConfirmations',
   interfaceName: 'CleanupExpiredConfirmationsJob',
-  handler: async ({ req }: any) => {
+  handler: async ({ req }: { req: PayloadRequest }) => {
     try {
       req.payload.logger.info('Starting scheduled cleanup of expired confirmations...')
 
@@ -46,7 +47,8 @@ export const cleanupExpiredConfirmationsJob = {
         output: {},
       }
     } catch (error) {
-      req.payload.logger.error('Error in cleanup job:', error)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      req.payload.logger.error(`Error in cleanup job: ${errorMessage}`)
       return {
         state: 'failed' as const,
         errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',

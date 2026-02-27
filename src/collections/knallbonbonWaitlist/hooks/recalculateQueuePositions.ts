@@ -1,4 +1,4 @@
-import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, PayloadRequest } from 'payload'
 
 /**
  * Recalculate queue positions for all pending entries after changes
@@ -40,7 +40,7 @@ export const recalculateQueuePositionsAfterDelete: CollectionAfterDeleteHook = a
  * @param req - Payload request object
  * @param eventId - Event ID to recalculate positions for
  */
-async function recalculatePositionsForEvent(req: any, eventId: string): Promise<void> {
+async function recalculatePositionsForEvent(req: PayloadRequest, eventId: string): Promise<void> {
   try {
     // Fetch all pending waitlist entries for this event, ordered by createdAt (FIFO)
     const entries = await req.payload.find({
@@ -74,6 +74,9 @@ async function recalculatePositionsForEvent(req: any, eventId: string): Promise<
       `[Waitlist] Recalculated queue positions for event ${eventId}: ${entries.docs.length} pending entries`,
     )
   } catch (error) {
-    req.payload.logger.error(`[Waitlist] Error recalculating queue positions for event ${eventId}:`, error)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    req.payload.logger.error(
+      `[Waitlist] Error recalculating queue positions for event ${eventId}: ${errorMessage}`,
+    )
   }
 }

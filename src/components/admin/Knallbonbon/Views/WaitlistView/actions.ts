@@ -2,7 +2,6 @@
 
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { promoteFromWaitlist } from '@/collections/knallbonbonWaitlist/hooks/promoteFromWaitlist'
 import { createHash } from 'crypto'
 import { render } from '@react-email/render'
 import {
