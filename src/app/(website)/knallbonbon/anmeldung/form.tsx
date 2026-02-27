@@ -26,11 +26,13 @@ import {
   FieldLabel,
   FieldDescription,
   Field,
+  FieldContent,
   FieldError,
   FieldSeparator,
   FieldSet,
   FieldGroup,
   FieldLegend,
+  FieldTitle,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -49,7 +51,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Stepper } from '@/components/ui/stepper'
 
 import { CapWidget } from '@/components/common/cap-widget'
-import { formSchema, type FormValues, type EventOption, GENDER_OPTIONS, PICKUP_OPTIONS } from './schema'
+import {
+  formSchema,
+  type FormValues,
+  type EventOption,
+  GENDER_OPTIONS,
+  PICKUP_OPTIONS,
+} from './schema'
 import { useKnallbonbonEvents } from './useKnallbonbonEvents'
 import { submitKnallbonbonRegistration } from './actions'
 
@@ -147,7 +155,15 @@ type DateOfBirthFieldProps = {
   onAgeError: (index: number, hasError: boolean) => void
 }
 
-function DateOfBirthField({ field, fieldState, index, minAge, maxAge, eventDate, onAgeError }: DateOfBirthFieldProps) {
+function DateOfBirthField({
+  field,
+  fieldState,
+  index,
+  minAge,
+  maxAge,
+  eventDate,
+  onAgeError,
+}: DateOfBirthFieldProps) {
   const ageError = useMemo(() => {
     if (!field.value || !eventDate) return null
     let isoDate = field.value
@@ -186,9 +202,7 @@ function DateOfBirthField({ field, fieldState, index, minAge, maxAge, eventDate,
         invalid={isInvalid}
       />
       {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-      {!fieldState.invalid && ageError && (
-        <FieldError errors={[{ message: ageError }]} />
-      )}
+      {!fieldState.invalid && ageError && <FieldError errors={[{ message: ageError }]} />}
     </Field>
   )
 }
@@ -413,7 +427,12 @@ function ReviewStep({ values, selectedEvent }: ReviewStepProps) {
       <div className="space-y-2">
         <FieldLegend variant="legend">Veranstaltung</FieldLegend>
         <div className="space-y-1">
-          <SummaryRow label="Termin" value={selectedEvent ? `${selectedEvent.title} – ${selectedEvent.dateLabel}` : values.event} />
+          <SummaryRow
+            label="Termin"
+            value={
+              selectedEvent ? `${selectedEvent.title} – ${selectedEvent.dateLabel}` : values.event
+            }
+          />
         </div>
       </div>
 
@@ -437,12 +456,17 @@ function ReviewStep({ values, selectedEvent }: ReviewStepProps) {
         <FieldLegend variant="legend">Kinder</FieldLegend>
         {values.child.map((child, i) => (
           <div key={i} className="space-y-1">
-            <p className="text-sm font-medium">{i + 1}. {child.firstName} {child.lastName}</p>
-            <div className="pl-4 space-y-1">
+            <p className="text-sm font-medium">
+              {i + 1}. {child.firstName} {child.lastName}
+            </p>
+            <div className="space-y-1 pl-4">
               <SummaryRow label="Geburtsdatum" value={formatDateLabel(child.dateOfBirth)} />
               <SummaryRow label="Geschlecht" value={genderLabel(child.gender)} />
               <SummaryRow label="Abholung" value={pickupLabel(child.pickupInfo)} />
-              <SummaryRow label="Fotos" value={child.photoConsent ? 'Einwilligung erteilt' : 'Keine Einwilligung'} />
+              <SummaryRow
+                label="Fotos"
+                value={child.photoConsent ? 'Einwilligung erteilt' : 'Keine Einwilligung'}
+              />
               {child.healthInfo && <SummaryRow label="Gesundheit" value={child.healthInfo} />}
             </div>
           </div>
@@ -538,38 +562,40 @@ export function KnallbonbonAnmeldungForm() {
   const eventRadioOptions = useMemo(
     () =>
       eventOptions.map((eventOption) => (
-        <Field
-          orientation="horizontal"
+        <FieldLabel
           key={eventOption.id}
-          className="flex cursor-pointer items-center gap-2"
+          htmlFor={`event-${eventOption.id}`}
+          className="block cursor-pointer rounded-md border"
         >
-          <RadioGroupItem
-            value={eventOption.id}
-            id={`event-${eventOption.id}`}
-            disabled={!eventOption.id}
-          />
-          <div className="flex flex-col">
-            <FieldLabel htmlFor={`event-${eventOption.id}`} className="font-normal">
-              {eventOption.title} – {eventOption.dateLabel}{' '}
-            </FieldLabel>
-            {eventOption.isFull ? (
-              <FieldDescription className="text-primary">
-                Ausgebucht – Anmeldung auf Warteliste möglich
-              </FieldDescription>
-            ) : eventOption.maxParticipants !== undefined && eventOption.maxParticipants > 0 ? (
-              <FieldDescription>{eventOption.freeSpots} Plätze frei</FieldDescription>
-            ) : null}
-            {(eventOption.minAge !== undefined || eventOption.maxAge !== undefined) && (
-              <FieldDescription>
-                {eventOption.minAge !== undefined && eventOption.maxAge !== undefined
-                  ? `Alter: ${eventOption.minAge}–${eventOption.maxAge} Jahre`
-                  : eventOption.minAge !== undefined
-                    ? `Mindestalter: ${eventOption.minAge} Jahre`
-                    : `Höchstalter: ${eventOption.maxAge} Jahre`}
-              </FieldDescription>
-            )}
-          </div>
-        </Field>
+          <Field orientation="horizontal" className="flex items-start gap-3">
+            <FieldContent>
+              <FieldTitle className="font-normal">
+                {eventOption.title} – {eventOption.dateLabel}
+              </FieldTitle>
+              {eventOption.isFull ? (
+                <FieldDescription className="text-primary">
+                  Ausgebucht – Anmeldung auf Warteliste möglich
+                </FieldDescription>
+              ) : eventOption.maxParticipants !== undefined && eventOption.maxParticipants > 0 ? (
+                <FieldDescription>{eventOption.freeSpots} Plätze frei</FieldDescription>
+              ) : null}
+              {(eventOption.minAge !== undefined || eventOption.maxAge !== undefined) && (
+                <FieldDescription>
+                  {eventOption.minAge !== undefined && eventOption.maxAge !== undefined
+                    ? `Alter: ${eventOption.minAge}–${eventOption.maxAge} Jahre`
+                    : eventOption.minAge !== undefined
+                      ? `Mindestalter: ${eventOption.minAge} Jahre`
+                      : `Höchstalter: ${eventOption.maxAge} Jahre`}
+                </FieldDescription>
+              )}
+            </FieldContent>
+            <RadioGroupItem
+              value={eventOption.id}
+              id={`event-${eventOption.id}`}
+              disabled={!eventOption.id}
+            />
+          </Field>
+        </FieldLabel>
       )),
     [eventOptions],
   )
@@ -870,7 +896,8 @@ export function KnallbonbonAnmeldungForm() {
                 </Button>
                 {hasAgeErrors && (
                   <p className="text-destructive text-sm">
-                    Ein oder mehrere Kinder erfüllen nicht die Altersvoraussetzungen für diese Veranstaltung.
+                    Ein oder mehrere Kinder erfüllen nicht die Altersvoraussetzungen für diese
+                    Veranstaltung.
                   </p>
                 )}
               </FieldSet>
