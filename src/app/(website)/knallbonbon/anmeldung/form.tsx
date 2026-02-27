@@ -73,9 +73,9 @@ const INITIAL_CHILD_VALUES = {
   lastName: '',
   dateOfBirth: '',
   photoConsent: false,
-  gender: '',
+  gender: '' as FormValues['child'][number]['gender'],
   healthInfo: '',
-  pickupInfo: '',
+  pickupInfo: '' as FormValues['child'][number]['pickupInfo'],
 }
 
 const STEPS = [
