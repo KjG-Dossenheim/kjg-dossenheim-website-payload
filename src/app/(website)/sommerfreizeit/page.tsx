@@ -17,6 +17,9 @@ import TeamSection from './_components/TeamSection'
 import { formatInTimeZone } from 'date-fns-tz/formatInTimeZone'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
 
+// ⬇️ ISR-Zeit (in Sekunden) einstellen
+export const revalidate = 600
+
 async function getData() {
   const payload = await getPayload({ config })
   return payload.findGlobal({
