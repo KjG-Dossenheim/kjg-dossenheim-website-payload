@@ -73,9 +73,9 @@ const INITIAL_CHILD_VALUES = {
   lastName: '',
   dateOfBirth: '',
   photoConsent: false,
-  gender: 'noInfo' as const,
+  gender: '',
   healthInfo: '',
-  pickupInfo: 'pickedUp' as const,
+  pickupInfo: '',
 }
 
 const STEPS = [

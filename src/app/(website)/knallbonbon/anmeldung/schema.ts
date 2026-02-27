@@ -17,8 +17,12 @@ export const childSchema = z.object({
   lastName: z.string().min(2, 'Bitte geben Sie den Nachnamen des Kindes ein.'),
   dateOfBirth: z.string().min(10, 'Bitte geben Sie das Geburtsdatum des Kindes ein.'),
   photoConsent: z.boolean(),
-  gender: z.enum(['male', 'female', 'diverse', 'noInfo']),
-  pickupInfo: z.enum(['pickedUp', 'goesAlone']),
+  gender: z.enum(['male', 'female', 'diverse', 'noInfo'], {
+    error: 'Bitte wählen Sie eine gültige Option aus.',
+  }),
+  pickupInfo: z.enum(['pickedUp', 'goesAlone'], {
+    error: 'Bitte wählen Sie eine gültige Abholoption aus.',
+  }),
   healthInfo: z
     .string()
     .max(500, 'Bitte geben Sie die Gesundheitsinformationen des Kindes ein.'),
