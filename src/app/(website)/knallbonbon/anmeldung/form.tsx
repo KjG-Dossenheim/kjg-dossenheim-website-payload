@@ -494,6 +494,7 @@ export function KnallbonbonAnmeldungForm() {
   const { eventOptions, loading } = useKnallbonbonEvents()
   const searchParams = useSearchParams()
   const eventFromUrl = searchParams.get('event')
+  const hasResolvedEventFromUrl = useRef(false)
 
   const [currentStep, setCurrentStep] = useState(1)
 
@@ -521,10 +522,27 @@ export function KnallbonbonAnmeldungForm() {
       postalCode: '',
       city: '',
       captchaToken: '',
-      event: eventFromUrl || '',
+      event: '',
       child: [INITIAL_CHILD_VALUES],
     },
   })
+
+  useEffect(() => {
+    if (loading || hasResolvedEventFromUrl.current) return
+
+    hasResolvedEventFromUrl.current = true
+
+    if (!eventFromUrl) return
+
+    const isSelectableEvent = eventOptions.some((eventOption) => eventOption.id === eventFromUrl)
+    if (!isSelectableEvent) return
+
+    form.setValue('event', eventFromUrl, {
+      shouldValidate: true,
+      shouldDirty: false,
+      shouldTouch: false,
+    })
+  }, [eventFromUrl, eventOptions, form, loading])
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
