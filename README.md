@@ -28,6 +28,11 @@ pnpm install
 
 Create a `.env` file in the root directory and configure your MongoDB connection and other secrets as needed.
 
+Required auth secrets:
+
+- `PAYLOAD_SECRET`
+- `BETTER_AUTH_SECRET`
+
 ### Running Locally
 
 ```bash
