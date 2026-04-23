@@ -248,7 +248,7 @@ type ResolvedOrderFlow = {
 async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOrderFlow> {
   const { event } = await getCurrentPretixEvent()
   const organizer = (process.env.NEXT_PUBLIC_PRETIX_ORGANIZER || '').trim()
-  const token = (process.env.NEXT_PUBLIC_PRETIX_API_TOKEN || '').trim()
+  const token = (process.env.PRETIX_API_TOKEN || '').trim()
   const baseUrl = (process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu').trim()
 
   if (!organizer || !token) {
@@ -612,7 +612,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       organizer: process.env.NEXT_PUBLIC_PRETIX_ORGANIZER!,
       event: flow.pretixEventId,
       code: flow.orderCode,
-      token: process.env.NEXT_PUBLIC_PRETIX_API_TOKEN!,
+      token: process.env.PRETIX_API_TOKEN!,
     })
 
     revalidatePath('/sommerfreizeit/account')

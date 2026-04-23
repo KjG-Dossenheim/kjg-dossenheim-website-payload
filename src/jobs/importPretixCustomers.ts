@@ -199,7 +199,7 @@ export const importPretixCustomersJob = {
       const jobInput = (input ?? {}) as ImportPretixCustomersInput
       const baseUrl = (process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu').trim()
       const organizer = (process.env.NEXT_PUBLIC_PRETIX_ORGANIZER || '').trim()
-      const token = (process.env.NEXT_PUBLIC_PRETIX_API_TOKEN || '').trim()
+      const token = (process.env.PRETIX_API_TOKEN || '').trim()
       const maxPages =
         typeof jobInput.maxPages === 'number' && Number.isFinite(jobInput.maxPages)
           ? Math.max(1, Math.floor(jobInput.maxPages))
@@ -210,7 +210,7 @@ export const importPretixCustomersJob = {
       // Validate required Pretix configuration
       if (!organizer || !token) {
         throw new Error(
-          'Missing NEXT_PUBLIC_PRETIX_ORGANIZER or NEXT_PUBLIC_PRETIX_API_TOKEN. Configure both environment variables.',
+          'Missing NEXT_PUBLIC_PRETIX_ORGANIZER or PRETIX_API_TOKEN. Configure both environment variables.',
         )
       }
 
