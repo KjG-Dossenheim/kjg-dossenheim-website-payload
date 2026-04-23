@@ -54,3 +54,5 @@ public/sitemap-0.xml
 public/sitemap.xml
 public/robots.txt
 /.vscode
+lighthouse-report.json
+lighthouse-report.html
