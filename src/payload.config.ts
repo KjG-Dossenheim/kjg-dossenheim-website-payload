@@ -5,10 +5,18 @@ import { fileURLToPath } from 'url'
 // External packages
 import sharp from 'sharp'
 import { buildConfig } from 'payload'
+import { betterAuth } from 'better-auth'
+import { magicLink } from 'better-auth/plugins'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import {
+  betterAuthCollections,
+  createBetterAuthPlugin,
+  payloadAdapter,
+  withBetterAuthDefaults,
+} from '@delmaredigital/payload-better-auth'
 import {
   BoldFeature,
   lexicalEditor,
@@ -61,6 +69,10 @@ import { sommerfreizeitAnmeldung } from './collections/sommerfreizeit/sommerfrei
 import { sommerfreizeitUser } from './collections/sommerfreizeit/sommerfreizeitUser'
 import { sommerfreizeitFeedback } from './collections/sommerfreizeit/sommerfreizeitFeedback'
 import { Feedback } from './collections/Feedback'
+import { sommerfreizeitChild } from './collections/sommerfreizeit/sommerfreizeitChild'
+import { sommerfreizeitPricing } from './collections/sommerfreizeit/sommerfreizeitPricing'
+import { sommerfreizeitEvents } from './collections/sommerfreizeit/sommerfreizeitEvents'
+import { sommerfreizeitOrders } from './collections/sommerfreizeit/sommerfreizeitOrders'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -75,6 +87,9 @@ import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 import { Knallbonbon } from './globals/Knallbonbon'
 import { knallbonbonSettings } from './globals/knallbonbonSettings'
 import { aktion72Stunden } from './globals/aktionen/72stunden'
+import { sommerfreizeitLandingPage } from './globals/sommerfreizeit/sommerfreizeitLandingPage'
+import { sommerfreizeitPackliste } from './globals/sommerfreizeit/sommerfreizeitPackliste'
+import { sommerfreizeitSettings } from './globals/sommerfreizeit/sommerfreizeitSettings'
 
 // Relative imports - lib
 import { authentikOAuth } from './utilities/authentikOAuth'
@@ -83,9 +98,34 @@ import { authentikOAuth } from './utilities/authentikOAuth'
 import { cleanupExpiredConfirmationsJob } from './jobs/cleanupExpiredConfirmations'
 import { sendRegistrationEmailsJob } from './jobs/sendRegistrationEmails'
 import { sendConfirmationEmailsJob } from './jobs/sendConfirmationEmails'
+import { importPretixCustomersJob } from './jobs/importPretixCustomers'
+import { importPretixOrdersJob } from './jobs/importPretixOrders'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const betterAuthBaseUrl =
+  process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
+const betterAuthOptions = withBetterAuthDefaults({
+  baseURL: betterAuthBaseUrl,
+  secret: process.env.BETTER_AUTH_SECRET || process.env.PAYLOAD_SECRET || '',
+  user: {
+    modelName: 'sommerfreizeitUser',
+    additionalFields: {
+      firstName: { type: 'string', required: true },
+      lastName: { type: 'string', required: true },
+      phone: { type: 'string', required: false },
+      address: { type: 'string', required: false },
+      postalCode: { type: 'string', required: false },
+      city: { type: 'string', required: false },
+    },
+  },
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false,
+  },
+})
 
 export default buildConfig({
   admin: {
@@ -175,6 +215,11 @@ export default buildConfig({
     Rechtliches,
     Knallbonbon,
     knallbonbonSettings,
+    Knallbonbon,
+    knallbonbonSettings,
+    sommerfreizeitLandingPage,
+    sommerfreizeitPackliste,
+    sommerfreizeitSettings,
   ],
   editor: lexicalEditor({
     features: [
@@ -234,6 +279,8 @@ export default buildConfig({
       cleanupExpiredConfirmationsJob,
       sendRegistrationEmailsJob,
       sendConfirmationEmailsJob,
+      importPretixCustomersJob,
+      importPretixOrdersJob,
     ],
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {
@@ -300,6 +347,31 @@ export default buildConfig({
         endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
         // ... Other S3 configuration
       },
+    }),
+    betterAuthCollections({
+      betterAuthOptions,
+      skipCollections: ['user'],
+      firstUserAdmin: false,
+    }),
+    createBetterAuthPlugin({
+      createAuth: (payload) =>
+        betterAuth({
+          ...betterAuthOptions,
+          database: payloadAdapter({ payloadClient: payload }),
+          plugins: [
+            magicLink({
+              sendMagicLink: async ({ email, url }) => {
+                await payload.sendEmail({
+                  to: email,
+                  subject: 'Dein Magic Link fuer die Sommerfreizeit',
+                  html: `<p>Hallo,</p><p>klicke auf den folgenden Link, um dich bei der Sommerfreizeit anzumelden:</p><p><a href="${url}">Jetzt anmelden</a></p><p>Falls du den Login nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
+                  text: `Hallo,\n\nverwende diesen Link fuer deine Anmeldung bei der Sommerfreizeit:\n${url}\n\nFalls du den Login nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
+                })
+              },
+            }),
+          ],
+        }),
+      autoInjectAdminComponents: false,
     }),
     authentikOAuth,
   ],
