@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 // Payload CMS
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import type { SommerfreizeitEvent } from '@/payload-types'
 
 // Custom Components
 import AccommodationSection from './_components/AccommodationSection'
@@ -22,27 +23,67 @@ export const revalidate = 600
 
 async function getData() {
   const payload = await getPayload({ config })
-  return payload.findGlobal({
-    slug: 'sommerfreizeit',
-    select: {
-      title: true,
-      motto: true,
-      startDate: true,
-      endDate: true,
-      alter: true,
-      unterkunft: true,
-      allgemein: {
-        teamFreizeit: true,
-        eigenschaften: true,
-        pricing: true,
-      },
-      anmeldungWebsite: true,
-      meta: {
-        title: true,
+
+  const [landingPageData, sommerfreizeit] = await Promise.all([
+    payload.findGlobal({
+      slug: 'sommerfreizeitLandingPage',
+      select: {
+        freizeit: true,
         description: true,
+      },
+    }),
+    payload.findGlobal({
+      slug: 'sommerfreizeit',
+      select: {
+        alter: true,
+        allgemein: {
+          eigenschaften: true,
+        },
+        meta: {
+          title: true,
+          description: true,
+        },
+      },
+    }),
+  ])
+
+  const eventId =
+    typeof landingPageData.freizeit === 'string'
+      ? landingPageData.freizeit
+      : landingPageData.freizeit?.id
+
+  if (!eventId) {
+    throw new Error('Keine Sommerfreizeit im Landing-Global verknuepft.')
+  }
+
+  const eventData: SommerfreizeitEvent = await payload.findByID({
+    collection: 'sommerfreizeitEvents',
+    id: eventId,
+    depth: 2,
+  })
+
+  // Fetch pricing from sommerfreizeitPricing collection
+  const pricingData = await payload.find({
+    collection: 'sommerfreizeitPricing',
+    where: {
+      freizeit: {
+        equals: eventData.id,
       },
     },
   })
+
+  return {
+    ...sommerfreizeit,
+    teamFreizeit: eventData.team,
+    title: eventData.name,
+    motto: eventData.motto,
+    startDate: eventData.startDate,
+    endDate: eventData.endDate ?? eventData.startDate,
+    signupStartDate: eventData.signupStartDate,
+    landingDescription: landingPageData.description,
+    unterkunft: eventData.unterkunft,
+    pricing: pricingData.docs,
+  }
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -105,16 +146,73 @@ export default async function Page() {
         }}
       />
       <HeroSection {...sommerfreizeit} />
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: `Sommerfreizeit ${formatDateLocale(sommerfreizeit.startDate, 'yyyy')}`,
+    startDate: formatInTimeZone(
+      sommerfreizeit.startDate,
+      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
+      'yyyy-MM-dd',
+    ),
+    endDate: formatInTimeZone(
+      sommerfreizeit.endDate,
+      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
+      'yyyy-MM-dd',
+    ),
+    location: {
+      '@type': 'Place',
+      name: sommerfreizeit.unterkunft.name,
+      url: sommerfreizeit.unterkunft.website,
+    },
+    offers: sommerfreizeit.pricing.map((offer) => ({
+      '@type': 'Offer',
+      name: offer.name,
+      price: offer.price,
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+      validFrom: formatInTimeZone(
+        sommerfreizeit.startDate,
+        process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
+        "yyyy-MM-dd'T'HH:mm:ssxxx",
+      ),
+    })),
+    eventStatus: 'https://schema.org/EventScheduled',
+    description:
+      sommerfreizeit.landingDescription ||
+      `Die Sommerfreizeit der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    organizer: {
+      '@type': 'Organization',
+      name: process.env.NEXT_PUBLIC_SITE_NAME,
+      url: process.env.NEXT_PUBLIC_SITE_URL,
+    },
+  }
+
+  return (
+    <section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
+      <HeroSection {...sommerfreizeit} signupStartDate={sommerfreizeit.signupStartDate ?? null} />
 
       <AgeRangeSection {...sommerfreizeit} />
 
       <section className="container mx-auto" id="info">
         <PricingSection
-          pricing={sommerfreizeit.allgemein.pricing}
-          anmeldungWebsite={sommerfreizeit.anmeldungWebsite}
+          pricing={sommerfreizeit.pricing}
+          signupStartDate={sommerfreizeit.signupStartDate ?? null}
         />
 
         <AccommodationSection {...sommerfreizeit} />
+
+        <TeamSection team={sommerfreizeit.allgemein.teamFreizeit} />
+
+        <FeaturesSection eigenschaften={sommerfreizeit.allgemein.eigenschaften} />
+
+        <TeamSection team={sommerfreizeit.teamFreizeit} />
 
         <FeaturesSection eigenschaften={sommerfreizeit.allgemein.eigenschaften} />
 
