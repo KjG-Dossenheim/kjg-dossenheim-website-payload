@@ -169,14 +169,6 @@ export function CheckForm({ accountDefaults, orderCode, positions }: CheckFormPr
           </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="firstName">Vorname</Label>
-            <Input id="firstName" value={accountDefaults.firstName} disabled />
-          </div>
-          <div>
-            <Label htmlFor="lastName">Nachname</Label>
-            <Input id="lastName" value={accountDefaults.lastName} disabled />
-          </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Telefonnummer</Label>
             <PhoneInput
