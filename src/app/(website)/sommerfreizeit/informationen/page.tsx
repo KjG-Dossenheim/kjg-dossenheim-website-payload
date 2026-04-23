@@ -1,0 +1,76 @@
+// React and Next.js
+import React from 'react'
+import Link from 'next/link'
+import type { Metadata } from 'next'
+
+// Third-party libraries
+import { RichText } from '@payloadcms/richtext-lexical/react'
+
+// Payload CMS
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+// UI Components
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
+// ⬇️ ISR-Zeit (in Sekunden) einstellen
+export const revalidate = 60 // alle 60s neue Daten abrufen
+
+async function getData() {
+  const payload = await getPayload({ config })
+  return payload.findGlobal({
+    slug: 'sommerfreizeit',
+    select: {
+      informationen: true,
+    },
+  })
+}
+
+export const metadata: Metadata = {
+  title: 'Letzte Informationen',
+  description: 'Letzte Informationen für die Sommerfreizeit',
+  openGraph: {
+    title: 'Letzte Informationen',
+    description: 'Letzte Informationen für die Sommerfreizeit',
+  },
+  twitter: {
+    title: 'Letzte Informationen',
+    description: 'Letzte Informationen für die Sommerfreizeit',
+  },
+}
+
+export default async function Page() {
+  const sommerfreizeit = await getData()
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-8">
+      <h1 className="mb-6 text-3xl font-bold">Letzte Informationen</h1>
+      <div className="flex flex-col gap-4">
+        {sommerfreizeit.informationen.eintrag.map((eintrag) => (
+          <Card key={eintrag.title}>
+            <CardHeader>
+              <CardTitle>{eintrag.title}</CardTitle>
+            </CardHeader>
+            {eintrag.text && eintrag.text?.root?.direction !== null && (
+              <CardContent>
+                <RichText data={eintrag.text} />
+              </CardContent>
+            )}
+            {eintrag.links && eintrag.links.length > 0 && (
+              <CardFooter className="flex flex-wrap gap-2">
+                {eintrag.links.map((link) => (
+                  <Button key={link.linkText} asChild>
+                    <Link href={link.link || ''} target="_blank" rel="noopener noreferrer">
+                      {link.linkText}
+                    </Link>
+                  </Button>
+                ))}
+              </CardFooter>
+            )}
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
