@@ -25,10 +25,11 @@ interface PricingItem {
 
 interface PricingSectionProps {
   pricing: PricingItem[]
-  anmeldungWebsite: string
+  signupStartDate?: string | null
 }
 
-export default function PricingSection({ pricing, anmeldungWebsite }: PricingSectionProps) {
+export default function PricingSection({ pricing, signupStartDate }: PricingSectionProps) {
+  const signupOpen = !signupStartDate || new Date() >= new Date(signupStartDate)
   // Determine the featured card (middle one for 3 items, or most expensive)
   const getFeaturedIndex = () => {
     if (pricing.length === 3) return 1 // Middle card
@@ -60,7 +61,7 @@ export default function PricingSection({ pricing, anmeldungWebsite }: PricingSec
             >
               {isFeatured && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-primary px-4 py-1.5 text-sm font-semibold shadow-lg">
+                  <Badge className="bg-primary hover:none px-4 py-1.5 text-sm font-semibold shadow-lg">
                     <Sparkles className="mr-1.5 size-3.5" />
                     Beliebt
                   </Badge>
@@ -101,20 +102,34 @@ export default function PricingSection({ pricing, anmeldungWebsite }: PricingSec
                 </div>
               </CardContent>
 
-              <CardFooter className="pt-0">
-                <Button
-                  asChild
-                  className={cn(
-                    'h-12 w-full text-base transition-all',
-                    isFeatured && 'font-semibold shadow-lg',
-                  )}
-                  size="lg"
-                  variant={isFeatured ? 'default' : 'outline'}
-                >
-                  <Link href={anmeldungWebsite} target="_blank">
-                    Jetzt anmelden
-                  </Link>
-                </Button>
+              <CardFooter className="flex flex-col gap-1 pt-0">
+                {signupOpen ? (
+                  <Button
+                    asChild
+                    className={cn(
+                      'h-12 w-full text-base transition-all',
+                      isFeatured && 'font-semibold shadow-lg',
+                    )}
+                    size="lg"
+                    variant={isFeatured ? 'default' : 'outline'}
+                  >
+                    <Link href="/sommerfreizeit/anmeldung">Jetzt anmelden</Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      disabled
+                      className={cn(
+                        'h-12 w-full text-base transition-all',
+                        isFeatured && 'font-semibold shadow-lg',
+                      )}
+                      size="lg"
+                      variant={isFeatured ? 'default' : 'outline'}
+                    >
+                      Jetzt anmelden
+                    </Button>
+                  </>
+                )}
               </CardFooter>
             </Card>
           )

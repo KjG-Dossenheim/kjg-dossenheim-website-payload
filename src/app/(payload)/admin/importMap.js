@@ -28,11 +28,13 @@ import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collectio
 import { default as default_98a00ed7a1da5fc44dc587f84bf0657c } from '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'
 import { default as default_5aa9f2157222a9673aadf0b556aefd79 } from '@/components/admin/Knallbonbon/Views/DefaultView'
 import { default as default_543488da7a3cf2c9ab7168d32f6f86a3 } from '@/components/admin/Knallbonbon/Actions/ExportAction'
+import { default as default_30ae88ec4492f6d7e2995797933179a8 } from '@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers'
+import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/components/admin/rowLable/ArrayRowLabelName.tsx'
+import { default as default_e56f0b1dfe64e89beef03cc281a6280e } from '@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders'
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
-import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/components/admin/rowLable/ArrayRowLabelName.tsx'
 import { default as default_3114f6896e65c6486d201259c98e238e } from 'src/components/admin/rowLable/ArrayRowLabel.tsx'
 import { default as default_a0cc27b717f503b668869b486d99e1eb } from '@/components/admin/settingsMenu/MySettingsMenu'
 import { default as default_a8ed57560afaff4535f43ca83a9fecbd } from '@/graphics/Icon'
@@ -77,11 +79,13 @@ export const importMap = {
   "@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist#default": default_98a00ed7a1da5fc44dc587f84bf0657c,
   "@/components/admin/Knallbonbon/Views/DefaultView#default": default_5aa9f2157222a9673aadf0b556aefd79,
   "@/components/admin/Knallbonbon/Actions/ExportAction#default": default_543488da7a3cf2c9ab7168d32f6f86a3,
+  "@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers#default": default_30ae88ec4492f6d7e2995797933179a8,
+  "src/components/admin/rowLable/ArrayRowLabelName.tsx#default": default_5cb5d3602d1dd126d163c6a2e3af8809,
+  "@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders#default": default_e56f0b1dfe64e89beef03cc281a6280e,
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
-  "src/components/admin/rowLable/ArrayRowLabelName.tsx#default": default_5cb5d3602d1dd126d163c6a2e3af8809,
   "src/components/admin/rowLable/ArrayRowLabel.tsx#default": default_3114f6896e65c6486d201259c98e238e,
   "@/components/admin/settingsMenu/MySettingsMenu#default": default_a0cc27b717f503b668869b486d99e1eb,
   "@/graphics/Icon#default": default_a8ed57560afaff4535f43ca83a9fecbd,

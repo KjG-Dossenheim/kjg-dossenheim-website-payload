@@ -18,11 +18,7 @@ const updateAccountSchema = z
     city: z.string().trim().optional(),
   })
 
-export type UpdateAccountInput = Pick<SommerfreizeitUser, 'firstName' | 'lastName'> & {
-  phone?: string
-  address?: string
-  postalCode?: string
-  city?: string
+export type UpdateAccountInput = Pick<SommerfreizeitUser, 'firstName' | 'lastName' | 'phone' | 'address' | 'postalCode' | 'city'> & {
 }
 
 type UpdateAccountResult = {
@@ -33,8 +29,8 @@ type UpdateAccountResult = {
 export type CreateChildInput = {
   firstName: string
   lastName: string
-  dateOfBirth: string
-  gender?: SommerfreizeitChild['gender'] | undefined
+  dateOfBirth: SommerfreizeitChild['dateOfBirth']
+  gender: SommerfreizeitChild['gender']
 }
 
 const createChildSchema: z.ZodType<CreateChildInput> = z.object({
@@ -45,7 +41,7 @@ const createChildSchema: z.ZodType<CreateChildInput> = z.object({
     .enum(['male', 'female', 'diverse'], {
       error: 'Geschlecht ist erforderlich.',
     })
-    .optional(),
+  ,
 })
 
 type CreateChildResult = {
@@ -153,6 +149,7 @@ export async function createChildAction(data: CreateChildInput): Promise<CreateC
     const child = await payload.create({
       collection: 'sommerfreizeitChild',
       data: childData,
+      draft: false,
       select: {
         id: true,
         firstName: true,

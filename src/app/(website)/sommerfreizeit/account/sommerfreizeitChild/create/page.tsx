@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { getPayload } from 'payload'
@@ -6,7 +5,6 @@ import config from '@payload-config'
 import { headers as getHeaders } from 'next/headers.js'
 
 import { ChildCreateForm } from './ChildCreateForm'
-import { Button } from '@/components/ui/button'
 import { getSommerfreizeitSessionUser } from '@/lib/auth/server'
 
 export default async function NewChildPage() {

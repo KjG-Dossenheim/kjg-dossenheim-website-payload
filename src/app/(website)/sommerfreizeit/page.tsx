@@ -95,35 +95,35 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const sommerfreizeit = await getData()
+  const eventData = await getData()
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Event',
-    name: `Sommerfreizeit ${formatDateLocale(sommerfreizeit.startDate, 'yyyy')}`,
+    name: `Sommerfreizeit ${formatDateLocale(eventData.startDate, 'yyyy')}`,
     startDate: formatInTimeZone(
-      sommerfreizeit.startDate,
+      eventData.startDate,
       process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
       'yyyy-MM-dd',
     ),
     endDate: formatInTimeZone(
-      sommerfreizeit.endDate,
+      eventData.endDate,
       process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
       'yyyy-MM-dd',
     ),
     location: {
       '@type': 'Place',
-      name: sommerfreizeit.unterkunft.name,
-      url: sommerfreizeit.unterkunft.website,
+      name: eventData.unterkunft.name,
+      url: eventData.unterkunft.website,
     },
-    offers: sommerfreizeit.allgemein.pricing.map((offer) => ({
+    offers: eventData.pricing.map((offer) => ({
       '@type': 'Offer',
       name: offer.name,
       price: offer.price,
       priceCurrency: 'EUR',
       availability: 'https://schema.org/InStock',
       validFrom: formatInTimeZone(
-        sommerfreizeit.startDate,
+        eventData.startDate,
         process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
         "yyyy-MM-dd'T'HH:mm:ssxxx",
       ),
@@ -136,7 +136,6 @@ export default async function Page() {
       url: process.env.NEXT_PUBLIC_SITE_URL,
     },
   }
-
   return (
     <section>
       <script
@@ -145,78 +144,21 @@ export default async function Page() {
           __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
         }}
       />
-      <HeroSection {...sommerfreizeit} />
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    name: `Sommerfreizeit ${formatDateLocale(sommerfreizeit.startDate, 'yyyy')}`,
-    startDate: formatInTimeZone(
-      sommerfreizeit.startDate,
-      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
-      'yyyy-MM-dd',
-    ),
-    endDate: formatInTimeZone(
-      sommerfreizeit.endDate,
-      process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
-      'yyyy-MM-dd',
-    ),
-    location: {
-      '@type': 'Place',
-      name: sommerfreizeit.unterkunft.name,
-      url: sommerfreizeit.unterkunft.website,
-    },
-    offers: sommerfreizeit.pricing.map((offer) => ({
-      '@type': 'Offer',
-      name: offer.name,
-      price: offer.price,
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
-      validFrom: formatInTimeZone(
-        sommerfreizeit.startDate,
-        process.env.NEXT_PUBLIC_DEFAULT_TIMEZONE || 'UTC',
-        "yyyy-MM-dd'T'HH:mm:ssxxx",
-      ),
-    })),
-    eventStatus: 'https://schema.org/EventScheduled',
-    description:
-      sommerfreizeit.landingDescription ||
-      `Die Sommerfreizeit der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
-    organizer: {
-      '@type': 'Organization',
-      name: process.env.NEXT_PUBLIC_SITE_NAME,
-      url: process.env.NEXT_PUBLIC_SITE_URL,
-    },
-  }
+      <HeroSection {...eventData} signupStartDate={eventData.signupStartDate ?? null} />
 
-  return (
-    <section>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
-        }}
-      />
-      <HeroSection {...sommerfreizeit} signupStartDate={sommerfreizeit.signupStartDate ?? null} />
-
-      <AgeRangeSection {...sommerfreizeit} />
+      <AgeRangeSection {...eventData} />
 
       <section className="container mx-auto" id="info">
         <PricingSection
-          pricing={sommerfreizeit.pricing}
-          signupStartDate={sommerfreizeit.signupStartDate ?? null}
+          pricing={eventData.pricing}
+          signupStartDate={eventData.signupStartDate ?? null}
         />
 
-        <AccommodationSection {...sommerfreizeit} />
+        <AccommodationSection {...eventData} />
 
-        <TeamSection team={sommerfreizeit.allgemein.teamFreizeit} />
+        <TeamSection team={eventData.teamFreizeit} />
 
-        <FeaturesSection eigenschaften={sommerfreizeit.allgemein.eigenschaften} />
-
-        <TeamSection team={sommerfreizeit.teamFreizeit} />
-
-        <FeaturesSection eigenschaften={sommerfreizeit.allgemein.eigenschaften} />
-
-        <TeamSection team={sommerfreizeit.allgemein.teamFreizeit} />
+        <FeaturesSection eigenschaften={eventData.allgemein.eigenschaften} />
 
         <ContactSection />
       </section>

@@ -200,7 +200,11 @@ export default buildConfig({
     Songs,
     sommerfreizeitUser,
     sommerfreizeitAnmeldung,
-    sommerfreizeitFeedback
+    sommerfreizeitFeedback,
+    sommerfreizeitChild,
+    sommerfreizeitPricing,
+    sommerfreizeitEvents,
+    sommerfreizeitOrders,
   ],
   globals: [
     Startseite,
@@ -213,8 +217,6 @@ export default buildConfig({
     Header,
     Footer,
     Rechtliches,
-    Knallbonbon,
-    knallbonbonSettings,
     Knallbonbon,
     knallbonbonSettings,
     sommerfreizeitLandingPage,

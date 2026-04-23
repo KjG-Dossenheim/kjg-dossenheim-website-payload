@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import Date from '@/components/common/date'
+import DateComponent from '@/components/common/date'
 import { ChevronDown, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CardHeader } from '@/components/ui/card'
@@ -22,7 +22,7 @@ interface HeroSectionProps {
   motto?: string | null | undefined
   startDate: string
   endDate: string
-  anmeldungWebsite: string
+  signupStartDate?: string | null
 }
 
 export default function HeroSection({
@@ -30,8 +30,10 @@ export default function HeroSection({
   motto,
   startDate,
   endDate,
-  anmeldungWebsite,
+  signupStartDate,
 }: HeroSectionProps) {
+  const signupOpen = !signupStartDate || new Date() >= new Date(signupStartDate)
+
   return (
     <section className="flex flex-col items-center justify-center text-center">
       <CardHeader className="space-y-4">
@@ -48,16 +50,28 @@ export default function HeroSection({
       <CardHeader className="space-y-2">
         <Countdown targetDate={startDate} />
         <p className="text-lg font-normal lg:text-xl">
-          <Date dateString={startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
-          <Date dateString={endDate} formatString="EEEE, d. MMMM yyyy" />
+          <DateComponent dateString={startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
+          <DateComponent dateString={endDate} formatString="EEEE, d. MMMM yyyy" />
         </p>
       </CardHeader>
       <CardHeader className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center sm:gap-4">
-        <Button asChild data-umami-event="Sommerfreizeit Anmeldung Hero CTA">
-          <Link href={anmeldungWebsite} target="_blank" className="space-x-2">
-            Jetzt anmelden <User />
-          </Link>
-        </Button>
+        {signupOpen ? (
+          <Button asChild data-umami-event="Sommerfreizeit Anmeldung Hero CTA">
+            <Link href="/sommerfreizeit/anmeldung" className="space-x-2">
+              Jetzt anmelden <User />
+            </Link>
+          </Button>
+        ) : (
+          <div className="flex flex-col items-center gap-1">
+            <Button disabled className="space-x-2">
+              Jetzt anmelden <User />
+            </Button>
+            <p className="text-muted-foreground text-sm">
+              Anmeldung ab{' '}
+              <DateComponent dateString={signupStartDate!} formatString="d. MMMM yyyy, HH:mm" /> Uhr
+            </p>
+          </div>
+        )}
         <Button asChild variant="outline" data-umami-event="Sommerfreizeit Info Hero CTA">
           <Link href="#info" className="space-x-2">
             Informationen <ChevronDown />

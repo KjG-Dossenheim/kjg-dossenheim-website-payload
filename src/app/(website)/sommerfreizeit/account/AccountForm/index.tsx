@@ -4,19 +4,8 @@ import React, { ChangeEvent, FormEvent, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { deleteChildAction, updateAccountAction } from '../actions'
+import { updateAccountAction } from '../actions'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,7 +18,6 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { sommerfreizeitAuthClient } from '@/lib/auth/client'
 
 type AccountFormData = {
   email: string
@@ -58,41 +46,9 @@ type ChildListItem = {
   id: string
   firstName: string
   lastName: string
-  dateOfBirth: string | null
-  gender: 'male' | 'female' | 'diverse' | ''
   class?: string | null
   _status?: string
   createdAt: string
-}
-
-const getGenderLabel = (gender: ChildListItem['gender']) => {
-  if (!gender) {
-    return 'Keine Angabe'
-  }
-
-  if (gender === 'male') {
-    return 'Maennlich'
-  }
-
-  if (gender === 'female') {
-    return 'Weiblich'
-  }
-
-  return 'Divers'
-}
-
-function formatOptionalDate(value: string | null) {
-  if (!value) {
-    return 'Keine Angabe'
-  }
-
-  const date = new Date(value)
-
-  if (Number.isNaN(date.getTime())) {
-    return 'Keine Angabe'
-  }
-
-  return new Intl.DateTimeFormat('de-DE').format(date)
 }
 
 export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialChildren }) => {
@@ -108,9 +64,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
     city: initialData.city,
   })
   const [isSaving, setIsSaving] = useState(false)
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const [children, setChildren] = useState<ChildListItem[]>(initialChildren)
-  const [isDeletingChildId, setIsDeletingChildId] = useState<string | null>(null)
+  const [children] = useState<ChildListItem[]>(initialChildren)
   const [accountStatus, setAccountStatus] = useState<{ success: boolean; message: string } | null>(
     null,
   )
@@ -144,39 +98,6 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
     }
 
     setIsSaving(false)
-  }
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true)
-    try {
-      await sommerfreizeitAuthClient.signOut()
-      router.push('/sommerfreizeit/login')
-      router.refresh()
-    } catch {
-      setAccountStatus({
-        success: false,
-        message: 'Abmeldung fehlgeschlagen. Bitte versuche es erneut.',
-      })
-    } finally {
-      setIsLoggingOut(false)
-    }
-  }
-
-  const handleDeleteChild = async (childId: string) => {
-    setAccountStatus(null)
-    setIsDeletingChildId(childId)
-
-    const result = await deleteChildAction(childId)
-
-    if (result.success) {
-      setChildren((prev) => prev.filter((child) => child.id !== childId))
-      setAccountStatus(result)
-      router.refresh()
-    } else {
-      setAccountStatus(result)
-    }
-
-    setIsDeletingChildId(null)
   }
 
   return (
@@ -301,13 +222,6 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
                         )}
                       </CardDescription>
                     </CardHeader>
-                    <CardFooter>
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/sommerfreizeit/account/sommerfreizeitChild/${child.id}`}>
-                          Bearbeiten
-                        </Link>
-                      </Button>
-                    </CardFooter>
                   </Card>
                 )
               })}

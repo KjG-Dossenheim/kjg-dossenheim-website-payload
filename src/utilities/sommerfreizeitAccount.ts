@@ -35,6 +35,7 @@ export type SommerfreizeitUserInput = {
   address?: string | null
   postalCode?: string | null
   city?: string | null
+  pretix_Identifier?: string | null
 }
 
 export type SommerfreizeitUserLookupResult = {
