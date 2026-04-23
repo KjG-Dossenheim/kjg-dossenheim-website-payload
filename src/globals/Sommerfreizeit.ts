@@ -40,6 +40,10 @@ export const Sommerfreizeit: GlobalConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+        date: {
+          displayFormat: 'dd.MM.yyyy HH:mm',
+          timeFormat: 'HH:mm',
+        },
       },
     },
     {
@@ -49,6 +53,10 @@ export const Sommerfreizeit: GlobalConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+        date: {
+          displayFormat: 'dd.MM.yyyy HH:mm',
+          timeFormat: 'HH:mm',
+        },
       },
     },
     {
@@ -67,6 +75,20 @@ export const Sommerfreizeit: GlobalConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'signupStartDate',
+      label: 'Anmeldung ab',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        description: 'Ab wann ist die Anmeldung möglich? Leer lassen für sofort.',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'dd.MM.yyyy HH:mm',
+          timeFormat: 'HH:mm',
+        },
       },
     },
     {
@@ -207,6 +229,41 @@ export const Sommerfreizeit: GlobalConfig = {
           ],
         },
         {
+          label: "FAQ",
+          name: "faq",
+          fields: [
+            {
+              name: "eintrag",
+              label: "Eintrag",
+              labels: {
+                singular: "Eintrag",
+                plural: "Einträge",
+              },
+              type: "array",
+              required: true,
+              admin: {
+                components: {
+                  RowLabel: "src/components/admin/rowLable/ArrayRowLabel.tsx",
+                },
+              },
+              fields: [
+                {
+                  name: "question",
+                  label: "Frage",
+                  type: "text",
+                  required: true,
+                },
+                {
+                  name: "answer",
+                  label: "Antwort",
+                  type: "richText",
+                  required: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: 'Packliste',
           name: 'packliste',
           fields: [
@@ -219,7 +276,7 @@ export const Sommerfreizeit: GlobalConfig = {
           ],
         },
         {
-          label: 'Letzten Informationen',
+          label: 'Informationen',
           name: 'informationen',
           fields: [
             {
