@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { lookupOrderAndStartFlowAction } from './action'
-import { Link } from 'lucide-react'
+import Link from 'next/link'
 
 export function OrderLookupForm() {
   const [orderCode, setOrderCode] = useState('')
@@ -76,7 +76,7 @@ export function OrderLookupForm() {
               {isPending ? 'Wird abgerufen...' : 'Bestellung abrufen'}
             </Button>
             <Button variant="link" asChild>
-              <Link href="/sommerfreizeit/anmeldung" className="ml-4">
+              <Link href="/sommerfreizeit/anmeldung/pretix" className="ml-4">
                 Noch keine Bestellung?
               </Link>
             </Button>
