@@ -156,7 +156,7 @@ export const KnallbonbonRegistrationExportAction: React.FC = () => {
               <FieldLabel>Veranstaltung</FieldLabel>
               <Select
                 value={selectedEventId}
-                onValueChange={setSelectedEventId}
+                onValueChange={(value) => setSelectedEventId(value ?? 'all')}
                 disabled={isLoadingEvents}
               >
                 <SelectTrigger>
@@ -179,7 +179,7 @@ export const KnallbonbonRegistrationExportAction: React.FC = () => {
               <FieldLabel>Export-Format</FieldLabel>
               <Select
                 value={exportFormat}
-                onValueChange={(value: 'pdf' | 'csv') => setExportFormat(value)}
+                onValueChange={(value) => setExportFormat((value ?? 'pdf') as 'pdf' | 'csv')}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Wähle ein Format" />

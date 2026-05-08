@@ -72,7 +72,7 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
         <ButtonGroup>
           <Button asChild>
             <Link
-              href={`/knallbonbon/anmeldung?event=${event.id}`}
+              href={`/knallbonbon/anmelden?event=${event.id}`}
               className="flex flex-row items-center gap-2"
             >
               <User />
@@ -98,7 +98,7 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
             </DialogHeader>
             <div>
               <QRCode
-                data={`${process.env.NEXT_PUBLIC_SITE_URL}/knallbonbon/anmeldung?event=${event.id}`}
+                data={`${process.env.NEXT_PUBLIC_SITE_URL}/knallbonbon/anmelden?event=${event.id}`}
               />
             </div>
           </DialogContent>
@@ -185,7 +185,7 @@ export default async function Page() {
         </div>
         <div className="flex justify-center">
           <Button asChild>
-            <Link href="/knallbonbon/anmeldung">
+            <Link href="/knallbonbon/anmelden">
               <User />
               Jetzt anmelden
             </Link>

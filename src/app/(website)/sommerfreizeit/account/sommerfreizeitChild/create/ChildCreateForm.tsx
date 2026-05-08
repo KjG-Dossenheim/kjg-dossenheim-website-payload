@@ -17,11 +17,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+import type { SommerfreizeitChild } from '@/payload-types'
+
 type ChildFormData = {
   firstName: string
   lastName: string
   dateOfBirth: string
-  gender: 'male' | 'female' | 'diverse'
+  gender: SommerfreizeitChild['gender']
 }
 
 const initialFormState: ChildFormData = {
@@ -113,8 +115,8 @@ export function ChildCreateForm() {
               <Label htmlFor="gender">Geschlecht</Label>
               <Select
                 value={formData.gender}
-                onValueChange={(value: 'male' | 'female' | 'diverse') =>
-                  setFormData((prev) => ({ ...prev, gender: value }))
+                onValueChange={(value: 'male' | 'female' | 'diverse' | null) =>
+                  value && setFormData((prev) => ({ ...prev, gender: value }))
                 }
                 disabled={isCreatingChild}
               >

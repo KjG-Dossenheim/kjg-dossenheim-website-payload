@@ -25,7 +25,7 @@ export const sommerfreizeitEvents: CollectionConfig = {
     },
     {
       name: "startDate",
-      label: "Datum",
+      label: "Startdatum",
       type: "date",
       required: true,
       admin: {
@@ -38,8 +38,9 @@ export const sommerfreizeitEvents: CollectionConfig = {
     },
     {
       name: "endDate",
-      label: "Endet am",
+      label: "Enddatum",
       type: "date",
+      required: true,
       admin: {
         position: "sidebar",
         date: {
@@ -52,6 +53,7 @@ export const sommerfreizeitEvents: CollectionConfig = {
       name: 'signupStartDate',
       label: 'Anmeldestart',
       type: 'date',
+      required: true,
       admin: {
         position: "sidebar",
         date: {
@@ -64,6 +66,7 @@ export const sommerfreizeitEvents: CollectionConfig = {
       name: 'signupEndDate',
       label: 'Anmeldeschluss',
       type: 'date',
+      required: true,
       admin: {
         position: "sidebar",
         date: {
@@ -73,20 +76,9 @@ export const sommerfreizeitEvents: CollectionConfig = {
       },
     },
     {
-      name: 'maxParticipants',
-      label: 'Maximale Teilnehmerzahl',
-      type: 'number',
-      admin: {
-        position: "sidebar",
-      },
-    },
-    {
       name: 'motto',
       label: 'Motto',
       type: 'text',
-      admin: {
-        position: "sidebar",
-      },
     },
     {
       name: 'team',
@@ -159,12 +151,60 @@ export const sommerfreizeitEvents: CollectionConfig = {
             {
               name: "priceTiers",
               label: "Preisstaffelung",
-              type: "join",
-              collection: "sommerfreizeitPricing",
-              on: "freizeit",
+              type: "array",
+              required: true,
               admin: {
-                allowCreate: false,
-              }
+                components: {
+                  RowLabel: "src/components/admin/rowLable/ArrayRowLabelName.tsx",
+                },
+              },
+              fields: [
+                {
+                  name: "name",
+                  label: "Name",
+                  type: "text",
+                  required: true,
+                },
+                {
+                  name: "beschreibung",
+                  label: "Beschreibung",
+                  type: "text",
+                  required: true,
+                },
+                {
+                  name: "price",
+                  label: "Preis",
+                  type: "number",
+                  required: true,
+                },
+                {
+                  name: "default",
+                  label: "Standard Preisstufe",
+                  type: "checkbox",
+                  admin: {
+                    description: "Es kann nur eine Preisstufe als Standard festgelegt werden.",
+                  },
+                },
+                {
+                  name: "eigenschaften",
+                  label: "Eigenschaften",
+                  type: "array",
+                  required: true,
+                  admin: {
+                    components: {
+                      RowLabel: "src/components/admin/rowLable/ArrayRowLabelName.tsx",
+                    },
+                  },
+                  fields: [
+                    {
+                      name: "name",
+                      label: "Name",
+                      type: "text",
+                      required: true,
+                    },
+                  ],
+                },
+              ],
             },
           ],
         }

@@ -1,8 +1,14 @@
 'use client'
 
-import { createAuthClient, payloadAuthPlugins } from '@delmaredigital/payload-better-auth/client'
+import { createAuthClient, twoFactorClient } from '@delmaredigital/payload-better-auth/client'
 import { magicLinkClient } from 'better-auth/client/plugins'
+import { emailOTPClient } from 'better-auth/client/plugins'
 
-export const sommerfreizeitAuthClient = createAuthClient({
-  plugins: [...payloadAuthPlugins, magicLinkClient()],
+export const authClient = createAuthClient({
+  plugins: [
+    twoFactorClient(),
+    magicLinkClient(),
+    emailOTPClient()],
 })
+
+export const { useSession, signIn, signUp, signOut, twoFactor, magicLink } = authClient

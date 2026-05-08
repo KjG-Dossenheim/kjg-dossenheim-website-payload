@@ -1,21 +1,12 @@
 import React from 'react'
-import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import DateComponent from '@/components/common/date'
-import { ChevronDown, User } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { BackgroundLines } from '@/components/ui/background-lines'
 import { CardHeader } from '@/components/ui/card'
 
 const Countdown = dynamic(() => import('@/components/common/Countdown'), {
   loading: () => <div className="h-16 animate-pulse rounded bg-gray-200" />,
 })
-
-const SparklesText = dynamic(
-  () => import('@/components/ui/sparkles-text').then((mod) => ({ default: mod.SparklesText })),
-  {
-    loading: () => <div className="text-4xl font-bold md:text-5xl lg:text-6xl" />,
-  },
-)
 
 interface HeroSectionProps {
   title: string
@@ -23,61 +14,25 @@ interface HeroSectionProps {
   startDate: string
   endDate: string
   signupStartDate?: string | null
+  pretixEventId: string
 }
 
-export default function HeroSection({
-  title,
-  motto,
-  startDate,
-  endDate,
-  signupStartDate,
-}: HeroSectionProps) {
-  const signupOpen = !signupStartDate || new Date() >= new Date(signupStartDate)
-
+export default function HeroSection({ title, motto, startDate, endDate }: HeroSectionProps) {
   return (
-    <section className="flex flex-col items-center justify-center text-center">
-      <CardHeader className="space-y-4">
-        <SparklesText
-          className="text-4xl font-bold md:text-5xl lg:text-6xl"
-          animationDuration={1.5}
-          regenerationInterval={200}
-          lifespanRange={{ min: 10, max: 20 }}
-        >
-          {title}
-        </SparklesText>
-        <h2 className="text-xl md:text-2xl lg:text-3xl">{motto}</h2>
-      </CardHeader>
-      <CardHeader className="space-y-2">
-        <Countdown targetDate={startDate} />
-        <p className="text-lg font-normal lg:text-xl">
-          <DateComponent dateString={startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
-          <DateComponent dateString={endDate} formatString="EEEE, d. MMMM yyyy" />
-        </p>
-      </CardHeader>
-      <CardHeader className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center sm:gap-4">
-        {signupOpen ? (
-          <Button asChild data-umami-event="Sommerfreizeit Anmeldung Hero CTA">
-            <Link href="/sommerfreizeit/anmeldung" className="space-x-2">
-              Jetzt anmelden <User />
-            </Link>
-          </Button>
-        ) : (
-          <div className="flex flex-col items-center gap-1">
-            <Button disabled className="space-x-2">
-              Jetzt anmelden <User />
-            </Button>
-            <p className="text-muted-foreground text-sm">
-              Anmeldung ab{' '}
-              <DateComponent dateString={signupStartDate!} formatString="d. MMMM yyyy, HH:mm" /> Uhr
-            </p>
-          </div>
-        )}
-        <Button asChild variant="outline" data-umami-event="Sommerfreizeit Info Hero CTA">
-          <Link href="#info" className="space-x-2">
-            Informationen <ChevronDown />
-          </Link>
-        </Button>
-      </CardHeader>
-    </section>
+    <BackgroundLines className="relative h-screen! overflow-hidden text-center">
+      <section className="relative z-10 flex h-full flex-col items-center justify-center px-4">
+        <CardHeader className="space-y-4">
+          <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">{title}</h1>
+          <h2 className="text-xl md:text-2xl lg:text-3xl">{motto}</h2>
+        </CardHeader>
+        <CardHeader className="space-y-2">
+          <Countdown targetDate={startDate} />
+          <p className="text-lg font-normal lg:text-xl">
+            <DateComponent dateString={startDate} formatString="EEEE, d. MMMM yyyy" /> bis{' '}
+            <DateComponent dateString={endDate} formatString="EEEE, d. MMMM yyyy" />
+          </p>
+        </CardHeader>
+      </section>
+    </BackgroundLines>
   )
 }

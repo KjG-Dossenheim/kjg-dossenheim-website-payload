@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Text, Heading, Hr, Container } from '@react-email/components'
+import { Text, Heading, Hr, Container } from 'react-email'
 import MailBase from '@/components/email/Base'
 
 interface EmailTemplateProps {

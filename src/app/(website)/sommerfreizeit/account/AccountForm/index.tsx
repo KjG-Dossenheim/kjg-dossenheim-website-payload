@@ -103,8 +103,11 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
   return (
     <div className="mx-auto w-full space-y-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row justify-between">
           <CardTitle>Mein Konto</CardTitle>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/sommerfreizeit/logout">Logout</Link>
+          </Button>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -228,11 +231,13 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
             </div>
           )}
         </CardContent>
-        <CardFooter>
+        {/*  <CardFooter>
           <Button asChild>
-            <Link href="/sommerfreizeit/account/kinder/create">Neues Kind anlegen</Link>
+            <Link href="/sommerfreizeit/account/sommerfreizeitChild/create">
+              Neues Kind anlegen
+            </Link>
           </Button>
-        </CardFooter>
+        </CardFooter> */}
       </Card>
     </div>
   )

@@ -8,8 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { sommerfreizeitAuthClient } from '@/lib/auth/client'
-import { checkSommerfreizeitUserEmailAction, registerSommerfreizeitUserAction } from './actions'
+import { authClient } from '@/lib/auth/client'
+import { checkSommerfreizeitUserEmailAction } from './actions'
+
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 
 const defaultReturnTo = '/sommerfreizeit/account'
 
@@ -17,19 +19,14 @@ type LoginFormProps = {
   returnTo: string
 }
 
-type AuthStep = 'email' | 'login' | 'register'
+type AuthStep = 'email' | 'otp'
 
 export function LoginForm({ returnTo }: LoginFormProps) {
   const router = useRouter()
 
   const [step, setStep] = useState<AuthStep>('email')
-  const [firstName, setFirstName] = useState<string>('')
-  const [lastName, setLastName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
-  const [phone, setPhone] = useState<string>('')
-  const [address, setAddress] = useState<string>('')
-  const [postalCode, setPostalCode] = useState<string>('')
-  const [city, setCity] = useState<string>('')
+  const [otp, setOtp] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [successMessage, setSuccessMessage] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -49,54 +46,34 @@ export function LoginForm({ returnTo }: LoginFormProps) {
           return
         }
 
-        setStep(result.exists ? 'login' : 'register')
+        if (!result.exists) {
+          setError('Fuer diese E-Mail-Adresse existiert kein Konto.')
+          return
+        }
+
+        const sendResult = await authClient.emailOtp.sendVerificationOtp({
+          email,
+          type: 'sign-in',
+        })
+
+        if (sendResult.error) {
+          setError('Der Bestätigungscode konnte nicht gesendet werden. Bitte versuche es erneut.')
+          return
+        }
+
+        setOtp('')
+        setStep('otp')
+        setSuccessMessage('Wir haben dir einen Bestätigungscode per E-Mail geschickt.')
         return
       }
 
-      if (step === 'login') {
-        const result = await sommerfreizeitAuthClient.signIn.magicLink({
-          email,
-          callbackURL: returnTo || defaultReturnTo,
-        })
+      const signInResult = await authClient.signIn.emailOtp({
+        email,
+        otp,
+      })
 
-        if (result.error) {
-          setError('Magic Link konnte nicht gesendet werden. Bitte versuche es erneut.')
-          return
-        }
-
-        setSuccessMessage('Wir haben dir einen Magic Link per E-Mail geschickt.')
-        return
-      }
-
-      if (step === 'register') {
-        const registerResult = await registerSommerfreizeitUserAction({
-          firstName,
-          lastName,
-          email,
-          phone,
-          address,
-          postalCode,
-          city,
-        })
-
-        if (!registerResult.success) {
-          setError(registerResult.message)
-          return
-        }
-
-        const magicLinkResult = await sommerfreizeitAuthClient.signIn.magicLink({
-          email,
-          callbackURL: returnTo || defaultReturnTo,
-        })
-
-        if (magicLinkResult.error) {
-          setError('Konto wurde erstellt, aber der Magic Link konnte nicht gesendet werden.')
-          return
-        }
-
-        setSuccessMessage(
-          'Dein Konto wurde erstellt. Wir haben dir einen Magic Link per E-Mail geschickt.',
-        )
+      if (signInResult.error) {
+        setError('Der Bestätigungscode ist ungültig oder abgelaufen. Bitte versuche es erneut.')
         return
       }
 
@@ -104,26 +81,23 @@ export function LoginForm({ returnTo }: LoginFormProps) {
       router.refresh()
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : ''
-      const duplicateEmail = /already exists|duplicate|email/i.test(errorMessage)
+      const invalidOtp = /otp|code|invalid|expired/i.test(errorMessage)
 
       setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
 
-      if (duplicateEmail) {
-        setError('Fuer diese E-Mail-Adresse existiert bereits ein Konto.')
+      if (invalidOtp) {
+        setError('Der Bestätigungscode ist ungültig oder abgelaufen. Bitte versuche es erneut.')
       }
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const isRegisterStep = step === 'register'
   const isEmailStep = step === 'email'
-  const cardTitle = isEmailStep ? 'Anmeldung' : isRegisterStep ? 'Konto erstellen' : 'Anmelden'
+  const cardTitle = isEmailStep ? 'Anmeldung' : 'Bestätigungscode'
   const cardDescription = isEmailStep
-    ? 'Gib deine E-Mail ein. Wir pruefen automatisch, ob du schon ein Konto hast.'
-    : isRegisterStep
-      ? 'Lege zuerst ein Sommerfreizeit-Konto an, damit du die Anmeldung in mehreren Schritten ausfuellen kannst.'
-      : 'Wir schicken dir einen Magic Link fuer die Anmeldung.'
+    ? 'Gib deine E-Mail ein. Wir senden dir einen Bestätigungscode.'
+    : 'Gib den Code aus deiner E-Mail ein, um dich anzumelden.'
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -134,32 +108,8 @@ export function LoginForm({ returnTo }: LoginFormProps) {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {isRegisterStep ? (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">Vorname</Label>
-                  <Input
-                    id="firstName"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
-                    value={firstName}
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Nachname</Label>
-                  <Input
-                    id="lastName"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
-                    value={lastName}
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-              </div>
-            ) : null}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-Mail</Label>
               <Input
                 id="email"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
@@ -170,63 +120,20 @@ export function LoginForm({ returnTo }: LoginFormProps) {
                 disabled={isSubmitting}
               />
             </div>
-            {isRegisterStep ? (
+            {!isEmailStep ? (
               <div className="space-y-2">
-                <Label htmlFor="phone">Telefonnummer (optional)</Label>
-                <Input
-                  id="phone"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-                  type="tel"
-                  placeholder="0151 23456789"
-                  value={phone}
-                  disabled={isSubmitting}
-                />
+                <Label htmlFor="otp">Bestätigungscode</Label>
+                <InputOTP maxLength={6} value={otp} onChange={setOtp} disabled={isSubmitting}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </div>
-            ) : null}
-            {isRegisterStep ? (
-              <div className="space-y-2">
-                <Label htmlFor="address">Adresse</Label>
-                <Input
-                  id="address"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
-                  placeholder="Musterstrasse 12"
-                  value={address}
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-            ) : null}
-            {isRegisterStep ? (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="postalCode">Postleitzahl</Label>
-                  <Input
-                    id="postalCode"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
-                    placeholder="69221"
-                    value={postalCode}
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="city">Ort</Label>
-                  <Input
-                    id="city"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
-                    placeholder="Dossenheim"
-                    value={city}
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-              </div>
-            ) : null}
-            {isRegisterStep ? (
-              <p className="text-muted-foreground text-sm">
-                Nach dem Erstellen deines Kontos schicken wir dir direkt einen Magic Link per
-                E-Mail.
-              </p>
             ) : null}
             {error ? (
               <Alert variant="destructive">
@@ -245,6 +152,7 @@ export function LoginForm({ returnTo }: LoginFormProps) {
                 className="w-full"
                 onClick={() => {
                   setStep('email')
+                  setOtp('')
                   setError('')
                   setSuccessMessage('')
                 }}
@@ -256,15 +164,11 @@ export function LoginForm({ returnTo }: LoginFormProps) {
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting
                 ? isEmailStep
-                  ? 'E-Mail wird geprueft...'
-                  : isRegisterStep
-                    ? 'Konto wird erstellt...'
-                    : 'Magic Link wird gesendet...'
+                  ? 'Code wird gesendet...'
+                  : 'Code wird geprueft...'
                 : isEmailStep
-                  ? 'Weiter'
-                  : isRegisterStep
-                    ? 'Konto erstellen'
-                    : 'Magic Link senden'}
+                  ? 'Code senden'
+                  : 'Anmelden'}
             </Button>
           </form>
         </CardContent>

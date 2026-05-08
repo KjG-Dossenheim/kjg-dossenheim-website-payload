@@ -11,70 +11,29 @@ import {
   findSommerfreizeitUserByEmail,
   normalizeSommerfreizeitEmail,
 } from '@/utilities/sommerfreizeitAccount'
-
-const lookupOrderSchema = z.object({
-  orderCode: z
-    .string()
-    .trim()
-    .min(3, 'Bitte gib einen gueltigen Bestellcode ein.')
-    .max(64, 'Bitte gib einen gueltigen Bestellcode ein.'),
-})
-
-const childInputSchema = z.object({
-  positionId: z.string().trim().min(1),
-  firstName: z.string().trim().min(1, 'Vorname ist erforderlich.'),
-  lastName: z.string().trim().min(1, 'Nachname ist erforderlich.'),
-  dateOfBirth: z.string().trim().min(1, 'Geburtsdatum ist erforderlich.'),
-  gender: z.enum(['male', 'female', 'diverse'], {
-    error: 'Geschlecht ist erforderlich.',
-  }),
-  class: z.enum(['3', '4', '5', '6', '7', '8', '9', '10']).optional(),
-  krankenversicherung: z.string().trim().min(1, 'Krankenversicherung ist erforderlich.'),
-  krankenversicherungArt: z.enum(['gesetzlich', 'privat'], {
-    error: 'Art der Krankenversicherung ist erforderlich.',
-  }),
-  krankenversicherungNummer: z.string().trim().min(1, 'Versichertennummer ist erforderlich.'),
-  foodAllergies: z.string().trim().min(1, 'Lebensmittelallergien sind erforderlich.'),
-  otherAllergies: z.string().trim().min(1, 'Sonstige Allergien sind erforderlich.'),
-  medicalConditions: z.string().trim().min(1, 'Vorerkrankungen sind erforderlich.'),
-  medikamente: z.string().trim().min(1, 'Medikamente sind erforderlich.'),
-  arzt: z.string().trim().min(1, 'Arzt ist erforderlich.'),
-  arztTelefon: z.string().trim().min(1, 'Arzt-Telefon ist erforderlich.'),
-  versicherungsNummer: z.string().trim().min(1, 'Versicherungsnummer ist erforderlich.'),
-  versicherungsAnbieter: z.string().trim().min(1, 'Versicherungsanbieter ist erforderlich.'),
-  schwimmer: z.boolean(),
-  bemerkungen: z.string().trim().optional(),
-})
-
-const completeOrderSchema = z.object({
-  orderCode: z
-    .string()
-    .trim()
-    .min(3, 'Bitte gib einen gueltigen Bestellcode ein.')
-    .max(64, 'Bitte gib einen gueltigen Bestellcode ein.'),
-  phone: z.string().trim().min(1, 'Telefonnummer ist erforderlich.'),
-  address: z.string().trim().min(1, 'Adresse ist erforderlich.'),
-  postalCode: z.string().trim().min(1, 'Postleitzahl ist erforderlich.'),
-  city: z.string().trim().min(1, 'Ort ist erforderlich.'),
-  children: z.array(childInputSchema).min(1, 'Mindestens ein Kind ist erforderlich.'),
-})
+import { lookupOrderSchema, completeOrderSchema } from '@/utilities/validation/sommerfreizeitSchemas'
+import { getRequiredEnv } from '@/utilities/env'
 
 type PretixPosition = {
   id?: string | number | null
   positionid?: string | number | null
   canceled?: boolean | null
   attendee_name?: string | null
+  attendee_name_parts?: Record<string, unknown> | null
 }
 
 type PretixOrder = {
   code?: string | null
+  secret?: string | null
   status?: string | null
   email?: string | null
   invoice_address?: {
     name?: string | null
+    name_parts?: Record<string, unknown> | null
   } | null
   event?: string | number | null
   positions?: PretixPosition[] | null
+  require_approval?: boolean | null
 }
 
 type LookupOrderResult = {
@@ -87,10 +46,18 @@ type LookupOrderResult = {
 type OrderFlowView = {
   orderCode: string
   email: string
+  pretixEvent: string
+  pretixOrderID: string
+  pretixSecret: string
   positionCount: number
+  invoiceFirstName: string
+  invoiceLastName: string
   positions: Array<{
     positionId: string
-    attendeeName: string
+    firstName: string
+    lastName: string
+    pretixOrderID: string
+    pretixSecret: string
   }>
 }
 
@@ -114,10 +81,6 @@ async function getCurrentPretixEvent() {
       ? landingPageData.freizeit
       : landingPageData.freizeit?.id
 
-  if (!eventId) {
-    throw new Error('Keine Sommerfreizeit ist im Landing-Global verknuepft.')
-  }
-
   const event = await payload.findByID({
     collection: 'sommerfreizeitEvents',
     id: eventId,
@@ -126,10 +89,6 @@ async function getCurrentPretixEvent() {
       pretixEventId: true,
     },
   })
-
-  if (!event.pretixEventId) {
-    throw new Error('Die verknuepfte Sommerfreizeit hat keine Pretix Event ID.')
-  }
 
   return {
     payload,
@@ -150,28 +109,10 @@ function toOptionalString(value: unknown): string | null {
   return null
 }
 
-function splitAttendeeName(name: string | null | undefined) {
-  const trimmed = (name || '').trim()
-
-  if (!trimmed) {
-    return {
-      firstName: 'Teilnehmend',
-      lastName: 'Sommerfreizeit',
-    }
-  }
-
-  const parts = trimmed.split(/\s+/).filter(Boolean)
-
-  if (parts.length === 1) {
-    return {
-      firstName: parts[0],
-      lastName: 'Sommerfreizeit',
-    }
-  }
-
+function readPretixNameParts(parts: Record<string, unknown> | null | undefined) {
   return {
-    firstName: parts.slice(0, -1).join(' '),
-    lastName: parts[parts.length - 1],
+    firstName: toOptionalString(parts?.given_name) ?? '',
+    lastName: toOptionalString(parts?.family_name) ?? '',
   }
 }
 
@@ -179,8 +120,20 @@ function extractPositionId(position: PretixPosition) {
   return toOptionalString(position.positionid) || toOptionalString(position.id)
 }
 
-function extractValidPositions(order: PretixOrder) {
+function extractValidPositions(order: PretixOrder): Array<{
+  positionId: string
+  firstName: string
+  lastName: string
+  pretixOrderID: string
+  pretixSecret: string
+}> {
   const positions = Array.isArray(order.positions) ? order.positions : []
+  const pretixOrderID = toOptionalString(order.code)
+  const pretixSecret = toOptionalString(order.secret)
+
+  if (!pretixOrderID || !pretixSecret) {
+    return []
+  }
 
   return positions
     .filter((position) => !position?.canceled)
@@ -191,12 +144,25 @@ function extractValidPositions(order: PretixOrder) {
         return null
       }
 
+      const nameParts = readPretixNameParts(position.attendee_name_parts)
+
       return {
         positionId,
-        attendeeName: (position.attendee_name || '').trim(),
+        firstName: nameParts.firstName,
+        lastName: nameParts.lastName,
+        pretixOrderID,
+        pretixSecret,
       }
     })
-    .filter((value): value is { positionId: string; attendeeName: string } => !!value)
+    .filter(
+      (value): value is {
+        positionId: string
+        firstName: string
+        lastName: string
+        pretixOrderID: string
+        pretixSecret: string
+      } => !!value,
+    )
 }
 
 async function fetchPretixOrder(args: {
@@ -236,24 +202,36 @@ async function fetchPretixOrder(args: {
 type ResolvedOrderFlow = {
   orderCode: string
   email: string
-  invoiceName: string | null
+  invoiceFirstName: string
+  invoiceLastName: string
   organizer: string
   pretixEventId: string
+  pretixEvent: string
+  pretixOrderID: string
+  pretixSecret: string
   positions: Array<{
     positionId: string
-    attendeeName: string
+    firstName: string
+    lastName: string
+    pretixOrderID: string
+    pretixSecret: string
   }>
+  requireApproval: boolean
 }
 
 async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOrderFlow> {
   const { event } = await getCurrentPretixEvent()
-  const organizer = (process.env.NEXT_PUBLIC_PRETIX_ORGANIZER || '').trim()
-  const token = (process.env.PRETIX_API_TOKEN || '').trim()
-  const baseUrl = (process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu').trim()
+  let organizer: string
+  let token: string
 
-  if (!organizer || !token) {
+  try {
+    organizer = getRequiredEnv('NEXT_PUBLIC_PRETIX_ORGANIZER')
+    token = getRequiredEnv('PRETIX_API_TOKEN')
+  } catch {
     throw new Error('PRETIX_NOT_CONFIGURED')
   }
+
+  const baseUrl = (process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu').trim()
 
   const normalizedCode = orderCode.trim().toUpperCase()
   const order = await fetchPretixOrder({
@@ -276,7 +254,20 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
     throw new Error('ORDER_EMAIL_MISSING')
   }
 
+  const pretixEvent = toOptionalString(order.event)
+
+  if (!pretixEvent) {
+    throw new Error('ORDER_EVENT_MISSING')
+  }
+
+  const pretixSecret = toOptionalString(order.secret)
+
+  if (!pretixSecret) {
+    throw new Error('ORDER_SECRET_MISSING')
+  }
+
   const positions = extractValidPositions(order)
+  const invoiceNameParts = readPretixNameParts(order.invoice_address?.name_parts)
 
   if (positions.length === 0) {
     throw new Error('ORDER_POSITIONS_MISSING')
@@ -285,37 +276,15 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
   return {
     orderCode: normalizedCode,
     email,
-    invoiceName: toOptionalString(order.invoice_address?.name),
+    invoiceFirstName: invoiceNameParts.firstName,
+    invoiceLastName: invoiceNameParts.lastName,
     organizer,
     pretixEventId: event.pretixEventId,
+    pretixEvent,
+    pretixOrderID: normalizedCode,
+    pretixSecret: pretixSecret,
     positions,
-  }
-}
-
-async function approvePretixOrder(args: {
-  baseUrl: string
-  organizer: string
-  event: string
-  code: string
-  token: string
-}) {
-  const endpoint = new URL(
-    `/api/v1/organizers/${encodeURIComponent(args.organizer)}/events/${encodeURIComponent(args.event)}/orders/${encodeURIComponent(args.code)}/approve/`,
-    args.baseUrl,
-  )
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Token ${args.token}`,
-    },
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    const bodyText = await response.text()
-    throw new Error(`ORDER_APPROVE_FAILED:${response.status}:${bodyText}`)
+    requireApproval: order.require_approval !== false,
   }
 }
 
@@ -330,13 +299,39 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
   }
 
   try {
+    const headers = await getHeaders()
     const payload = await getPayload({ config })
+    const user = await getSommerfreizeitSessionUser(payload, headers)
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'Bitte melde dich zuerst an.',
+      }
+    }
+
     const flow = await resolveOrderFlowFromPretix(parsedInput.data.orderCode)
+
+    if (normalizeSommerfreizeitEmail(user.email) !== normalizeSommerfreizeitEmail(flow.email)) {
+      return {
+        success: false,
+        message: 'Das eingeloggte Konto passt nicht zur Bestellung.',
+      }
+    }
 
     const existingUser = await findSommerfreizeitUserByEmail(payload, flow.email)
 
     if (!existingUser) {
-      const nameParts = splitAttendeeName(flow.invoiceName || flow.positions[0]?.attendeeName)
+      const nameParts =
+        flow.invoiceFirstName || flow.invoiceLastName
+          ? {
+            firstName: flow.invoiceFirstName,
+            lastName: flow.invoiceLastName,
+          }
+          : {
+            firstName: flow.positions[0]?.firstName ?? '',
+            lastName: flow.positions[0]?.lastName ?? '',
+          }
 
       await ensureSommerfreizeitUser(payload, {
         email: flow.email,
@@ -347,7 +342,7 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
 
     return {
       success: true,
-      message: 'Bestellung gefunden. Wir senden dir jetzt den Magic Link.',
+      message: 'Bestellung gefunden. Wir senden dir jetzt einen Bestätigungscode.',
       email: flow.email,
       orderCode: flow.orderCode,
     }
@@ -412,10 +407,18 @@ export async function getOrderFlowView(input: { orderCode: string }): Promise<Or
   return {
     orderCode: flow.orderCode,
     email: flow.email,
+    pretixEvent: flow.pretixEvent,
+    pretixOrderID: flow.pretixOrderID,
+    pretixSecret: flow.pretixSecret,
     positionCount: flow.positions.length,
+    invoiceFirstName: flow.invoiceFirstName,
+    invoiceLastName: flow.invoiceLastName,
     positions: flow.positions.map((position) => ({
       positionId: position.positionId,
-      attendeeName: position.attendeeName || '',
+      firstName: position.firstName,
+      lastName: position.lastName,
+      pretixOrderID: position.pretixOrderID,
+      pretixSecret: position.pretixSecret,
     })),
   }
 }
@@ -459,6 +462,14 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
         message: 'Das eingeloggte Konto passt nicht zur Bestellung.',
       }
     }
+
+    // Check if the order has already been completed in a previous attempt by looking for existing registrations for the order code
+    /* if (!flow.requireApproval) {
+      return {
+        success: false,
+        message: 'Diese Bestellung wurde bereits abgeschlossen und kann nicht erneut eingereicht werden.',
+      }
+    } */
 
     const allowedPositionIds = new Set(flow.positions.map((position) => position.positionId))
     const submittedPositionIds = parsedInput.data.children.map((child) => child.positionId)
@@ -513,28 +524,6 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       depth: 0,
     })
 
-    const defaultPricingResult = await payload.find({
-      collection: 'sommerfreizeitPricing',
-      where: {
-        and: [
-          {
-            freizeit: {
-              equals: event.id,
-            },
-          },
-          {
-            default: {
-              equals: true,
-            },
-          },
-        ],
-      },
-      limit: 1,
-      depth: 0,
-      pagination: false,
-    })
-
-    const defaultPricingId = defaultPricingResult.docs[0]?.id
 
     for (const childInput of parsedInput.data.children) {
       const existingRegistrationResult = await payload.find({
@@ -573,6 +562,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
           gender: childInput.gender,
           pretixOrderCode: flow.orderCode,
           pretixPositionId: childInput.positionId,
+          _status: 'published',
         },
         depth: 0,
       })
@@ -590,14 +580,11 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
           medikamente: childInput.medikamente,
           arzt: childInput.arzt,
           arztTelefon: childInput.arztTelefon,
-          versicherungsNummer: childInput.versicherungsNummer,
-          versicherungsAnbieter: childInput.versicherungsAnbieter,
           schwimmer: childInput.schwimmer,
           bemerkungen: childInput.bemerkungen || undefined,
           account: user.id,
           event: event.id,
           child: child.id,
-          pricing: defaultPricingId,
           pretixOrderCode: flow.orderCode,
           pretixPositionId: childInput.positionId,
           _status: 'published',
@@ -605,15 +592,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
         depth: 0,
       })
     }
-
-    // Pretix Bestellung bestätigen
-    await approvePretixOrder({
-      baseUrl: process.env.NEXT_PUBLIC_PRETIX_URL!,
-      organizer: process.env.NEXT_PUBLIC_PRETIX_ORGANIZER!,
-      event: flow.pretixEventId,
-      code: flow.orderCode,
-      token: process.env.PRETIX_API_TOKEN!,
-    })
+    console.log(`Bestellung ${flow.orderCode} mit ${parsedInput.data.children.length} Kindern in Payload gespeichert.`)
 
     revalidatePath('/sommerfreizeit/account')
     revalidatePath('/sommerfreizeit/anmeldung')

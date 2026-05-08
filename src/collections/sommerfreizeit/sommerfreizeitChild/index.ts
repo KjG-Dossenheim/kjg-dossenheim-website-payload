@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { cascadeDeleteAnmeldungenBeforeDelete } from './hooks/cascadeDeleteAnmeldungen'
+import { syncAnmeldungenAfterChange } from './hooks/syncAnmeldungen'
 
 const canManageOwnChild: NonNullable<CollectionConfig['access']>['read'] = ({ req: { user } }) => {
   if (!user) {
@@ -39,7 +39,7 @@ export const sommerfreizeitChild: CollectionConfig = {
     useAsTitle: 'firstName',
   },
   hooks: {
-    beforeDelete: [cascadeDeleteAnmeldungenBeforeDelete],
+    afterChange: [syncAnmeldungenAfterChange],
   },
   versions: {
     drafts: true,
@@ -100,7 +100,7 @@ export const sommerfreizeitChild: CollectionConfig = {
       name: 'dateOfBirth',
       label: 'Geburtsdatum',
       type: 'date',
-      required: true,
+      required: false,
       admin: {
         readOnly: false,
       },
@@ -128,7 +128,7 @@ export const sommerfreizeitChild: CollectionConfig = {
       name: 'gender',
       label: 'Geschlecht',
       type: 'select',
-      required: true,
+      required: false,
       options: [
         { label: 'Maennlich', value: 'male' },
         { label: 'Weiblich', value: 'female' },

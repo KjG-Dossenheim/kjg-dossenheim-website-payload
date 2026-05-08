@@ -299,7 +299,7 @@ export async function deleteChildAction(childId: string): Promise<DeleteChildRes
     })
 
     revalidatePath('/sommerfreizeit/account')
-    revalidatePath('/sommerfreizeit/anmeldung')
+    revalidatePath('/sommerfreizeit/anmelden')
     revalidatePath(`/sommerfreizeit/account/kinder/${childId}`)
 
     return {

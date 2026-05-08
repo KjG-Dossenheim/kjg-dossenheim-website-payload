@@ -62,16 +62,6 @@ async function getData() {
     depth: 2,
   })
 
-  // Fetch pricing from sommerfreizeitPricing collection
-  const pricingData = await payload.find({
-    collection: 'sommerfreizeitPricing',
-    where: {
-      freizeit: {
-        equals: eventData.id,
-      },
-    },
-  })
-
   return {
     ...sommerfreizeit,
     teamFreizeit: eventData.team,
@@ -82,7 +72,8 @@ async function getData() {
     signupStartDate: eventData.signupStartDate,
     landingDescription: landingPageData.description,
     unterkunft: eventData.unterkunft,
-    pricing: pricingData.docs,
+    pricing: eventData.preise,
+    pretixEventId: eventData.pretixEventId,
   }
 }
 
@@ -94,7 +85,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function Page() {
+export default async function SommerfreizeitPage() {
   const eventData = await getData()
 
   const jsonLd = {
@@ -116,7 +107,7 @@ export default async function Page() {
       name: eventData.unterkunft.name,
       url: eventData.unterkunft.website,
     },
-    offers: eventData.pricing.map((offer) => ({
+    offers: eventData.pricing.priceTiers.map((offer) => ({
       '@type': 'Offer',
       name: offer.name,
       price: offer.price,
@@ -150,7 +141,7 @@ export default async function Page() {
 
       <section className="container mx-auto" id="info">
         <PricingSection
-          pricing={eventData.pricing}
+          pricing={eventData.pricing.priceTiers}
           signupStartDate={eventData.signupStartDate ?? null}
         />
 

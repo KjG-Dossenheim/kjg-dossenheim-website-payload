@@ -18,6 +18,7 @@ import '@/styles/globals.css'
 // Fonts
 import { Caveat } from 'next/font/google'
 import { WebVitals } from '@/utilities/web-vitals'
+import { Toaster } from 'sonner'
 
 const caveat = Caveat({
   subsets: ['latin'],
@@ -68,6 +69,8 @@ export default async function layout({ children }: { children: ReactNode }) {
         >
           <Navbar headerData={header} />
           <main className="relative min-h-svh">{children}</main>
+          <Toaster />
+          <Toaster id="form" richColors />
           <Footer />
         </ThemeProvider>
       </body>

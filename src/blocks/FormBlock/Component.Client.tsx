@@ -93,7 +93,7 @@ export const FormClient: React.FC<FormClientProps> = ({ form, introContent }) =>
           ? form.confirmationMessage
           : 'Thank you for your submission!'
 
-      toast.success(confirmationMsg)
+      toast.success(confirmationMsg, { toasterId: 'form-block' })
       reset()
 
       // Handle redirect if configured
@@ -102,7 +102,9 @@ export const FormClient: React.FC<FormClientProps> = ({ form, introContent }) =>
       }
     } catch (error) {
       console.error('Form submission error:', error)
-      toast.error('There was an error submitting the form. Please try again.')
+      toast.error('There was an error submitting the form. Please try again.', {
+        toasterId: 'form-block',
+      })
     }
   }
 
@@ -324,7 +326,7 @@ export const FormClient: React.FC<FormClientProps> = ({ form, introContent }) =>
 
   return (
     <div className="mx-auto max-w-2xl">
-      <Toaster richColors />
+      <Toaster richColors id="form-block" />
       {introContent && (
         <div className="mb-6">
           <RichText data={introContent} />

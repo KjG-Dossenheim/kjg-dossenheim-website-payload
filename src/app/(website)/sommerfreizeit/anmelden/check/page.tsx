@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { headers as getHeaders } from 'next/headers'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSommerfreizeitSessionUser } from '@/lib/auth/server'
 import { getOrderFlowView } from '../action'
 import { CheckForm } from './CheckForm'
@@ -32,7 +32,7 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
 
   if (!user) {
     const returnTo = encodeURIComponent(
-      `/sommerfreizeit/anmeldung/check?orderCode=${encodeURIComponent(safeOrderCode)}`,
+      `/sommerfreizeit/anmelden/check?orderCode=${encodeURIComponent(safeOrderCode)}`,
     )
     redirect(`/sommerfreizeit/login?returnTo=${returnTo}`)
   }
@@ -40,33 +40,22 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
   const flow = await getOrderFlowView({ orderCode: safeOrderCode })
 
   if (!flow) {
-    redirect('/sommerfreizeit/anmeldung')
+    redirect('/sommerfreizeit/anmelden')
   }
 
   if (normalizeSommerfreizeitEmail(user.email) !== normalizeSommerfreizeitEmail(flow.email)) {
-    redirect('/sommerfreizeit/anmeldung')
+    redirect('/sommerfreizeit/anmelden')
   }
 
   return (
     <section className="container mx-auto max-w-4xl p-6">
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Bestellung vervollstaendigen</CardTitle>
+          <CardTitle>Anmeldung abschließen</CardTitle>
           <CardDescription>
             Trage jetzt die fehlenden Daten ein. Wir legen danach alle zugehoerigen Anmeldungen an.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <p>
-            <strong>Bestellcode:</strong> {flow.orderCode}
-          </p>
-          <p>
-            <strong>E-Mail:</strong> {flow.email}
-          </p>
-          <p>
-            <strong>Positionen:</strong> {flow.positionCount}
-          </p>
-        </CardContent>
       </Card>
 
       <CheckForm
@@ -77,6 +66,9 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
           city: user.city ?? '',
         }}
         orderCode={flow.orderCode}
+        pretixEvent={flow.pretixEvent}
+        pretixOrderID={flow.pretixOrderID}
+        pretixSecret={flow.pretixSecret}
         positions={flow.positions}
       />
     </section>
