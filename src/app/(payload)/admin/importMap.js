@@ -1,3 +1,6 @@
+import { default as default_30ae88ec4492f6d7e2995797933179a8 } from '@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers'
+import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/components/admin/rowLable/ArrayRowLabelName.tsx'
+import { default as default_e56f0b1dfe64e89beef03cc281a6280e } from '@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -28,9 +31,6 @@ import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collectio
 import { default as default_98a00ed7a1da5fc44dc587f84bf0657c } from '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'
 import { default as default_5aa9f2157222a9673aadf0b556aefd79 } from '@/components/admin/Knallbonbon/Views/DefaultView'
 import { default as default_543488da7a3cf2c9ab7168d32f6f86a3 } from '@/components/admin/Knallbonbon/Actions/ExportAction'
-import { default as default_30ae88ec4492f6d7e2995797933179a8 } from '@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers'
-import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/components/admin/rowLable/ArrayRowLabelName.tsx'
-import { default as default_e56f0b1dfe64e89beef03cc281a6280e } from '@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders'
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
@@ -48,7 +48,11 @@ import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/component
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
+/** @type import('payload').ImportMap */
 export const importMap = {
+  "@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers#default": default_30ae88ec4492f6d7e2995797933179a8,
+  "src/components/admin/rowLable/ArrayRowLabelName.tsx#default": default_5cb5d3602d1dd126d163c6a2e3af8809,
+  "@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders#default": default_e56f0b1dfe64e89beef03cc281a6280e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -79,9 +83,6 @@ export const importMap = {
   "@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist#default": default_98a00ed7a1da5fc44dc587f84bf0657c,
   "@/components/admin/Knallbonbon/Views/DefaultView#default": default_5aa9f2157222a9673aadf0b556aefd79,
   "@/components/admin/Knallbonbon/Actions/ExportAction#default": default_543488da7a3cf2c9ab7168d32f6f86a3,
-  "@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers#default": default_30ae88ec4492f6d7e2995797933179a8,
-  "src/components/admin/rowLable/ArrayRowLabelName.tsx#default": default_5cb5d3602d1dd126d163c6a2e3af8809,
-  "@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders#default": default_e56f0b1dfe64e89beef03cc281a6280e,
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,

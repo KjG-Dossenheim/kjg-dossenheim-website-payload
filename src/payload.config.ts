@@ -7,6 +7,7 @@ import sharp from 'sharp'
 import { buildConfig } from 'payload'
 import { betterAuth } from 'better-auth'
 import { magicLink } from 'better-auth/plugins'
+import { emailOTP } from "better-auth/plugins"
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
@@ -15,7 +16,6 @@ import {
   betterAuthCollections,
   createBetterAuthPlugin,
   payloadAdapter,
-  withBetterAuthDefaults,
 } from '@delmaredigital/payload-better-auth'
 import {
   BoldFeature,
@@ -70,7 +70,6 @@ import { sommerfreizeitUser } from './collections/sommerfreizeit/sommerfreizeitU
 import { sommerfreizeitFeedback } from './collections/sommerfreizeit/sommerfreizeitFeedback'
 import { Feedback } from './collections/Feedback'
 import { sommerfreizeitChild } from './collections/sommerfreizeit/sommerfreizeitChild'
-import { sommerfreizeitPricing } from './collections/sommerfreizeit/sommerfreizeitPricing'
 import { sommerfreizeitEvents } from './collections/sommerfreizeit/sommerfreizeitEvents'
 import { sommerfreizeitOrders } from './collections/sommerfreizeit/sommerfreizeitOrders'
 
@@ -101,31 +100,10 @@ import { sendConfirmationEmailsJob } from './jobs/sendConfirmationEmails'
 import { importPretixCustomersJob } from './jobs/importPretixCustomers'
 import { importPretixOrdersJob } from './jobs/importPretixOrders'
 
+import { betterAuthOptions } from './lib/auth/config'
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
-const betterAuthBaseUrl =
-  process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-
-const betterAuthOptions = withBetterAuthDefaults({
-  baseURL: betterAuthBaseUrl,
-  secret: process.env.BETTER_AUTH_SECRET || process.env.PAYLOAD_SECRET || '',
-  user: {
-    modelName: 'sommerfreizeitUser',
-    additionalFields: {
-      firstName: { type: 'string', required: true },
-      lastName: { type: 'string', required: true },
-      phone: { type: 'string', required: false },
-      address: { type: 'string', required: false },
-      postalCode: { type: 'string', required: false },
-      city: { type: 'string', required: false },
-    },
-  },
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: false,
-  },
-})
 
 export default buildConfig({
   admin: {
@@ -186,6 +164,12 @@ export default buildConfig({
   },
   collections: [
     Jahresplan,
+    sommerfreizeitUser,
+    sommerfreizeitAnmeldung,
+    sommerfreizeitFeedback,
+    sommerfreizeitChild,
+    sommerfreizeitEvents,
+    sommerfreizeitOrders,
     blogPosts,
     blogCategory,
     Team,
@@ -198,13 +182,6 @@ export default buildConfig({
     membershipApplication,
     Feedback,
     Songs,
-    sommerfreizeitUser,
-    sommerfreizeitAnmeldung,
-    sommerfreizeitFeedback,
-    sommerfreizeitChild,
-    sommerfreizeitPricing,
-    sommerfreizeitEvents,
-    sommerfreizeitOrders,
   ],
   globals: [
     Startseite,
@@ -369,6 +346,35 @@ export default buildConfig({
                   html: `<p>Hallo,</p><p>klicke auf den folgenden Link, um dich bei der Sommerfreizeit anzumelden:</p><p><a href="${url}">Jetzt anmelden</a></p><p>Falls du den Login nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
                   text: `Hallo,\n\nverwende diesen Link fuer deine Anmeldung bei der Sommerfreizeit:\n${url}\n\nFalls du den Login nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
                 })
+              },
+            }),
+            emailOTP({
+              async sendVerificationOTP({ email, otp, type }) {
+                if (type === "sign-in") {
+                  // Send the OTP for sign in
+                  await payload.sendEmail({
+                    to: email,
+                    subject: 'Dein Bestätigungscode für die Sommerfreizeit',
+                    html: `<p>Hallo,</p><p>dein Bestätigungscode ist: <strong>${otp}</strong></p><p>Dieser Code ist 15 Minuten gültig.</p><p>Falls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
+                    text: `Hallo,\n\ndein Bestätigungscode ist: ${otp}\n\nDieser Code ist 15 Minuten gültig.\n\nFalls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
+                  })
+                } else if (type === "email-verification") {
+                  // Send the OTP for email verification
+                  await payload.sendEmail({
+                    to: email,
+                    subject: 'Deine E-Mail-Adresse bestätigen',
+                    html: `<p>Hallo,</p><p>dein Bestätigungscode ist: <strong>${otp}</strong></p><p>Dieser Code ist 15 Minuten gültig.</p><p>Falls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
+                    text: `Hallo,\n\ndein Bestätigungscode ist: ${otp}\n\nDieser Code ist 15 Minuten gültig.\n\nFalls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
+                  })
+                } else {
+                  // Send the OTP for password reset
+                  await payload.sendEmail({
+                    to: email,
+                    subject: 'Passwort zurücksetzen',
+                    html: `<p>Hallo,</p><p>dein Bestätigungscode ist: <strong>${otp}</strong></p><p>Dieser Code ist 15 Minuten gültig.</p><p>Falls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
+                    text: `Hallo,\n\ndein Bestätigungscode ist: ${otp}\n\nDieser Code ist 15 Minuten gültig.\n\nFalls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
+                  })
+                }
               },
             }),
           ],

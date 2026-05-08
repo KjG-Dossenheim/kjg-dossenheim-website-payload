@@ -69,6 +69,12 @@ export interface Config {
   blocks: {};
   collections: {
     jahresplan: Jahresplan;
+    sommerfreizeitUsers: SommerfreizeitUser;
+    sommerfreizeitAnmeldung: SommerfreizeitAnmeldung;
+    sommerfreizeitFeedback: SommerfreizeitFeedback;
+    sommerfreizeitChild: SommerfreizeitChild;
+    sommerfreizeitEvents: SommerfreizeitEvent;
+    sommerfreizeitOrders: SommerfreizeitOrder;
     blogPosts: BlogPost;
     blogCategory: BlogCategory;
     team: Team;
@@ -80,13 +86,6 @@ export interface Config {
     membershipApplication: MembershipApplication;
     feedback: Feedback;
     songs: Song;
-    sommerfreizeitUsers: SommerfreizeitUser;
-    sommerfreizeitAnmeldung: SommerfreizeitAnmeldung;
-    sommerfreizeitFeedback: SommerfreizeitFeedback;
-    sommerfreizeitChild: SommerfreizeitChild;
-    sommerfreizeitPricing: SommerfreizeitPricing;
-    sommerfreizeitEvents: SommerfreizeitEvent;
-    sommerfreizeitOrders: SommerfreizeitOrder;
     forms: Form;
     'form-submissions': FormSubmission;
     sessions: Session;
@@ -100,24 +99,27 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    blogCategory: {
-      relatedPosts: 'blogPosts';
-    };
-    knallbonbonEvents: {
-      participants: 'knallbonbonRegistration';
-    };
     sommerfreizeitUsers: {
       children: 'sommerfreizeitChild';
     };
     sommerfreizeitChild: {
       anmeldungen: 'sommerfreizeitAnmeldung';
     };
-    sommerfreizeitEvents: {
-      'preise.priceTiers': 'sommerfreizeitPricing';
+    blogCategory: {
+      relatedPosts: 'blogPosts';
+    };
+    knallbonbonEvents: {
+      participants: 'knallbonbonRegistration';
     };
   };
   collectionsSelect: {
     jahresplan: JahresplanSelect<false> | JahresplanSelect<true>;
+    sommerfreizeitUsers: SommerfreizeitUsersSelect<false> | SommerfreizeitUsersSelect<true>;
+    sommerfreizeitAnmeldung: SommerfreizeitAnmeldungSelect<false> | SommerfreizeitAnmeldungSelect<true>;
+    sommerfreizeitFeedback: SommerfreizeitFeedbackSelect<false> | SommerfreizeitFeedbackSelect<true>;
+    sommerfreizeitChild: SommerfreizeitChildSelect<false> | SommerfreizeitChildSelect<true>;
+    sommerfreizeitEvents: SommerfreizeitEventsSelect<false> | SommerfreizeitEventsSelect<true>;
+    sommerfreizeitOrders: SommerfreizeitOrdersSelect<false> | SommerfreizeitOrdersSelect<true>;
     blogPosts: BlogPostsSelect<false> | BlogPostsSelect<true>;
     blogCategory: BlogCategorySelect<false> | BlogCategorySelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
@@ -129,13 +131,6 @@ export interface Config {
     membershipApplication: MembershipApplicationSelect<false> | MembershipApplicationSelect<true>;
     feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     songs: SongsSelect<false> | SongsSelect<true>;
-    sommerfreizeitUsers: SommerfreizeitUsersSelect<false> | SommerfreizeitUsersSelect<true>;
-    sommerfreizeitAnmeldung: SommerfreizeitAnmeldungSelect<false> | SommerfreizeitAnmeldungSelect<true>;
-    sommerfreizeitFeedback: SommerfreizeitFeedbackSelect<false> | SommerfreizeitFeedbackSelect<true>;
-    sommerfreizeitChild: SommerfreizeitChildSelect<false> | SommerfreizeitChildSelect<true>;
-    sommerfreizeitPricing: SommerfreizeitPricingSelect<false> | SommerfreizeitPricingSelect<true>;
-    sommerfreizeitEvents: SommerfreizeitEventsSelect<false> | SommerfreizeitEventsSelect<true>;
-    sommerfreizeitOrders: SommerfreizeitOrdersSelect<false> | SommerfreizeitOrdersSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
@@ -260,70 +255,168 @@ export interface Jahresplan {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blogPosts".
+ * via the `definition` "sommerfreizeitUsers".
  */
-export interface BlogPost {
+export interface SommerfreizeitUser {
   id: string;
-  title: string;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
+  firstName: string;
+  lastName: string;
+  email: string;
+  name: string;
+  emailVerified?: boolean | null;
+  image?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
+  pretix_Identifier?: string | null;
+  children?: {
+    docs?: (string | SommerfreizeitChild)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
   };
-  publishedAt?: string | null;
-  author: string | User;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  category: (string | BlogCategory)[];
   updatedAt: string;
   createdAt: string;
-  deletedAt?: string | null;
+  collection: 'sommerfreizeitUsers';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitChild".
+ */
+export interface SommerfreizeitChild {
+  id: string;
+  parent: string | SommerfreizeitUser;
+  archived?: boolean | null;
+  anmeldungen?: {
+    docs?: (string | SommerfreizeitAnmeldung)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: string | null;
+  pretixOrderCode?: string | null;
+  pretixPositionId?: string | null;
+  gender?: ('male' | 'female' | 'diverse') | null;
+  updatedAt: string;
+  createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "sommerfreizeitAnmeldung".
  */
-export interface User {
+export interface SommerfreizeitAnmeldung {
   id: string;
-  firstName: string;
-  lastName: string;
-  teamer?: (string | null) | Team;
-  sub?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  /**
+   * Das Geburtsdatum des Kindes
+   */
+  birthDate?: string | null;
+  /**
+   * Z. B. 5. Klasse oder 10. Klasse
+   */
+  class?: ('3' | '4' | '5' | '6' | '7' | '8' | '9' | '10') | null;
+  /**
+   * Name der Krankenversicherung, z. B. AOK oder TK
+   */
+  krankenversicherung?: string | null;
+  /**
+   * Z. B. Gesetzlich oder Privat
+   */
+  krankenversicherungArt?: ('gesetzlich' | 'privat') | null;
+  /**
+   * Die Versichertennummer Ihrer Krankenversicherung
+   */
+  krankenversicherungNummer?: string | null;
+  foodAllergies?: string | null;
+  otherAllergies?: string | null;
+  medicalConditions?: string | null;
+  medikamente?: string | null;
+  /**
+   * Liste der Medikamente, die das Kind regelmäßig einnimmt, inklusive Dosierung und Einnahmehinweise
+   */
+  medikamenteArray?:
+    | {
+        name: string;
+        dosierung: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Liste der Impfungen, z. B. Masern, Mumps, Röteln, Tetanus
+   */
+  impfungen?:
+    | {
+        name?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  arzt?: string | null;
+  arztTelefon?: string | null;
+  schwimmer?: boolean | null;
+  bemerkungen?: string | null;
+  /**
+   * Nur für interne Zwecke, nicht für die Teilnehmer sichtbar
+   */
+  interneBemerkungen?: string | null;
+  account: string | SommerfreizeitUser;
+  event: string | SommerfreizeitEvent;
+  child: string | SommerfreizeitChild;
+  pretixOrderCode?: string | null;
+  pretixPositionId?: string | null;
   updatedAt: string;
   createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-  | {
-    id: string;
-    createdAt?: string | null;
-    expiresAt: string;
-  }[]
-  | null;
-  password?: string | null;
-  collection: 'users';
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitEvents".
+ */
+export interface SommerfreizeitEvent {
+  id: string;
+  name: string;
+  description?: string | null;
+  startDate: string;
+  endDate: string;
+  signupStartDate: string;
+  signupEndDate: string;
+  motto?: string | null;
+  team: (string | Team)[];
+  /**
+   * Wird benötigt, um die Verknüpfung mit Pretix herzustellen. Kann in den Event-Details in Pretix gefunden werden.
+   */
+  pretixEventId: string;
+  unterkunft: {
+    name: string;
+    beschreibung: string;
+    website: string;
+    bild: string | Media;
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    location?: [number, number] | null;
+  };
+  preise: {
+    priceTiers: {
+      name: string;
+      beschreibung: string;
+      price: number;
+      /**
+       * Es kann nur eine Preisstufe als Standard festgelegt werden.
+       */
+      default?: boolean | null;
+      eigenschaften: {
+        name: string;
+        id?: string | null;
+      }[];
+      id?: string | null;
+    }[];
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -374,21 +467,6 @@ export interface Teambilder {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blogCategory".
- */
-export interface BlogCategory {
-  id: string;
-  title: string;
-  relatedPosts?: {
-    docs?: (string | BlogPost)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -484,6 +562,138 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFeedback".
+ */
+export interface SommerfreizeitFeedback {
+  id: string;
+  age: number;
+  rating: number;
+  comments?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitOrders".
+ */
+export interface SommerfreizeitOrder {
+  id: string;
+  organizer: string;
+  orderCode: string;
+  status?: string | null;
+  testMode?: boolean | null;
+  email?: string | null;
+  total?: number | null;
+  currency?: string | null;
+  datetime?: string | null;
+  expires?: string | null;
+  pretixEventId?: string | null;
+  positions?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  lastImportedAt?: string | null;
+  pretixPayload?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogPosts".
+ */
+export interface BlogPost {
+  id: string;
+  title: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  publishedAt?: string | null;
+  author: string | User;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  category: (string | BlogCategory)[];
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  teamer?: (string | null) | Team;
+  sub?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogCategory".
+ */
+export interface BlogCategory {
+  id: string;
+  title: string;
+  relatedPosts?: {
+    docs?: (string | BlogPost)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "knallbonbonRegistration".
  */
 export interface KnallbonbonRegistration {
@@ -497,19 +707,19 @@ export interface KnallbonbonRegistration {
   postalCode?: string | null;
   city?: string | null;
   child?:
-  | {
-    firstName: string;
-    lastName: string;
-    fullName?: string | null;
-    dateOfBirth: string;
-    age?: number | null;
-    gender: 'male' | 'female' | 'diverse' | 'noInfo';
-    pickupInfo: 'pickedUp' | 'goesAlone';
-    photoConsent?: boolean | null;
-    healthInfo?: string | null;
-    id?: string | null;
-  }[]
-  | null;
+    | {
+        firstName: string;
+        lastName: string;
+        fullName?: string | null;
+        dateOfBirth: string;
+        age?: number | null;
+        gender: 'male' | 'female' | 'diverse' | 'noInfo';
+        pickupInfo: 'pickedUp' | 'goesAlone';
+        photoConsent?: boolean | null;
+        healthInfo?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -723,310 +933,120 @@ export interface Song {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitUsers".
- */
-export interface SommerfreizeitUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  name: string;
-  emailVerified?: boolean | null;
-  image?: string | null;
-  phone?: string | null;
-  address?: string | null;
-  postalCode?: string | null;
-  city?: string | null;
-  pretix_Identifier?: string | null;
-  children?: {
-    docs?: (string | SommerfreizeitChild)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-  collection: 'sommerfreizeitUsers';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitChild".
- */
-export interface SommerfreizeitChild {
-  id: string;
-  parent: string | SommerfreizeitUser;
-  archived?: boolean | null;
-  anmeldungen?: {
-    docs?: (string | SommerfreizeitAnmeldung)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  pretixOrderCode?: string | null;
-  pretixPositionId?: string | null;
-  gender: 'male' | 'female' | 'diverse';
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitAnmeldung".
- */
-export interface SommerfreizeitAnmeldung {
-  id: string;
-  class?: ('3' | '4' | '5' | '6' | '7' | '8' | '9' | '10') | null;
-  krankenversicherung?: string | null;
-  krankenversicherungArt?: ('gesetzlich' | 'privat') | null;
-  krankenversicherungNummer?: string | null;
-  foodAllergies?: string | null;
-  otherAllergies?: string | null;
-  medicalConditions?: string | null;
-  medikamente?: string | null;
-  arzt?: string | null;
-  arztTelefon?: string | null;
-  versicherungsNummer?: string | null;
-  versicherungsAnbieter?: string | null;
-  schwimmer?: boolean | null;
-  bemerkungen?: string | null;
-  account: string | SommerfreizeitUser;
-  event: string | SommerfreizeitEvent;
-  child: string | SommerfreizeitChild;
-  pricing?: (string | null) | SommerfreizeitPricing;
-  pretixOrderCode?: string | null;
-  pretixPositionId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitEvents".
- */
-export interface SommerfreizeitEvent {
-  id: string;
-  name: string;
-  description?: string | null;
-  startDate: string;
-  endDate?: string | null;
-  signupStartDate?: string | null;
-  signupEndDate?: string | null;
-  maxParticipants?: number | null;
-  motto?: string | null;
-  team: (string | Team)[];
-  /**
-   * Wird benötigt, um die Verknüpfung mit Pretix herzustellen. Kann in den Event-Details in Pretix gefunden werden.
-   */
-  pretixEventId: string;
-  unterkunft: {
-    name: string;
-    beschreibung: string;
-    website: string;
-    bild: string | Media;
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    location?: [number, number] | null;
-  };
-  preise?: {
-    priceTiers?: {
-      docs?: (string | SommerfreizeitPricing)[];
-      hasNextPage?: boolean;
-      totalDocs?: number;
-    };
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitPricing".
- */
-export interface SommerfreizeitPricing {
-  id: string;
-  name: string;
-  beschreibung: string;
-  price: number;
-  /**
-   * Es kann nur eine Preisstufe als Standard festgelegt werden.
-   */
-  default?: boolean | null;
-  eigenschaften: {
-    name: string;
-    id?: string | null;
-  }[];
-  freizeit: string | SommerfreizeitEvent;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitFeedback".
- */
-export interface SommerfreizeitFeedback {
-  id: string;
-  age: number;
-  rating: number;
-  comments?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitOrders".
- */
-export interface SommerfreizeitOrder {
-  id: string;
-  organizer: string;
-  orderCode: string;
-  status?: string | null;
-  testMode?: boolean | null;
-  email?: string | null;
-  total?: number | null;
-  currency?: string | null;
-  datetime?: string | null;
-  expires?: string | null;
-  pretixEventId?: string | null;
-  positions?:
-  | {
-    [k: string]: unknown;
-  }
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
-  lastImportedAt?: string | null;
-  pretixPayload?:
-  | {
-    [k: string]: unknown;
-  }
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms".
  */
 export interface Form {
   id: string;
   title: string;
   fields?:
-  | (
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      required?: boolean | null;
-      defaultValue?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'checkbox';
-    }
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      required?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'country';
-    }
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      required?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'email';
-    }
-    | {
-      message?: {
-        root: {
-          type: string;
-          children: {
-            type: any;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'message';
-    }
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      defaultValue?: number | null;
-      required?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'number';
-    }
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      defaultValue?: string | null;
-      placeholder?: string | null;
-      options?:
-      | {
-        label: string;
-        value: string;
-        id?: string | null;
-      }[]
-      | null;
-      required?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'select';
-    }
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      required?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'state';
-    }
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      defaultValue?: string | null;
-      required?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'text';
-    }
-    | {
-      name: string;
-      label?: string | null;
-      width?: number | null;
-      defaultValue?: string | null;
-      required?: boolean | null;
-      id?: string | null;
-      blockName?: string | null;
-      blockType: 'textarea';
-    }
-  )[]
-  | null;
+    | (
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checkbox';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'country';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'email';
+          }
+        | {
+            message?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'message';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'number';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            placeholder?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'select';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'state';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textarea';
+          }
+      )[]
+    | null;
   submitButtonLabel?: string | null;
   /**
    * Choose whether to display an on-page message or redirect to a different page after they submit the form.
@@ -1054,34 +1074,34 @@ export interface Form {
    * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
    */
   emails?:
-  | {
-    emailTo?: string | null;
-    cc?: string | null;
-    bcc?: string | null;
-    replyTo?: string | null;
-    emailFrom?: string | null;
-    subject: string;
-    /**
-     * Enter the message that should be sent in this email.
-     */
-    message?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
+    | {
+        emailTo?: string | null;
+        cc?: string | null;
+        bcc?: string | null;
+        replyTo?: string | null;
+        emailFrom?: string | null;
+        subject: string;
+        /**
+         * Enter the message that should be sent in this email.
+         */
+        message?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    id?: string | null;
-  }[]
-  | null;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1093,12 +1113,12 @@ export interface FormSubmission {
   id: string;
   form: string | Form;
   submissionData?:
-  | {
-    field: string;
-    value: string;
-    id?: string | null;
-  }[]
-  | null;
+    | {
+        field: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1161,14 +1181,14 @@ export interface PayloadKv {
   id: string;
   key: string;
   data:
-  | {
-    [k: string]: unknown;
-  }
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1180,23 +1200,23 @@ export interface PayloadJob {
    * Input data provided to the job
    */
   input?:
-  | {
-    [k: string]: unknown;
-  }
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   taskStatus?:
-  | {
-    [k: string]: unknown;
-  }
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   completedAt?: string | null;
   totalTried?: number | null;
   /**
@@ -1207,72 +1227,72 @@ export interface PayloadJob {
    * If hasError is true, this is the error that caused it
    */
   error?:
-  | {
-    [k: string]: unknown;
-  }
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   /**
    * Task execution log
    */
   log?:
-  | {
-    executedAt: string;
-    completedAt: string;
-    taskSlug:
-    | 'inline'
-    | 'cleanupExpiredConfirmations'
-    | 'sendRegistrationEmails'
-    | 'sendConfirmationEmails'
-    | 'importPretixCustomers'
-    | 'importPretixOrders'
-    | 'schedulePublish';
-    taskID: string;
-    input?:
     | {
-      [k: string]: unknown;
-    }
-    | unknown[]
-    | string
-    | number
-    | boolean
+        executedAt: string;
+        completedAt: string;
+        taskSlug:
+          | 'inline'
+          | 'cleanupExpiredConfirmations'
+          | 'sendRegistrationEmails'
+          | 'sendConfirmationEmails'
+          | 'importPretixCustomers'
+          | 'importPretixOrders'
+          | 'schedulePublish';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
     | null;
-    output?:
-    | {
-      [k: string]: unknown;
-    }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-    state: 'failed' | 'succeeded';
-    error?:
-    | {
-      [k: string]: unknown;
-    }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-    id?: string | null;
-  }[]
-  | null;
   taskSlug?:
-  | (
-    | 'inline'
-    | 'cleanupExpiredConfirmations'
-    | 'sendRegistrationEmails'
-    | 'sendConfirmationEmails'
-    | 'importPretixCustomers'
-    | 'importPretixOrders'
-    | 'schedulePublish'
-  )
-  | null;
+    | (
+        | 'inline'
+        | 'cleanupExpiredConfirmations'
+        | 'sendRegistrationEmails'
+        | 'sendConfirmationEmails'
+        | 'importPretixCustomers'
+        | 'importPretixOrders'
+        | 'schedulePublish'
+      )
+    | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -1286,116 +1306,112 @@ export interface PayloadJob {
 export interface PayloadLockedDocument {
   id: string;
   document?:
-  | ({
-    relationTo: 'jahresplan';
-    value: string | Jahresplan;
-  } | null)
-  | ({
-    relationTo: 'blogPosts';
-    value: string | BlogPost;
-  } | null)
-  | ({
-    relationTo: 'blogCategory';
-    value: string | BlogCategory;
-  } | null)
-  | ({
-    relationTo: 'team';
-    value: string | Team;
-  } | null)
-  | ({
-    relationTo: 'teambilder';
-    value: string | Teambilder;
-  } | null)
-  | ({
-    relationTo: 'media';
-    value: string | Media;
-  } | null)
-  | ({
-    relationTo: 'knallbonbonRegistration';
-    value: string | KnallbonbonRegistration;
-  } | null)
-  | ({
-    relationTo: 'knallbonbonEvents';
-    value: string | KnallbonbonEvent;
-  } | null)
-  | ({
-    relationTo: 'knallbonbonWaitlist';
-    value: string | KnallbonbonWaitlist;
-  } | null)
-  | ({
-    relationTo: 'membershipApplication';
-    value: string | MembershipApplication;
-  } | null)
-  | ({
-    relationTo: 'feedback';
-    value: string | Feedback;
-  } | null)
-  | ({
-    relationTo: 'songs';
-    value: string | Song;
-  } | null)
-  | ({
-    relationTo: 'sommerfreizeitUsers';
-    value: string | SommerfreizeitUser;
-  } | null)
-  | ({
-    relationTo: 'sommerfreizeitAnmeldung';
-    value: string | SommerfreizeitAnmeldung;
-  } | null)
-  | ({
-    relationTo: 'sommerfreizeitFeedback';
-    value: string | SommerfreizeitFeedback;
-  } | null)
-  | ({
-    relationTo: 'sommerfreizeitChild';
-    value: string | SommerfreizeitChild;
-  } | null)
-  | ({
-    relationTo: 'sommerfreizeitPricing';
-    value: string | SommerfreizeitPricing;
-  } | null)
-  | ({
-    relationTo: 'sommerfreizeitEvents';
-    value: string | SommerfreizeitEvent;
-  } | null)
-  | ({
-    relationTo: 'sommerfreizeitOrders';
-    value: string | SommerfreizeitOrder;
-  } | null)
-  | ({
-    relationTo: 'forms';
-    value: string | Form;
-  } | null)
-  | ({
-    relationTo: 'form-submissions';
-    value: string | FormSubmission;
-  } | null)
-  | ({
-    relationTo: 'sessions';
-    value: string | Session;
-  } | null)
-  | ({
-    relationTo: 'accounts';
-    value: string | Account;
-  } | null)
-  | ({
-    relationTo: 'verifications';
-    value: string | Verification;
-  } | null)
-  | ({
-    relationTo: 'users';
-    value: string | User;
-  } | null);
+    | ({
+        relationTo: 'jahresplan';
+        value: string | Jahresplan;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitUsers';
+        value: string | SommerfreizeitUser;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitAnmeldung';
+        value: string | SommerfreizeitAnmeldung;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitFeedback';
+        value: string | SommerfreizeitFeedback;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitChild';
+        value: string | SommerfreizeitChild;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitEvents';
+        value: string | SommerfreizeitEvent;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitOrders';
+        value: string | SommerfreizeitOrder;
+      } | null)
+    | ({
+        relationTo: 'blogPosts';
+        value: string | BlogPost;
+      } | null)
+    | ({
+        relationTo: 'blogCategory';
+        value: string | BlogCategory;
+      } | null)
+    | ({
+        relationTo: 'team';
+        value: string | Team;
+      } | null)
+    | ({
+        relationTo: 'teambilder';
+        value: string | Teambilder;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'knallbonbonRegistration';
+        value: string | KnallbonbonRegistration;
+      } | null)
+    | ({
+        relationTo: 'knallbonbonEvents';
+        value: string | KnallbonbonEvent;
+      } | null)
+    | ({
+        relationTo: 'knallbonbonWaitlist';
+        value: string | KnallbonbonWaitlist;
+      } | null)
+    | ({
+        relationTo: 'membershipApplication';
+        value: string | MembershipApplication;
+      } | null)
+    | ({
+        relationTo: 'feedback';
+        value: string | Feedback;
+      } | null)
+    | ({
+        relationTo: 'songs';
+        value: string | Song;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: string | Form;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: string | FormSubmission;
+      } | null)
+    | ({
+        relationTo: 'sessions';
+        value: string | Session;
+      } | null)
+    | ({
+        relationTo: 'accounts';
+        value: string | Account;
+      } | null)
+    | ({
+        relationTo: 'verifications';
+        value: string | Verification;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null);
   globalSlug?: string | null;
   user:
-  | {
-    relationTo: 'sommerfreizeitUsers';
-    value: string | SommerfreizeitUser;
-  }
-  | {
-    relationTo: 'users';
-    value: string | User;
-  };
+    | {
+        relationTo: 'sommerfreizeitUsers';
+        value: string | SommerfreizeitUser;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -1406,24 +1422,24 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: string;
   user:
-  | {
-    relationTo: 'sommerfreizeitUsers';
-    value: string | SommerfreizeitUser;
-  }
-  | {
-    relationTo: 'users';
-    value: string | User;
-  };
+    | {
+        relationTo: 'sommerfreizeitUsers';
+        value: string | SommerfreizeitUser;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   key?: string | null;
   value?:
-  | {
-    [k: string]: unknown;
-  }
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1449,6 +1465,164 @@ export interface JahresplanSelect<T extends boolean = true> {
   description?: T;
   location?: T;
   url?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitUsers_select".
+ */
+export interface SommerfreizeitUsersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  email?: T;
+  name?: T;
+  emailVerified?: T;
+  image?: T;
+  phone?: T;
+  address?: T;
+  postalCode?: T;
+  city?: T;
+  pretix_Identifier?: T;
+  children?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitAnmeldung_select".
+ */
+export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  birthDate?: T;
+  class?: T;
+  krankenversicherung?: T;
+  krankenversicherungArt?: T;
+  krankenversicherungNummer?: T;
+  foodAllergies?: T;
+  otherAllergies?: T;
+  medicalConditions?: T;
+  medikamente?: T;
+  medikamenteArray?:
+    | T
+    | {
+        name?: T;
+        dosierung?: T;
+        id?: T;
+      };
+  impfungen?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  arzt?: T;
+  arztTelefon?: T;
+  schwimmer?: T;
+  bemerkungen?: T;
+  interneBemerkungen?: T;
+  account?: T;
+  event?: T;
+  child?: T;
+  pretixOrderCode?: T;
+  pretixPositionId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFeedback_select".
+ */
+export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
+  age?: T;
+  rating?: T;
+  comments?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitChild_select".
+ */
+export interface SommerfreizeitChildSelect<T extends boolean = true> {
+  parent?: T;
+  archived?: T;
+  anmeldungen?: T;
+  firstName?: T;
+  lastName?: T;
+  dateOfBirth?: T;
+  pretixOrderCode?: T;
+  pretixPositionId?: T;
+  gender?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitEvents_select".
+ */
+export interface SommerfreizeitEventsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  startDate?: T;
+  endDate?: T;
+  signupStartDate?: T;
+  signupEndDate?: T;
+  motto?: T;
+  team?: T;
+  pretixEventId?: T;
+  unterkunft?:
+    | T
+    | {
+        name?: T;
+        beschreibung?: T;
+        website?: T;
+        bild?: T;
+        location?: T;
+      };
+  preise?:
+    | T
+    | {
+        priceTiers?:
+          | T
+          | {
+              name?: T;
+              beschreibung?: T;
+              price?: T;
+              default?: T;
+              eigenschaften?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitOrders_select".
+ */
+export interface SommerfreizeitOrdersSelect<T extends boolean = true> {
+  organizer?: T;
+  orderCode?: T;
+  status?: T;
+  testMode?: T;
+  email?: T;
+  total?: T;
+  currency?: T;
+  datetime?: T;
+  expires?: T;
+  pretixEventId?: T;
+  positions?: T;
+  lastImportedAt?: T;
+  pretixPayload?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1532,79 +1706,79 @@ export interface MediaSelect<T extends boolean = true> {
   focalX?: T;
   focalY?: T;
   sizes?:
-  | T
-  | {
-    thumbnail?:
     | T
     | {
-      url?: T;
-      width?: T;
-      height?: T;
-      mimeType?: T;
-      filesize?: T;
-      filename?: T;
-    };
-    square?:
-    | T
-    | {
-      url?: T;
-      width?: T;
-      height?: T;
-      mimeType?: T;
-      filesize?: T;
-      filename?: T;
-    };
-    small?:
-    | T
-    | {
-      url?: T;
-      width?: T;
-      height?: T;
-      mimeType?: T;
-      filesize?: T;
-      filename?: T;
-    };
-    medium?:
-    | T
-    | {
-      url?: T;
-      width?: T;
-      height?: T;
-      mimeType?: T;
-      filesize?: T;
-      filename?: T;
-    };
-    large?:
-    | T
-    | {
-      url?: T;
-      width?: T;
-      height?: T;
-      mimeType?: T;
-      filesize?: T;
-      filename?: T;
-    };
-    xlarge?:
-    | T
-    | {
-      url?: T;
-      width?: T;
-      height?: T;
-      mimeType?: T;
-      filesize?: T;
-      filename?: T;
-    };
-    og?:
-    | T
-    | {
-      url?: T;
-      width?: T;
-      height?: T;
-      mimeType?: T;
-      filesize?: T;
-      filename?: T;
-    };
-  };
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        square?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        xlarge?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1620,19 +1794,19 @@ export interface KnallbonbonRegistrationSelect<T extends boolean = true> {
   postalCode?: T;
   city?: T;
   child?:
-  | T
-  | {
-    firstName?: T;
-    lastName?: T;
-    fullName?: T;
-    dateOfBirth?: T;
-    age?: T;
-    gender?: T;
-    pickupInfo?: T;
-    photoConsent?: T;
-    healthInfo?: T;
-    id?: T;
-  };
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        fullName?: T;
+        dateOfBirth?: T;
+        age?: T;
+        gender?: T;
+        pickupInfo?: T;
+        photoConsent?: T;
+        healthInfo?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1669,18 +1843,18 @@ export interface KnallbonbonWaitlistSelect<T extends boolean = true> {
   postalCode?: T;
   city?: T;
   children?:
-  | T
-  | {
-    firstName?: T;
-    lastName?: T;
-    dateOfBirth?: T;
-    age?: T;
-    gender?: T;
-    pickupInfo?: T;
-    photoConsent?: T;
-    healthInfo?: T;
-    id?: T;
-  };
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        dateOfBirth?: T;
+        age?: T;
+        gender?: T;
+        pickupInfo?: T;
+        photoConsent?: T;
+        healthInfo?: T;
+        id?: T;
+      };
   childrenCount?: T;
   status?: T;
   queuePosition?: T;
@@ -1744,284 +1918,134 @@ export interface SongsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitUsers_select".
- */
-export interface SommerfreizeitUsersSelect<T extends boolean = true> {
-  firstName?: T;
-  lastName?: T;
-  email?: T;
-  name?: T;
-  emailVerified?: T;
-  image?: T;
-  phone?: T;
-  address?: T;
-  postalCode?: T;
-  city?: T;
-  pretix_Identifier?: T;
-  children?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitAnmeldung_select".
- */
-export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
-  class?: T;
-  krankenversicherung?: T;
-  krankenversicherungArt?: T;
-  krankenversicherungNummer?: T;
-  foodAllergies?: T;
-  otherAllergies?: T;
-  medicalConditions?: T;
-  medikamente?: T;
-  arzt?: T;
-  arztTelefon?: T;
-  versicherungsNummer?: T;
-  versicherungsAnbieter?: T;
-  schwimmer?: T;
-  bemerkungen?: T;
-  account?: T;
-  event?: T;
-  child?: T;
-  pricing?: T;
-  pretixOrderCode?: T;
-  pretixPositionId?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitFeedback_select".
- */
-export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
-  age?: T;
-  rating?: T;
-  comments?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitChild_select".
- */
-export interface SommerfreizeitChildSelect<T extends boolean = true> {
-  parent?: T;
-  archived?: T;
-  anmeldungen?: T;
-  firstName?: T;
-  lastName?: T;
-  dateOfBirth?: T;
-  pretixOrderCode?: T;
-  pretixPositionId?: T;
-  gender?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitPricing_select".
- */
-export interface SommerfreizeitPricingSelect<T extends boolean = true> {
-  name?: T;
-  beschreibung?: T;
-  price?: T;
-  default?: T;
-  eigenschaften?:
-  | T
-  | {
-    name?: T;
-    id?: T;
-  };
-  freizeit?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitEvents_select".
- */
-export interface SommerfreizeitEventsSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  startDate?: T;
-  endDate?: T;
-  signupStartDate?: T;
-  signupEndDate?: T;
-  maxParticipants?: T;
-  motto?: T;
-  team?: T;
-  pretixEventId?: T;
-  unterkunft?:
-  | T
-  | {
-    name?: T;
-    beschreibung?: T;
-    website?: T;
-    bild?: T;
-    location?: T;
-  };
-  preise?:
-  | T
-  | {
-    priceTiers?: T;
-  };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitOrders_select".
- */
-export interface SommerfreizeitOrdersSelect<T extends boolean = true> {
-  organizer?: T;
-  orderCode?: T;
-  status?: T;
-  testMode?: T;
-  email?: T;
-  total?: T;
-  currency?: T;
-  datetime?: T;
-  expires?: T;
-  pretixEventId?: T;
-  positions?: T;
-  lastImportedAt?: T;
-  pretixPayload?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms_select".
  */
 export interface FormsSelect<T extends boolean = true> {
   title?: T;
   fields?:
-  | T
-  | {
-    checkbox?:
     | T
     | {
-      name?: T;
-      label?: T;
-      width?: T;
-      required?: T;
-      defaultValue?: T;
-      id?: T;
-      blockName?: T;
-    };
-    country?:
-    | T
-    | {
-      name?: T;
-      label?: T;
-      width?: T;
-      required?: T;
-      id?: T;
-      blockName?: T;
-    };
-    email?:
-    | T
-    | {
-      name?: T;
-      label?: T;
-      width?: T;
-      required?: T;
-      id?: T;
-      blockName?: T;
-    };
-    message?:
-    | T
-    | {
-      message?: T;
-      id?: T;
-      blockName?: T;
-    };
-    number?:
-    | T
-    | {
-      name?: T;
-      label?: T;
-      width?: T;
-      defaultValue?: T;
-      required?: T;
-      id?: T;
-      blockName?: T;
-    };
-    select?:
-    | T
-    | {
-      name?: T;
-      label?: T;
-      width?: T;
-      defaultValue?: T;
-      placeholder?: T;
-      options?:
-      | T
-      | {
-        label?: T;
-        value?: T;
-        id?: T;
+        checkbox?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              id?: T;
+              blockName?: T;
+            };
+        country?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        email?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        message?:
+          | T
+          | {
+              message?: T;
+              id?: T;
+              blockName?: T;
+            };
+        number?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        select?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              placeholder?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        state?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textarea?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
-      required?: T;
-      id?: T;
-      blockName?: T;
-    };
-    state?:
-    | T
-    | {
-      name?: T;
-      label?: T;
-      width?: T;
-      required?: T;
-      id?: T;
-      blockName?: T;
-    };
-    text?:
-    | T
-    | {
-      name?: T;
-      label?: T;
-      width?: T;
-      defaultValue?: T;
-      required?: T;
-      id?: T;
-      blockName?: T;
-    };
-    textarea?:
-    | T
-    | {
-      name?: T;
-      label?: T;
-      width?: T;
-      defaultValue?: T;
-      required?: T;
-      id?: T;
-      blockName?: T;
-    };
-  };
   submitButtonLabel?: T;
   confirmationType?: T;
   confirmationMessage?: T;
   redirect?:
-  | T
-  | {
-    url?: T;
-  };
+    | T
+    | {
+        url?: T;
+      };
   emails?:
-  | T
-  | {
-    emailTo?: T;
-    cc?: T;
-    bcc?: T;
-    replyTo?: T;
-    emailFrom?: T;
-    subject?: T;
-    message?: T;
-    id?: T;
-  };
+    | T
+    | {
+        emailTo?: T;
+        cc?: T;
+        bcc?: T;
+        replyTo?: T;
+        emailFrom?: T;
+        subject?: T;
+        message?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2032,12 +2056,12 @@ export interface FormsSelect<T extends boolean = true> {
 export interface FormSubmissionsSelect<T extends boolean = true> {
   form?: T;
   submissionData?:
-  | T
-  | {
-    field?: T;
-    value?: T;
-    id?: T;
-  };
+    | T
+    | {
+        field?: T;
+        value?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2105,12 +2129,12 @@ export interface UsersSelect<T extends boolean = true> {
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
-  | T
-  | {
-    id?: T;
-    createdAt?: T;
-    expiresAt?: T;
-  };
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2132,18 +2156,18 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   hasError?: T;
   error?: T;
   log?:
-  | T
-  | {
-    executedAt?: T;
-    completedAt?: T;
-    taskSlug?: T;
-    taskID?: T;
-    input?: T;
-    output?: T;
-    state?: T;
-    error?: T;
-    id?: T;
-  };
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
   taskSlug?: T;
   queue?: T;
   waitUntil?: T;
@@ -2397,12 +2421,12 @@ export interface Sommerfreizeit {
         [k: string]: unknown;
       } | null;
       links?:
-      | {
-        linkText?: string | null;
-        link?: string | null;
-        id?: string | null;
-      }[]
-      | null;
+        | {
+            linkText?: string | null;
+            link?: string | null;
+            id?: string | null;
+          }[]
+        | null;
       id?: string | null;
     }[];
   };
@@ -2514,14 +2538,14 @@ export interface Header {
     title: string;
     url: string;
     subNavigation?:
-    | {
-      label: string;
-      title: string;
-      link: string;
-      url: string;
-      id?: string | null;
-    }[]
-    | null;
+      | {
+          label: string;
+          title: string;
+          link: string;
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
     id?: string | null;
   }[];
   aktionen: {
@@ -2722,18 +2746,18 @@ export interface SommerfreizeitSetting {
  */
 export interface StartseiteSelect<T extends boolean = true> {
   neuigkeiten?:
-  | T
-  | {
-    title?: T;
-    link?: T;
-    enabled?: T;
-  };
+    | T
+    | {
+        title?: T;
+        link?: T;
+        enabled?: T;
+      };
   meta?:
-  | T
-  | {
-    title?: T;
-    description?: T;
-  };
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2746,23 +2770,23 @@ export interface AdventsmarktSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   saturdayTimes?:
-  | T
-  | {
-    startTime?: T;
-    endTime?: T;
-  };
+    | T
+    | {
+        startTime?: T;
+        endTime?: T;
+      };
   sundayTimes?:
-  | T
-  | {
-    startTime?: T;
-    endTime?: T;
-  };
+    | T
+    | {
+        startTime?: T;
+        endTime?: T;
+      };
   meta?:
-  | T
-  | {
-    title?: T;
-    description?: T;
-  };
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   content?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2778,11 +2802,11 @@ export interface MartinsumzugSelect<T extends boolean = true> {
   startLocation?: T;
   endLocation?: T;
   meta?:
-  | T
-  | {
-    title?: T;
-    description?: T;
-  };
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   content?: T;
   songs?: T;
   updatedAt?: T;
@@ -2802,80 +2826,80 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
   anmeldungWebsite?: T;
   signupStartDate?: T;
   allgemein?:
-  | T
-  | {
-    pricing?:
     | T
     | {
-      name?: T;
-      beschreibung?: T;
-      price?: T;
-      eigenschaften?:
-      | T
-      | {
-        name?: T;
-        id?: T;
+        pricing?:
+          | T
+          | {
+              name?: T;
+              beschreibung?: T;
+              price?: T;
+              eigenschaften?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        eigenschaften?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+        teamFreizeit?: T;
       };
-      id?: T;
-    };
-    eigenschaften?:
-    | T
-    | {
-      title?: T;
-      description?: T;
-      id?: T;
-    };
-    teamFreizeit?: T;
-  };
   unterkunft?:
-  | T
-  | {
-    name?: T;
-    beschreibung?: T;
-    website?: T;
-    bild?: T;
-    location?: T;
-  };
-  faq?:
-  | T
-  | {
-    eintrag?:
     | T
     | {
-      question?: T;
-      answer?: T;
-      id?: T;
-    };
-  };
-  packliste?:
-  | T
-  | {
-    text?: T;
-  };
-  informationen?:
-  | T
-  | {
-    eintrag?:
-    | T
-    | {
-      title?: T;
-      text?: T;
-      links?:
-      | T
-      | {
-        linkText?: T;
-        link?: T;
-        id?: T;
+        name?: T;
+        beschreibung?: T;
+        website?: T;
+        bild?: T;
+        location?: T;
       };
-      id?: T;
-    };
-  };
+  faq?:
+    | T
+    | {
+        eintrag?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  packliste?:
+    | T
+    | {
+        text?: T;
+      };
+  informationen?:
+    | T
+    | {
+        eintrag?:
+          | T
+          | {
+              title?: T;
+              text?: T;
+              links?:
+                | T
+                | {
+                    linkText?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
   meta?:
-  | T
-  | {
-    title?: T;
-    description?: T;
-  };
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2887,25 +2911,25 @@ export interface SommerfreizeitSelect<T extends boolean = true> {
 export interface TannenbaumaktionSelect<T extends boolean = true> {
   startDate?: T;
   meta?:
-  | T
-  | {
-    title?: T;
-    description?: T;
-  };
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   vekaufsort?:
-  | T
-  | {
-    name?: T;
-    adresse?: T;
-    id?: T;
-  };
+    | T
+    | {
+        name?: T;
+        adresse?: T;
+        id?: T;
+      };
   fragen?:
-  | T
-  | {
-    frage?: T;
-    answer?: T;
-    id?: T;
-  };
+    | T
+    | {
+        frage?: T;
+        answer?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2938,29 +2962,29 @@ export interface AboutSelect<T extends boolean = true> {
  */
 export interface HeaderSelect<T extends boolean = true> {
   navigation?:
-  | T
-  | {
-    title?: T;
-    url?: T;
-    subNavigation?:
     | T
     | {
-      label?: T;
-      title?: T;
-      link?: T;
-      url?: T;
-      id?: T;
-    };
-    id?: T;
-  };
+        title?: T;
+        url?: T;
+        subNavigation?:
+          | T
+          | {
+              label?: T;
+              title?: T;
+              link?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   aktionen?:
-  | T
-  | {
-    icon?: T;
-    title?: T;
-    url?: T;
-    id?: T;
-  };
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        url?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2971,20 +2995,20 @@ export interface HeaderSelect<T extends boolean = true> {
  */
 export interface FooterSelect<T extends boolean = true> {
   socialLinks?:
-  | T
-  | {
-    title?: T;
-    url?: T;
-    icon?: T;
-    id?: T;
-  };
+    | T
+    | {
+        title?: T;
+        url?: T;
+        icon?: T;
+        id?: T;
+      };
   legalLinks?:
-  | T
-  | {
-    title?: T;
-    url?: T;
-    id?: T;
-  };
+    | T
+    | {
+        title?: T;
+        url?: T;
+        id?: T;
+      };
   email?: T;
   phone?: T;
   whatsapp?: T;
@@ -2998,29 +3022,29 @@ export interface FooterSelect<T extends boolean = true> {
  */
 export interface RechtlichesSelect<T extends boolean = true> {
   impressum?:
-  | T
-  | {
-    text?: T;
-  };
+    | T
+    | {
+        text?: T;
+      };
   datenschutz?:
-  | T
-  | {
-    allgemein?:
     | T
     | {
-      text?: T;
-    };
-    sommerfreizeit?:
-    | T
-    | {
-      text?: T;
-    };
-  };
+        allgemein?:
+          | T
+          | {
+              text?: T;
+            };
+        sommerfreizeit?:
+          | T
+          | {
+              text?: T;
+            };
+      };
   agb?:
-  | T
-  | {
-    text?: T;
-  };
+    | T
+    | {
+        text?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -3105,14 +3129,14 @@ export interface CleanupExpiredConfirmationsJob {
 export interface SendRegistrationEmailsJob {
   input: {
     formValues:
-    | {
-      [k: string]: unknown;
-    }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
     eventTitle: string;
     isWaitlist: boolean;
   };
@@ -3125,14 +3149,14 @@ export interface SendRegistrationEmailsJob {
 export interface SendConfirmationEmailsJob {
   input: {
     registration:
-    | {
-      [k: string]: unknown;
-    }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
     eventTitle: string;
   };
   output?: unknown;
@@ -3200,5 +3224,5 @@ export interface Auth {
 
 
 declare module 'payload' {
-  export interface GeneratedTypes extends Config { }
+  export interface GeneratedTypes extends Config {}
 }
