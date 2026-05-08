@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Text, Heading, Button, Section, Hr, Container } from '@react-email/components'
+import { Text, Heading, Button, Section, Hr, Container } from 'react-email'
 import MailBase from '@/components/email/Base'
 
 interface VerificationEmailProps {

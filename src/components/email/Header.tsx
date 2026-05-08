@@ -1,4 +1,4 @@
-import { Section, Row, Column, Img, Link } from '@react-email/components'
+import { Section, Row, Column, Img, Link } from 'react-email'
 
 const MailHeader = () => (
   <Section className="bg-primary my-[40px] px-[32px] py-[40px]">

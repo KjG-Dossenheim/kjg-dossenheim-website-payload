@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Text, Heading, Section, Button, Hr, Container } from '@react-email/components'
+import { Text, Heading, Section, Button, Hr, Container } from 'react-email'
 import MailBase from '@/components/email/Base'
 import { FormValues, PICKUP_OPTIONS, GENDER_OPTIONS } from './schema'
 import { format } from 'date-fns-tz/format'
@@ -59,8 +59,8 @@ export function confirmationEmailTemplate(
                 ⚠️ Warteliste-Information
               </Text>
               <Text className="text-sm text-orange-800">
-                Deine Anmeldung befindet sich auf der Warteliste. Wir informieren Dich
-                umgehend per E-Mail, wenn ein Platz für Dich frei wird.
+                Deine Anmeldung befindet sich auf der Warteliste. Wir informieren Dich umgehend per
+                E-Mail, wenn ein Platz für Dich frei wird.
               </Text>
             </div>
           )}
@@ -233,9 +233,7 @@ export function adminNotificationEmailTemplate(
               className="rounded-lg border border-orange-200 bg-orange-50 p-5"
               style={{ marginBottom: '20px' }}
             >
-              <Text className="mb-2 text-sm font-semibold text-orange-900">
-                ⚠️ Warteliste
-              </Text>
+              <Text className="mb-2 text-sm font-semibold text-orange-900">⚠️ Warteliste</Text>
               <Text className="text-sm text-orange-800">
                 Diese Anmeldung befindet sich auf der Warteliste.
               </Text>
@@ -385,9 +383,7 @@ export function spotAvailableEmailTemplate(
             className="rounded-lg border border-green-200 bg-green-50 p-5"
             style={{ marginBottom: '20px' }}
           >
-            <Text className="mb-2 text-sm font-semibold text-green-900">
-              ✅ Platz verfügbar
-            </Text>
+            <Text className="mb-2 text-sm font-semibold text-green-900">✅ Platz verfügbar</Text>
             <Text className="text-sm text-green-800">
               Sie sind von der Warteliste aufgerückt! Bitte bestätigen Sie Ihre Teilnahme bis zum{' '}
               <strong>{formattedDeadline} Uhr</strong>, um Ihren Platz zu sichern.
@@ -416,16 +412,14 @@ export function spotAvailableEmailTemplate(
                     <tbody>
                       <tr>
                         <td style={{ paddingBottom: '8px' }}>
-                          <strong>Geburtsdatum:</strong>{' '}
-                          {format(child.dateOfBirth, 'dd.MM.yyyy')}
+                          <strong>Geburtsdatum:</strong> {format(child.dateOfBirth, 'dd.MM.yyyy')}
                         </td>
                       </tr>
                       <tr>
                         <td style={{ paddingBottom: '8px' }}>
                           <strong>Geschlecht:</strong>{' '}
                           {child.gender
-                            ? GENDER_OPTIONS.find((option) => option.value === child.gender)
-                                ?.label
+                            ? GENDER_OPTIONS.find((option) => option.value === child.gender)?.label
                             : 'Keine Angabe'}
                         </td>
                       </tr>
@@ -443,8 +437,8 @@ export function spotAvailableEmailTemplate(
           >
             <Text className="mb-2 text-sm font-semibold text-orange-900">⚠️ Wichtig</Text>
             <Text className="text-sm text-orange-800">
-              Wenn Sie nicht bis <strong>{formattedDeadline} Uhr</strong> bestätigen, wird der
-              Platz an die nächste Person auf der Warteliste vergeben.
+              Wenn Sie nicht bis <strong>{formattedDeadline} Uhr</strong> bestätigen, wird der Platz
+              an die nächste Person auf der Warteliste vergeben.
             </Text>
           </div>
 
@@ -495,8 +489,8 @@ export function confirmationSuccessEmailTemplate(registration: any, eventTitle: 
             className="text-base leading-relaxed text-gray-700"
             style={{ marginBottom: '20px' }}
           >
-            Ihre Teilnahme am <strong className="text-gray-900">{eventTitle}</strong> ist
-            bestätigt! Wir freuen uns sehr, dass Sie dabei sind.
+            Ihre Teilnahme am <strong className="text-gray-900">{eventTitle}</strong> ist bestätigt!
+            Wir freuen uns sehr, dass Sie dabei sind.
           </Text>
 
           {/* Success Box */}
@@ -604,9 +598,7 @@ export function adminPromotionNotificationEmailTemplate(
             className="rounded-lg border border-purple-100 bg-purple-50 p-5"
             style={{ marginBottom: '20px' }}
           >
-            <Text className="mb-3 text-sm font-semibold text-purple-900">
-              Kontaktinformationen
-            </Text>
+            <Text className="mb-3 text-sm font-semibold text-purple-900">Kontaktinformationen</Text>
             <table style={{ width: '100%', fontSize: '14px', color: '#374151' }}>
               <tbody>
                 <tr>
@@ -638,10 +630,7 @@ export function adminPromotionNotificationEmailTemplate(
   )
 }
 
-export function adminConfirmationNotificationEmailTemplate(
-  registration: any,
-  eventTitle: string,
-) {
+export function adminConfirmationNotificationEmailTemplate(registration: any, eventTitle: string) {
   return (
     <MailBase>
       <Container className="px-6 py-8">
@@ -678,9 +667,7 @@ export function adminConfirmationNotificationEmailTemplate(
             className="rounded-lg border border-purple-100 bg-purple-50 p-5"
             style={{ marginBottom: '20px' }}
           >
-            <Text className="mb-3 text-sm font-semibold text-purple-900">
-              Kontaktinformationen
-            </Text>
+            <Text className="mb-3 text-sm font-semibold text-purple-900">Kontaktinformationen</Text>
             <table style={{ width: '100%', fontSize: '14px', color: '#374151' }}>
               <tbody>
                 <tr>
@@ -735,8 +722,8 @@ export function adminExpirationNotificationEmailTemplate(registration: any, even
           >
             <Text className="mb-2 text-sm font-semibold text-orange-900">⚠️ Abgelaufen</Text>
             <Text className="text-sm text-orange-800">
-              Die Anmeldung wurde zurück auf die Warteliste gesetzt. Der Platz wird nun der
-              nächsten Person auf der Warteliste angeboten.
+              Die Anmeldung wurde zurück auf die Warteliste gesetzt. Der Platz wird nun der nächsten
+              Person auf der Warteliste angeboten.
             </Text>
           </div>
 
@@ -745,9 +732,7 @@ export function adminExpirationNotificationEmailTemplate(registration: any, even
             className="rounded-lg border border-purple-100 bg-purple-50 p-5"
             style={{ marginBottom: '20px' }}
           >
-            <Text className="mb-3 text-sm font-semibold text-purple-900">
-              Kontaktinformationen
-            </Text>
+            <Text className="mb-3 text-sm font-semibold text-purple-900">Kontaktinformationen</Text>
             <table style={{ width: '100%', fontSize: '14px', color: '#374151' }}>
               <tbody>
                 <tr>

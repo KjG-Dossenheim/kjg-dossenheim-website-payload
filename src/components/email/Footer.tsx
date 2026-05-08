@@ -1,4 +1,4 @@
-import { Section, Img, Text, Row, Column, Link } from '@react-email/components'
+import { Section, Img, Text, Row, Column, Link } from 'react-email'
 
 const MailFooter = () => (
   <Section className="bg-primary text-center">

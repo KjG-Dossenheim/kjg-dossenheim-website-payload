@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Html, Button, Hr, Text, Heading } from '@react-email/components'
+import { Html, Button, Hr, Text, Heading } from 'react-email'
 import { MembershipApplication } from '@/payload-types'
 import { formatDate } from 'date-fns/format'
 

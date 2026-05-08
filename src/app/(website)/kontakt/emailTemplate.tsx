@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Text, Heading } from '@react-email/components'
+import { Text, Heading } from 'react-email'
 import MailBase from '@/components/email/Base'
 import { FormValues } from './schema'
 
