@@ -94,7 +94,7 @@ const CountrySelect = ({
         <Button
           type="button"
           variant="outline"
-          className="flex h-9 gap-1 rounded-s-lg rounded-e-none border-r-0 px-3 focus:z-10"
+          className="flex h-8 gap-1 rounded-s-lg rounded-e-none border-r-0 px-3 focus:z-10"
           disabled={disabled}
         >
           <FlagComponent country={selectedCountry} countryName={selectedCountry} />
@@ -103,7 +103,7 @@ const CountrySelect = ({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
+      <PopoverContent className="w-75 p-0">
         <Command>
           <CommandInput
             value={searchValue}
