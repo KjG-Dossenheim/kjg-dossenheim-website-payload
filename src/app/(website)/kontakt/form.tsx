@@ -50,24 +50,26 @@ export default function ContactForm() {
     try {
       const result = await sendMail(values)
       if (result.success) {
-        toast.success('Nachricht erfolgreich gesendet.')
+        toast.success('Nachricht erfolgreich gesendet.', { toasterId: 'contact-form' })
         form.reset()
       } else {
         if (result.error === 'invalid-captcha') {
-          toast.error('Bitte bestätigen Sie die Captcha-Prüfung erneut.')
+          toast.error('Bitte bestätigen Sie die Captcha-Prüfung erneut.', {
+            toasterId: 'contact-form',
+          })
           form.setValue('captchaToken', '', { shouldValidate: true })
           return
         }
-        toast.error('Fehler beim Senden der Nachricht.')
+        toast.error('Fehler beim Senden der Nachricht.', { toasterId: 'contact-form' })
       }
     } catch {
-      toast.error('Netzwerkfehler.')
+      toast.error('Netzwerkfehler.', { toasterId: 'contact-form' })
     }
   }
 
   return (
     <section className="mx-auto max-w-lg">
-      <Toaster richColors />
+      <Toaster richColors id="contact-form" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader>

@@ -668,22 +668,29 @@ export function KnallbonbonAnmeldungForm() {
           if (result.isWaitlist) {
             toast.success(
               'Anmeldung auf Warteliste erfolgreich! Du erhältst eine E-Mail, sobald ein Platz frei wird.',
+              { toasterId: 'knallbonbon-anmeldung-form' },
             )
           } else {
-            toast.success('Anmeldung erfolgreich!')
+            toast.success('Anmeldung erfolgreich!', { toasterId: 'knallbonbon-anmeldung-form' })
           }
         } else {
           if (result.error === 'invalid-captcha') {
-            toast.error('Bitte bestätigen Sie die Captcha-Prüfung erneut.')
+            toast.error('Bitte bestätigen Sie die Captcha-Prüfung erneut.', {
+              toasterId: 'knallbonbon-anmeldung-form',
+            })
             form.setValue('captchaToken', '', { shouldValidate: true })
             return
           }
           const message = typeof result.message === 'string' ? result.message : undefined
-          toast.error(message ?? 'Fehler bei der Anmeldung.')
+          toast.error(message ?? 'Fehler bei der Anmeldung.', {
+            toasterId: 'knallbonbon-anmeldung-form',
+          })
         }
       } catch (error) {
         console.error('Form submission error:', error)
-        toast.error('Netzwerkfehler. Bitte versuchen Sie es später erneut.')
+        toast.error('Netzwerkfehler. Bitte versuchen Sie es später erneut.', {
+          toasterId: 'knallbonbon-anmeldung-form',
+        })
       }
     },
     [form],
@@ -693,7 +700,7 @@ export function KnallbonbonAnmeldungForm() {
 
   return (
     <>
-      <Toaster richColors />
+      <Toaster richColors id="knallbonbon-anmeldung-form" />
       <CardHeader>
         <CardTitle>Knallbonbon Anmeldung</CardTitle>
         <CardDescription>

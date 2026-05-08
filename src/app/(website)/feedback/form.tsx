@@ -60,18 +60,20 @@ export default function FeedbackForm() {
 
       if (result.success) {
         form.reset()
-        toast.success('Vielen Dank für Ihr Feedback!')
+        toast.success('Vielen Dank für Ihr Feedback!', { toasterId: 'feedback-form' })
       } else {
-        toast.error(result.error || 'Fehler beim Übermitteln des Feedbacks.')
+        toast.error(result.error || 'Fehler beim Übermitteln des Feedbacks.', {
+          toasterId: 'feedback-form',
+        })
       }
     } catch {
-      toast.error('Netzwerkfehler.')
+      toast.error('Netzwerkfehler.', { toasterId: 'feedback-form' })
     }
   }
 
   return (
     <section className="mx-auto max-w-lg">
-      <Toaster richColors />
+      <Toaster richColors id="feedback-form" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader>

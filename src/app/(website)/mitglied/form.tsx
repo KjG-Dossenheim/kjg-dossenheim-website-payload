@@ -18,7 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Toaster } from '@/components/ui/sonner'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
@@ -59,18 +58,17 @@ export default function MitgliedForm() {
 
       if (result.success) {
         form.reset()
-        toast.success('Mitgliedsantrag erfolgreich übermittelt!')
+        toast.success('Mitgliedsantrag erfolgreich übermittelt!', { toasterId: 'form' })
       } else {
-        toast.error(result.error || 'Fehler beim Übermitteln des Antrags.')
+        toast.error(result.error || 'Fehler beim Übermitteln des Antrags.', { toasterId: 'form' })
       }
     } catch {
-      toast.error('Netzwerkfehler.')
+      toast.error('Netzwerkfehler.', { toasterId: 'form' })
     }
   }
 
   return (
     <section className="mx-auto max-w-md">
-      <Toaster richColors />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader>
