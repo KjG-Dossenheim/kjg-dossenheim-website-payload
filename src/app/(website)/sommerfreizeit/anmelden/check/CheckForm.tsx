@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -51,6 +51,7 @@ type CheckFormProps = {
   pretixSecret: string
   pretixEvent: string
   positions: PositionView[]
+  showAccountCreatedMessage: boolean
 }
 
 type ChildFormState = {
@@ -106,19 +107,26 @@ export function CheckForm({
   pretixSecret,
   pretixEvent,
   positions,
+  showAccountCreatedMessage,
 }: CheckFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-  const [phone] = useState(accountDefaults.phone)
-  const [address] = useState(accountDefaults.address)
-  const [postalCode] = useState(accountDefaults.postalCode)
-  const [city] = useState(accountDefaults.city)
+  const [phone, setPhone] = useState(accountDefaults.phone)
+  const [address, setAddress] = useState(accountDefaults.address)
+  const [postalCode, setPostalCode] = useState(accountDefaults.postalCode)
+  const [city, setCity] = useState(accountDefaults.city)
 
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const [children, setChildren] = useState<ChildFormState[]>(() =>
     positions.map((position) => buildInitialChild(position)),
   )
+
+  useEffect(() => {
+    if (showAccountCreatedMessage) {
+      toast.success('Für diese Bestellung wurde ein Konto angelegt.')
+    }
+  }, [showAccountCreatedMessage])
 
   const canSubmit = children.length > 0
 
@@ -242,27 +250,48 @@ export function CheckForm({
       <Card>
         <CardHeader>
           <CardTitle>Kontaktdaten</CardTitle>
-          <CardDescription>
-            Diese Daten wurden aus deiner Pretix-Bestellung übernommen und in deinem
-            Sommerfreizeit-Konto gespeichert.
-          </CardDescription>
+          <CardDescription>Bitte überprüfe und vervollständige deine Kontaktdaten.</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="phone">Telefonnummer</Label>
-            <PhoneInput id="phone" value={phone} disabled />
+            <PhoneInput
+              id="phone"
+              value={phone}
+              onChange={(value) => setPhone(value ?? '')}
+              required
+              disabled={isPending}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="address">Adresse</Label>
-            <Input id="address" value={address} disabled />
+            <Input
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+              disabled={isPending}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="postalCode">Postleitzahl</Label>
-            <Input id="postalCode" value={postalCode} disabled />
+            <Input
+              id="postalCode"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              required
+              disabled={isPending}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="city">Ort</Label>
-            <Input id="city" value={city} disabled />
+            <Input
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+              disabled={isPending}
+            />
           </div>
         </CardContent>
       </Card>

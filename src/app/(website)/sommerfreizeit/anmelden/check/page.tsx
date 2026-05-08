@@ -11,6 +11,7 @@ import { normalizeSommerfreizeitEmail } from '@/utilities/sommerfreizeitAccount'
 type CheckPageProps = {
   searchParams?: Promise<{
     orderCode?: string | string[]
+    createdAccount?: string | string[]
   }>
 }
 
@@ -19,8 +20,12 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
   const orderCodeParam = Array.isArray(resolvedSearchParams?.orderCode)
     ? resolvedSearchParams?.orderCode[0]
     : resolvedSearchParams?.orderCode
+  const createdAccountParam = Array.isArray(resolvedSearchParams?.createdAccount)
+    ? resolvedSearchParams?.createdAccount[0]
+    : resolvedSearchParams?.createdAccount
 
   const safeOrderCode = orderCodeParam?.trim() || ''
+  const showAccountCreatedMessage = createdAccountParam === '1'
 
   if (!safeOrderCode) {
     redirect('/sommerfreizeit/anmeldung')
@@ -70,6 +75,7 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
         pretixOrderID={flow.pretixOrderID}
         pretixSecret={flow.pretixSecret}
         positions={flow.positions}
+        showAccountCreatedMessage={showAccountCreatedMessage}
       />
     </section>
   )

@@ -41,6 +41,7 @@ type LookupOrderResult = {
   message: string
   email?: string
   orderCode?: string
+  createdAccount?: boolean
 }
 
 type OrderFlowView = {
@@ -301,18 +302,12 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
   try {
     const headers = await getHeaders()
     const payload = await getPayload({ config })
-    const user = await getSommerfreizeitSessionUser(payload, headers)
-
-    if (!user) {
-      return {
-        success: false,
-        message: 'Bitte melde dich zuerst an.',
-      }
-    }
+    const sessionUser = await getSommerfreizeitSessionUser(payload, headers)
 
     const flow = await resolveOrderFlowFromPretix(parsedInput.data.orderCode)
 
-    if (normalizeSommerfreizeitEmail(user.email) !== normalizeSommerfreizeitEmail(flow.email)) {
+    // If user is logged in, verify they own this order
+    if (sessionUser && normalizeSommerfreizeitEmail(sessionUser.email) !== normalizeSommerfreizeitEmail(flow.email)) {
       return {
         success: false,
         message: 'Das eingeloggte Konto passt nicht zur Bestellung.',
@@ -320,31 +315,32 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
     }
 
     const existingUser = await findSommerfreizeitUserByEmail(payload, flow.email)
-
-    if (!existingUser) {
-      const nameParts =
-        flow.invoiceFirstName || flow.invoiceLastName
-          ? {
-            firstName: flow.invoiceFirstName,
-            lastName: flow.invoiceLastName,
-          }
-          : {
-            firstName: flow.positions[0]?.firstName ?? '',
-            lastName: flow.positions[0]?.lastName ?? '',
-          }
-
-      await ensureSommerfreizeitUser(payload, {
+    const accountResult = existingUser
+      ? {
+        created: false,
+        user: existingUser,
+      }
+      : await ensureSommerfreizeitUser(payload, {
         email: flow.email,
-        firstName: nameParts.firstName,
-        lastName: nameParts.lastName,
+        firstName: flow.invoiceFirstName || flow.positions[0]?.firstName || '',
+        lastName: flow.invoiceLastName || flow.positions[0]?.lastName || '',
       })
+
+    if (!accountResult.user) {
+      return {
+        success: false,
+        message: 'Bestellung konnte nicht abgerufen werden. Bitte versuche es erneut.',
+      }
     }
 
     return {
       success: true,
-      message: 'Bestellung gefunden. Wir senden dir jetzt einen Bestätigungscode.',
+      message: accountResult.created
+        ? 'Bestellung gefunden. Dein Konto wurde angelegt. Wir senden dir jetzt einen Bestätigungscode.'
+        : 'Bestellung gefunden. Wir senden dir jetzt einen Bestätigungscode.',
       email: flow.email,
       orderCode: flow.orderCode,
+      createdAccount: accountResult.created,
     }
   } catch (error) {
     if (error instanceof Error && error.message === 'ORDER_NOT_FOUND') {
@@ -436,14 +432,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
   try {
     const headers = await getHeaders()
     const payload = await getPayload({ config })
-    const user = await getSommerfreizeitSessionUser(payload, headers)
-
-    if (!user) {
-      return {
-        success: false,
-        message: 'Bitte melde dich zuerst an.',
-      }
-    }
+    const sessionUser = await getSommerfreizeitSessionUser(payload, headers)
 
     let flow: ResolvedOrderFlow
 
@@ -456,10 +445,20 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       }
     }
 
-    if (normalizeSommerfreizeitEmail(user.email) !== normalizeSommerfreizeitEmail(flow.email)) {
+    // If user is logged in, verify they own this order
+    if (sessionUser && normalizeSommerfreizeitEmail(sessionUser.email) !== normalizeSommerfreizeitEmail(flow.email)) {
       return {
         success: false,
         message: 'Das eingeloggte Konto passt nicht zur Bestellung.',
+      }
+    }
+
+    const user = sessionUser || (await findSommerfreizeitUserByEmail(payload, flow.email))
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'Bestellung konnte nicht abgerufen werden. Bitte versuche es erneut.',
       }
     }
 

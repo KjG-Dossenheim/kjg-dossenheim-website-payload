@@ -16,12 +16,10 @@ import {
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { Loader2 } from 'lucide-react'
 
-import { useSession } from '@/lib/auth/client'
 import { lookupOrderAndStartFlowAction } from './action'
 
 export function OrderLookupForm() {
   const router = useRouter()
-  const { data: session } = useSession()
 
   const [orderCode, setOrderCode] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,13 +27,6 @@ export function OrderLookupForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    // Check if user is logged in
-    if (!session?.user) {
-      const returnTo = encodeURIComponent('/sommerfreizeit/anmelden')
-      router.push(`/sommerfreizeit/login?returnTo=${returnTo}`)
-      return
-    }
 
     setError('')
     setIsSubmitting(true)
@@ -48,7 +39,7 @@ export function OrderLookupForm() {
         return
       }
 
-      const nextCallbackURL = `/sommerfreizeit/anmelden/check?orderCode=${encodeURIComponent(lookupResult.orderCode)}`
+      const nextCallbackURL = `/sommerfreizeit/anmelden/check?orderCode=${encodeURIComponent(lookupResult.orderCode)}${lookupResult.createdAccount ? '&createdAccount=1' : ''}`
       router.push(nextCallbackURL)
       router.refresh()
     } catch (_error) {
