@@ -51,7 +51,7 @@ export default function TeamSection({ team }: TeamSectionProps) {
                 </Avatar>
               </CardHeader>
               <CardFooter>
-                <CardTitle className="font-handwriting text-center">
+                <CardTitle className="font-handwriting text-center text-xl">
                   {member.firstName} {member.lastName}
                 </CardTitle>
               </CardFooter>
