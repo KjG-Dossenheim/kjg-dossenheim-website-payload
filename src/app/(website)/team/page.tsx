@@ -7,7 +7,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 // Third-party libraries
-import { Mail, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 // Payload CMS
 import { getPayload } from 'payload'
@@ -15,7 +15,7 @@ import config from '@payload-config'
 import type { Team } from '@/payload-types'
 
 // UI Components
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import {
   Card,
@@ -25,6 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 import { createAvatar } from '@dicebear/core'
 import { bigEarsNeutral } from '@dicebear/collection'
@@ -37,6 +38,14 @@ async function getTeamMembers() {
       collection: 'team',
       sort: 'firstName',
       pagination: false,
+      depth: 1,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        position: true,
+        profilePicture: true,
+      },
     })
 
     return response.docs
@@ -77,6 +86,10 @@ function TeamMemberCard({ member }: { member: Team }) {
               alt={`${member.firstName} ${member.lastName}`}
             />
           )}
+          <AvatarFallback>
+            {member.firstName.charAt(0)}
+            {member.lastName.charAt(0)}
+          </AvatarFallback>
         </Avatar>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -86,32 +99,22 @@ function TeamMemberCard({ member }: { member: Team }) {
         <CardDescription className="flex flex-wrap gap-2">
           {member.position.map((position) => (
             <Badge className="uppercase" key={position} variant={'outline'}>
-              <p>{position}</p>
+              {position}
             </Badge>
           ))}
-          {member.email && (
-            <Badge className="uppercase" variant={'outline'}>
-              <Link
-                href={`mailto:${member.email}`}
-                data-umami-event="Team Member Email Click"
-                data-umami-event-member={member.firstName + ' ' + member.lastName}
-                data-umami-event-email={member.email}
-              >
-                <Mail className="size-4" />
-              </Link>
-            </Badge>
-          )}
         </CardDescription>
       </CardContent>
       <CardFooter>
-        <Link
-          href={`/team/${member.id}`}
-          className="flex items-center gap-2 hover:underline"
+        <Button
+          asChild
+          variant="link"
           data-umami-event="Team Member More Info Click"
           data-umami-event-member={member.firstName + ' ' + member.lastName}
         >
-          Mehr erfahren <ArrowRight />
-        </Link>
+          <Link href={`/team/${member.id}`}>
+            Mehr erfahren <ArrowRight data-icon="inline-end" />
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   )

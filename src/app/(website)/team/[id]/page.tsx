@@ -2,7 +2,7 @@
 export const revalidate = 60 // 1 Minute
 
 // React and Next.js
-import React from 'react'
+import React, { cache } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -32,7 +32,7 @@ import {
 } from '@/components/ui/card'
 
 // Shared function to fetch team member data to avoid code duplication
-async function getTeamMember(id: string) {
+const getTeamMember = cache(async (id: string) => {
   if (!id) return null
 
   try {
@@ -45,7 +45,7 @@ async function getTeamMember(id: string) {
     console.error('Error fetching team member:', error)
     return null
   }
-}
+})
 
 // Helper function to generate avatar data URI (cached at build time)
 function generateAvatarDataUri(firstName: string, lastName: string): string {
@@ -151,6 +151,8 @@ export async function generateStaticParams() {
   const payload = await getPayload({ config })
   const { docs: teamMembers } = await payload.find({
     collection: 'team',
+    pagination: false,
+    select: {},
   })
 
   return teamMembers.map((member) => ({
