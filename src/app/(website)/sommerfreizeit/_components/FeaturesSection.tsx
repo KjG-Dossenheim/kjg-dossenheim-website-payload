@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import { CardHeader, CardContent } from '@/components/ui/card'
 import {
   Accordion,
   AccordionContent,
@@ -23,11 +22,11 @@ interface FeaturesSectionProps {
 
 export default function FeaturesSection({ eigenschaften }: FeaturesSectionProps) {
   return (
-    <section className="mx-auto max-w-(--breakpoint-sm)">
-      <CardHeader>
+    <section className="mx-auto max-w-(--breakpoint-sm) p-6">
+      <div>
         <h2 className="text-center text-4xl font-bold">Was uns ausmacht</h2>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div>
         <Accordion type="single" collapsible>
           {eigenschaften.map((eigenschaft) => (
             <AccordionItem key={eigenschaft.id} value={eigenschaft.id || ''}>
@@ -38,7 +37,7 @@ export default function FeaturesSection({ eigenschaften }: FeaturesSectionProps)
             </AccordionItem>
           ))}
         </Accordion>
-      </CardContent>
+      </div>
     </section>
   )
 }

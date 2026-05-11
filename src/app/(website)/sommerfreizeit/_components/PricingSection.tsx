@@ -32,10 +32,10 @@ export default function PricingSection({ pricing, signupStartDate }: PricingSect
   const signupOpen = !signupStartDate || new Date() >= new Date(signupStartDate)
 
   return (
-    <section className="py-12">
+    <section className="mx-auto space-y-6 p-6">
       <div className="text-center">
         <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Teilnehmerbeitrag</h2>
-        <p className="text-muted-foreground mt-4 text-lg">Wähle das passende Paket für dich aus</p>
+        <p className="text-muted-foreground text-lg">Wähle das passende Paket für dich aus</p>
       </div>
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:p-6">
         {pricing.map((item) => {
