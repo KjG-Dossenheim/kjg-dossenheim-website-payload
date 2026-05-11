@@ -7,9 +7,7 @@ import Link from 'next/link'
 
 import { SiWhatsapp, SiFacebook, SiInstagram } from '@icons-pack/react-simple-icons'
 
-import { Copyright, Mail, Phone } from 'lucide-react'
-
-import { CardFooter, CardHeader } from '@/components/ui/card'
+import { Mail, Phone } from 'lucide-react'
 
 export default async function FooterServer() {
   const payload = await getPayload({ config })
@@ -18,18 +16,18 @@ export default async function FooterServer() {
   })
 
   return (
-    <footer className="container mx-auto max-h-fit">
-      <div className="flex flex-wrap md:flex-row md:justify-between">
-        <div>
-          <CardHeader className="max-h-fit space-y-1">
+    <footer className="w-full p-6">
+      <div className="flex flex-wrap gap-6 md:flex-row md:justify-between">
+        <div className="">
+          <div className="max-h-fit space-y-1">
             <h2 className="font-semibold uppercase">Spendenkonto</h2>
             <p className="font-mono">Katholische junge Gemeinde Dossenheim n.e.V.</p>
             <p className="font-mono">DE56 6725 0020 0009 3866 61</p>
             <p className="font-mono">SOLADES1HDB</p>
-          </CardHeader>
+          </div>
         </div>
-        <div className="flex flex-wrap md:flex-row md:justify-end">
-          <CardHeader className="max-h-fit space-y-1">
+        <div className="flex flex-wrap gap-6 md:flex-row md:justify-end">
+          <div className="max-h-fit space-y-1">
             <h2 className="font-semibold uppercase">Folge uns</h2>
             <ul className="list-none space-y-2">
               {footer.socialLinks.map((socialLink) => (
@@ -49,8 +47,8 @@ export default async function FooterServer() {
                 </li>
               ))}
             </ul>
-          </CardHeader>
-          <CardHeader className="max-h-fit space-y-1">
+          </div>
+          <div className="max-h-fit space-y-1">
             <h2 className="font-semibold uppercase">Kontakt</h2>
             <ul className="list-none space-y-2">
               <li>
@@ -76,8 +74,8 @@ export default async function FooterServer() {
                 </a>
               </li>
             </ul>
-          </CardHeader>
-          <CardHeader className="max-h-fit space-y-1">
+          </div>
+          <div className="max-h-fit space-y-1">
             <h2 className="gap-2 font-semibold uppercase">Rechtliches</h2>
             <ul className="list-none space-y-2">
               <li>
@@ -96,17 +94,17 @@ export default async function FooterServer() {
                 </a>
               </li>
             </ul>
-          </CardHeader>
+          </div>
         </div>
       </div>
-      <CardFooter>
+      <div className="pt-6">
         <span className="flex flex-wrap items-center justify-start gap-1">
-          <Copyright className="size-4" /> {new Date().getFullYear()}
+          {new Date().getFullYear()} -
           <Link href="/" className="hover:underline">
             {process.env.NEXT_PUBLIC_SITE_FULLNAME}
           </Link>
         </span>
-      </CardFooter>
+      </div>
     </footer>
   )
 }
