@@ -1,26 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { syncAnmeldungenAfterChange } from './hooks/syncAnmeldungen'
 
-const canManageOwnChild: NonNullable<CollectionConfig['access']>['read'] = ({ req: { user } }) => {
-  if (!user) {
-    return false
-  }
-
-  if (user.collection === 'users') {
-    return true
-  }
-
-  if (user.collection === 'sommerfreizeitUsers') {
-    return {
-      parent: {
-        equals: user.id,
-      },
-    }
-  }
-
-  return false
-}
-
 export const sommerfreizeitChild: CollectionConfig = {
   slug: 'sommerfreizeitChild',
   labels: {
@@ -29,9 +9,10 @@ export const sommerfreizeitChild: CollectionConfig = {
   },
   access: {
     create: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
-    read: canManageOwnChild,
-    update: canManageOwnChild,
-    delete: canManageOwnChild,
+    read: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
+    update: ({ req: { user } }) => !!user && ['sommerfreizeitUsers'].includes(user.collection),
+    delete: ({ req: { user } }) => !!user && ['users'].includes(user.collection),
+    readVersions: ({ req: { user } }) => !!user && ['sommerfreizeitUsers'].includes(user.collection),
   },
   admin: {
     group: 'Sommerfreizeit',
@@ -44,6 +25,7 @@ export const sommerfreizeitChild: CollectionConfig = {
   versions: {
     drafts: true,
   },
+  trash: true,
   fields: [
     {
       name: 'parent',
@@ -53,19 +35,9 @@ export const sommerfreizeitChild: CollectionConfig = {
       required: true,
       admin: {
         position: 'sidebar',
-        readOnly: false,
       },
       access: {
         update: () => false,
-      },
-    },
-    {
-      name: 'archived',
-      label: 'Archiviert',
-      type: 'checkbox',
-      admin: {
-        position: 'sidebar',
-        readOnly: true,
       },
     },
     {
@@ -106,22 +78,31 @@ export const sommerfreizeitChild: CollectionConfig = {
       },
     },
     {
-      name: 'pretixOrderCode',
-      label: 'Pretix Bestellcode',
-      type: 'text',
-      index: true,
+      name: 'age',
+      label: 'Alter',
+      type: 'number',
       admin: {
         position: 'sidebar',
         readOnly: true,
+        description: 'Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.',
       },
-    },
-    {
-      name: 'pretixPositionId',
-      label: 'Pretix Position ID',
-      type: 'text',
-      index: true,
-      admin: {
-        hidden: true,
+      hooks: {
+        beforeChange: [
+          async (args: any) => {
+            const data = args.data
+            if (!data?.dateOfBirth) return data
+
+            const birthDate = new Date(data.dateOfBirth)
+            const today = new Date()
+            let age = today.getFullYear() - birthDate.getFullYear()
+            const m = today.getMonth() - birthDate.getMonth()
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+              age--
+            }
+
+            return { ...data, age }
+          },
+        ],
       },
     },
     {

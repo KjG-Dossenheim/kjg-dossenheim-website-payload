@@ -69,7 +69,6 @@ export const sommerfreizeitUser: CollectionConfig = {
       name: 'emailVerified',
       label: 'E-Mail bestaetigt',
       type: 'checkbox',
-      defaultValue: false,
       admin: {
         hidden: true,
       },
@@ -78,7 +77,6 @@ export const sommerfreizeitUser: CollectionConfig = {
       name: 'image',
       label: 'Profilbild URL',
       type: 'text',
-      required: false,
       admin: {
         hidden: true,
       },
@@ -87,19 +85,16 @@ export const sommerfreizeitUser: CollectionConfig = {
       name: 'phone',
       label: 'Telefonnummer',
       type: 'text',
-      required: false,
     },
     {
       name: 'address',
       label: 'Adresse',
       type: 'text',
-      required: false,
     },
     {
       name: 'postalCode',
       label: 'Postleitzahl',
       type: 'text',
-      required: false,
     },
     {
       name: 'city',
@@ -112,6 +107,7 @@ export const sommerfreizeitUser: CollectionConfig = {
       label: 'Pretix Identifier',
       type: 'text',
       admin: {
+        position: 'sidebar',
         readOnly: true,
       },
     },
