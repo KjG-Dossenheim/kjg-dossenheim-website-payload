@@ -391,7 +391,7 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
     }
 
     console.error('lookupOrderAndStartFlowAction failed unexpectedly', {
-      error: toLoggableError(error),
+      error: error,
       input,
     })
 
