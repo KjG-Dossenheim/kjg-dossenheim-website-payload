@@ -86,24 +86,6 @@ export const sommerfreizeitChild: CollectionConfig = {
         readOnly: true,
         description: 'Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.',
       },
-      hooks: {
-        beforeChange: [
-          async (args: any) => {
-            const data = args.data
-            if (!data?.dateOfBirth) return data
-
-            const birthDate = new Date(data.dateOfBirth)
-            const today = new Date()
-            let age = today.getFullYear() - birthDate.getFullYear()
-            const m = today.getMonth() - birthDate.getMonth()
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-              age--
-            }
-
-            return { ...data, age }
-          },
-        ],
-      },
     },
     {
       name: 'gender',

@@ -265,6 +265,7 @@ export default buildConfig({
       importPretixOrdersJob,
       syncPretixStatusJob,
     ],
+    workflows: [],
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {
         defaultJobsCollection.admin = {}
@@ -350,6 +351,7 @@ export default buildConfig({
                   html: `<p>Hallo,</p><p>klicke auf den folgenden Link, um dich bei der Sommerfreizeit anzumelden:</p><p><a href="${url}">Jetzt anmelden</a></p><p>Falls du den Login nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
                   text: `Hallo,\n\nverwende diesen Link fuer deine Anmeldung bei der Sommerfreizeit:\n${url}\n\nFalls du den Login nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
                 })
+                payload.logger.info(`Magic Link für ${email} gesendet.`)
               },
             }),
             emailOTP({
@@ -362,6 +364,7 @@ export default buildConfig({
                     html: `<p>Hallo,</p><p>dein Bestätigungscode ist: <strong>${otp}</strong></p><p>Dieser Code ist 15 Minuten gültig.</p><p>Falls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
                     text: `Hallo,\n\ndein Bestätigungscode ist: ${otp}\n\nDieser Code ist 15 Minuten gültig.\n\nFalls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
                   })
+                  payload.logger.info(`Verification OTP für ${email} gesendet.`)
                 } else if (type === "email-verification") {
                   // Send the OTP for email verification
                   await payload.sendEmail({
@@ -370,6 +373,7 @@ export default buildConfig({
                     html: `<p>Hallo,</p><p>dein Bestätigungscode ist: <strong>${otp}</strong></p><p>Dieser Code ist 15 Minuten gültig.</p><p>Falls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
                     text: `Hallo,\n\ndein Bestätigungscode ist: ${otp}\n\nDieser Code ist 15 Minuten gültig.\n\nFalls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
                   })
+                  payload.logger.info(`Email verification OTP für ${email} gesendet.`)
                 } else {
                   // Send the OTP for password reset
                   await payload.sendEmail({
@@ -378,6 +382,7 @@ export default buildConfig({
                     html: `<p>Hallo,</p><p>dein Bestätigungscode ist: <strong>${otp}</strong></p><p>Dieser Code ist 15 Minuten gültig.</p><p>Falls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.</p>`,
                     text: `Hallo,\n\ndein Bestätigungscode ist: ${otp}\n\nDieser Code ist 15 Minuten gültig.\n\nFalls du die Anmeldung nicht angefordert hast, kannst du diese E-Mail ignorieren.`,
                   })
+                  payload.logger.info(`Password reset OTP für ${email} gesendet.`)
                 }
               },
             }),

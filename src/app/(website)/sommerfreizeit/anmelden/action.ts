@@ -390,6 +390,11 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
       }
     }
 
+    console.error('lookupOrderAndStartFlowAction failed unexpectedly', {
+      error: toLoggableError(error),
+      input,
+    })
+
     return {
       success: false,
       message: 'Bestellung konnte nicht abgerufen werden. Bitte versuche es erneut.',
@@ -408,7 +413,8 @@ export async function getOrderFlowView(input: { orderCode: string }): Promise<Or
 
   try {
     flow = await resolveOrderFlowFromPretix(parsedInput.data.orderCode)
-  } catch {
+  } catch (error) {
+    console.error('Failed to resolve order flow in getOrderFlowView', { error: error, orderCode: parsedInput.data.orderCode })
     return null
   }
 
@@ -454,7 +460,13 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
 
     try {
       flow = await resolveOrderFlowFromPretix(parsedInput.data.orderCode)
-    } catch {
+    } catch (error) {
+
+      console.error('Failed to resolve order flow in completeOrderCheckAction', {
+        error: error,
+        orderCode: parsedInput.data.orderCode,
+      })
+
       return {
         success: false,
         message: 'Die Bestellung konnte nicht mehr geladen werden. Bitte starte die Anmeldung erneut.',
@@ -579,6 +591,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
         },
         depth: 0,
       })
+      payload.logger.info(`Kind ${child.firstName} ${child.lastName} in Payload angelegt.`)
 
       await payload.create({
         collection: 'sommerfreizeitAnmeldung',
@@ -604,7 +617,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
         depth: 0,
       })
     }
-    console.log(`Bestellung ${flow.orderCode} mit ${parsedInput.data.children.length} Kindern in Payload gespeichert.`)
+    payload.logger.info(`Bestellung ${flow.orderCode} mit ${parsedInput.data.children.length} Kindern in Payload gespeichert.`)
 
     revalidatePath('/sommerfreizeit/account')
     revalidatePath('/sommerfreizeit/anmeldung')
@@ -613,7 +626,13 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       success: true,
       message: 'Deine Anmeldung wurde erfolgreich abgeschlossen.',
     }
-  } catch {
+  } catch (error) {
+
+    console.error('completeOrderCheckAction failed unexpectedly', {
+      error: error,
+      input,
+    })
+
     return {
       success: false,
       message: 'Beim Abschluss ist ein Fehler aufgetreten. Bitte versuche es erneut.',

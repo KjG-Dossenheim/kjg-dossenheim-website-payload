@@ -67,7 +67,6 @@ const pretixOrderSchema = z
     cancellation_date: z.string().nullable().optional(),
     plugin_data: z.record(z.string(), z.unknown()).optional(),
   })
-  .passthrough()
 
 const pretixOrderListSchema = z
   .object({
@@ -76,7 +75,6 @@ const pretixOrderListSchema = z
     previous: z.string().nullable().optional(),
     results: z.array(pretixOrderSchema),
   })
-  .passthrough()
 
 type ImportPretixOrdersInput = {
   maxPages?: number
