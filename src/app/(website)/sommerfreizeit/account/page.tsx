@@ -40,20 +40,6 @@ export default async function KontoPage() {
             equals: user.id,
           },
         },
-        {
-          or: [
-            {
-              archived: {
-                equals: false,
-              },
-            },
-            {
-              archived: {
-                exists: false,
-              },
-            },
-          ],
-        },
       ],
     },
     sort: '-createdAt',

@@ -69,12 +69,13 @@ export interface Config {
   blocks: {};
   collections: {
     jahresplan: Jahresplan;
-    sommerfreizeitUsers: SommerfreizeitUser;
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldung;
-    sommerfreizeitFeedback: SommerfreizeitFeedback;
     sommerfreizeitChild: SommerfreizeitChild;
+    sommerfreizeitRooms: SommerfreizeitRoom;
     sommerfreizeitEvents: SommerfreizeitEvent;
+    sommerfreizeitUsers: SommerfreizeitUser;
     sommerfreizeitOrders: SommerfreizeitOrder;
+    sommerfreizeitFeedback: SommerfreizeitFeedback;
     blogPosts: BlogPost;
     blogCategory: BlogCategory;
     team: Team;
@@ -99,11 +100,11 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    sommerfreizeitUsers: {
-      children: 'sommerfreizeitChild';
-    };
     sommerfreizeitChild: {
       anmeldungen: 'sommerfreizeitAnmeldung';
+    };
+    sommerfreizeitUsers: {
+      children: 'sommerfreizeitChild';
     };
     blogCategory: {
       relatedPosts: 'blogPosts';
@@ -114,12 +115,13 @@ export interface Config {
   };
   collectionsSelect: {
     jahresplan: JahresplanSelect<false> | JahresplanSelect<true>;
-    sommerfreizeitUsers: SommerfreizeitUsersSelect<false> | SommerfreizeitUsersSelect<true>;
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldungSelect<false> | SommerfreizeitAnmeldungSelect<true>;
-    sommerfreizeitFeedback: SommerfreizeitFeedbackSelect<false> | SommerfreizeitFeedbackSelect<true>;
     sommerfreizeitChild: SommerfreizeitChildSelect<false> | SommerfreizeitChildSelect<true>;
+    sommerfreizeitRooms: SommerfreizeitRoomsSelect<false> | SommerfreizeitRoomsSelect<true>;
     sommerfreizeitEvents: SommerfreizeitEventsSelect<false> | SommerfreizeitEventsSelect<true>;
+    sommerfreizeitUsers: SommerfreizeitUsersSelect<false> | SommerfreizeitUsersSelect<true>;
     sommerfreizeitOrders: SommerfreizeitOrdersSelect<false> | SommerfreizeitOrdersSelect<true>;
+    sommerfreizeitFeedback: SommerfreizeitFeedbackSelect<false> | SommerfreizeitFeedbackSelect<true>;
     blogPosts: BlogPostsSelect<false> | BlogPostsSelect<true>;
     blogCategory: BlogCategorySelect<false> | BlogCategorySelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
@@ -160,8 +162,8 @@ export interface Config {
     rechtliches: Rechtlich;
     knallbonbon: Knallbonbon;
     knallbonbonSettings: KnallbonbonSetting;
-    sommerfreizeitLandingPage: SommerfreizeitLandingPage;
     sommerfreizeitPackliste: SommerfreizeitPackliste;
+    sommerfreizeitLandingPage: SommerfreizeitLandingPage;
     sommerfreizeitSettings: SommerfreizeitSetting;
   };
   globalsSelect: {
@@ -177,8 +179,8 @@ export interface Config {
     rechtliches: RechtlichesSelect<false> | RechtlichesSelect<true>;
     knallbonbon: KnallbonbonSelect<false> | KnallbonbonSelect<true>;
     knallbonbonSettings: KnallbonbonSettingsSelect<false> | KnallbonbonSettingsSelect<true>;
-    sommerfreizeitLandingPage: SommerfreizeitLandingPageSelect<false> | SommerfreizeitLandingPageSelect<true>;
     sommerfreizeitPackliste: SommerfreizeitPacklisteSelect<false> | SommerfreizeitPacklisteSelect<true>;
+    sommerfreizeitLandingPage: SommerfreizeitLandingPageSelect<false> | SommerfreizeitLandingPageSelect<true>;
     sommerfreizeitSettings: SommerfreizeitSettingsSelect<false> | SommerfreizeitSettingsSelect<true>;
   };
   locale: null;
@@ -193,6 +195,7 @@ export interface Config {
       sendConfirmationEmails: SendConfirmationEmailsJob;
       importPretixCustomers: ImportPretixCustomersJob;
       importPretixOrders: ImportPretixOrdersJob;
+      syncPretixStatus: SyncPretixStatusJob;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -255,60 +258,17 @@ export interface Jahresplan {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitUsers".
- */
-export interface SommerfreizeitUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  name: string;
-  emailVerified?: boolean | null;
-  image?: string | null;
-  phone?: string | null;
-  address?: string | null;
-  postalCode?: string | null;
-  city?: string | null;
-  pretix_Identifier?: string | null;
-  children?: {
-    docs?: (string | SommerfreizeitChild)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-  collection: 'sommerfreizeitUsers';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitChild".
- */
-export interface SommerfreizeitChild {
-  id: string;
-  parent: string | SommerfreizeitUser;
-  archived?: boolean | null;
-  anmeldungen?: {
-    docs?: (string | SommerfreizeitAnmeldung)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  firstName: string;
-  lastName: string;
-  dateOfBirth?: string | null;
-  pretixOrderCode?: string | null;
-  pretixPositionId?: string | null;
-  gender?: ('male' | 'female' | 'diverse') | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitAnmeldung".
  */
 export interface SommerfreizeitAnmeldung {
   id: string;
+  /**
+   * Der Vorname des Kindes
+   */
   firstName?: string | null;
+  /**
+   * Der Nachname des Kindes
+   */
   lastName?: string | null;
   /**
    * Das Geburtsdatum des Kindes
@@ -355,19 +315,82 @@ export interface SommerfreizeitAnmeldung {
     | null;
   arzt?: string | null;
   arztTelefon?: string | null;
-  schwimmer?: boolean | null;
-  bemerkungen?: string | null;
   /**
-   * Nur für interne Zwecke, nicht für die Teilnehmer sichtbar
+   * Ist das Kind ein sicherer Schwimmer?
    */
-  interneBemerkungen?: string | null;
+  schwimmer?: boolean | null;
+  /**
+   * Liste von Zimmerwüschen, geordnet nach Priorität.
+   */
+  zimmerwunsch?:
+    | {
+        firstName: string;
+        lastName?: string | null;
+        childRelation?: (string | null) | SommerfreizeitAnmeldung;
+        id?: string | null;
+      }[]
+    | null;
+  bemerkungen?: string | null;
   account: string | SommerfreizeitUser;
   event: string | SommerfreizeitEvent;
   child: string | SommerfreizeitChild;
   pretixOrderCode?: string | null;
   pretixPositionId?: string | null;
+  pretixStatus?: string | null;
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitUsers".
+ */
+export interface SommerfreizeitUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  name: string;
+  emailVerified?: boolean | null;
+  image?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
+  pretix_Identifier?: string | null;
+  children?: {
+    docs?: (string | SommerfreizeitChild)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+  collection: 'sommerfreizeitUsers';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitChild".
+ */
+export interface SommerfreizeitChild {
+  id: string;
+  parent: string | SommerfreizeitUser;
+  anmeldungen?: {
+    docs?: (string | SommerfreizeitAnmeldung)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: string | null;
+  /**
+   * Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.
+   */
+  age?: number | null;
+  gender?: ('male' | 'female' | 'diverse') | null;
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
   _status?: ('draft' | 'published') | null;
 }
 /**
@@ -412,6 +435,34 @@ export interface SommerfreizeitEvent {
         name: string;
         id?: string | null;
       }[];
+      id?: string | null;
+    }[];
+  };
+  informationen: {
+    eintrag: {
+      title?: string | null;
+      text?: {
+        root: {
+          type: string;
+          children: {
+            type: any;
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+          indent: number;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
+      links?:
+        | {
+            linkText?: string | null;
+            link?: string | null;
+            id?: string | null;
+          }[]
+        | null;
       id?: string | null;
     }[];
   };
@@ -562,13 +613,18 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitFeedback".
+ * via the `definition` "sommerfreizeitRooms".
  */
-export interface SommerfreizeitFeedback {
+export interface SommerfreizeitRoom {
   id: string;
-  age: number;
-  rating: number;
-  comments?: string | null;
+  name: string;
+  beschreibung?: string | null;
+  gender?: ('male' | 'female') | null;
+  /**
+   * Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.
+   */
+  occupants?: (string | SommerfreizeitAnmeldung)[] | null;
+  freizeit: string | SommerfreizeitEvent;
   updatedAt: string;
   createdAt: string;
 }
@@ -607,6 +663,18 @@ export interface SommerfreizeitOrder {
     | number
     | boolean
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFeedback".
+ */
+export interface SommerfreizeitFeedback {
+  id: string;
+  age: number;
+  rating: number;
+  comments?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1249,6 +1317,7 @@ export interface PayloadJob {
           | 'sendConfirmationEmails'
           | 'importPretixCustomers'
           | 'importPretixOrders'
+          | 'syncPretixStatus'
           | 'schedulePublish';
         taskID: string;
         input?:
@@ -1290,6 +1359,7 @@ export interface PayloadJob {
         | 'sendConfirmationEmails'
         | 'importPretixCustomers'
         | 'importPretixOrders'
+        | 'syncPretixStatus'
         | 'schedulePublish'
       )
     | null;
@@ -1311,28 +1381,32 @@ export interface PayloadLockedDocument {
         value: string | Jahresplan;
       } | null)
     | ({
-        relationTo: 'sommerfreizeitUsers';
-        value: string | SommerfreizeitUser;
-      } | null)
-    | ({
         relationTo: 'sommerfreizeitAnmeldung';
         value: string | SommerfreizeitAnmeldung;
-      } | null)
-    | ({
-        relationTo: 'sommerfreizeitFeedback';
-        value: string | SommerfreizeitFeedback;
       } | null)
     | ({
         relationTo: 'sommerfreizeitChild';
         value: string | SommerfreizeitChild;
       } | null)
     | ({
+        relationTo: 'sommerfreizeitRooms';
+        value: string | SommerfreizeitRoom;
+      } | null)
+    | ({
         relationTo: 'sommerfreizeitEvents';
         value: string | SommerfreizeitEvent;
       } | null)
     | ({
+        relationTo: 'sommerfreizeitUsers';
+        value: string | SommerfreizeitUser;
+      } | null)
+    | ({
         relationTo: 'sommerfreizeitOrders';
         value: string | SommerfreizeitOrder;
+      } | null)
+    | ({
+        relationTo: 'sommerfreizeitFeedback';
+        value: string | SommerfreizeitFeedback;
       } | null)
     | ({
         relationTo: 'blogPosts';
@@ -1470,26 +1544,6 @@ export interface JahresplanSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitUsers_select".
- */
-export interface SommerfreizeitUsersSelect<T extends boolean = true> {
-  firstName?: T;
-  lastName?: T;
-  email?: T;
-  name?: T;
-  emailVerified?: T;
-  image?: T;
-  phone?: T;
-  address?: T;
-  postalCode?: T;
-  city?: T;
-  pretix_Identifier?: T;
-  children?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitAnmeldung_select".
  */
 export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
@@ -1520,27 +1574,25 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   arzt?: T;
   arztTelefon?: T;
   schwimmer?: T;
+  zimmerwunsch?:
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        childRelation?: T;
+        id?: T;
+      };
   bemerkungen?: T;
-  interneBemerkungen?: T;
   account?: T;
   event?: T;
   child?: T;
   pretixOrderCode?: T;
   pretixPositionId?: T;
+  pretixStatus?: T;
   updatedAt?: T;
   createdAt?: T;
+  deletedAt?: T;
   _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitFeedback_select".
- */
-export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
-  age?: T;
-  rating?: T;
-  comments?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1548,17 +1600,29 @@ export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
  */
 export interface SommerfreizeitChildSelect<T extends boolean = true> {
   parent?: T;
-  archived?: T;
   anmeldungen?: T;
   firstName?: T;
   lastName?: T;
   dateOfBirth?: T;
-  pretixOrderCode?: T;
-  pretixPositionId?: T;
+  age?: T;
   gender?: T;
   updatedAt?: T;
   createdAt?: T;
+  deletedAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitRooms_select".
+ */
+export interface SommerfreizeitRoomsSelect<T extends boolean = true> {
+  name?: T;
+  beschreibung?: T;
+  gender?: T;
+  occupants?: T;
+  freizeit?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1602,6 +1666,44 @@ export interface SommerfreizeitEventsSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  informationen?:
+    | T
+    | {
+        eintrag?:
+          | T
+          | {
+              title?: T;
+              text?: T;
+              links?:
+                | T
+                | {
+                    linkText?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitUsers_select".
+ */
+export interface SommerfreizeitUsersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  email?: T;
+  name?: T;
+  emailVerified?: T;
+  image?: T;
+  phone?: T;
+  address?: T;
+  postalCode?: T;
+  city?: T;
+  pretix_Identifier?: T;
+  children?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1623,6 +1725,17 @@ export interface SommerfreizeitOrdersSelect<T extends boolean = true> {
   positions?: T;
   lastImportedAt?: T;
   pretixPayload?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFeedback_select".
+ */
+export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
+  age?: T;
+  rating?: T;
+  comments?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2695,17 +2808,6 @@ export interface KnallbonbonSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitLandingPage".
- */
-export interface SommerfreizeitLandingPage {
-  id: string;
-  freizeit: string | SommerfreizeitEvent;
-  description?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitPackliste".
  */
 export interface SommerfreizeitPackliste {
@@ -2725,6 +2827,17 @@ export interface SommerfreizeitPackliste {
     };
     [k: string]: unknown;
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitLandingPage".
+ */
+export interface SommerfreizeitLandingPage {
+  id: string;
+  freizeit: string | SommerfreizeitEvent;
+  description?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3073,21 +3186,21 @@ export interface KnallbonbonSettingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitLandingPage_select".
+ * via the `definition` "sommerfreizeitPackliste_select".
  */
-export interface SommerfreizeitLandingPageSelect<T extends boolean = true> {
-  freizeit?: T;
-  description?: T;
+export interface SommerfreizeitPacklisteSelect<T extends boolean = true> {
+  text?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitPackliste_select".
+ * via the `definition` "sommerfreizeitLandingPage_select".
  */
-export interface SommerfreizeitPacklisteSelect<T extends boolean = true> {
-  text?: T;
+export interface SommerfreizeitLandingPageSelect<T extends boolean = true> {
+  freizeit?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -3183,6 +3296,18 @@ export interface ImportPretixOrdersJob {
     pretixEventId?: string | null;
     statuses?: string | null;
     updateExisting?: boolean | null;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SyncPretixStatusJob".
+ */
+export interface SyncPretixStatusJob {
+  input: {
+    maxPages?: number | null;
+    pretixEventId?: string | null;
+    orderCode?: string | null;
   };
   output?: unknown;
 }

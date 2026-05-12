@@ -1,6 +1,6 @@
-import { default as default_30ae88ec4492f6d7e2995797933179a8 } from '@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers'
+import { default as default_9b86e98e9cb88f266cc5610ba84f27f2 } from '@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/OpenPretixOrder'
+import { default as default_1d461d66f258470c25e850264e455a47 } from '@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/ApprovePretixOrder'
 import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/components/admin/rowLable/ArrayRowLabelName.tsx'
-import { default as default_e56f0b1dfe64e89beef03cc281a6280e } from '@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -26,6 +26,9 @@ import { UnorderedListFeatureClient as UnorderedListFeatureClient_e70f5e05f09f93
 import { OrderedListFeatureClient as OrderedListFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { default as default_3114f6896e65c6486d201259c98e238e } from 'src/components/admin/rowLable/ArrayRowLabel.tsx'
+import { default as default_30ae88ec4492f6d7e2995797933179a8 } from '@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers'
+import { default as default_e56f0b1dfe64e89beef03cc281a6280e } from '@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders'
 import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'
 import { default as default_98a00ed7a1da5fc44dc587f84bf0657c } from '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'
@@ -35,7 +38,6 @@ import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
-import { default as default_3114f6896e65c6486d201259c98e238e } from 'src/components/admin/rowLable/ArrayRowLabel.tsx'
 import { default as default_a0cc27b717f503b668869b486d99e1eb } from '@/components/admin/settingsMenu/MySettingsMenu'
 import { default as default_a8ed57560afaff4535f43ca83a9fecbd } from '@/graphics/Icon'
 import { default as default_d3e265f969641a4ccf3d5a195904e268 } from '@/graphics/Logo'
@@ -50,9 +52,9 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 /** @type import('payload').ImportMap */
 export const importMap = {
-  "@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers#default": default_30ae88ec4492f6d7e2995797933179a8,
+  "@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/OpenPretixOrder#default": default_9b86e98e9cb88f266cc5610ba84f27f2,
+  "@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/ApprovePretixOrder#default": default_1d461d66f258470c25e850264e455a47,
   "src/components/admin/rowLable/ArrayRowLabelName.tsx#default": default_5cb5d3602d1dd126d163c6a2e3af8809,
-  "@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders#default": default_e56f0b1dfe64e89beef03cc281a6280e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -78,6 +80,9 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#OrderedListFeatureClient": OrderedListFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "src/components/admin/rowLable/ArrayRowLabel.tsx#default": default_3114f6896e65c6486d201259c98e238e,
+  "@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers#default": default_30ae88ec4492f6d7e2995797933179a8,
+  "@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders#default": default_e56f0b1dfe64e89beef03cc281a6280e,
   "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail#default": default_ecfd65651f73f4e70148c6a3f45da9ef,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist#default": default_98a00ed7a1da5fc44dc587f84bf0657c,
@@ -87,7 +92,6 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
-  "src/components/admin/rowLable/ArrayRowLabel.tsx#default": default_3114f6896e65c6486d201259c98e238e,
   "@/components/admin/settingsMenu/MySettingsMenu#default": default_a0cc27b717f503b668869b486d99e1eb,
   "@/graphics/Icon#default": default_a8ed57560afaff4535f43ca83a9fecbd,
   "@/graphics/Logo#default": default_d3e265f969641a4ccf3d5a195904e268,

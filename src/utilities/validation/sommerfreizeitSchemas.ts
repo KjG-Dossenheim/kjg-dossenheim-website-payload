@@ -1,11 +1,9 @@
 import { z } from 'zod'
 
+const orderCode = z.string().trim().min(5, 'Bitte gib einen gueltigen Bestellcode ein.').max(5, 'Bitte gib einen gueltigen Bestellcode ein.')
+
 export const lookupOrderSchema = z.object({
-  orderCode: z
-    .string()
-    .trim()
-    .min(3, 'Bitte gib einen gueltigen Bestellcode ein.')
-    .max(64, 'Bitte gib einen gueltigen Bestellcode ein.'),
+  orderCode: orderCode
 })
 
 export const childInputSchema = z.object({
@@ -15,17 +13,19 @@ export const childInputSchema = z.object({
   dateOfBirth: z.string().trim().min(1, 'Geburtsdatum ist erforderlich.'),
   gender: z.enum(['male', 'female', 'diverse'], {
     error: 'Geschlecht ist erforderlich.',
-  }),
-  class: z.enum(['3', '4', '5', '6', '7', '8', '9', '10']).optional(),
+  }).nullish(),
+  class: z.enum(['3', '4', '5', '6', '7', '8', '9', '10'], {
+    error: 'Klasse ist erforderlich.',
+  }).nullish(),
   krankenversicherung: z.string().trim().min(1, 'Krankenversicherung ist erforderlich.'),
   krankenversicherungArt: z.enum(['gesetzlich', 'privat'], {
     error: 'Art der Krankenversicherung ist erforderlich.',
   }),
   krankenversicherungNummer: z.string().trim().min(1, 'Versichertennummer ist erforderlich.'),
-  foodAllergies: z.string().trim().min(1, 'Lebensmittelallergien sind erforderlich.'),
-  otherAllergies: z.string().trim().min(1, 'Sonstige Allergien sind erforderlich.'),
-  medicalConditions: z.string().trim().min(1, 'Vorerkrankungen sind erforderlich.'),
-  medikamente: z.string().trim().min(1, 'Medikamente sind erforderlich.'),
+  foodAllergies: z.string().trim(),
+  otherAllergies: z.string().trim(),
+  medicalConditions: z.string().trim(),
+  medikamente: z.string().trim(),
   arzt: z.string().trim().min(1, 'Arzt ist erforderlich.'),
   arztTelefon: z.string().trim().min(1, 'Arzt-Telefon ist erforderlich.'),
   schwimmer: z.boolean(),
@@ -33,11 +33,7 @@ export const childInputSchema = z.object({
 })
 
 export const completeOrderSchema = z.object({
-  orderCode: z
-    .string()
-    .trim()
-    .min(3, 'Bitte gib einen gueltigen Bestellcode ein.')
-    .max(64, 'Bitte gib einen gueltigen Bestellcode ein.'),
+  orderCode: orderCode,
   phone: z.string().trim().min(1, 'Telefonnummer ist erforderlich.'),
   address: z.string().trim().min(1, 'Adresse ist erforderlich.'),
   postalCode: z.string().trim().min(1, 'Postleitzahl ist erforderlich.'),

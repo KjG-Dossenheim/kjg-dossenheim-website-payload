@@ -290,12 +290,10 @@ export async function deleteChildAction(childId: string): Promise<DeleteChildRes
       }
     }
 
-    await payload.update({
+    await payload.delete({
       collection: 'sommerfreizeitChild',
       id: child.id,
-      data: {
-        archived: true,
-      },
+      trash: true,
     })
 
     revalidatePath('/sommerfreizeit/account')

@@ -23,14 +23,14 @@ type ChildFormData = {
   firstName: string
   lastName: string
   dateOfBirth: string
-  gender: SommerfreizeitChild['gender']
+  gender: Exclude<SommerfreizeitChild['gender'], null>
 }
 
 const initialFormState: ChildFormData = {
   firstName: '',
   lastName: '',
   dateOfBirth: '',
-  gender: 'male',
+  gender: undefined,
 }
 
 export function ChildCreateForm() {
@@ -115,9 +115,11 @@ export function ChildCreateForm() {
               <Label htmlFor="gender">Geschlecht</Label>
               <Select
                 value={formData.gender}
-                onValueChange={(value: 'male' | 'female' | 'diverse' | null) =>
-                  value && setFormData((prev) => ({ ...prev, gender: value }))
-                }
+                onValueChange={(value: string) => {
+                  if (value === 'male' || value === 'female' || value === 'diverse') {
+                    setFormData((prev) => ({ ...prev, gender: value }))
+                  }
+                }}
                 disabled={isCreatingChild}
               >
                 <SelectTrigger id="gender">

@@ -72,6 +72,7 @@ import { Feedback } from './collections/Feedback'
 import { sommerfreizeitChild } from './collections/sommerfreizeit/sommerfreizeitChild'
 import { sommerfreizeitEvents } from './collections/sommerfreizeit/sommerfreizeitEvents'
 import { sommerfreizeitOrders } from './collections/sommerfreizeit/sommerfreizeitOrders'
+import { sommerfreizeitRooms } from './collections/sommerfreizeit/sommerfreizeitRooms'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -99,6 +100,7 @@ import { sendRegistrationEmailsJob } from './jobs/sendRegistrationEmails'
 import { sendConfirmationEmailsJob } from './jobs/sendConfirmationEmails'
 import { importPretixCustomersJob } from './jobs/importPretixCustomers'
 import { importPretixOrdersJob } from './jobs/importPretixOrders'
+import { syncPretixStatusJob } from './jobs/syncPretixStatus'
 
 import { betterAuthOptions } from './lib/auth/config'
 
@@ -164,12 +166,13 @@ export default buildConfig({
   },
   collections: [
     Jahresplan,
-    sommerfreizeitUser,
     sommerfreizeitAnmeldung,
-    sommerfreizeitFeedback,
     sommerfreizeitChild,
+    sommerfreizeitRooms,
     sommerfreizeitEvents,
+    sommerfreizeitUser,
     sommerfreizeitOrders,
+    sommerfreizeitFeedback,
     blogPosts,
     blogCategory,
     Team,
@@ -196,8 +199,8 @@ export default buildConfig({
     Rechtliches,
     Knallbonbon,
     knallbonbonSettings,
-    sommerfreizeitLandingPage,
     sommerfreizeitPackliste,
+    sommerfreizeitLandingPage,
     sommerfreizeitSettings,
   ],
   editor: lexicalEditor({
@@ -260,6 +263,7 @@ export default buildConfig({
       sendConfirmationEmailsJob,
       importPretixCustomersJob,
       importPretixOrdersJob,
+      syncPretixStatusJob,
     ],
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {

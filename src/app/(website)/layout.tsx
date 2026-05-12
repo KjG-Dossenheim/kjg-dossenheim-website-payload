@@ -43,13 +43,7 @@ export function generateMetadata(): Metadata {
   }
 }
 
-const getHeaderData = cache(async () => {
-  const payload = await getPayload({ config })
-  return payload.findGlobal({ slug: 'header' })
-})
-
 export default async function layout({ children }: { children: ReactNode }) {
-  const header = await getHeaderData()
   return (
     <html lang="de" className={`${caveat.variable}`}>
       <head>
@@ -67,7 +61,7 @@ export default async function layout({ children }: { children: ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar headerData={header} />
+          <Navbar />
           <main className="relative min-h-svh">{children}</main>
           <Toaster />
           <Toaster id="form" richColors />

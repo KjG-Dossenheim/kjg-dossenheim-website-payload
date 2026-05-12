@@ -27,6 +27,7 @@ type PretixOrder = {
   secret?: string | null
   status?: string | null
   email?: string | null
+  phone?: string | null
   invoice_address?: {
     name?: string | null
     name_parts?: Record<string, unknown> | null
@@ -50,6 +51,10 @@ type OrderFlowView = {
   pretixEvent: string
   pretixOrderID: string
   pretixSecret: string
+  phone: string
+  address: string
+  postalCode: string
+  city: string
   positionCount: number
   invoiceFirstName: string
   invoiceLastName: string
@@ -203,6 +208,10 @@ async function fetchPretixOrder(args: {
 type ResolvedOrderFlow = {
   orderCode: string
   email: string
+  phone: string
+  address: string
+  postalCode: string
+  city: string
   invoiceFirstName: string
   invoiceLastName: string
   organizer: string
@@ -243,11 +252,9 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
     token,
   })
 
-  const orderStatus = (order.status || '').trim().toLowerCase()
-
-  if (orderStatus === 'c' || orderStatus === 'e') {
-    throw new Error('ORDER_NOT_ACTIVE')
-  }
+  /*   if (order.status === 'c' || order.status === 'e') {
+      throw new Error('ORDER_NOT_ACTIVE')
+    } */
 
   const email = normalizeSommerfreizeitEmail(order.email || '')
 
@@ -269,6 +276,7 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
 
   const positions = extractValidPositions(order)
   const invoiceNameParts = readPretixNameParts(order.invoice_address?.name_parts)
+  const invoiceAddress = order.invoice_address as Record<string, unknown> | null | undefined
 
   if (positions.length === 0) {
     throw new Error('ORDER_POSITIONS_MISSING')
@@ -277,6 +285,10 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
   return {
     orderCode: normalizedCode,
     email,
+    phone: toOptionalString(order.phone) ?? '',
+    address: toOptionalString(invoiceAddress?.street) ?? '',
+    postalCode: toOptionalString(invoiceAddress?.zipcode) ?? '',
+    city: toOptionalString(invoiceAddress?.city) ?? '',
     invoiceFirstName: invoiceNameParts.firstName,
     invoiceLastName: invoiceNameParts.lastName,
     organizer,
@@ -353,7 +365,7 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
     if (error instanceof Error && error.message === 'ORDER_NOT_ACTIVE') {
       return {
         success: false,
-        message: 'Diese Bestellung kann nicht mehr abgeschlossen werden.',
+        message: 'Diese Bestellung wurde storniert.',
       }
     }
 
@@ -403,6 +415,10 @@ export async function getOrderFlowView(input: { orderCode: string }): Promise<Or
   return {
     orderCode: flow.orderCode,
     email: flow.email,
+    phone: flow.phone,
+    address: flow.address,
+    postalCode: flow.postalCode,
+    city: flow.city,
     pretixEvent: flow.pretixEvent,
     pretixOrderID: flow.pretixOrderID,
     pretixSecret: flow.pretixSecret,
@@ -485,7 +501,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       if (!allowedPositionIds.has(positionId)) {
         return {
           success: false,
-          message: 'Eine Position aus deiner Eingabe ist ungueltig.',
+          message: 'Eine Position aus deiner Eingabe ist ungültig.',
         }
       }
     }
@@ -559,8 +575,6 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
           lastName: childInput.lastName,
           dateOfBirth: childInput.dateOfBirth,
           gender: childInput.gender,
-          pretixOrderCode: flow.orderCode,
-          pretixPositionId: childInput.positionId,
           _status: 'published',
         },
         depth: 0,
@@ -584,7 +598,6 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
           account: user.id,
           event: event.id,
           child: child.id,
-          pretixOrderCode: flow.orderCode,
           pretixPositionId: childInput.positionId,
           _status: 'published',
         },

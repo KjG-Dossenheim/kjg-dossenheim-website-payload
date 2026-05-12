@@ -1,25 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { syncChildDataBeforeChange } from './hooks/syncChildData'
+import { populateZimmerwunschChildRelation } from './hooks/populateZimmerwunschChildRelation'
 
-const canManageOwnRegistration: NonNullable<CollectionConfig['access']>['read'] = ({ req: { user } }) => {
-  if (!user) {
-    return false
-  }
-
-  if (user.collection === 'users') {
-    return true
-  }
-
-  if (user.collection === 'sommerfreizeitUsers') {
-    return {
-      account: {
-        equals: user.id,
-      },
-    }
-  }
-
-  return false
-}
 
 export const sommerfreizeitAnmeldung: CollectionConfig = {
   slug: 'sommerfreizeitAnmeldung',
@@ -30,20 +12,28 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
   versions: {
     drafts: true,
   },
+  trash: true,
   hooks: {
-    beforeChange: [syncChildDataBeforeChange],
+    beforeChange: [syncChildDataBeforeChange, populateZimmerwunschChildRelation],
   },
   access: {
     create: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
-    read: canManageOwnRegistration,
-    update: canManageOwnRegistration,
-    delete: canManageOwnRegistration,
+    read: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
+    update: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
+    delete: ({ req: { user } }) => !!user && ['users'].includes(user.collection),
   },
   admin: {
     group: 'Sommerfreizeit',
-    useAsTitle: 'child',
+    useAsTitle: 'firstName',
     defaultColumns: ['firstName', 'lastName', 'event', 'account'],
     groupBy: true,
+    components: {
+      edit: {
+        beforeDocumentControls: [
+          '@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/OpenPretixOrder',
+          '@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/ApprovePretixOrder'],
+      },
+    },
   },
   fields: [
     {
@@ -51,6 +41,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       label: 'Vorname',
       type: 'text',
       admin: {
+        description: 'Der Vorname des Kindes',
         readOnly: true,
       },
       hooks: {
@@ -74,6 +65,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       label: 'Nachname',
       type: 'text',
       admin: {
+        description: 'Der Nachname des Kindes',
         readOnly: true,
       },
       hooks: {
@@ -115,12 +107,16 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
           },
         ],
       },
+
     },
     {
       name: 'class',
       label: 'Klasse / Jahrgangsstufe',
       type: 'select',
-      required: false,
+      admin: {
+        description: 'Z. B. 5. Klasse oder 10. Klasse',
+        readOnly: true,
+      },
       options: [
         { label: '3. Klasse', value: '3' },
         { label: '4. Klasse', value: '4' },
@@ -131,16 +127,11 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         { label: '9. Klasse', value: '9' },
         { label: '10. Klasse', value: '10' },
       ],
-      admin: {
-        description: 'Z. B. 5. Klasse oder 10. Klasse',
-        readOnly: false,
-      },
     },
     {
       name: 'krankenversicherung',
       label: 'Krankenversicherung',
       type: 'text',
-      required: false,
       admin: {
         description: 'Name der Krankenversicherung, z. B. AOK oder TK',
       },
@@ -149,7 +140,6 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'krankenversicherungArt',
       label: 'Art der Krankenversicherung',
       type: 'select',
-      required: false,
       options: [
         { label: 'Gesetzlich', value: 'gesetzlich' },
         { label: 'Privat', value: 'privat' },
@@ -190,6 +180,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'medikamenteArray',
       label: 'Medikamente (Liste)',
       type: 'array',
+      admin: {
+        description: 'Liste der Medikamente, die das Kind regelmäßig einnimmt, inklusive Dosierung und Einnahmehinweise',
+      },
       fields: [
         {
           name: 'name',
@@ -204,10 +197,6 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
           required: true,
         },
       ],
-      admin: {
-        readOnly: false,
-        description: 'Liste der Medikamente, die das Kind regelmäßig einnimmt, inklusive Dosierung und Einnahmehinweise',
-      },
     },
     {
       name: 'impfungen',
@@ -238,19 +227,44 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'schwimmer',
       label: 'Schwimmer',
       type: 'checkbox',
+      admin: {
+        description: 'Ist das Kind ein sicherer Schwimmer?',
+      },
+    },
+    {
+      name: 'zimmerwunsch',
+      label: 'Zimmerwunsch',
+      type: 'array',
+      fields: [
+        {
+          name: 'firstName',
+          label: 'Vorname',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'lastName',
+          label: 'Nachname',
+          type: 'text'
+        },
+        {
+          name: 'childRelation',
+          label: 'Verknüpftes Kind',
+          type: 'relationship',
+          relationTo: 'sommerfreizeitAnmeldung',
+          admin: {
+            hidden: true,
+          },
+        }
+      ],
+      admin: {
+        description: 'Liste von Zimmerwüschen, geordnet nach Priorität.',
+      },
     },
     {
       name: 'bemerkungen',
       label: 'Weitere Hinweise',
       type: 'text',
-    },
-    {
-      name: 'interneBemerkungen',
-      label: 'Interne Bemerkungen',
-      type: 'text',
-      admin: {
-        description: 'Nur für interne Zwecke, nicht für die Teilnehmer sichtbar',
-      },
     },
     {
       name: 'account',
@@ -278,6 +292,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         position: 'sidebar',
         readOnly: true,
       },
+      access: {
+        update: () => false,
+      },
     },
     {
       name: 'child',
@@ -288,6 +305,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         position: 'sidebar',
         readOnly: true,
+      },
+      access: {
+        update: () => false,
       },
     },
     {
@@ -308,6 +328,15 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         position: 'sidebar',
         hidden: true,
+      },
+    },
+    {
+      name: 'pretixStatus',
+      label: 'Pretix Status',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
       },
     },
   ],

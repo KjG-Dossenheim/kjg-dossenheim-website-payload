@@ -1,8 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import type { Media } from '@/payload-types'
 
 interface AccommodationSectionProps {
@@ -17,34 +17,30 @@ interface AccommodationSectionProps {
 export default function AccommodationSection({ unterkunft }: AccommodationSectionProps) {
   return (
     <section className="mx-auto max-w-(--breakpoint-md) p-6">
-      <Card className="flex h-full w-full flex-col md:flex-row">
-        <div className="flex flex-1 flex-col">
-          <CardHeader>
-            <CardTitle>Unterkunft</CardTitle>
-          </CardHeader>
-          <CardContent className="grow">
-            <p>{unterkunft.beschreibung}</p>
-          </CardContent>
-          <CardFooter>
-            <Button asChild>
-              <Link href={unterkunft.website} target="_blank">
-                {unterkunft.name}
-              </Link>
-            </Button>
-          </CardFooter>
-        </div>
-        <div className="relative h-64 md:h-auto md:w-1/2">
-          {unterkunft.bild && typeof unterkunft.bild !== 'string' && (
+      <Card className="mx-auto w-full max-w-sm pt-0">
+        {unterkunft.bild && typeof unterkunft.bild !== 'string' && (
+          <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
             <Image
               src={unterkunft.bild.url || ''}
               alt={unterkunft.bild.alt || 'Unterkunft Bild'}
-              className="rounded-b-lg object-cover sm:rounded-l-none sm:rounded-r-lg"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               fill
               priority
             />
-          )}
-        </div>
+          </div>
+        )}
+        <CardHeader>
+          <CardTitle>{unterkunft.name}</CardTitle>
+          <CardDescription>{unterkunft.beschreibung}</CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <Button asChild className="w-full">
+            <Link href={unterkunft.website} target="_blank">
+              Weitere Informationen
+            </Link>
+          </Button>
+        </CardFooter>
       </Card>
     </section>
   )

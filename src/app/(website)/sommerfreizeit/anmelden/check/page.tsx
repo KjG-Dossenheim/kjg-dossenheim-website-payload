@@ -65,10 +65,10 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
 
       <CheckForm
         accountDefaults={{
-          phone: user.phone ?? '',
-          address: user.address ?? '',
-          postalCode: user.postalCode ?? '',
-          city: user.city ?? '',
+          phone: flow.phone,
+          address: flow.address,
+          postalCode: flow.postalCode,
+          city: flow.city,
         }}
         orderCode={flow.orderCode}
         pretixEvent={flow.pretixEvent}

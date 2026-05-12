@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -32,7 +33,7 @@ export default function PricingSection({ pricing, signupStartDate }: PricingSect
   const signupOpen = !signupStartDate || new Date() >= new Date(signupStartDate)
 
   return (
-    <section className="mx-auto space-y-6 p-6">
+    <section className="mx-auto p-6">
       <div className="text-center">
         <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Teilnehmerbeitrag</h2>
         <p className="text-muted-foreground text-lg">Wähle das passende Paket für dich aus</p>
@@ -99,14 +100,14 @@ export default function PricingSection({ pricing, signupStartDate }: PricingSect
         <Card>
           <CardHeader>
             <CardTitle>Schon gebucht?</CardTitle>
+            <CardAction>
+              <Button asChild variant="outline">
+                <Link href="/sommerfreizeit/anmelden/" className="space-x-2">
+                  Anmeldung abschließen <ArrowRight className="ml-1" />
+                </Link>
+              </Button>
+            </CardAction>
           </CardHeader>
-          <CardFooter>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/sommerfreizeit/anmelden/" className="space-x-2">
-                Anmeldung abschließen <ArrowRight className="ml-1" />
-              </Link>
-            </Button>
-          </CardFooter>
         </Card>
       </div>
     </section>

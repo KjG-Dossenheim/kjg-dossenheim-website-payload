@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PhoneInput } from '@/components/ui/phone-input'
 
 type AccountFormData = {
   email: string
@@ -77,6 +78,14 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
     }))
   }
 
+  // PhoneInput supplies the new value (E164Number/string) instead of an event
+  const handlePhoneChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      phone: value,
+    }))
+  }
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setAccountStatus(null)
@@ -124,7 +133,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  disabled={isSaving}
+                  disabled
                 />
               </div>
               <div className="space-y-2">
@@ -134,17 +143,17 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  disabled={isSaving}
+                  disabled
                 />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="phone">Telefonnummer</Label>
-              <Input
+              <PhoneInput
                 id="phone"
                 value={formData.phone}
-                onChange={handleChange}
+                onChange={handlePhoneChange}
                 disabled={isSaving}
               />
             </div>

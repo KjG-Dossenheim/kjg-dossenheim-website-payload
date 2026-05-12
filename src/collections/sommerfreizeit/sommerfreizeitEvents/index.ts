@@ -207,7 +207,62 @@ export const sommerfreizeitEvents: CollectionConfig = {
               ],
             },
           ],
-        }
+        },
+        {
+          label: 'Informationen',
+          name: 'informationen',
+          fields: [
+            {
+              name: 'eintrag',
+              label: 'Eintrag',
+              labels: {
+                singular: "Eintrag",
+                plural: "Einträge",
+              },
+              type: 'array',
+              required: true,
+              minRows: 1,
+              admin: {
+                components: {
+                  RowLabel: "src/components/admin/rowLable/ArrayRowLabel.tsx",
+                },
+              },
+              fields: [
+                {
+                  name: 'title',
+                  label: 'Titel',
+                  type: 'text',
+                },
+                {
+                  name: 'text',
+                  label: 'Text',
+                  type: 'richText',
+                },
+                {
+                  name: 'links',
+                  label: 'Link',
+                  labels: {
+                    singular: "Link",
+                    plural: "Links",
+                  },
+                  type: 'array',
+                  fields: [
+                    {
+                      name: 'linkText',
+                      label: 'Link Text',
+                      type: 'text',
+                    },
+                    {
+                      name: 'link',
+                      label: 'Link',
+                      type: 'text',
+                    },
+                  ],
+                },
+              ],
+            }
+          ],
+        },
       ],
     }
   ],

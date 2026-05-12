@@ -61,15 +61,16 @@ type ChildFormState = {
   firstName: string
   lastName: string
   dateOfBirth: string
-  gender: '' | SommerfreizeitChild['gender']
-  class: '' | SommerfreizeitAnmeldung['class']
+  gender: Exclude<SommerfreizeitChild['gender'], null>
+  class: Exclude<SommerfreizeitAnmeldung['class'], null>
   krankenversicherung: string
-  krankenversicherungArt: '' | SommerfreizeitAnmeldung['krankenversicherungArt']
+  krankenversicherungArt: Exclude<SommerfreizeitAnmeldung['krankenversicherungArt'], null>
   krankenversicherungNummer: string
   foodAllergies: string
   otherAllergies: string
   medicalConditions: string
   medikamente: string
+  medikamenteArray: SommerfreizeitAnmeldung['medikamenteArray']
   arzt: string
   arztTelefon: string
   schwimmer: boolean
@@ -84,15 +85,16 @@ function buildInitialChild(position: PositionView): ChildFormState {
     firstName: position.firstName,
     lastName: position.lastName,
     dateOfBirth: '',
-    gender: '',
-    class: '',
+    gender: undefined,
+    class: undefined,
     krankenversicherung: '',
-    krankenversicherungArt: '',
+    krankenversicherungArt: undefined,
     krankenversicherungNummer: '',
     foodAllergies: '',
     otherAllergies: '',
     medicalConditions: '',
     medikamente: '',
+    medikamenteArray: [],
     arzt: '',
     arztTelefon: '',
     schwimmer: false,
@@ -115,23 +117,17 @@ export function CheckForm({
   const [address, setAddress] = useState(accountDefaults.address)
   const [postalCode, setPostalCode] = useState(accountDefaults.postalCode)
   const [city, setCity] = useState(accountDefaults.city)
-
   const [isRefreshing, setIsRefreshing] = useState(false)
-
   const [children, setChildren] = useState<ChildFormState[]>(() =>
     positions.map((position) => buildInitialChild(position)),
   )
-
   useEffect(() => {
     if (showAccountCreatedMessage) {
       toast.success('Für diese Bestellung wurde ein Konto angelegt.')
     }
   }, [showAccountCreatedMessage])
-
   const canSubmit = children.length > 0
-
   const pretixModifyHref = `${process.env.NEXT_PUBLIC_PRETIX_URL}/${process.env.NEXT_PUBLIC_PRETIX_ORGANIZER}/${pretixEvent}/order/${pretixOrderID}/${pretixSecret}/modify`
-
   const updateChild = <K extends keyof ChildFormState>(
     index: number,
     key: K,
@@ -218,8 +214,8 @@ export function CheckForm({
           firstName: child.firstName,
           lastName: child.lastName,
           dateOfBirth: child.dateOfBirth,
-          gender: child.gender as 'male' | 'female' | 'diverse',
-          class: child.class || undefined,
+          gender: child.gender,
+          class: child.class,
           krankenversicherung: child.krankenversicherung,
           krankenversicherungArt: child.krankenversicherungArt as 'gesetzlich' | 'privat',
           krankenversicherungNummer: child.krankenversicherungNummer,
@@ -231,6 +227,7 @@ export function CheckForm({
           arztTelefon: child.arztTelefon,
           schwimmer: child.schwimmer,
           bemerkungen: child.bemerkungen,
+          medikamenteArray: child.medikamenteArray,
         })),
       })
 
@@ -376,6 +373,7 @@ export function CheckForm({
                   onValueChange={(value) =>
                     updateChild(index, 'class', value as ChildFormState['class'])
                   }
+                  required
                   disabled={isPending}
                 >
                   <SelectTrigger
@@ -425,6 +423,7 @@ export function CheckForm({
                       value as ChildFormState['krankenversicherungArt'],
                     )
                   }
+                  required
                   disabled={isPending}
                 >
                   <SelectTrigger
@@ -463,7 +462,6 @@ export function CheckForm({
                   id={`food-allergies-${child.positionId}`}
                   value={child.foodAllergies}
                   onChange={(event) => updateChild(index, 'foodAllergies', event.target.value)}
-                  required
                   disabled={isPending}
                 />
               </div>
@@ -473,7 +471,6 @@ export function CheckForm({
                   id={`other-allergies-${child.positionId}`}
                   value={child.otherAllergies}
                   onChange={(event) => updateChild(index, 'otherAllergies', event.target.value)}
-                  required
                   disabled={isPending}
                 />
               </div>
@@ -486,7 +483,6 @@ export function CheckForm({
                   id={`medical-conditions-${child.positionId}`}
                   value={child.medicalConditions}
                   onChange={(event) => updateChild(index, 'medicalConditions', event.target.value)}
-                  required
                   disabled={isPending}
                 />
               </div>
@@ -496,7 +492,6 @@ export function CheckForm({
                   id={`medikamente-${child.positionId}`}
                   value={child.medikamente}
                   onChange={(event) => updateChild(index, 'medikamente', event.target.value)}
-                  required
                   disabled={isPending}
                 />
               </div>
@@ -555,11 +550,7 @@ export function CheckForm({
             Prüfe die Angaben noch einmal und sende die Anmeldung dann ab.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4" />
-        <CardFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-muted-foreground text-sm">
-            Der Abschluss wird erst wirksam, wenn alle Pflichtangaben vollständig sind.
-          </p>
+        <CardFooter>
           <Button type="submit" disabled={isPending || !canSubmit} className="w-full sm:w-auto">
             {isPending ? 'Wird gespeichert...' : 'Anmeldung abschliessen'}
           </Button>
