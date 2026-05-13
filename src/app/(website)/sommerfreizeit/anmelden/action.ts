@@ -608,6 +608,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
           arztTelefon: childInput.arztTelefon,
           schwimmer: childInput.schwimmer,
           bemerkungen: childInput.bemerkungen || undefined,
+          zimmerwunsch: childInput.zimmerwunsch || undefined,
           account: user.id,
           event: event.id,
           child: child.id,
@@ -618,9 +619,6 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       })
     }
     payload.logger.info(`Bestellung ${flow.orderCode} mit ${parsedInput.data.children.length} Kindern in Payload gespeichert.`)
-
-    revalidatePath('/sommerfreizeit/account')
-    revalidatePath('/sommerfreizeit/anmeldung')
 
     return {
       success: true,

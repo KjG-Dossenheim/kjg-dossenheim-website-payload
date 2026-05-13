@@ -25,11 +25,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Item, ItemGroup, ItemContent, ItemActions } from '@/components/ui/item'
+
 import type { SommerfreizeitAnmeldung, SommerfreizeitChild } from '@/payload-types'
 
 import { completeOrderCheckAction, getOrderFlowView } from '../action'
 import Link from 'next/link'
-import { Pen, RefreshCw } from 'lucide-react'
+import { Pen, RefreshCw, Trash, Plus } from 'lucide-react'
 
 type PositionView = {
   positionId: string
@@ -75,6 +77,7 @@ type ChildFormState = {
   arztTelefon: string
   schwimmer: boolean
   bemerkungen: string
+  zimmerwunsch: SommerfreizeitAnmeldung['zimmerwunsch']
 }
 
 function buildInitialChild(position: PositionView): ChildFormState {
@@ -94,11 +97,12 @@ function buildInitialChild(position: PositionView): ChildFormState {
     otherAllergies: '',
     medicalConditions: '',
     medikamente: '',
-    medikamenteArray: [],
+    medikamenteArray: undefined,
     arzt: '',
     arztTelefon: '',
     schwimmer: false,
     bemerkungen: '',
+    zimmerwunsch: [],
   }
 }
 
@@ -228,6 +232,7 @@ export function CheckForm({
           schwimmer: child.schwimmer,
           bemerkungen: child.bemerkungen,
           medikamenteArray: child.medikamenteArray,
+          zimmerwunsch: child.zimmerwunsch,
         })),
       })
 
@@ -399,6 +404,81 @@ export function CheckForm({
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Zimmerwunsch</Label>
+                <ItemGroup>
+                  {(child.zimmerwunsch || []).map((roomMate, roomIndex) => (
+                    <Item key={roomIndex} size="sm" variant="outline">
+                      <ItemContent className="flex gap-1 sm:flex-row">
+                        <Input
+                          id={`zimmer-first-${child.positionId}-${roomIndex}`}
+                          placeholder="Vorname"
+                          value={roomMate.firstName || ''}
+                          onChange={(e) => {
+                            const updated = [...(child.zimmerwunsch || [])]
+                            updated[roomIndex] = {
+                              ...updated[roomIndex],
+                              firstName: e.target.value,
+                            }
+                            updateChild(index, 'zimmerwunsch', updated)
+                          }}
+                          disabled={isPending}
+                        />
+                        <Input
+                          id={`zimmer-last-${child.positionId}-${roomIndex}`}
+                          placeholder="Nachname (optional)"
+                          value={roomMate.lastName || ''}
+                          onChange={(e) => {
+                            const updated = [...(child.zimmerwunsch || [])]
+                            updated[roomIndex] = {
+                              ...updated[roomIndex],
+                              lastName: e.target.value,
+                            }
+                            updateChild(index, 'zimmerwunsch', updated)
+                          }}
+                          disabled={isPending}
+                        />
+                      </ItemContent>
+                      <ItemActions>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            const updated = (child.zimmerwunsch || []).filter(
+                              (_, i) => i !== roomIndex,
+                            )
+                            updateChild(index, 'zimmerwunsch', updated)
+                          }}
+                          disabled={isPending}
+                          aria-label="Zimmerwunsch entfernen"
+                        >
+                          <Trash className="size-4" />
+                        </Button>
+                      </ItemActions>
+                    </Item>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const updated = [
+                        ...(child.zimmerwunsch || []),
+                        { firstName: '', lastName: '' },
+                      ]
+                      updateChild(index, 'zimmerwunsch', updated)
+                    }}
+                    disabled={isPending}
+                    className="w-full"
+                  >
+                    <Plus className="mr-2 size-4" />
+                    Zimmerwunsch hinzufügen
+                  </Button>
+                </ItemGroup>
+              </div>
+            </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor={`insurance-${child.positionId}`}>Krankenversicherung</Label>
