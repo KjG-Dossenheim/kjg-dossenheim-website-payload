@@ -168,8 +168,8 @@ const DesktopNavigationLink = React.memo(function DesktopNavigationLink({
   item: NavigationItem
 }) {
   return (
-    <NavigationMenuItem className="px-4 py-2">
-      <NavigationMenuLink asChild>
+    <NavigationMenuItem>
+      <NavigationMenuLink asChild className="px-4">
         <Link
           href={item.url}
           data-umami-event={`Navbar Link: ${item.title}`}
