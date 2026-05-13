@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,10 +20,18 @@ import { lookupOrderAndStartFlowAction } from './action'
 
 export function OrderLookupForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const [orderCode, setOrderCode] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const code = searchParams.get('orderCode')
+    if (code) {
+      setOrderCode(code.toUpperCase())
+    }
+  }, [searchParams])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
