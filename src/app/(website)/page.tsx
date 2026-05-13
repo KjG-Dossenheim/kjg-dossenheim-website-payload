@@ -13,20 +13,12 @@ import config from '@payload-config'
 // UI Components
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 
 // Reusable function to get page data
 async function getPageData() {
   const payload = await getPayload({ config })
-  const [page, team] = await Promise.all([
-    payload.findGlobal({ slug: 'startseite' }),
-    payload.find({
-      collection: 'team',
-      limit: 50,
-    }),
-  ])
-
-  return { page, team }
+  const [page] = await Promise.all([payload.findGlobal({ slug: 'startseite' })])
+  return { page }
 }
 
 export const revalidate = 300 // Revalidate every 5 minutes
@@ -41,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const { page, team } = await getPageData()
+  const { page } = await getPageData()
 
   return (
     <section className="container mx-auto px-4 py-20 lg:py-32">
@@ -80,28 +72,6 @@ export default async function Page() {
           </Link>
         </Button>
       </div>
-
-      {/* Team Section */}
-      {team.docs.length > 0 && (
-        <div className="mt-20">
-          <h2 className="mb-8 text-center text-3xl font-bold tracking-tight md:text-4xl">
-            Unser Team
-          </h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            {team.docs.map((member) => (
-              <Link key={member.id} href={`/team/${member.id}`}>
-                <Card className="hover:bg-accent">
-                  <CardHeader>
-                    <CardTitle>
-                      {member.firstName} {member.lastName}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Profilthemen Section */}
       <div className="mt-20">
