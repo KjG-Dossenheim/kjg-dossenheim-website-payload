@@ -1,11 +1,7 @@
 // React and Next.js
-import React, { ReactNode, cache } from 'react'
+import React, { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import Script from 'next/script'
-
-// Payload CMS
-import { getPayload } from 'payload'
-import config from '@payload-config'
 
 // Custom Components
 import Footer from '@/components/layout/Footer'
