@@ -74,12 +74,17 @@ export const sommerfreizeitOrders: CollectionConfig = {
     },
     {
       name: 'status',
-      label: 'Status',
-      type: 'text',
-      required: false,
-      index: true,
+      label: 'Pretix Status',
+      type: 'select',
+      options: [
+        { label: 'Pending', value: 'n' },
+        { label: 'Bezahlt', value: 'p' },
+        { label: 'Abgelaufen', value: 'e' },
+        { label: 'Storniert', value: 'c' }
+      ],
       admin: {
         position: 'sidebar',
+        readOnly: true,
       },
     },
     {

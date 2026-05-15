@@ -77,7 +77,7 @@ export function OrderLookupForm() {
                   onChange={(value) => setOrderCode(value.toUpperCase())}
                   disabled={isSubmitting}
                   maxLength={5}
-                  pushPasswordManagerStrategy="none"
+                  inputMode="text"
                 >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />

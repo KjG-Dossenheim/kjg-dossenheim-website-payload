@@ -1,6 +1,8 @@
 import type { PayloadRequest } from 'payload'
 import { z } from 'zod'
 
+import type { SommerfreizeitOrder } from '@/payload-types'
+
 type SyncPretixStatusInput = {
   maxPages?: number
   pretixEventId?: string
@@ -9,14 +11,14 @@ type SyncPretixStatusInput = {
 
 type PretixOrderSummary = {
   code: string
-  status: string | null
+  status: SommerfreizeitOrder['status']
   event: string | null
 }
 
 const pretixOrderSchema = z
   .object({
     code: z.string().optional(),
-    status: z.string().nullable().optional(),
+    status: z.enum(['n', 'p', 'e', 'c']).optional(),
     event: z.union([z.string(), z.number()]).nullable().optional(),
   })
 
@@ -51,28 +53,6 @@ function toOptionalString(value: unknown): string | null {
 
 function normalizeOrderCode(value: unknown): string {
   return toNonEmpty(value).toUpperCase()
-}
-
-function mapPretixStatusToGerman(status: string | null): string {
-  const normalized = toNonEmpty(status).toLowerCase()
-
-  if (!normalized) {
-    return 'unbekannt'
-  }
-
-  if (['p', 'paid'].includes(normalized)) {
-    return 'bezahlt'
-  }
-
-  if (['n', 'pending'].includes(normalized)) {
-    return 'offen'
-  }
-
-  if (['c', 'canceled', 'cancelled', 'e', 'expired'].includes(normalized)) {
-    return 'storniert'
-  }
-
-  return 'unbekannt'
 }
 
 async function fetchOrdersPage(args: {
@@ -159,7 +139,7 @@ export const syncPretixStatusJob = {
         const mappedOrders: PretixOrderSummary[] = pageResult.results
           .map((order) => ({
             code: normalizeOrderCode(order.code),
-            status: toOptionalString(order.status),
+            status: order.status,
             event: toOptionalString(order.event),
           }))
           .filter((order) => {
@@ -178,7 +158,10 @@ export const syncPretixStatusJob = {
         fetchedOrders += mappedOrders.length
 
         for (const order of mappedOrders) {
-          const mappedStatus = mapPretixStatusToGerman(order.status)
+
+          if (!order.status) {
+            continue
+          }
 
           const registrations = await req.payload.find({
             collection: 'sommerfreizeitAnmeldung',
@@ -203,7 +186,7 @@ export const syncPretixStatusJob = {
             id: string
             pretixStatus?: string | null
           }>) {
-            if (toNonEmpty(registration.pretixStatus) === mappedStatus) {
+            if (toNonEmpty(registration.pretixStatus).toLowerCase() === order.status.toLowerCase()) {
               unchangedRegistrations += 1
               continue
             }
@@ -212,7 +195,7 @@ export const syncPretixStatusJob = {
               collection: 'sommerfreizeitAnmeldung',
               id: registration.id,
               data: {
-                pretixStatus: mappedStatus,
+                pretixStatus: order.status,
               },
               depth: 0,
               draft: false,

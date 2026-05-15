@@ -273,7 +273,7 @@ export interface SommerfreizeitAnmeldung {
   /**
    * Das Geburtsdatum des Kindes
    */
-  birthDate?: string | null;
+  dateOfBirth?: string | null;
   /**
    * Z. B. 5. Klasse oder 10. Klasse
    */
@@ -291,6 +291,10 @@ export interface SommerfreizeitAnmeldung {
    */
   krankenversicherungNummer?: string | null;
   foodAllergies?: string | null;
+  /**
+   * Z. B. Vegetarisch, Vegan etc.
+   */
+  foodPreferences?: ('vegetarisch' | 'vegan') | null;
   otherAllergies?: string | null;
   medicalConditions?: string | null;
   medikamente?: string | null;
@@ -334,9 +338,9 @@ export interface SommerfreizeitAnmeldung {
   account: string | SommerfreizeitUser;
   event: string | SommerfreizeitEvent;
   child: string | SommerfreizeitChild;
-  pretixOrderCode?: string | null;
+  pretixOrderCode: string;
   pretixPositionId?: string | null;
-  pretixStatus?: string | null;
+  pretixStatus?: ('n' | 'p' | 'e' | 'c') | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -636,7 +640,7 @@ export interface SommerfreizeitOrder {
   id: string;
   organizer: string;
   orderCode: string;
-  status?: string | null;
+  status?: ('n' | 'p' | 'e' | 'c') | null;
   testMode?: boolean | null;
   email?: string | null;
   total?: number | null;
@@ -1549,12 +1553,13 @@ export interface JahresplanSelect<T extends boolean = true> {
 export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
-  birthDate?: T;
+  dateOfBirth?: T;
   class?: T;
   krankenversicherung?: T;
   krankenversicherungArt?: T;
   krankenversicherungNummer?: T;
   foodAllergies?: T;
+  foodPreferences?: T;
   otherAllergies?: T;
   medicalConditions?: T;
   medikamente?: T;

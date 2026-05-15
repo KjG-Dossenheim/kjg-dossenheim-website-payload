@@ -75,6 +75,9 @@ export const sommerfreizeitChild: CollectionConfig = {
       required: false,
       admin: {
         readOnly: false,
+        date: {
+          displayFormat: 'DD.MM.YYYY',
+        },
       },
     },
     {

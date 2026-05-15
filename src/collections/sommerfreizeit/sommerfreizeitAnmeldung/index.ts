@@ -44,21 +44,6 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         description: 'Der Vorname des Kindes',
         readOnly: true,
       },
-      hooks: {
-        afterRead: [
-          ({ data }) => {
-            if (data?.firstName) {
-              return data.firstName
-            }
-
-            if (data?.child && typeof data.child === 'object' && 'firstName' in data.child) {
-              return data.child.firstName
-            }
-
-            return null
-          },
-        ],
-      },
     },
     {
       name: 'lastName',
@@ -68,46 +53,18 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         description: 'Der Nachname des Kindes',
         readOnly: true,
       },
-      hooks: {
-        afterRead: [
-          ({ data }) => {
-            if (data?.lastName) {
-              return data.lastName
-            }
-
-            if (data?.child && typeof data.child === 'object' && 'lastName' in data.child) {
-              return data.child.lastName
-            }
-
-            return null
-          },
-        ],
-      },
     },
     {
-      name: 'birthDate',
+      name: 'dateOfBirth',
       label: 'Geburtsdatum',
       type: 'date',
       admin: {
         description: 'Das Geburtsdatum des Kindes',
         readOnly: true,
+        date: {
+          displayFormat: 'dd.MM.YYYY',
+        },
       },
-      hooks: {
-        afterRead: [
-          ({ data }) => {
-            if (data?.birthDate) {
-              return data.birthDate
-            }
-
-            if (data?.child && typeof data.child === 'object' && 'birthDate' in data.child) {
-              return data.child.birthDate
-            }
-
-            return null
-          },
-        ],
-      },
-
     },
     {
       name: 'class',
@@ -160,6 +117,18 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'foodAllergies',
       label: 'Lebensmittelallergien',
       type: 'text',
+    },
+    {
+      name: `foodPreferences`,
+      label: 'Ernährungspräferenzen',
+      type: 'select',
+      options: [
+        { label: 'Vegetarisch', value: 'vegetarisch' },
+        { label: 'Vegan', value: 'vegan' },
+      ],
+      admin: {
+        description: 'Z. B. Vegetarisch, Vegan etc.',
+      },
     },
     {
       name: 'otherAllergies',
@@ -315,6 +284,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       label: 'Pretix Bestellcode',
       type: 'text',
       index: true,
+      required: true,
       admin: {
         position: 'sidebar',
         hidden: true,
@@ -333,7 +303,14 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
     {
       name: 'pretixStatus',
       label: 'Pretix Status',
-      type: 'text',
+      type: 'select',
+      defaultValue: 'n',
+      options: [
+        { label: 'Pending', value: 'n' },
+        { label: 'Bezahlt', value: 'p' },
+        { label: 'Abgelaufen', value: 'e' },
+        { label: 'Storniert', value: 'c' }
+      ],
       admin: {
         position: 'sidebar',
         readOnly: true,

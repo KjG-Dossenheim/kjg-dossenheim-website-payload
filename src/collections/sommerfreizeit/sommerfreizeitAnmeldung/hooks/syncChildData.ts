@@ -48,6 +48,7 @@ export const syncChildDataBeforeChange: CollectionBeforeChangeHook = async ({ da
 
   data.firstName = child.firstName ?? null
   data.lastName = child.lastName ?? null
+  data.dateOfBirth = child.dateOfBirth ?? null
 
   return data
 }

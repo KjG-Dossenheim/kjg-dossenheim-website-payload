@@ -18,6 +18,70 @@ function generateConfirmationToken(waitlistEntryId: string, createdAt: string): 
   return createHash('sha256').update(`${waitlistEntryId}${secret}${createdAt}`).digest('hex')
 }
 
+async function markEntryPromoted(req: PayloadRequest, entryId: string, now: Date, confirmationDeadline: Date) {
+  await req.payload.update({
+    collection: 'knallbonbonWaitlist',
+    id: entryId,
+    data: {
+      status: 'promoted',
+      promotionSentAt: now.toISOString(),
+      confirmationDeadline: confirmationDeadline.toISOString(),
+    },
+  })
+}
+
+async function sendPromotionEmails(req: PayloadRequest, entry: any, eventTitle: string, confirmationUrl: string, confirmationDeadline: Date) {
+  try {
+    const registrationData = {
+      firstName: entry.firstName,
+      lastName: entry.lastName,
+      email: entry.email,
+      child: entry.children,
+    }
+
+    const spotAvailableHtml = await render(
+      spotAvailableEmailTemplate(registrationData, eventTitle, confirmationUrl, confirmationDeadline),
+    )
+
+    await req.payload.sendEmail({
+      to: entry.email,
+      subject: `Gute Nachricht! Ein Platz ist frei geworden - ${eventTitle}`,
+      html: spotAvailableHtml,
+    })
+
+    req.payload.logger.info(`[Waitlist] Sent spot-available email to ${entry.email}`)
+  } catch (error) {
+    req.payload.logger.error(
+      `[Waitlist] Failed to send spot-available email to ${entry.email}: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+
+  try {
+    const registrationData = {
+      firstName: entry.firstName,
+      lastName: entry.lastName,
+      email: entry.email,
+      child: entry.children,
+    }
+
+    const adminNotificationHtml = await render(
+      adminPromotionNotificationEmailTemplate(registrationData, eventTitle, confirmationDeadline),
+    )
+
+    await req.payload.sendEmail({
+      to: 'ben.wallner@kjg-dossenheim.org',
+      subject: `Neue Wartelisten-Beförderung: ${eventTitle}`,
+      html: adminNotificationHtml,
+    })
+
+    req.payload.logger.info('[Waitlist] Sent admin promotion notification')
+  } catch (error) {
+    req.payload.logger.error(
+      `[Waitlist] Failed to send admin promotion notification: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
+}
+
 /**
  * Promote eligible waitlist entries when spots become available
  *
@@ -127,84 +191,10 @@ export async function promoteFromWaitlist(req: PayloadRequest, eventId: string):
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
       const confirmationUrl = `${siteUrl}/knallbonbon/bestatigen/${entry.id}?token=${token}`
 
-      // Update waitlist entry to promoted status
-      await req.payload.update({
-        collection: 'knallbonbonWaitlist',
-        id: entry.id,
-        data: {
-          status: 'promoted',
-          promotionSentAt: now.toISOString(),
-          confirmationDeadline: confirmationDeadline.toISOString(),
-        },
-      })
-
-      // Send email to parents using data from waitlist entry
-      try {
-        // Create a registration-like object from waitlist data for email template
-        const registrationData = {
-          firstName: entry.firstName,
-          lastName: entry.lastName,
-          email: entry.email,
-          child: entry.children,
-        }
-
-        // Get event title from relationship
-        const eventTitle = typeof entry.event === 'object' ? entry.event.title : event.title
-
-        const spotAvailableHtml = await render(
-          spotAvailableEmailTemplate(
-            registrationData,
-            eventTitle,
-            confirmationUrl,
-            confirmationDeadline,
-          ),
-        )
-
-        await req.payload.sendEmail({
-          to: entry.email,
-          subject: `Gute Nachricht! Ein Platz ist frei geworden - ${eventTitle}`,
-          html: spotAvailableHtml,
-        })
-
-        req.payload.logger.info(`[Waitlist] Sent spot-available email to ${entry.email}`)
-      } catch (error) {
-        req.payload.logger.error(
-          `[Waitlist] Failed to send spot-available email to ${entry.email}: ${error instanceof Error ? error.message : String(error)}`,
-        )
-      }
-
-      // Send admin notification
-      try {
-        const registrationData = {
-          firstName: entry.firstName,
-          lastName: entry.lastName,
-          email: entry.email,
-          child: entry.children,
-        }
-
-        // Get event title from relationship
-        const eventTitle = typeof entry.event === 'object' ? entry.event.title : event.title
-
-        const adminNotificationHtml = await render(
-          adminPromotionNotificationEmailTemplate(
-            registrationData,
-            eventTitle,
-            confirmationDeadline,
-          ),
-        )
-
-        await req.payload.sendEmail({
-          to: 'ben.wallner@kjg-dossenheim.org',
-          subject: `Neue Wartelisten-Beförderung: ${eventTitle}`,
-          html: adminNotificationHtml,
-        })
-
-        req.payload.logger.info('[Waitlist] Sent admin promotion notification')
-      } catch (error) {
-        req.payload.logger.error(
-          `[Waitlist] Failed to send admin promotion notification: ${error instanceof Error ? error.message : String(error)}`,
-        )
-      }
+      // Mark entry promoted and send notification emails
+      const eventTitle = typeof entry.event === 'object' ? entry.event.title : event.title
+      await markEntryPromoted(req, entry.id, now, confirmationDeadline)
+      await sendPromotionEmails(req, entry, eventTitle, confirmationUrl, confirmationDeadline)
 
       availableSpots -= childrenCount
       promotedCount++
