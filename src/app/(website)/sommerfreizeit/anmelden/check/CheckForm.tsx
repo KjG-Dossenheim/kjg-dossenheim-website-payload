@@ -60,8 +60,8 @@ type ChildFormState = {
   positionId: string
   pretixOrderID: string
   pretixSecret: string
-  firstName: string
-  lastName: string
+  firstName: SommerfreizeitChild['firstName']
+  lastName: SommerfreizeitChild['lastName']
   dateOfBirth: string
   gender: Exclude<SommerfreizeitChild['gender'], null>
   class: Exclude<SommerfreizeitAnmeldung['class'], null>
@@ -232,7 +232,10 @@ export function CheckForm({
           schwimmer: child.schwimmer,
           bemerkungen: child.bemerkungen,
           medikamenteArray: child.medikamenteArray,
-          zimmerwunsch: child.zimmerwunsch,
+          zimmerwunsch: child.zimmerwunsch?.map((zimmerwunsch) => ({
+            firstName: zimmerwunsch.firstName,
+            lastName: zimmerwunsch.lastName ?? '',
+          })),
         })),
       })
 
