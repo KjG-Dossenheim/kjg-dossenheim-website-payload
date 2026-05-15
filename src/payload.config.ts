@@ -73,6 +73,7 @@ import { sommerfreizeitChild } from './collections/sommerfreizeit/sommerfreizeit
 import { sommerfreizeitEvents } from './collections/sommerfreizeit/sommerfreizeitEvents'
 import { sommerfreizeitOrders } from './collections/sommerfreizeit/sommerfreizeitOrders'
 import { sommerfreizeitRooms } from './collections/sommerfreizeit/sommerfreizeitRooms'
+import { sommerfreizeitPricing } from './collections/sommerfreizeit/sommerfreizeitPricing'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -101,6 +102,7 @@ import { sendConfirmationEmailsJob } from './jobs/sendConfirmationEmails'
 import { importPretixCustomersJob } from './jobs/importPretixCustomers'
 import { importPretixOrdersJob } from './jobs/importPretixOrders'
 import { syncPretixStatusJob } from './jobs/syncPretixStatus'
+// import { fetchIndividualOrderJob } from './jobs/pretix/fetchIndividualOrder'
 
 import { betterAuthOptions } from './lib/auth/config'
 
@@ -151,6 +153,10 @@ export default buildConfig({
           path: '/settings',
           Component: '@/components/admin/views/SettingsView',
         },
+        sommerfreizeitDashboard: {
+          path: '/sommerfreizeit',
+          Component: '@/components/admin/sommerfreizeit/dashboard',
+        },
         emailPreview: {
           path: '/email-preview',
           Component: '@/components/admin/views/PreviewEmailView',
@@ -173,6 +179,7 @@ export default buildConfig({
     sommerfreizeitUser,
     sommerfreizeitOrders,
     sommerfreizeitFeedback,
+    sommerfreizeitPricing,
     blogPosts,
     blogCategory,
     Team,
@@ -264,6 +271,7 @@ export default buildConfig({
       importPretixCustomersJob,
       importPretixOrdersJob,
       syncPretixStatusJob,
+      // fetchIndividualOrderJob,
     ],
     workflows: [],
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {

@@ -37,7 +37,7 @@ export const sommerfreizeitOrders: CollectionConfig = {
     components: {
       views: {
         list: {
-          actions: ['@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders'],
+          actions: ['@/collections/sommerfreizeit/sommerfreizeitOrders/actions/ImportPretixOrders'],
         },
       },
     },
@@ -82,6 +82,16 @@ export const sommerfreizeitOrders: CollectionConfig = {
         { label: 'Abgelaufen', value: 'e' },
         { label: 'Storniert', value: 'c' }
       ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'require_approval',
+      label: 'Benötigt Genehmigung',
+      type: 'checkbox',
+      defaultValue: true,
       admin: {
         position: 'sidebar',
         readOnly: true,

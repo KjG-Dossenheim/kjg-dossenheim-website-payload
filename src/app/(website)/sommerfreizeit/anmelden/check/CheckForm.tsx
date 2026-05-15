@@ -427,6 +427,7 @@ export function CheckForm({
                             updateChild(index, 'zimmerwunsch', updated)
                           }}
                           disabled={isPending}
+                          required
                         />
                         <Input
                           id={`zimmer-last-${child.positionId}-${roomIndex}`}

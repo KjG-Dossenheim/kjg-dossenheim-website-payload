@@ -76,6 +76,7 @@ export interface Config {
     sommerfreizeitUsers: SommerfreizeitUser;
     sommerfreizeitOrders: SommerfreizeitOrder;
     sommerfreizeitFeedback: SommerfreizeitFeedback;
+    sommerfreizeitPricing: SommerfreizeitPricing;
     blogPosts: BlogPost;
     blogCategory: BlogCategory;
     team: Team;
@@ -122,6 +123,7 @@ export interface Config {
     sommerfreizeitUsers: SommerfreizeitUsersSelect<false> | SommerfreizeitUsersSelect<true>;
     sommerfreizeitOrders: SommerfreizeitOrdersSelect<false> | SommerfreizeitOrdersSelect<true>;
     sommerfreizeitFeedback: SommerfreizeitFeedbackSelect<false> | SommerfreizeitFeedbackSelect<true>;
+    sommerfreizeitPricing: SommerfreizeitPricingSelect<false> | SommerfreizeitPricingSelect<true>;
     blogPosts: BlogPostsSelect<false> | BlogPostsSelect<true>;
     blogCategory: BlogCategorySelect<false> | BlogCategorySelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
@@ -338,9 +340,11 @@ export interface SommerfreizeitAnmeldung {
   account: string | SommerfreizeitUser;
   event: string | SommerfreizeitEvent;
   child: string | SommerfreizeitChild;
+  pretixOrder?: (string | null) | SommerfreizeitOrder;
   pretixOrderCode: string;
   pretixPositionId?: string | null;
   pretixStatus?: ('n' | 'p' | 'e' | 'c') | null;
+  require_approval?: boolean | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -617,23 +621,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitRooms".
- */
-export interface SommerfreizeitRoom {
-  id: string;
-  name: string;
-  beschreibung?: string | null;
-  gender?: ('male' | 'female') | null;
-  /**
-   * Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.
-   */
-  occupants?: (string | SommerfreizeitAnmeldung)[] | null;
-  freizeit: string | SommerfreizeitEvent;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitOrders".
  */
 export interface SommerfreizeitOrder {
@@ -641,6 +628,7 @@ export interface SommerfreizeitOrder {
   organizer: string;
   orderCode: string;
   status?: ('n' | 'p' | 'e' | 'c') | null;
+  require_approval?: boolean | null;
   testMode?: boolean | null;
   email?: string | null;
   total?: number | null;
@@ -672,6 +660,23 @@ export interface SommerfreizeitOrder {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitRooms".
+ */
+export interface SommerfreizeitRoom {
+  id: string;
+  name: string;
+  beschreibung?: string | null;
+  gender?: ('male' | 'female') | null;
+  /**
+   * Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.
+   */
+  occupants?: (string | SommerfreizeitAnmeldung)[] | null;
+  freizeit: string | SommerfreizeitEvent;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitFeedback".
  */
 export interface SommerfreizeitFeedback {
@@ -679,6 +684,27 @@ export interface SommerfreizeitFeedback {
   age: number;
   rating: number;
   comments?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitPricing".
+ */
+export interface SommerfreizeitPricing {
+  id: string;
+  name: string;
+  beschreibung: string;
+  price: number;
+  /**
+   * Es kann nur eine Preisstufe als Standard festgelegt werden.
+   */
+  default?: boolean | null;
+  eigenschaften: {
+    name: string;
+    id?: string | null;
+  }[];
+  freizeit: string | SommerfreizeitEvent;
   updatedAt: string;
   createdAt: string;
 }
@@ -1413,6 +1439,10 @@ export interface PayloadLockedDocument {
         value: string | SommerfreizeitFeedback;
       } | null)
     | ({
+        relationTo: 'sommerfreizeitPricing';
+        value: string | SommerfreizeitPricing;
+      } | null)
+    | ({
         relationTo: 'blogPosts';
         value: string | BlogPost;
       } | null)
@@ -1591,9 +1621,11 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   account?: T;
   event?: T;
   child?: T;
+  pretixOrder?: T;
   pretixOrderCode?: T;
   pretixPositionId?: T;
   pretixStatus?: T;
+  require_approval?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -1720,6 +1752,7 @@ export interface SommerfreizeitOrdersSelect<T extends boolean = true> {
   organizer?: T;
   orderCode?: T;
   status?: T;
+  require_approval?: T;
   testMode?: T;
   email?: T;
   total?: T;
@@ -1741,6 +1774,25 @@ export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
   age?: T;
   rating?: T;
   comments?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitPricing_select".
+ */
+export interface SommerfreizeitPricingSelect<T extends boolean = true> {
+  name?: T;
+  beschreibung?: T;
+  price?: T;
+  default?: T;
+  eigenschaften?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  freizeit?: T;
   updatedAt?: T;
   createdAt?: T;
 }

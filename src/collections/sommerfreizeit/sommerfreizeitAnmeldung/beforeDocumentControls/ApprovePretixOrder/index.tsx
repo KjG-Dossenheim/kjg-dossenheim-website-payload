@@ -4,14 +4,16 @@ import React, { useEffect, useState } from 'react'
 import { toast, Button, useDocumentInfo } from '@payloadcms/ui'
 import { Loader2, ShieldCheck } from 'lucide-react'
 import { approvePretixOrder } from './actions'
+import type { SommerfreizeitAnmeldung, SommerfreizeitEvent } from '@/payload-types'
 
 export const ApprovePretixOrder: React.FC = () => {
   const { data } = useDocumentInfo()
-  const pretixOrderCode = data?.pretixOrderCode as string | undefined
+  const pretixOrderCode = data?.pretixOrderCode as SommerfreizeitAnmeldung['pretixOrderCode']
+  const require_approval = data?.require_approval as SommerfreizeitAnmeldung['require_approval']
   const payloadEventID =
     typeof data?.event === 'object' && data?.event && 'id' in data.event
       ? (data.event.id as string)
-      : (data?.event as string | undefined)
+      : (data?.event as SommerfreizeitEvent['id'] | undefined)
   const [pretixEventID, setPretixEventID] = useState<string | undefined>()
   const [isLoadingPretixEventID, setIsLoadingPretixEventID] = useState(false)
   const [isApproving, setIsApproving] = useState(false)
@@ -19,6 +21,11 @@ export const ApprovePretixOrder: React.FC = () => {
 
   useEffect(() => {
     if (!payloadEventID) {
+      setPretixEventID(undefined)
+      return
+    }
+
+    if (require_approval === false) {
       setPretixEventID(undefined)
       return
     }
@@ -94,7 +101,12 @@ export const ApprovePretixOrder: React.FC = () => {
   }
 
   const isDisabled =
-    !pretixOrderCode || !pretixEventID || isLoadingPretixEventID || isApproving || isApproved
+    !pretixOrderCode ||
+    !pretixEventID ||
+    isLoadingPretixEventID ||
+    isApproving ||
+    isApproved ||
+    require_approval === false
 
   return (
     <Button

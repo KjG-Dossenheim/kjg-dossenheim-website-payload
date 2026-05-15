@@ -21,7 +21,7 @@ export const sommerfreizeitUser: CollectionConfig = {
     components: {
       views: {
         list: {
-          actions: ['@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers'],
+          actions: ['@/collections/sommerfreizeit/sommerfreizeitUser/actions/ImportPretixCustomers'],
         },
       },
     },

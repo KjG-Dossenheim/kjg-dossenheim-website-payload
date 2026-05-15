@@ -62,7 +62,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         description: 'Das Geburtsdatum des Kindes',
         readOnly: true,
         date: {
-          displayFormat: 'dd.MM.YYYY',
+          displayFormat: 'dd.MM.yyyy',
         },
       },
     },
@@ -280,6 +280,16 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       },
     },
     {
+      name: 'pretixOrder',
+      label: 'Pretix Bestellung',
+      type: 'relationship',
+      relationTo: 'sommerfreizeitOrders',
+      admin: {
+        position: 'sidebar',
+        hidden: true,
+      },
+    },
+    {
       name: 'pretixOrderCode',
       label: 'Pretix Bestellcode',
       type: 'text',
@@ -316,5 +326,15 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         readOnly: true,
       },
     },
+    {
+      name: 'require_approval',
+      label: 'Benötigt Genehmigung',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        hidden: true,
+        position: 'sidebar',
+      },
+    }
   ],
 }

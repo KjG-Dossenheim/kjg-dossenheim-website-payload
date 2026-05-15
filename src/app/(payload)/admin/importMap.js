@@ -27,8 +27,8 @@ import { OrderedListFeatureClient as OrderedListFeatureClient_e70f5e05f09f93e00b
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_3114f6896e65c6486d201259c98e238e } from 'src/components/admin/rowLable/ArrayRowLabel.tsx'
-import { default as default_30ae88ec4492f6d7e2995797933179a8 } from '@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers'
-import { default as default_e56f0b1dfe64e89beef03cc281a6280e } from '@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders'
+import { default as default_7c8823cbd34840620a2db0530f2b8bda } from '@/collections/sommerfreizeit/sommerfreizeitUser/actions/ImportPretixCustomers'
+import { default as default_4ed9989d41c95985a298547b3254a9cd } from '@/collections/sommerfreizeit/sommerfreizeitOrders/actions/ImportPretixOrders'
 import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { default as default_ecfd65651f73f4e70148c6a3f45da9ef } from '@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail'
 import { default as default_98a00ed7a1da5fc44dc587f84bf0657c } from '@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist'
@@ -47,6 +47,7 @@ import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc056
 import { default as default_290e0a8c59d7e067b68e692ff1af72ee } from '@/components/admin/Knallbonbon/Views/ChildrenListView'
 import { default as default_eb46b223f8c1acb340a8fe94711c71e2 } from '@/components/admin/Knallbonbon/Views/WaitlistView'
 import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/components/admin/views/SettingsView'
+import { default as default_b9b5c78380620634560a69810a73cbb8 } from '@/components/admin/sommerfreizeit/dashboard'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -81,8 +82,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "src/components/admin/rowLable/ArrayRowLabel.tsx#default": default_3114f6896e65c6486d201259c98e238e,
-  "@/components/admin/SommerfreizeitUsers/Actions/ImportPretixCustomers#default": default_30ae88ec4492f6d7e2995797933179a8,
-  "@/components/admin/SommerfreizeitOrders/Actions/ImportPretixOrders#default": default_e56f0b1dfe64e89beef03cc281a6280e,
+  "@/collections/sommerfreizeit/sommerfreizeitUser/actions/ImportPretixCustomers#default": default_7c8823cbd34840620a2db0530f2b8bda,
+  "@/collections/sommerfreizeit/sommerfreizeitOrders/actions/ImportPretixOrders#default": default_4ed9989d41c95985a298547b3254a9cd,
   "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/SendMail#default": default_ecfd65651f73f4e70148c6a3f45da9ef,
   "@/collections/knallbonbonRegistration/beforeDocumentControls/MoveToWaillist#default": default_98a00ed7a1da5fc44dc587f84bf0657c,
@@ -101,6 +102,7 @@ export const importMap = {
   "@/components/admin/Knallbonbon/Views/ChildrenListView#default": default_290e0a8c59d7e067b68e692ff1af72ee,
   "@/components/admin/Knallbonbon/Views/WaitlistView#default": default_eb46b223f8c1acb340a8fe94711c71e2,
   "@/components/admin/views/SettingsView#default": default_ab50c006cc520cf36af67ec593724ed8,
+  "@/components/admin/sommerfreizeit/dashboard#default": default_b9b5c78380620634560a69810a73cbb8,
   "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
