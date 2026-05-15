@@ -37,7 +37,7 @@ const pretixOrderSchema = z
     code: z.string().optional(),
     secret: z.string().nullable().optional(),
     url: z.string().nullable().optional(),
-    status: z.string().nullable().optional(),
+    status: z.enum(['n', 'p', 'e', 'c']),
     testmode: z.boolean().optional(),
     email: z.string().nullable().optional(),
     phone: z.string().nullable().optional(),
@@ -251,7 +251,7 @@ export const importPretixOrdersJob = {
           const data = {
             organizer,
             orderCode,
-            status: toOptionalString(order.status),
+            status: order.status ?? null,
             testMode: Boolean(order.testmode),
             email: email ?? undefined,
             total: toOptionalNumber(order.total) ?? undefined,
