@@ -29,7 +29,7 @@ export const syncAnmeldungenAfterChange: CollectionAfterChangeHook = async ({ do
         data: {
           firstName: doc.firstName ?? null,
           lastName: doc.lastName ?? null,
-          birthDate: doc.dateOfBirth ?? null,
+          dateOfBirth: doc.dateOfBirth ?? null,
         },
         context: {
           skipChildAnmeldungSync: true,
