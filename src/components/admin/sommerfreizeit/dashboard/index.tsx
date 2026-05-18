@@ -33,18 +33,6 @@ function formatDate(value?: string | null) {
   }).format(new Date(value))
 }
 
-function formatCurrency(value?: number | null, currency?: string | null) {
-  if (typeof value !== 'number') {
-    return 'Keine Angabe'
-  }
-
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: currency || 'EUR',
-    maximumFractionDigits: 2,
-  }).format(value)
-}
-
 function resolveEventTitle(event?: string | SommerfreizeitEvent | null) {
   if (!event) {
     return 'Keine Veranstaltung'
@@ -165,7 +153,6 @@ export async function SommerfreizeitDashboardView({
     ordersResult,
     feedbackResult,
     roomsResult,
-    pricingResult,
   ] = await Promise.all([
     payload.find({
       collection: 'sommerfreizeitEvents',
@@ -203,11 +190,6 @@ export async function SommerfreizeitDashboardView({
     }),
     payload.find({
       collection: 'sommerfreizeitRooms',
-      depth: 0,
-      limit: 1,
-    }),
-    payload.find({
-      collection: 'sommerfreizeitPricing',
       depth: 0,
       limit: 1,
     }),
@@ -262,12 +244,6 @@ export async function SommerfreizeitDashboardView({
       value: numberFormatter.format(roomsResult.totalDocs ?? 0),
       description: 'Verfügbare Zimmer und Belegungen',
       href: '/admin/collections/sommerfreizeitRooms',
-    },
-    {
-      label: 'Preise',
-      value: numberFormatter.format(pricingResult.totalDocs ?? 0),
-      description: 'Preisstaffeln und Eigenschaften',
-      href: '/admin/collections/sommerfreizeitPricing',
     },
   ]
 
@@ -451,9 +427,7 @@ export async function SommerfreizeitDashboardView({
                                   : 'neutral'
                         }
                       />
-                      <span className="text-sm text-(--theme-text-500)">
-                        {formatCurrency(order.total, order.currency)}
-                      </span>
+                      <span className="text-sm text-(--theme-text-500)">{order.total}</span>
                     </div>
                   </div>
                 ))

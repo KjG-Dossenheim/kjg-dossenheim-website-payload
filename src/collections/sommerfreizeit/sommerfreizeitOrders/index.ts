@@ -120,15 +120,6 @@ export const sommerfreizeitOrders: CollectionConfig = {
       required: false,
     },
     {
-      name: 'currency',
-      label: 'Waehrung',
-      type: 'text',
-      required: false,
-      admin: {
-        position: 'sidebar',
-      },
-    },
-    {
       name: 'datetime',
       label: 'Erstellt am',
       type: 'date',
@@ -163,6 +154,13 @@ export const sommerfreizeitOrders: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
+    },
+    {
+      name: 'event',
+      label: 'Event',
+      type: 'relationship',
+      relationTo: 'sommerfreizeitEvents',
+      required: false,
     },
     {
       name: 'positions',

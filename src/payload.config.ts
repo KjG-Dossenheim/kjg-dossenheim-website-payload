@@ -12,6 +12,7 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { payloadEnhancedSidebar } from '@veiag/payload-enhanced-sidebar'
 import {
   betterAuthCollections,
   createBetterAuthPlugin,
@@ -73,7 +74,6 @@ import { sommerfreizeitChild } from './collections/sommerfreizeit/sommerfreizeit
 import { sommerfreizeitEvents } from './collections/sommerfreizeit/sommerfreizeitEvents'
 import { sommerfreizeitOrders } from './collections/sommerfreizeit/sommerfreizeitOrders'
 import { sommerfreizeitRooms } from './collections/sommerfreizeit/sommerfreizeitRooms'
-import { sommerfreizeitPricing } from './collections/sommerfreizeit/sommerfreizeitPricing'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -154,7 +154,7 @@ export default buildConfig({
           Component: '@/components/admin/views/SettingsView',
         },
         sommerfreizeitDashboard: {
-          path: '/sommerfreizeit',
+          path: '/sommerfreizeit/dashboard',
           Component: '@/components/admin/sommerfreizeit/dashboard',
         },
         emailPreview: {
@@ -179,7 +179,6 @@ export default buildConfig({
     sommerfreizeitUser,
     sommerfreizeitOrders,
     sommerfreizeitFeedback,
-    sommerfreizeitPricing,
     blogPosts,
     blogCategory,
     Team,
@@ -397,6 +396,69 @@ export default buildConfig({
           ],
         }),
       autoInjectAdminComponents: false,
+    }),
+    payloadEnhancedSidebar({
+      tabs: [
+        {
+          id: 'dashboard',
+          type: 'link',
+          href: '/',
+          icon: 'House',
+          label: "Dashboard",
+        },
+        {
+          id: 'sommerfreizeit',
+          type: 'tab',
+          icon: 'Sun',
+          label: 'Sommerfreizeit',
+          customItems: [
+            {
+              slug: 'sommerfreizeit-dashboard',
+              href: '/sommerfreizeit',
+              label: 'Dashboard',
+              position: 'top'
+            },
+            {
+              slug: 'sommerfreizeitAnmeldung',
+              href: '/collections/sommerfreizeitAnmeldung',
+              label: 'Anmeldungen',
+            },
+            {
+              slug: 'sommerfreizeitEvents',
+              href: '/collections/sommerfreizeitEvents',
+              label: 'Freizeiten',
+            },
+            {
+              slug: 'sommerfreizeitRooms',
+              href: '/collections/sommerfreizeitRooms',
+              label: 'Zimmer',
+            },
+            {
+              slug: 'sommerfreizeitUsers',
+              href: '/collections/sommerfreizeitUsers',
+              label: 'Benutzer',
+            },
+            {
+              slug: 'sommerfreizeitOrders',
+              href: '/collections/sommerfreizeitOrders',
+              label: 'Bestellungen',
+            },
+            {
+              slug: 'sommerfreizeitFeedback',
+              href: '/collections/sommerfreizeitFeedback',
+              label: 'Feedback',
+            },
+          ],
+        },
+        {
+          id: 'knallbonbon',
+          type: 'tab',
+          icon: 'PartyPopper',
+          label: 'Knallbonbon',
+          collections: ['knallbonbonRegistration', 'knallbonbonEvents', 'knallbonbonWaitlist'],
+        }
+      ],
+      disabled: true,
     }),
     authentikOAuth,
   ],

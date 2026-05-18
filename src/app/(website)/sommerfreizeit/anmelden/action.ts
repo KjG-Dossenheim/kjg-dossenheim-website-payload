@@ -22,18 +22,18 @@ type PretixPosition = {
 }
 
 type PretixOrder = {
-  code?: string | null
-  secret?: string | null
-  status?: string | null
-  email?: string | null
+  code: string
+  secret: string
+  status: string
+  email: string
   phone?: string | null
   invoice_address?: {
     name?: string | null
     name_parts?: Record<string, unknown> | null
   } | null
-  event?: string | number | null
+  event: string
   positions?: PretixPosition[] | null
-  require_approval?: boolean | null
+  require_approval: boolean
 }
 
 type LookupOrderResult = {
@@ -240,14 +240,12 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
     throw new Error('PRETIX_NOT_CONFIGURED')
   }
 
-  const baseUrl = (process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu').trim()
 
-  const normalizedCode = orderCode.trim().toUpperCase()
   const order = await fetchPretixOrder({
-    baseUrl,
+    baseUrl: process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu',
     organizer,
     event: event.pretixEventId,
-    code: normalizedCode,
+    code: orderCode,
     token,
   })
 
@@ -255,36 +253,15 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
       throw new Error('ORDER_NOT_ACTIVE')
     } */
 
-  const email = normalizeSommerfreizeitEmail(order.email || '')
-
-  if (!email) {
-    throw new Error('ORDER_EMAIL_MISSING')
-  }
-
-  const pretixEvent = toOptionalString(order.event)
-
-  if (!pretixEvent) {
-    throw new Error('ORDER_EVENT_MISSING')
-  }
-
-  const pretixSecret = toOptionalString(order.secret)
-
-  if (!pretixSecret) {
-    throw new Error('ORDER_SECRET_MISSING')
-  }
-
   const positions = extractValidPositions(order)
   const invoiceNameParts = readPretixNameParts(order.invoice_address?.name_parts)
   const invoiceAddress = order.invoice_address as Record<string, unknown> | null | undefined
 
-  if (positions.length === 0) {
-    throw new Error('ORDER_POSITIONS_MISSING')
-  }
 
   return {
-    orderCode: normalizedCode,
-    email,
-    phone: toOptionalString(order.phone) ?? '',
+    orderCode: orderCode,
+    email: order.email,
+    phone: order.phone ?? '',
     address: toOptionalString(invoiceAddress?.street) ?? '',
     postalCode: toOptionalString(invoiceAddress?.zipcode) ?? '',
     city: toOptionalString(invoiceAddress?.city) ?? '',
@@ -292,9 +269,9 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
     invoiceLastName: invoiceNameParts.lastName,
     organizer,
     pretixEventId: event.pretixEventId,
-    pretixEvent,
-    pretixOrderID: normalizedCode,
-    pretixSecret: pretixSecret,
+    pretixEvent: event.id,
+    pretixOrderID: orderCode,
+    pretixSecret: order.secret,
     positions,
     requireApproval: order.require_approval !== false,
   }
@@ -368,27 +345,6 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
       }
     }
 
-    if (error instanceof Error && error.message === 'ORDER_EMAIL_MISSING') {
-      return {
-        success: false,
-        message: 'Zu dieser Bestellung wurde keine E-Mail-Adresse gefunden.',
-      }
-    }
-
-    if (error instanceof Error && error.message === 'ORDER_POSITIONS_MISSING') {
-      return {
-        success: false,
-        message: 'In der Bestellung wurden keine gueltigen Positionen gefunden.',
-      }
-    }
-
-    if (error instanceof Error && error.message === 'PRETIX_NOT_CONFIGURED') {
-      return {
-        success: false,
-        message: 'Die Pretix-Konfiguration ist unvollstaendig. Bitte kontaktiere das Team.',
-      }
-    }
-
     console.error('lookupOrderAndStartFlowAction failed unexpectedly', {
       error: error,
       input,
@@ -441,20 +397,62 @@ export async function getOrderFlowView(input: { orderCode: string }): Promise<Or
 }
 
 async function createChildAndRegistration(payload: any, userId: string, childInput: any, eventId: string, orderCode: string) {
-  const child = await payload.create({
-    collection: 'sommerfreizeitChild',
-    data: {
-      parent: userId,
-      firstName: childInput.firstName,
-      lastName: childInput.lastName,
-      dateOfBirth: childInput.dateOfBirth,
-      gender: childInput.gender,
-      _status: 'published',
-    },
-    depth: 0,
-  })
+  // Try to find an existing child for this parent with the same name and birthdate
+  async function findExistingChild(payloadInstance: any, parentId: string, firstName?: string, lastName?: string, dateOfBirth?: string) {
 
-  payload.logger.info(`Kind ${child.firstName} ${child.lastName} in Payload angelegt.`)
+    const result = await payloadInstance.find({
+      collection: 'sommerfreizeitChild',
+      where: {
+        and: [
+          { parent: { equals: parentId } },
+          { firstName: { equals: firstName } },
+          { lastName: { equals: lastName } },
+          { dateOfBirth: { equals: dateOfBirth } },
+        ],
+      },
+      limit: 1,
+      depth: 0,
+      pagination: false,
+      overrideAccess: true,
+    })
+
+    return result.docs[0] ?? null
+  }
+
+  let childRecord: any = await findExistingChild(payload, userId, childInput.firstName, childInput.lastName, childInput.dateOfBirth)
+
+  if (childRecord) {
+    payload.logger.info(`Bestehendes Kind wiederverwendet: ${childRecord.firstName} ${childRecord.lastName} (id=${childRecord.id}).`)
+
+    // Optionally update missing fields on the existing child
+    const updateData: any = {}
+    if (!childRecord.gender && childInput.gender) updateData.gender = childInput.gender
+    if (!childRecord.dateOfBirth && childInput.dateOfBirth) updateData.dateOfBirth = childInput.dateOfBirth
+
+    if (Object.keys(updateData).length > 0) {
+      await payload.update({
+        collection: 'sommerfreizeitChild',
+        id: childRecord.id,
+        data: updateData,
+        depth: 0,
+      })
+    }
+  } else {
+    childRecord = await payload.create({
+      collection: 'sommerfreizeitChild',
+      data: {
+        parent: userId,
+        firstName: childInput.firstName,
+        lastName: childInput.lastName,
+        dateOfBirth: childInput.dateOfBirth,
+        gender: childInput.gender,
+        _status: 'published',
+      },
+      depth: 0,
+    })
+
+    payload.logger.info(`Kind ${childRecord.firstName} ${childRecord.lastName} in Payload angelegt.`)
+  }
 
   await payload.create({
     collection: 'sommerfreizeitAnmeldung',
@@ -466,6 +464,8 @@ async function createChildAndRegistration(payload: any, userId: string, childInp
       krankenversicherung: childInput.krankenversicherung,
       krankenversicherungArt: childInput.krankenversicherungArt,
       krankenversicherungNummer: childInput.krankenversicherungNummer,
+      krankenkassenKarte: childInput.krankenkassenKarte,
+      impfpass: childInput.impfpass,
       foodAllergies: childInput.foodAllergies,
       otherAllergies: childInput.otherAllergies,
       medicalConditions: childInput.medicalConditions,
@@ -477,7 +477,7 @@ async function createChildAndRegistration(payload: any, userId: string, childInp
       zimmerwunsch: childInput.zimmerwunsch || undefined,
       account: userId,
       event: eventId,
-      child: child.id,
+      child: childRecord.id,
       pretixPositionId: childInput.positionId,
       pretixOrderCode: orderCode,
       _status: 'published',
@@ -548,6 +548,18 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
   const parsedInput = completeOrderSchema.safeParse(input)
 
   if (!parsedInput.success) {
+    console.error('Invalid input in completeOrderCheckAction', {
+      errors: parsedInput.error.issues.map((issue) => ({
+        path: issue.path.join('.'),
+        code: issue.code,
+        message: issue.message,
+        expected: 'expected' in issue ? issue.expected : undefined,
+      })),
+      input: {
+        orderCode: input.orderCode,
+        childrenCount: input.children?.length,
+      },
+    })
     return {
       success: false,
       message: parsedInput.error.issues[0]?.message ?? 'Bitte ueberpruefe deine Angaben.',

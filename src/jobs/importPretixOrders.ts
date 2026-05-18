@@ -4,12 +4,12 @@ import { z } from 'zod'
 const pretixOrderPositionSchema = z
   .object({
     id: z.union([z.string(), z.number()]).optional(),
-    order: z.string().nullable().optional(),
+    order: z.string(),
     positionid: z.union([z.string(), z.number()]).optional(),
     canceled: z.boolean().optional(),
-    item: z.union([z.string(), z.number()]).nullable().optional(),
+    item: z.number(),
     variation: z.union([z.string(), z.number()]).nullable().optional(),
-    price: z.union([z.string(), z.number()]).nullable().optional(),
+    price: z.number(),
     attendee_name: z.string().nullable().optional(),
     attendee_name_parts: z.record(z.string(), z.unknown()).optional(),
     attendee_email: z.string().nullable().optional(),
@@ -34,37 +34,36 @@ const pretixOrderPositionSchema = z
 
 const pretixOrderSchema = z
   .object({
-    code: z.string().optional(),
-    secret: z.string().nullable().optional(),
-    url: z.string().nullable().optional(),
+    code: z.string(),
+    event: z.string(),
     status: z.enum(['n', 'p', 'e', 'c']),
-    testmode: z.boolean().optional(),
+    secret: z.string(),
+    testmode: z.boolean(),
     email: z.string().nullable().optional(),
     phone: z.string().nullable().optional(),
-    locale: z.string().nullable().optional(),
-    sales_channel: z.string().nullable().optional(),
-    total: z.union([z.string(), z.number()]).nullable().optional(),
-    currency: z.string().nullable().optional(),
-    datetime: z.string().nullable().optional(),
-    expires: z.string().nullable().optional(),
-    last_modified: z.string().nullable().optional(),
-    payment_date: z.string().nullable().optional(),
+    locale: z.string(),
+    sales_channel: z.string(),
+    total: z.number(),
+    datetime: z.iso.datetime(),
+    expires: z.iso.datetime(),
+    payment_date: z.iso.datetime().nullable().optional(),
     payment_provider: z.string().nullable().optional(),
     fees: z.array(z.record(z.string(), z.unknown())).optional(),
     tax_rounding_mode: z.string().nullable().optional(),
     comment: z.string().nullable().optional(),
-    custom_followup_at: z.string().nullable().optional(),
-    checkin_attention: z.boolean().optional(),
+    custom_followup_at: z.iso.datetime().nullable().optional(),
+    checkin_attention: z.boolean(),
     checkin_text: z.string().nullable().optional(),
-    require_approval: z.boolean().optional(),
-    valid_if_pending: z.boolean().optional(),
+    require_approval: z.boolean(),
     invoice_address: z.record(z.string(), z.unknown()).nullable().optional(),
-    event: z.union([z.string(), z.number()]).nullable().optional(),
     positions: z.array(pretixOrderPositionSchema).optional(),
     downloads: z.array(z.record(z.string(), z.unknown())).optional(),
+    valid_if_pending: z.boolean(),
+    url: z.string().nullable().optional(),
     payments: z.array(z.record(z.string(), z.unknown())).optional(),
     refunds: z.array(z.record(z.string(), z.unknown())).optional(),
-    cancellation_date: z.string().nullable().optional(),
+    last_modified: z.iso.datetime().nullable().optional(),
+    cancellation_date: z.iso.datetime().nullable().optional(),
     plugin_data: z.record(z.string(), z.unknown()).optional(),
   })
 
@@ -93,54 +92,6 @@ function toNonEmpty(value: unknown) {
   }
 
   return value.trim()
-}
-
-function toOptionalIsoDate(value: unknown): string | null {
-  const stringValue = toNonEmpty(value)
-
-  if (!stringValue) {
-    return null
-  }
-
-  const date = new Date(stringValue)
-
-  if (Number.isNaN(date.getTime())) {
-    return null
-  }
-
-  return date.toISOString()
-}
-
-function toOptionalNumber(value: unknown): number | null {
-  if (typeof value === 'number') {
-    return Number.isFinite(value) ? value : null
-  }
-
-  if (typeof value === 'string') {
-    const normalized = value.replace(',', '.').trim()
-
-    if (!normalized) {
-      return null
-    }
-
-    const parsed = Number(normalized)
-    return Number.isFinite(parsed) ? parsed : null
-  }
-
-  return null
-}
-
-function toOptionalString(value: unknown): string | null {
-  if (typeof value === 'string') {
-    const trimmed = value.trim()
-    return trimmed || null
-  }
-
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return String(value)
-  }
-
-  return null
 }
 
 function parseStatuses(value: string) {
@@ -207,12 +158,6 @@ export const importPretixOrdersJob = {
       const statusFilter = parseStatuses(toNonEmpty(jobInput.statuses))
       const updateExisting = jobInput.updateExisting ?? true
 
-      if (!organizer || !token) {
-        throw new Error(
-          'Missing NEXT_PUBLIC_PRETIX_ORGANIZER or PRETIX_API_TOKEN. Configure both environment variables.',
-        )
-      }
-
       req.payload.logger.info(
         `Starting Pretix order import (organizer=${organizer}, pretixEventId=${pretixEventIdFilter || 'none'}, statuses=${statusFilter.length > 0 ? statusFilter.join(',') : 'none'}, updateExisting=${updateExisting})`,
       )
@@ -221,7 +166,6 @@ export const importPretixOrdersJob = {
       let imported = 0
       let updated = 0
       let skippedExisting = 0
-      let skippedNoOrderCode = 0
 
       while (true) {
         if (maxPages && page > maxPages) {
@@ -238,37 +182,28 @@ export const importPretixOrdersJob = {
         })
 
         for (const order of pageResult.results) {
-          const orderCode = toNonEmpty(order.code)
-
-          if (!orderCode) {
-            skippedNoOrderCode += 1
-            continue
-          }
-
-          const email = toOptionalString(order.email)
-          const pretixEventId = toOptionalString(order.event)
 
           const data = {
             organizer,
-            orderCode,
-            status: order.status ?? null,
-            testMode: Boolean(order.testmode),
-            email: email ?? undefined,
-            total: toOptionalNumber(order.total) ?? undefined,
-            currency: toOptionalString(order.currency) ?? undefined,
-            datetime: toOptionalIsoDate(order.datetime) ?? undefined,
-            expires: toOptionalIsoDate(order.expires) ?? undefined,
-            pretixEventId: pretixEventId ?? undefined,
+            orderCode: order.code,
+            status: order.status,
+            testMode: order.testmode,
+            email: order.email,
+            total: order.total,
+            datetime: order.datetime,
+            expires: order.expires,
+            pretixEventId: order.event,
             positions: order.positions ?? undefined,
             pretixPayload: order,
             lastImportedAt: new Date().toISOString(),
+            requireApproval: order.require_approval,
           }
 
           const existingResult = await req.payload.find({
             collection: 'sommerfreizeitOrders',
             where: {
               orderCode: {
-                equals: orderCode,
+                equals: order.code,
               },
             },
             limit: 1,
@@ -317,7 +252,7 @@ export const importPretixOrdersJob = {
       }
 
       req.payload.logger.info(
-        `Pretix order import finished (imported=${imported}, updated=${updated}, skippedExisting=${skippedExisting}, skippedNoOrderCode=${skippedNoOrderCode})`,
+        `Pretix order import finished (imported=${imported}, updated=${updated}, skippedExisting=${skippedExisting})`,
       )
 
       return {
@@ -325,7 +260,6 @@ export const importPretixOrdersJob = {
           imported,
           updated,
           skippedExisting,
-          skippedNoOrderCode,
         },
       }
     } catch (error) {

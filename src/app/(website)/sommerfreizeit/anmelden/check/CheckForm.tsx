@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -30,8 +31,19 @@ import { Item, ItemGroup, ItemContent, ItemActions } from '@/components/ui/item'
 import type { SommerfreizeitAnmeldung, SommerfreizeitChild } from '@/payload-types'
 
 import { completeOrderCheckAction, getOrderFlowView } from '../action'
-import Link from 'next/link'
 import { Pen, RefreshCw, Trash, Plus } from 'lucide-react'
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from '@/components/ui/field'
 
 type PositionView = {
   positionId: string
@@ -68,6 +80,7 @@ type ChildFormState = {
   krankenversicherung: string
   krankenversicherungArt: Exclude<SommerfreizeitAnmeldung['krankenversicherungArt'], null>
   krankenversicherungNummer: string
+  krankenkassenKarte: SommerfreizeitAnmeldung['krankenkassenKarte']
   foodAllergies: string
   otherAllergies: string
   medicalConditions: string
@@ -75,8 +88,9 @@ type ChildFormState = {
   medikamenteArray: SommerfreizeitAnmeldung['medikamenteArray']
   arzt: string
   arztTelefon: string
-  schwimmer: boolean
+  schwimmer: SommerfreizeitAnmeldung['krankenkassenKarte']
   bemerkungen: string
+  impfpass: SommerfreizeitAnmeldung['impfpass']
   zimmerwunsch: SommerfreizeitAnmeldung['zimmerwunsch']
 }
 
@@ -93,6 +107,7 @@ function buildInitialChild(position: PositionView): ChildFormState {
     krankenversicherung: '',
     krankenversicherungArt: undefined,
     krankenversicherungNummer: '',
+    krankenkassenKarte: false,
     foodAllergies: '',
     otherAllergies: '',
     medicalConditions: '',
@@ -103,6 +118,7 @@ function buildInitialChild(position: PositionView): ChildFormState {
     schwimmer: false,
     bemerkungen: '',
     zimmerwunsch: [],
+    impfpass: false,
   }
 }
 
@@ -221,8 +237,9 @@ export function CheckForm({
           gender: child.gender,
           class: child.class,
           krankenversicherung: child.krankenversicherung,
-          krankenversicherungArt: child.krankenversicherungArt as 'gesetzlich' | 'privat',
+          krankenversicherungArt: child.krankenversicherungArt ?? null,
           krankenversicherungNummer: child.krankenversicherungNummer,
+          krankenkassenKarte: child.krankenkassenKarte,
           foodAllergies: child.foodAllergies,
           otherAllergies: child.otherAllergies,
           medicalConditions: child.medicalConditions,
@@ -232,6 +249,7 @@ export function CheckForm({
           schwimmer: child.schwimmer,
           bemerkungen: child.bemerkungen,
           medikamenteArray: child.medikamenteArray,
+          impfpass: child.impfpass,
           zimmerwunsch: child.zimmerwunsch?.map((zimmerwunsch) => ({
             firstName: zimmerwunsch.firstName,
             lastName: zimmerwunsch.lastName ?? '',
@@ -305,7 +323,10 @@ export function CheckForm({
         <Card key={child.positionId}>
           <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div className="space-y-1">
-              <CardTitle>Kind {index + 1}</CardTitle>
+              <CardTitle>
+                {child.firstName} {child.lastName}
+              </CardTitle>
+              <CardDescription>Position ID: {child.positionId}</CardDescription>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -326,303 +347,374 @@ export function CheckForm({
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor={`firstName-${child.positionId}`}>Vorname</Label>
-                <Input id={`firstName-${child.positionId}`} value={child.firstName} disabled />
+            <FieldGroup>
+              <FieldSet>
+                <FieldLegend>Persönliche Informationen</FieldLegend>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field>
+                    <FieldLabel htmlFor={`firstName-${child.positionId}`}>Vorname</FieldLabel>
+                    <Input id={`firstName-${child.positionId}`} value={child.firstName} disabled />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`lastName-${child.positionId}`}>Nachname</FieldLabel>
+                    <Input id={`lastName-${child.positionId}`} value={child.lastName} disabled />
+                  </Field>
+                </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <Field>
+                    <FieldLabel htmlFor={`birthDate-${child.positionId}`}>Geburtsdatum</FieldLabel>
+                    <Input
+                      id={`birthDate-${child.positionId}`}
+                      type="date"
+                      value={child.dateOfBirth ?? ''}
+                      onChange={(event) => updateChild(index, 'dateOfBirth', event.target.value)}
+                      required
+                      disabled={isPending}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`gender-${child.positionId}`}>Geschlecht</FieldLabel>
+                    <Select
+                      value={child.gender}
+                      onValueChange={(value) =>
+                        updateChild(index, 'gender', value as ChildFormState['gender'])
+                      }
+                      disabled={isPending}
+                    >
+                      <SelectTrigger
+                        id={`gender-${child.positionId}`}
+                        aria-label={`Geschlecht fuer Kind ${index + 1}`}
+                        className="w-full"
+                      >
+                        <SelectValue placeholder="Bitte wählen" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="male">Männlich</SelectItem>
+                          <SelectItem value="female">Weiblich</SelectItem>
+                          <SelectItem value="diverse">Divers</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`class-${child.positionId}`}>Klasse</FieldLabel>
+                    <Select
+                      value={child.class}
+                      onValueChange={(value) =>
+                        updateChild(index, 'class', value as ChildFormState['class'])
+                      }
+                      required
+                      disabled={isPending}
+                    >
+                      <SelectTrigger
+                        id={`class-${child.positionId}`}
+                        aria-label={`Klasse fuer Kind ${index + 1}`}
+                        className="w-full"
+                      >
+                        <SelectValue placeholder="Keine Angabe" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="3">3. Klasse</SelectItem>
+                          <SelectItem value="4">4. Klasse</SelectItem>
+                          <SelectItem value="5">5. Klasse</SelectItem>
+                          <SelectItem value="6">6. Klasse</SelectItem>
+                          <SelectItem value="7">7. Klasse</SelectItem>
+                          <SelectItem value="8">8. Klasse</SelectItem>
+                          <SelectItem value="9">9. Klasse</SelectItem>
+                          <SelectItem value="10">10. Klasse</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                </div>
+              </FieldSet>
+              <div className="grid grid-cols-1 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel>Zimmerwunsch</FieldLabel>
+                  <ItemGroup>
+                    {(child.zimmerwunsch || []).map((roomMate, roomIndex) => (
+                      <Item key={roomIndex} size="sm" variant="outline">
+                        <ItemContent className="flex gap-1 sm:flex-row">
+                          <Input
+                            id={`zimmer-first-${child.positionId}-${roomIndex}`}
+                            placeholder="Vorname"
+                            value={roomMate.firstName || ''}
+                            onChange={(e) => {
+                              const updated = [...(child.zimmerwunsch || [])]
+                              updated[roomIndex] = {
+                                ...updated[roomIndex],
+                                firstName: e.target.value,
+                              }
+                              updateChild(index, 'zimmerwunsch', updated)
+                            }}
+                            disabled={isPending}
+                            required
+                          />
+                          <Input
+                            id={`zimmer-last-${child.positionId}-${roomIndex}`}
+                            placeholder="Nachname (optional)"
+                            value={roomMate.lastName || ''}
+                            onChange={(e) => {
+                              const updated = [...(child.zimmerwunsch || [])]
+                              updated[roomIndex] = {
+                                ...updated[roomIndex],
+                                lastName: e.target.value,
+                              }
+                              updateChild(index, 'zimmerwunsch', updated)
+                            }}
+                            disabled={isPending}
+                          />
+                        </ItemContent>
+                        <ItemActions>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              const updated = (child.zimmerwunsch || []).filter(
+                                (_, i) => i !== roomIndex,
+                              )
+                              updateChild(index, 'zimmerwunsch', updated)
+                            }}
+                            disabled={isPending}
+                            aria-label="Zimmerwunsch entfernen"
+                          >
+                            <Trash className="size-4" />
+                          </Button>
+                        </ItemActions>
+                      </Item>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const updated = [
+                          ...(child.zimmerwunsch || []),
+                          { firstName: '', lastName: '' },
+                        ]
+                        updateChild(index, 'zimmerwunsch', updated)
+                      }}
+                      disabled={isPending}
+                      className="w-full"
+                    >
+                      <Plus className="mr-2 size-4" />
+                      Zimmerwunsch hinzufügen
+                    </Button>
+                  </ItemGroup>
+                </Field>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor={`lastName-${child.positionId}`}>Nachname</Label>
-                <Input id={`lastName-${child.positionId}`} value={child.lastName} disabled />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div className="space-y-2">
-                <Label htmlFor={`birthDate-${child.positionId}`}>Geburtsdatum</Label>
-                <Input
-                  id={`birthDate-${child.positionId}`}
-                  type="date"
-                  value={child.dateOfBirth ?? ''}
-                  onChange={(event) => updateChild(index, 'dateOfBirth', event.target.value)}
-                  required
-                  disabled={isPending}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`gender-${child.positionId}`}>Geschlecht</Label>
-                <Select
-                  value={child.gender}
-                  onValueChange={(value) =>
-                    updateChild(index, 'gender', value as ChildFormState['gender'])
-                  }
-                  disabled={isPending}
-                >
-                  <SelectTrigger
-                    id={`gender-${child.positionId}`}
-                    aria-label={`Geschlecht fuer Kind ${index + 1}`}
-                    className="w-full"
-                  >
-                    <SelectValue placeholder="Bitte wählen" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="male">Männlich</SelectItem>
-                      <SelectItem value="female">Weiblich</SelectItem>
-                      <SelectItem value="diverse">Divers</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`class-${child.positionId}`}>Klasse</Label>
-                <Select
-                  value={child.class}
-                  onValueChange={(value) =>
-                    updateChild(index, 'class', value as ChildFormState['class'])
-                  }
-                  required
-                  disabled={isPending}
-                >
-                  <SelectTrigger
-                    id={`class-${child.positionId}`}
-                    aria-label={`Klasse fuer Kind ${index + 1}`}
-                    className="w-full"
-                  >
-                    <SelectValue placeholder="Keine Angabe" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="3">3. Klasse</SelectItem>
-                      <SelectItem value="4">4. Klasse</SelectItem>
-                      <SelectItem value="5">5. Klasse</SelectItem>
-                      <SelectItem value="6">6. Klasse</SelectItem>
-                      <SelectItem value="7">7. Klasse</SelectItem>
-                      <SelectItem value="8">8. Klasse</SelectItem>
-                      <SelectItem value="9">9. Klasse</SelectItem>
-                      <SelectItem value="10">10. Klasse</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Zimmerwunsch</Label>
-                <ItemGroup>
-                  {(child.zimmerwunsch || []).map((roomMate, roomIndex) => (
-                    <Item key={roomIndex} size="sm" variant="outline">
-                      <ItemContent className="flex gap-1 sm:flex-row">
-                        <Input
-                          id={`zimmer-first-${child.positionId}-${roomIndex}`}
-                          placeholder="Vorname"
-                          value={roomMate.firstName || ''}
-                          onChange={(e) => {
-                            const updated = [...(child.zimmerwunsch || [])]
-                            updated[roomIndex] = {
-                              ...updated[roomIndex],
-                              firstName: e.target.value,
-                            }
-                            updateChild(index, 'zimmerwunsch', updated)
-                          }}
-                          disabled={isPending}
-                          required
-                        />
-                        <Input
-                          id={`zimmer-last-${child.positionId}-${roomIndex}`}
-                          placeholder="Nachname (optional)"
-                          value={roomMate.lastName || ''}
-                          onChange={(e) => {
-                            const updated = [...(child.zimmerwunsch || [])]
-                            updated[roomIndex] = {
-                              ...updated[roomIndex],
-                              lastName: e.target.value,
-                            }
-                            updateChild(index, 'zimmerwunsch', updated)
-                          }}
-                          disabled={isPending}
-                        />
-                      </ItemContent>
-                      <ItemActions>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            const updated = (child.zimmerwunsch || []).filter(
-                              (_, i) => i !== roomIndex,
-                            )
-                            updateChild(index, 'zimmerwunsch', updated)
-                          }}
-                          disabled={isPending}
-                          aria-label="Zimmerwunsch entfernen"
-                        >
-                          <Trash className="size-4" />
-                        </Button>
-                      </ItemActions>
-                    </Item>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const updated = [
-                        ...(child.zimmerwunsch || []),
-                        { firstName: '', lastName: '' },
-                      ]
-                      updateChild(index, 'zimmerwunsch', updated)
-                    }}
+              <FieldSet>
+                <FieldLegend>Krankenkasse</FieldLegend>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <Field>
+                    <FieldLabel htmlFor={`insurance-${child.positionId}`}>
+                      Krankenversicherung
+                    </FieldLabel>
+                    <Input
+                      id={`insurance-${child.positionId}`}
+                      value={child.krankenversicherung}
+                      onChange={(event) =>
+                        updateChild(index, 'krankenversicherung', event.target.value)
+                      }
+                      required
+                      disabled={isPending}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`insurance-type-${child.positionId}`}>
+                      Versicherungsart
+                    </FieldLabel>
+                    <Select
+                      value={child.krankenversicherungArt}
+                      onValueChange={(value) =>
+                        updateChild(
+                          index,
+                          'krankenversicherungArt',
+                          value as ChildFormState['krankenversicherungArt'],
+                        )
+                      }
+                      required
+                      disabled={isPending}
+                    >
+                      <SelectTrigger
+                        id={`insurance-type-${child.positionId}`}
+                        aria-label={`Versicherungsart fuer Kind ${index + 1}`}
+                        className="w-full"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="gesetzlich">Gesetzlich</SelectItem>
+                          <SelectItem value="privat">Privat</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`insurance-number-${child.positionId}`}>
+                      Versichertennummer
+                    </FieldLabel>
+                    <Input
+                      id={`insurance-number-${child.positionId}`}
+                      value={child.krankenversicherungNummer}
+                      onChange={(event) =>
+                        updateChild(index, 'krankenversicherungNummer', event.target.value)
+                      }
+                      disabled={isPending}
+                    />
+                  </Field>
+                </div>
+                <FieldSet>
+                  <FieldGroup>
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        id={`krankenkassenkarte-${child.positionId}`}
+                        checked={child.krankenkassenKarte ?? false}
+                        onCheckedChange={(checked) =>
+                          updateChild(index, 'krankenkassenKarte', checked == true)
+                        }
+                        disabled={isPending}
+                      />
+                      <FieldContent>
+                        <FieldLabel htmlFor={`krankenkassenkarte-${child.positionId}`}>
+                          Krankenkassenkarte vorhanden
+                        </FieldLabel>
+                        <FieldDescription>
+                          {child.firstName} hat eine Krankenkassenkarte besitzt bringt sie mit.
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
+                  </FieldGroup>
+                </FieldSet>
+                <FieldSet>
+                  <FieldGroup>
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        id={`Impfpass-${child.positionId}`}
+                        checked={child.impfpass ?? false}
+                        onCheckedChange={(checked) =>
+                          updateChild(index, 'impfpass', checked == true)
+                        }
+                        disabled={isPending}
+                      />
+                      <FieldContent>
+                        <FieldLabel htmlFor={`Impfpass-${child.positionId}`}>
+                          Impfpass vorhanden
+                        </FieldLabel>
+                        <FieldDescription>
+                          {child.firstName} hat einen Impfpass besitzt bringt ihn mit.
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
+                  </FieldGroup>
+                </FieldSet>
+              </FieldSet>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor={`food-allergies-${child.positionId}`}>
+                    Lebensmittelallergien
+                  </FieldLabel>
+                  <Textarea
+                    id={`food-allergies-${child.positionId}`}
+                    value={child.foodAllergies}
+                    onChange={(event) => updateChild(index, 'foodAllergies', event.target.value)}
                     disabled={isPending}
-                    className="w-full"
-                  >
-                    <Plus className="mr-2 size-4" />
-                    Zimmerwunsch hinzufügen
-                  </Button>
-                </ItemGroup>
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`other-allergies-${child.positionId}`}>
+                    Sonstige Allergien
+                  </FieldLabel>
+                  <Textarea
+                    id={`other-allergies-${child.positionId}`}
+                    value={child.otherAllergies}
+                    onChange={(event) => updateChild(index, 'otherAllergies', event.target.value)}
+                    disabled={isPending}
+                  />
+                </Field>
               </div>
-            </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div className="space-y-2">
-                <Label htmlFor={`insurance-${child.positionId}`}>Krankenversicherung</Label>
-                <Input
-                  id={`insurance-${child.positionId}`}
-                  value={child.krankenversicherung}
-                  onChange={(event) =>
-                    updateChild(index, 'krankenversicherung', event.target.value)
-                  }
-                  required
-                  disabled={isPending}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`insurance-type-${child.positionId}`}>Versicherungsart</Label>
-                <Select
-                  value={child.krankenversicherungArt}
-                  onValueChange={(value) =>
-                    updateChild(
-                      index,
-                      'krankenversicherungArt',
-                      value as ChildFormState['krankenversicherungArt'],
-                    )
-                  }
-                  required
-                  disabled={isPending}
-                >
-                  <SelectTrigger
-                    id={`insurance-type-${child.positionId}`}
-                    aria-label={`Versicherungsart fuer Kind ${index + 1}`}
-                    className="w-full"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="gesetzlich">Gesetzlich</SelectItem>
-                      <SelectItem value="privat">Privat</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`insurance-number-${child.positionId}`}>Versichertennummer</Label>
-                <Input
-                  id={`insurance-number-${child.positionId}`}
-                  value={child.krankenversicherungNummer}
-                  onChange={(event) =>
-                    updateChild(index, 'krankenversicherungNummer', event.target.value)
-                  }
-                  required
-                  disabled={isPending}
-                />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor={`food-allergies-${child.positionId}`}>Lebensmittelallergien</Label>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor={`medical-conditions-${child.positionId}`}>
+                    Vorerkrankungen
+                  </FieldLabel>
+                  <Textarea
+                    id={`medical-conditions-${child.positionId}`}
+                    value={child.medicalConditions}
+                    onChange={(event) =>
+                      updateChild(index, 'medicalConditions', event.target.value)
+                    }
+                    disabled={isPending}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`medikamente-${child.positionId}`}>Medikamente</FieldLabel>
+                  <Textarea
+                    id={`medikamente-${child.positionId}`}
+                    value={child.medikamente}
+                    onChange={(event) => updateChild(index, 'medikamente', event.target.value)}
+                    disabled={isPending}
+                  />
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor={`doctor-${child.positionId}`}>Arzt</FieldLabel>
+                  <Input
+                    id={`doctor-${child.positionId}`}
+                    value={child.arzt}
+                    onChange={(event) => updateChild(index, 'arzt', event.target.value)}
+                    required
+                    disabled={isPending}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`doctor-phone-${child.positionId}`}>
+                    Arzt-Telefonnummer
+                  </FieldLabel>
+                  <PhoneInput
+                    id={`doctor-phone-${child.positionId}`}
+                    value={child.arztTelefon}
+                    onChange={(value) => updateChild(index, 'arztTelefon', value ?? '')}
+                    required
+                    disabled={isPending}
+                  />
+                </Field>
+              </div>
+
+              <Field orientation="horizontal">
+                <Checkbox
+                  id={`schwimmer-${child.positionId}`}
+                  checked={child.schwimmer ?? false}
+                  onCheckedChange={(checked) => updateChild(index, 'schwimmer', checked === true)}
+                  disabled={isPending}
+                />
+                <FieldContent>
+                  <FieldLabel htmlFor={`schwimmer-${child.positionId}`}>Schwimmer</FieldLabel>
+                  <FieldDescription>
+                    Bitte gib an, ob {child.firstName} Schwimmer ist.
+                  </FieldDescription>
+                </FieldContent>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor={`bemerkungen-${child.positionId}`}>
+                  Weitere Hinweise
+                </FieldLabel>
                 <Textarea
-                  id={`food-allergies-${child.positionId}`}
-                  value={child.foodAllergies}
-                  onChange={(event) => updateChild(index, 'foodAllergies', event.target.value)}
+                  id={`bemerkungen-${child.positionId}`}
+                  value={child.bemerkungen ?? ''}
+                  onChange={(event) => updateChild(index, 'bemerkungen', event.target.value)}
                   disabled={isPending}
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`other-allergies-${child.positionId}`}>Sonstige Allergien</Label>
-                <Textarea
-                  id={`other-allergies-${child.positionId}`}
-                  value={child.otherAllergies}
-                  onChange={(event) => updateChild(index, 'otherAllergies', event.target.value)}
-                  disabled={isPending}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor={`medical-conditions-${child.positionId}`}>Vorerkrankungen</Label>
-                <Textarea
-                  id={`medical-conditions-${child.positionId}`}
-                  value={child.medicalConditions}
-                  onChange={(event) => updateChild(index, 'medicalConditions', event.target.value)}
-                  disabled={isPending}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`medikamente-${child.positionId}`}>Medikamente</Label>
-                <Textarea
-                  id={`medikamente-${child.positionId}`}
-                  value={child.medikamente}
-                  onChange={(event) => updateChild(index, 'medikamente', event.target.value)}
-                  disabled={isPending}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor={`doctor-${child.positionId}`}>Arzt</Label>
-                <Input
-                  id={`doctor-${child.positionId}`}
-                  value={child.arzt}
-                  onChange={(event) => updateChild(index, 'arzt', event.target.value)}
-                  required
-                  disabled={isPending}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`doctor-phone-${child.positionId}`}>Arzt-Telefonnummer</Label>
-                <PhoneInput
-                  id={`doctor-phone-${child.positionId}`}
-                  value={child.arztTelefon}
-                  onChange={(value) => updateChild(index, 'arztTelefon', value ?? '')}
-                  required
-                  disabled={isPending}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Checkbox
-                id={`schwimmer-${child.positionId}`}
-                checked={child.schwimmer ?? false}
-                onCheckedChange={(checked) => updateChild(index, 'schwimmer', checked === true)}
-                disabled={isPending}
-              />
-              <Label htmlFor={`schwimmer-${child.positionId}`}>Kind ist Schwimmer</Label>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor={`bemerkungen-${child.positionId}`}>Weitere Hinweise</Label>
-              <Textarea
-                id={`bemerkungen-${child.positionId}`}
-                value={child.bemerkungen ?? ''}
-                onChange={(event) => updateChild(index, 'bemerkungen', event.target.value)}
-                disabled={isPending}
-              />
-            </div>
+              </Field>
+            </FieldGroup>
           </CardContent>
         </Card>
       ))}

@@ -76,7 +76,6 @@ export interface Config {
     sommerfreizeitUsers: SommerfreizeitUser;
     sommerfreizeitOrders: SommerfreizeitOrder;
     sommerfreizeitFeedback: SommerfreizeitFeedback;
-    sommerfreizeitPricing: SommerfreizeitPricing;
     blogPosts: BlogPost;
     blogCategory: BlogCategory;
     team: Team;
@@ -123,7 +122,6 @@ export interface Config {
     sommerfreizeitUsers: SommerfreizeitUsersSelect<false> | SommerfreizeitUsersSelect<true>;
     sommerfreizeitOrders: SommerfreizeitOrdersSelect<false> | SommerfreizeitOrdersSelect<true>;
     sommerfreizeitFeedback: SommerfreizeitFeedbackSelect<false> | SommerfreizeitFeedbackSelect<true>;
-    sommerfreizeitPricing: SommerfreizeitPricingSelect<false> | SommerfreizeitPricingSelect<true>;
     blogPosts: BlogPostsSelect<false> | BlogPostsSelect<true>;
     blogCategory: BlogCategorySelect<false> | BlogCategorySelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
@@ -280,6 +278,7 @@ export interface SommerfreizeitAnmeldung {
    * Z. B. 5. Klasse oder 10. Klasse
    */
   class?: ('3' | '4' | '5' | '6' | '7' | '8' | '9' | '10') | null;
+  bemerkungen?: string | null;
   /**
    * Name der Krankenversicherung, z. B. AOK oder TK
    */
@@ -292,11 +291,10 @@ export interface SommerfreizeitAnmeldung {
    * Die Versichertennummer Ihrer Krankenversicherung
    */
   krankenversicherungNummer?: string | null;
-  foodAllergies?: string | null;
   /**
-   * Z. B. Vegetarisch, Vegan etc.
+   * Besitzen Sie eine Krankenkassenkarte für Ihr Kind?
    */
-  foodPreferences?: ('vegetarisch' | 'vegan') | null;
+  krankenkassenKarte?: boolean | null;
   otherAllergies?: string | null;
   medicalConditions?: string | null;
   medikamente?: string | null;
@@ -319,12 +317,27 @@ export interface SommerfreizeitAnmeldung {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Besitzen Sie einen Impfpass für Ihr Kind?
+   */
+  impfpass?: boolean | null;
+  /**
+   * Name des Arztes Ihres Kindes
+   */
   arzt?: string | null;
+  /**
+   * Telefonnummer des Arztes Ihres Kindes
+   */
   arztTelefon?: string | null;
   /**
-   * Ist das Kind ein sicherer Schwimmer?
+   * Nimmt Ihr Kind am Hausarztmodell teil?
    */
-  schwimmer?: boolean | null;
+  hausarztmodell?: boolean | null;
+  foodAllergies?: string | null;
+  /**
+   * Z. B. Vegetarisch, Vegan etc.
+   */
+  foodPreferences?: ('vegetarisch' | 'vegan') | null;
   /**
    * Liste von Zimmerwüschen, geordnet nach Priorität.
    */
@@ -336,14 +349,49 @@ export interface SommerfreizeitAnmeldung {
         id?: string | null;
       }[]
     | null;
-  bemerkungen?: string | null;
+  /**
+   * Ist das Kind ein sicherer Schwimmer?
+   */
+  schwimmer?: boolean | null;
+  /**
+   * Falls das Kind ein Schwimmabzeichen besitzt, welches?
+   */
+  schwimmabzeichen?: ('kein' | 'bronze' | 'silber' | 'gold') | null;
+  /**
+   * Teilnahme am Programm?
+   */
+  programmTeilnahme?: 'klettern' | null;
+  /**
+   * Das Konto, über das die Anmeldung erfolgt ist. Wird automatisch mit den Daten des eingeloggten Users befüllt.
+   */
   account: string | SommerfreizeitUser;
+  /**
+   * Das Event, für das diese Anmeldung gilt. Wird automatisch mit den Daten aus dem Account befüllt.
+   */
   event: string | SommerfreizeitEvent;
+  /**
+   * Das Kind, für das diese Anmeldung gilt. Wird automatisch mit den Daten aus dem Account befüllt.
+   */
   child: string | SommerfreizeitChild;
+  /**
+   * Die zugehörige Bestellung in Pretix, falls vorhanden
+   */
   pretixOrder?: (string | null) | SommerfreizeitOrder;
+  /**
+   * Der Bestellcode der zugehörigen Pretix-Bestellung, z. B. ABCDE
+   */
   pretixOrderCode: string;
+  /**
+   * Die ID der zugehörigen Position in Pretix, z. B. 1
+   */
   pretixPositionId?: string | null;
+  /**
+   * Der Status der zugehörigen Pretix-Bestellung, z. B. Pending, Bezahlt, Abgelaufen, Storniert
+   */
   pretixStatus?: ('n' | 'p' | 'e' | 'c') | null;
+  /**
+   * Gibt an, ob diese Anmeldung noch genehmigt werden muss. Wird automatisch auf false gesetzt, wenn die zugehörige Pretix-Bestellung bezahlt ist.
+   */
   require_approval?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -632,10 +680,10 @@ export interface SommerfreizeitOrder {
   testMode?: boolean | null;
   email?: string | null;
   total?: number | null;
-  currency?: string | null;
   datetime?: string | null;
   expires?: string | null;
   pretixEventId?: string | null;
+  event?: (string | null) | SommerfreizeitEvent;
   positions?:
     | {
         [k: string]: unknown;
@@ -689,27 +737,6 @@ export interface SommerfreizeitFeedback {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitPricing".
- */
-export interface SommerfreizeitPricing {
-  id: string;
-  name: string;
-  beschreibung: string;
-  price: number;
-  /**
-   * Es kann nur eine Preisstufe als Standard festgelegt werden.
-   */
-  default?: boolean | null;
-  eigenschaften: {
-    name: string;
-    id?: string | null;
-  }[];
-  freizeit: string | SommerfreizeitEvent;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "blogPosts".
  */
 export interface BlogPost {
@@ -755,9 +782,6 @@ export interface User {
   sub?: string | null;
   updatedAt: string;
   createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -1439,10 +1463,6 @@ export interface PayloadLockedDocument {
         value: string | SommerfreizeitFeedback;
       } | null)
     | ({
-        relationTo: 'sommerfreizeitPricing';
-        value: string | SommerfreizeitPricing;
-      } | null)
-    | ({
         relationTo: 'blogPosts';
         value: string | BlogPost;
       } | null)
@@ -1585,11 +1605,11 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   lastName?: T;
   dateOfBirth?: T;
   class?: T;
+  bemerkungen?: T;
   krankenversicherung?: T;
   krankenversicherungArt?: T;
   krankenversicherungNummer?: T;
-  foodAllergies?: T;
-  foodPreferences?: T;
+  krankenkassenKarte?: T;
   otherAllergies?: T;
   medicalConditions?: T;
   medikamente?: T;
@@ -1606,9 +1626,12 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
         name?: T;
         id?: T;
       };
+  impfpass?: T;
   arzt?: T;
   arztTelefon?: T;
-  schwimmer?: T;
+  hausarztmodell?: T;
+  foodAllergies?: T;
+  foodPreferences?: T;
   zimmerwunsch?:
     | T
     | {
@@ -1617,7 +1640,9 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
         childRelation?: T;
         id?: T;
       };
-  bemerkungen?: T;
+  schwimmer?: T;
+  schwimmabzeichen?: T;
+  programmTeilnahme?: T;
   account?: T;
   event?: T;
   child?: T;
@@ -1756,10 +1781,10 @@ export interface SommerfreizeitOrdersSelect<T extends boolean = true> {
   testMode?: T;
   email?: T;
   total?: T;
-  currency?: T;
   datetime?: T;
   expires?: T;
   pretixEventId?: T;
+  event?: T;
   positions?: T;
   lastImportedAt?: T;
   pretixPayload?: T;
@@ -1774,25 +1799,6 @@ export interface SommerfreizeitFeedbackSelect<T extends boolean = true> {
   age?: T;
   rating?: T;
   comments?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitPricing_select".
- */
-export interface SommerfreizeitPricingSelect<T extends boolean = true> {
-  name?: T;
-  beschreibung?: T;
-  price?: T;
-  default?: T;
-  eigenschaften?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
-  freizeit?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2288,9 +2294,6 @@ export interface UsersSelect<T extends boolean = true> {
   sub?: T;
   updatedAt?: T;
   createdAt?: T;
-  enableAPIKey?: T;
-  apiKey?: T;
-  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;

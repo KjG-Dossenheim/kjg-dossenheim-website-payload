@@ -2,7 +2,6 @@ import type { CollectionConfig } from 'payload'
 import { syncChildDataBeforeChange } from './hooks/syncChildData'
 import { populateZimmerwunschChildRelation } from './hooks/populateZimmerwunschChildRelation'
 
-
 export const sommerfreizeitAnmeldung: CollectionConfig = {
   slug: 'sommerfreizeitAnmeldung',
   labels: {
@@ -43,6 +42,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         description: 'Der Vorname des Kindes',
         readOnly: true,
+        position: 'sidebar',
       },
     },
     {
@@ -52,6 +52,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         description: 'Der Nachname des Kindes',
         readOnly: true,
+        position: 'sidebar',
       },
     },
     {
@@ -61,6 +62,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         description: 'Das Geburtsdatum des Kindes',
         readOnly: true,
+        position: 'sidebar',
         date: {
           displayFormat: 'dd.MM.yyyy',
         },
@@ -73,6 +75,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         description: 'Z. B. 5. Klasse oder 10. Klasse',
         readOnly: true,
+        position: 'sidebar',
       },
       options: [
         { label: '3. Klasse', value: '3' },
@@ -86,154 +89,237 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       ],
     },
     {
-      name: 'krankenversicherung',
-      label: 'Krankenversicherung',
-      type: 'text',
-      admin: {
-        description: 'Name der Krankenversicherung, z. B. AOK oder TK',
-      },
-    },
-    {
-      name: 'krankenversicherungArt',
-      label: 'Art der Krankenversicherung',
-      type: 'select',
-      options: [
-        { label: 'Gesetzlich', value: 'gesetzlich' },
-        { label: 'Privat', value: 'privat' },
-      ],
-      admin: {
-        description: 'Z. B. Gesetzlich oder Privat',
-      },
-    },
-    {
-      name: 'krankenversicherungNummer',
-      label: 'Versichertennummer',
-      type: 'text',
-      admin: {
-        description: 'Die Versichertennummer Ihrer Krankenversicherung',
-      },
-    },
-    {
-      name: 'foodAllergies',
-      label: 'Lebensmittelallergien',
-      type: 'text',
-    },
-    {
-      name: `foodPreferences`,
-      label: 'Ernährungspräferenzen',
-      type: 'select',
-      options: [
-        { label: 'Vegetarisch', value: 'vegetarisch' },
-        { label: 'Vegan', value: 'vegan' },
-      ],
-      admin: {
-        description: 'Z. B. Vegetarisch, Vegan etc.',
-      },
-    },
-    {
-      name: 'otherAllergies',
-      label: 'Sonstige Allergien',
-      type: 'text',
-    },
-    {
-      name: 'medicalConditions',
-      label: 'Medizinische Vorerkrankungen',
-      type: 'text',
-    },
-    {
-      name: 'medikamente',
-      label: 'Medikamente',
-      type: 'text',
-    },
-    {
-      name: 'medikamenteArray',
-      label: 'Medikamente (Liste)',
-      type: 'array',
-      admin: {
-        description: 'Liste der Medikamente, die das Kind regelmäßig einnimmt, inklusive Dosierung und Einnahmehinweise',
-      },
-      fields: [
-        {
-          name: 'name',
-          label: 'Name des Medikaments',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'dosierung',
-          label: 'Dosierung und Einnahmehinweise',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
-    {
-      name: 'impfungen',
-      label: 'Impfungen',
-      type: 'array',
-      admin: {
-        description: 'Liste der Impfungen, z. B. Masern, Mumps, Röteln, Tetanus',
-      },
-      fields: [
-        {
-          name: 'name',
-          label: 'Name der Impfung',
-          type: 'text',
-        },
-      ],
-    },
-    {
-      name: 'arzt',
-      label: 'Arzt',
-      type: 'text',
-    },
-    {
-      name: 'arztTelefon',
-      label: 'Telefonnummer des Arztes',
-      type: 'text',
-    },
-    {
-      name: 'schwimmer',
-      label: 'Schwimmer',
-      type: 'checkbox',
-      admin: {
-        description: 'Ist das Kind ein sicherer Schwimmer?',
-      },
-    },
-    {
-      name: 'zimmerwunsch',
-      label: 'Zimmerwunsch',
-      type: 'array',
-      fields: [
-        {
-          name: 'firstName',
-          label: 'Vorname',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'lastName',
-          label: 'Nachname',
-          type: 'text'
-        },
-        {
-          name: 'childRelation',
-          label: 'Verknüpftes Kind',
-          type: 'relationship',
-          relationTo: 'sommerfreizeitAnmeldung',
-          admin: {
-            hidden: true,
-          },
-        }
-      ],
-      admin: {
-        description: 'Liste von Zimmerwüschen, geordnet nach Priorität.',
-      },
-    },
-    {
       name: 'bemerkungen',
       label: 'Weitere Hinweise',
       type: 'text',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Gesundheit',
+          fields: [
+            {
+              name: 'krankenversicherung',
+              label: 'Krankenversicherung',
+              type: 'text',
+              admin: {
+                description: 'Name der Krankenversicherung, z. B. AOK oder TK',
+              },
+            },
+            {
+              name: 'krankenversicherungArt',
+              label: 'Art der Krankenversicherung',
+              type: 'select',
+              options: [
+                { label: 'Gesetzlich', value: 'gesetzlich' },
+                { label: 'Privat', value: 'privat' },
+              ],
+              admin: {
+                description: 'Z. B. Gesetzlich oder Privat',
+              },
+            },
+            {
+              name: 'krankenversicherungNummer',
+              label: 'Versichertennummer',
+              type: 'text',
+              admin: {
+                description: 'Die Versichertennummer Ihrer Krankenversicherung',
+              },
+            },
+            {
+              name: 'krankenkassenKarte',
+              label: 'Krankenkassenkarte',
+              type: 'checkbox',
+              admin: {
+                description: 'Besitzen Sie eine Krankenkassenkarte für Ihr Kind?',
+              },
+            },
+            {
+              name: 'otherAllergies',
+              label: 'Sonstige Allergien',
+              type: 'text',
+            },
+            {
+              name: 'medicalConditions',
+              label: 'Medizinische Vorerkrankungen',
+              type: 'text',
+            },
+            {
+              name: 'medikamente',
+              label: 'Medikamente',
+              type: 'text',
+            },
+            {
+              name: 'medikamenteArray',
+              label: 'Medikamente (Liste)',
+              type: 'array',
+              admin: {
+                description: 'Liste der Medikamente, die das Kind regelmäßig einnimmt, inklusive Dosierung und Einnahmehinweise',
+              },
+              fields: [
+                {
+                  name: 'name',
+                  label: 'Name des Medikaments',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'dosierung',
+                  label: 'Dosierung und Einnahmehinweise',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
+            {
+              name: 'impfungen',
+              label: 'Impfungen',
+              type: 'array',
+              admin: {
+                description: 'Liste der Impfungen, z. B. Masern, Mumps, Röteln, Tetanus',
+              },
+              fields: [
+                {
+                  name: 'name',
+                  label: 'Name der Impfung',
+                  type: 'text',
+                },
+              ],
+            },
+            {
+              name: 'impfpass',
+              label: 'Impfpass',
+              type: 'checkbox',
+              admin: {
+                description: 'Besitzen Sie einen Impfpass für Ihr Kind?',
+              },
+            },
+            {
+              name: 'arzt',
+              label: 'Arzt',
+              type: 'text',
+              admin: {
+                description: 'Name des Arztes Ihres Kindes',
+              },
+            },
+            {
+              name: 'arztTelefon',
+              label: 'Telefonnummer des Arztes',
+              type: 'text',
+              admin: {
+                description: 'Telefonnummer des Arztes Ihres Kindes',
+              },
+            },
+            {
+              name: 'hausarztmodell',
+              label: 'Teilnahme am Hausarztmodell',
+              type: 'checkbox',
+              admin: {
+                description: 'Nimmt Ihr Kind am Hausarztmodell teil?',
+              },
+            },
+          ]
+        },
+        {
+          label: 'Ernährung',
+          fields: [
+            {
+              name: 'foodAllergies',
+              label: 'Lebensmittelallergien',
+              type: 'text',
+            },
+            {
+              name: `foodPreferences`,
+              label: 'Ernährungspräferenzen',
+              type: 'select',
+              options: [
+                { label: 'Vegetarisch', value: 'vegetarisch' },
+                { label: 'Vegan', value: 'vegan' },
+              ],
+              admin: {
+                description: 'Z. B. Vegetarisch, Vegan etc.',
+              },
+            },
+          ]
+        },
+        {
+          label: 'Zimmerwünsche',
+          fields: [
+            {
+              name: 'zimmerwunsch',
+              label: 'Zimmerwunsch',
+              type: 'array',
+              fields: [
+                {
+                  name: 'firstName',
+                  label: 'Vorname',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'lastName',
+                  label: 'Nachname',
+                  type: 'text'
+                },
+                {
+                  name: 'childRelation',
+                  label: 'Verknüpftes Kind',
+                  type: 'relationship',
+                  relationTo: 'sommerfreizeitAnmeldung',
+                  admin: {
+                    hidden: true,
+                  },
+                }
+              ],
+              admin: {
+                description: 'Liste von Zimmerwüschen, geordnet nach Priorität.',
+              },
+            },
+          ],
+        },
+        {
+          label: 'Sonstiges',
+          fields: [
+            {
+              name: 'schwimmer',
+              label: 'Schwimmer',
+              type: 'checkbox',
+              admin: {
+                description: 'Ist das Kind ein sicherer Schwimmer?',
+              },
+            },
+            {
+              name: 'schwimmabzeichen',
+              label: 'Schwimmabzeichen',
+              type: 'select',
+              options: [
+                { label: 'Kein Abzeichen', value: 'kein' },
+                { label: 'Bronze', value: 'bronze' },
+                { label: 'Silber', value: 'silber' },
+                { label: 'Gold', value: 'gold' },
+              ],
+              admin: {
+                description: 'Falls das Kind ein Schwimmabzeichen besitzt, welches?',
+              },
+            },
+            {
+              name: 'programmTeilnahme',
+              label: 'Teilnahme am Programm',
+              type: 'select',
+              options: [
+                { label: 'Klettern', value: 'klettern' },
+              ],
+              admin: {
+                description: 'Teilnahme am Programm?',
+              },
+            },
+          ]
+        }
+      ]
     },
     {
       name: 'account',
@@ -243,8 +329,8 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       required: true,
       index: true,
       admin: {
-        position: 'sidebar',
-        readOnly: true,
+        description: 'Das Konto, über das die Anmeldung erfolgt ist. Wird automatisch mit den Daten des eingeloggten Users befüllt.',
+        hidden: true,
       },
       access: {
         update: () => false,
@@ -258,8 +344,8 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       required: true,
       index: true,
       admin: {
-        position: 'sidebar',
-        readOnly: true,
+        description: 'Das Event, für das diese Anmeldung gilt. Wird automatisch mit den Daten aus dem Account befüllt.',
+        hidden: true,
       },
       access: {
         update: () => false,
@@ -272,8 +358,8 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       relationTo: 'sommerfreizeitChild',
       required: true,
       admin: {
-        position: 'sidebar',
-        readOnly: true,
+        description: 'Das Kind, für das diese Anmeldung gilt. Wird automatisch mit den Daten aus dem Account befüllt.',
+        hidden: true,
       },
       access: {
         update: () => false,
@@ -285,7 +371,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       type: 'relationship',
       relationTo: 'sommerfreizeitOrders',
       admin: {
-        position: 'sidebar',
+        description: 'Die zugehörige Bestellung in Pretix, falls vorhanden',
         hidden: true,
       },
     },
@@ -296,7 +382,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       index: true,
       required: true,
       admin: {
-        position: 'sidebar',
+        description: 'Der Bestellcode der zugehörigen Pretix-Bestellung, z. B. ABCDE',
         hidden: true,
       },
     },
@@ -306,7 +392,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       type: 'text',
       index: true,
       admin: {
-        position: 'sidebar',
+        description: 'Die ID der zugehörigen Position in Pretix, z. B. 1',
         hidden: true,
       },
     },
@@ -322,8 +408,8 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         { label: 'Storniert', value: 'c' }
       ],
       admin: {
-        position: 'sidebar',
-        readOnly: true,
+        description: 'Der Status der zugehörigen Pretix-Bestellung, z. B. Pending, Bezahlt, Abgelaufen, Storniert',
+        hidden: true,
       },
     },
     {
@@ -332,8 +418,8 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       type: 'checkbox',
       defaultValue: true,
       admin: {
+        description: 'Gibt an, ob diese Anmeldung noch genehmigt werden muss. Wird automatisch auf false gesetzt, wenn die zugehörige Pretix-Bestellung bezahlt ist.',
         hidden: true,
-        position: 'sidebar',
       },
     }
   ],

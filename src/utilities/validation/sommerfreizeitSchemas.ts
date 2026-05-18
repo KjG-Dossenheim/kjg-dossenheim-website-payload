@@ -7,7 +7,7 @@ export const lookupOrderSchema = z.object({
 })
 
 export const childInputSchema = z.object({
-  positionId: z.string().trim().min(1),
+  positionId: z.coerce.string().trim().min(1),
   firstName: z.string().trim().min(1, 'Vorname ist erforderlich.'),
   lastName: z.string().trim().min(1, 'Nachname ist erforderlich.'),
   dateOfBirth: z.string().trim().min(1, 'Geburtsdatum ist erforderlich.'),
@@ -20,15 +20,17 @@ export const childInputSchema = z.object({
   krankenversicherung: z.string().trim().min(1, 'Krankenversicherung ist erforderlich.'),
   krankenversicherungArt: z.enum(['gesetzlich', 'privat'], {
     error: 'Art der Krankenversicherung ist erforderlich.',
-  }),
+  }).nullish(),
   krankenversicherungNummer: z.string().trim().min(1, 'Versichertennummer ist erforderlich.'),
+  krankenkassenKarte: z.boolean().optional().nullish(),
+  impfpass: z.boolean().optional().nullish(),
   foodAllergies: z.string().trim(),
   otherAllergies: z.string().trim(),
   medicalConditions: z.string().trim(),
   medikamente: z.string().trim(),
   arzt: z.string().trim().min(1, 'Arzt ist erforderlich.'),
   arztTelefon: z.string().trim().min(1, 'Arzt-Telefon ist erforderlich.'),
-  schwimmer: z.boolean(),
+  schwimmer: z.boolean().optional().nullish(),
   bemerkungen: z.string().trim().optional(),
   zimmerwunsch: z.array(z.object({
     firstName: z.string().trim().min(1, 'Vorname ist erforderlich.'),
