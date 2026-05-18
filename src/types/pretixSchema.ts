@@ -93,20 +93,20 @@ export const pretixRefundSchema = z.object({
 })
 
 export const pretixOrderSchema = z.object({
-  code: z.string().optional(),
-  event: z.string().optional(),
-  status: z.string().optional(),
-  testmode: z.boolean().optional(),
-  secret: z.string().optional(),
+  code: z.string(),
+  event: z.string(),
+  status: z.enum(['n', 'p', 'e', 'c']),
+  testmode: z.boolean(),
+  secret: z.string(),
   email: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
   locale: z.string().optional(),
-  datetime: z.string().optional(),
-  expires: z.string().nullable().optional(),
-  payment_date: z.string().nullable().optional(),
+  datetime: z.iso.datetime({ offset: true }).optional(),
+  expires: z.iso.datetime({ offset: true }).optional(),
+  payment_date: z.iso.datetime({ offset: true }).nullable().optional(),
   payment_provider: z.string().nullable().optional(),
   fees: z.array(z.unknown()).optional(),
-  total: z.string().or(z.coerce.number()).optional(),
+  total: z.coerce.number(),
   tax_rounding_mode: z.string().nullable().optional(),
   comment: z.string().nullable().optional(),
   custom_followup_at: z.unknown().nullable().optional(),
@@ -129,10 +129,10 @@ export const pretixOrderSchema = z.object({
 })
 
 export const pretixOrderListSchema = z.object({
-  count: z.number().optional(),
-  next: z.string().nullable().optional(),
-  previous: z.string().nullable().optional(),
-  results: z.array(pretixOrderSchema).optional(),
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
+  results: z.array(pretixOrderSchema),
 })
 
 export type PretixOrder = z.infer<typeof pretixOrderSchema>
