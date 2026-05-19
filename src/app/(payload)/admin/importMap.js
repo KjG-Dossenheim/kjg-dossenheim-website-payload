@@ -41,7 +41,6 @@ import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 }
 import { default as default_a0cc27b717f503b668869b486d99e1eb } from '@/components/admin/settingsMenu/MySettingsMenu'
 import { default as default_a8ed57560afaff4535f43ca83a9fecbd } from '@/graphics/Icon'
 import { default as default_d3e265f969641a4ccf3d5a195904e268 } from '@/graphics/Logo'
-import { AuthentikOAuthLoginButton as AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914 } from '@/components/admin/button/AuthentikOAuthLoginButton'
 import { default as default_d4a5371c3bfcd973abc37a1ee6c57fde } from '@/components/admin/beforeNavLinks/NavLogo'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { default as default_290e0a8c59d7e067b68e692ff1af72ee } from '@/components/admin/Knallbonbon/Views/ChildrenListView'
@@ -96,7 +95,6 @@ export const importMap = {
   "@/components/admin/settingsMenu/MySettingsMenu#default": default_a0cc27b717f503b668869b486d99e1eb,
   "@/graphics/Icon#default": default_a8ed57560afaff4535f43ca83a9fecbd,
   "@/graphics/Logo#default": default_d3e265f969641a4ccf3d5a195904e268,
-  "@/components/admin/button/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton": AuthentikOAuthLoginButton_851deaf6a5adc1fb76f2720d133b9914,
   "@/components/admin/beforeNavLinks/NavLogo#default": default_d4a5371c3bfcd973abc37a1ee6c57fde,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@/components/admin/Knallbonbon/Views/ChildrenListView#default": default_290e0a8c59d7e067b68e692ff1af72ee,

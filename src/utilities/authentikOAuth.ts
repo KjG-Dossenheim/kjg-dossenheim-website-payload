@@ -1,4 +1,5 @@
-import { OAuth2Plugin } from "payload-oauth2";
+import { PayloadRequest } from "payload";
+import { OAuth2Plugin, defaultGetToken } from "payload-oauth2";
 
 // Authentik OAuth
 export const authentikOAuth = OAuth2Plugin({
@@ -27,13 +28,29 @@ export const authentikOAuth = OAuth2Plugin({
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const user = await response.json();
-
-    // Split name into first name and last name
-    const nameParts = user.name ? user.name.split(' ') : [];
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-
-    return { email: user.email, sub: user.sub, firstName, lastName };
+    return { email: user.email, sub: user.sub };
+  },
+  getToken: async (code: string, req: PayloadRequest) => {
+    const redirectUri = `${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/api/users/oauth/callback`;
+    const token = await defaultGetToken(
+      process.env.AUTHENTIK_TOKEN_ENDPOINT || "",
+      process.env.AUTHENTIK_CLIENT_ID || "",
+      process.env.AUTHENTIK_CLIENT_SECRET || "",
+      redirectUri,
+      code,
+    );
+    ////////////////////////////////////////////////////////////////////////////
+    // Consider this section afterToken hook
+    ////////////////////////////////////////////////////////////////////////////
+    req.payload.logger.info("Received token:" + token + " 👀");
+    if (req.user) {
+      req.payload.update({
+        collection: "users",
+        id: req.user.id,
+        data: {},
+      });
+    }
+    return token;
   },
   successRedirect: () => {
     return "/admin";

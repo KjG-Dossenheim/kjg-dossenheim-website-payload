@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Item, ItemGroup, ItemContent, ItemActions } from '@/components/ui/item'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 import type { SommerfreizeitAnmeldung, SommerfreizeitChild } from '@/payload-types'
 
@@ -75,10 +76,10 @@ type ChildFormState = {
   firstName: SommerfreizeitChild['firstName']
   lastName: SommerfreizeitChild['lastName']
   dateOfBirth: string
-  gender: Exclude<SommerfreizeitChild['gender'], null>
-  class: Exclude<SommerfreizeitAnmeldung['class'], null>
+  gender: SommerfreizeitChild['gender']
+  class: SommerfreizeitAnmeldung['class']
   krankenversicherung: string
-  krankenversicherungArt: Exclude<SommerfreizeitAnmeldung['krankenversicherungArt'], null>
+  krankenversicherungArt: SommerfreizeitAnmeldung['krankenversicherungArt']
   krankenversicherungNummer: string
   krankenkassenKarte: SommerfreizeitAnmeldung['krankenkassenKarte']
   foodAllergies: string
@@ -88,11 +89,46 @@ type ChildFormState = {
   medikamenteArray: SommerfreizeitAnmeldung['medikamenteArray']
   arzt: string
   arztTelefon: string
+  hausarztmodell: SommerfreizeitAnmeldung['hausarztmodell']
   schwimmer: SommerfreizeitAnmeldung['krankenkassenKarte']
+  schwimmabzeichen: SommerfreizeitAnmeldung['schwimmabzeichen']
   bemerkungen: string
   impfpass: SommerfreizeitAnmeldung['impfpass']
   zimmerwunsch: SommerfreizeitAnmeldung['zimmerwunsch']
+  foodPreferences: SommerfreizeitAnmeldung['foodPreferences']
+  agbAkzeptiert: SommerfreizeitAnmeldung['agbAkzeptiert']
+  datenschutzAkzeptiert: SommerfreizeitAnmeldung['datenschutzAkzeptiert']
+  bildrechte: SommerfreizeitAnmeldung['bildrechte']
 }
+
+const genderLabels = {
+  male: 'Männlich',
+  female: 'Weiblich',
+  diverse: 'Divers',
+} as const
+
+const classLabels = {
+  '3': '3. Klasse',
+  '4': '4. Klasse',
+  '5': '5. Klasse',
+  '6': '6. Klasse',
+  '7': '7. Klasse',
+  '8': '8. Klasse',
+  '9': '9. Klasse',
+  '10': '10. Klasse',
+} as const
+
+const krankenversicherungArtLabels = {
+  gesetzlich: 'Gesetzlich',
+  privat: 'Privat',
+} as const
+
+const schwimmabzeichenLabels = {
+  seepferdchen: 'Seepferdchen',
+  bronze: 'Bronze',
+  silber: 'Silber',
+  gold: 'Gold',
+} as const
 
 function buildInitialChild(position: PositionView): ChildFormState {
   return {
@@ -115,10 +151,16 @@ function buildInitialChild(position: PositionView): ChildFormState {
     medikamenteArray: undefined,
     arzt: '',
     arztTelefon: '',
+    hausarztmodell: false,
     schwimmer: false,
+    schwimmabzeichen: undefined,
     bemerkungen: '',
     zimmerwunsch: [],
     impfpass: false,
+    foodPreferences: undefined,
+    agbAkzeptiert: false,
+    datenschutzAkzeptiert: false,
+    bildrechte: 'no',
   }
 }
 
@@ -241,12 +283,14 @@ export function CheckForm({
           krankenversicherungNummer: child.krankenversicherungNummer,
           krankenkassenKarte: child.krankenkassenKarte,
           foodAllergies: child.foodAllergies,
+          foodPreferences: child.foodPreferences,
           otherAllergies: child.otherAllergies,
           medicalConditions: child.medicalConditions,
           medikamente: child.medikamente,
           arzt: child.arzt,
           arztTelefon: child.arztTelefon,
           schwimmer: child.schwimmer,
+          schwimmabzeichen: child.schwimmabzeichen,
           bemerkungen: child.bemerkungen,
           medikamenteArray: child.medikamenteArray,
           impfpass: child.impfpass,
@@ -254,6 +298,9 @@ export function CheckForm({
             firstName: zimmerwunsch.firstName,
             lastName: zimmerwunsch.lastName ?? '',
           })),
+          datenschutzAkzeptiert: child.datenschutzAkzeptiert,
+          agbAkzeptiert: child.agbAkzeptiert,
+          bildrechte: child.bildrechte,
         })),
       })
 
@@ -350,7 +397,7 @@ export function CheckForm({
             <FieldGroup>
               <FieldSet>
                 <FieldLegend>Persönliche Informationen</FieldLegend>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Field>
                     <FieldLabel htmlFor={`firstName-${child.positionId}`}>Vorname</FieldLabel>
                     <Input id={`firstName-${child.positionId}`} value={child.firstName} disabled />
@@ -359,8 +406,8 @@ export function CheckForm({
                     <FieldLabel htmlFor={`lastName-${child.positionId}`}>Nachname</FieldLabel>
                     <Input id={`lastName-${child.positionId}`} value={child.lastName} disabled />
                   </Field>
-                </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                </FieldGroup>
+                <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <Field>
                     <FieldLabel htmlFor={`birthDate-${child.positionId}`}>Geburtsdatum</FieldLabel>
                     <Input
@@ -386,13 +433,21 @@ export function CheckForm({
                         aria-label={`Geschlecht fuer Kind ${index + 1}`}
                         className="w-full"
                       >
-                        <SelectValue placeholder="Bitte wählen" />
+                        <SelectValue placeholder="Bitte wählen">
+                          {(value) => genderLabels[value as keyof typeof genderLabels] ?? value}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="male">Männlich</SelectItem>
-                          <SelectItem value="female">Weiblich</SelectItem>
-                          <SelectItem value="diverse">Divers</SelectItem>
+                          <SelectItem value="male" label="Männlich">
+                            Männlich
+                          </SelectItem>
+                          <SelectItem value="female" label="Weiblich">
+                            Weiblich
+                          </SelectItem>
+                          <SelectItem value="diverse" label="Divers">
+                            Divers
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -412,25 +467,43 @@ export function CheckForm({
                         aria-label={`Klasse fuer Kind ${index + 1}`}
                         className="w-full"
                       >
-                        <SelectValue placeholder="Keine Angabe" />
+                        <SelectValue placeholder="Keine Angabe">
+                          {(value) => classLabels[value as keyof typeof classLabels] ?? value}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="3">3. Klasse</SelectItem>
-                          <SelectItem value="4">4. Klasse</SelectItem>
-                          <SelectItem value="5">5. Klasse</SelectItem>
-                          <SelectItem value="6">6. Klasse</SelectItem>
-                          <SelectItem value="7">7. Klasse</SelectItem>
-                          <SelectItem value="8">8. Klasse</SelectItem>
-                          <SelectItem value="9">9. Klasse</SelectItem>
-                          <SelectItem value="10">10. Klasse</SelectItem>
+                          <SelectItem value="3" label="3. Klasse">
+                            3. Klasse
+                          </SelectItem>
+                          <SelectItem value="4" label="4. Klasse">
+                            4. Klasse
+                          </SelectItem>
+                          <SelectItem value="5" label="5. Klasse">
+                            5. Klasse
+                          </SelectItem>
+                          <SelectItem value="6" label="6. Klasse">
+                            6. Klasse
+                          </SelectItem>
+                          <SelectItem value="7" label="7. Klasse">
+                            7. Klasse
+                          </SelectItem>
+                          <SelectItem value="8" label="8. Klasse">
+                            8. Klasse
+                          </SelectItem>
+                          <SelectItem value="9" label="9. Klasse">
+                            9. Klasse
+                          </SelectItem>
+                          <SelectItem value="10" label="10. Klasse">
+                            10. Klasse
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                   </Field>
-                </div>
+                </FieldGroup>
               </FieldSet>
-              <div className="grid grid-cols-1 sm:grid-cols-2">
+              <FieldSet className="grid grid-cols-1 sm:grid-cols-2">
                 <Field>
                   <FieldLabel>Zimmerwunsch</FieldLabel>
                   <ItemGroup>
@@ -505,10 +578,10 @@ export function CheckForm({
                     </Button>
                   </ItemGroup>
                 </Field>
-              </div>
+              </FieldSet>
               <FieldSet>
                 <FieldLegend>Krankenkasse</FieldLegend>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <Field>
                     <FieldLabel htmlFor={`insurance-${child.positionId}`}>
                       Krankenversicherung
@@ -544,12 +617,22 @@ export function CheckForm({
                         aria-label={`Versicherungsart fuer Kind ${index + 1}`}
                         className="w-full"
                       >
-                        <SelectValue />
+                        <SelectValue>
+                          {(value) =>
+                            krankenversicherungArtLabels[
+                              value as keyof typeof krankenversicherungArtLabels
+                            ] ?? value
+                          }
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="gesetzlich">Gesetzlich</SelectItem>
-                          <SelectItem value="privat">Privat</SelectItem>
+                          <SelectItem value="gesetzlich" label="Gesetzlich">
+                            Gesetzlich
+                          </SelectItem>
+                          <SelectItem value="privat" label="Privat">
+                            Privat
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -567,7 +650,7 @@ export function CheckForm({
                       disabled={isPending}
                     />
                   </Field>
-                </div>
+                </FieldGroup>
                 <FieldSet>
                   <FieldGroup>
                     <Field orientation="horizontal">
@@ -613,18 +696,73 @@ export function CheckForm({
                   </FieldGroup>
                 </FieldSet>
               </FieldSet>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor={`food-allergies-${child.positionId}`}>
-                    Lebensmittelallergien
-                  </FieldLabel>
-                  <Textarea
-                    id={`food-allergies-${child.positionId}`}
-                    value={child.foodAllergies}
-                    onChange={(event) => updateChild(index, 'foodAllergies', event.target.value)}
-                    disabled={isPending}
-                  />
-                </Field>
+              <FieldSet>
+                <FieldLegend>Ernährung</FieldLegend>
+                <FieldGroup className="grid grid-cols-1 sm:grid-cols-2">
+                  <Field>
+                    <FieldLabel htmlFor={`food-allergies-${child.positionId}`}>
+                      Lebensmittelallergien
+                    </FieldLabel>
+                    <Textarea
+                      id={`food-allergies-${child.positionId}`}
+                      value={child.foodAllergies}
+                      onChange={(event) => updateChild(index, 'foodAllergies', event.target.value)}
+                      disabled={isPending}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`foodPreferences-${child.positionId}`}>
+                      Ernährungspräferenzen
+                    </FieldLabel>
+                    <RadioGroup
+                      id={`foodPreferences-${child.positionId}`}
+                      defaultValue=""
+                      value={child.foodPreferences}
+                      onValueChange={(value) =>
+                        updateChild(
+                          index,
+                          'foodPreferences',
+                          value as ChildFormState['foodPreferences'],
+                        )
+                      }
+                    >
+                      <Field orientation="horizontal">
+                        <RadioGroupItem
+                          value=""
+                          id={`none-${child.positionId}`}
+                          disabled={isPending}
+                        />
+                        <FieldContent>
+                          <FieldLabel htmlFor={`none-${child.positionId}`}>Keine</FieldLabel>
+                        </FieldContent>
+                      </Field>
+                      <Field orientation="horizontal">
+                        <RadioGroupItem
+                          value="vegetarisch"
+                          id={`vegetarisch-${child.positionId}`}
+                          disabled={isPending}
+                        />
+                        <FieldContent>
+                          <FieldLabel htmlFor={`vegetarisch-${child.positionId}`}>
+                            Vegetarisch
+                          </FieldLabel>
+                        </FieldContent>
+                      </Field>
+                      <Field orientation="horizontal">
+                        <RadioGroupItem
+                          value="vegan"
+                          id={`vegan-${child.positionId}`}
+                          disabled={isPending}
+                        />
+                        <FieldContent>
+                          <FieldLabel htmlFor={`vegan-${child.positionId}`}>Vegan</FieldLabel>
+                        </FieldContent>
+                      </Field>
+                    </RadioGroup>
+                  </Field>
+                </FieldGroup>
+              </FieldSet>
+              <FieldSet className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor={`other-allergies-${child.positionId}`}>
                     Sonstige Allergien
@@ -636,9 +774,8 @@ export function CheckForm({
                     disabled={isPending}
                   />
                 </Field>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              </FieldSet>
+              <FieldSet className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor={`medical-conditions-${child.positionId}`}>
                     Vorerkrankungen
@@ -661,59 +798,196 @@ export function CheckForm({
                     disabled={isPending}
                   />
                 </Field>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              </FieldSet>
+              <FieldSet>
+                <FieldLegend>Ärztliche Versorgung</FieldLegend>
+                <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field>
+                    <FieldLabel htmlFor={`doctor-${child.positionId}`}>Arzt</FieldLabel>
+                    <Input
+                      id={`doctor-${child.positionId}`}
+                      value={child.arzt}
+                      onChange={(event) => updateChild(index, 'arzt', event.target.value)}
+                      required
+                      disabled={isPending}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`doctor-phone-${child.positionId}`}>
+                      Arzt-Telefonnummer
+                    </FieldLabel>
+                    <PhoneInput
+                      id={`doctor-phone-${child.positionId}`}
+                      value={child.arztTelefon}
+                      onChange={(value) => updateChild(index, 'arztTelefon', value ?? '')}
+                      required
+                      disabled={isPending}
+                    />
+                  </Field>
+                </FieldGroup>
+                <FieldGroup>
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      id={`hausarztmodell-${child.positionId}`}
+                      checked={child.hausarztmodell ?? false}
+                      onCheckedChange={(checked) =>
+                        updateChild(index, 'hausarztmodell', checked === true)
+                      }
+                      disabled={isPending}
+                    />
+                    <FieldContent>
+                      <FieldLabel htmlFor={`hausarztmodell-${child.positionId}`}>
+                        Hausarztmodell
+                      </FieldLabel>
+                      <FieldDescription>
+                        Bitte gib an, ob {child.firstName} am{' '}
+                        <Link
+                          href="https://www.bundesgesundheitsministerium.de/hausarztsystem"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          Hausarztmodell
+                        </Link>{' '}
+                        teilnimmt.
+                      </FieldDescription>
+                    </FieldContent>
+                  </Field>
+                </FieldGroup>
+              </FieldSet>
+              <FieldSet>
+                <FieldLegend>Programm</FieldLegend>
+                <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      id={`schwimmer-${child.positionId}`}
+                      checked={child.schwimmer ?? false}
+                      onCheckedChange={(checked) =>
+                        updateChild(index, 'schwimmer', checked === true)
+                      }
+                      disabled={isPending}
+                    />
+                    <FieldContent>
+                      <FieldLabel htmlFor={`schwimmer-${child.positionId}`}>Schwimmer</FieldLabel>
+                      <FieldDescription>
+                        Bitte gib an, ob {child.firstName} Schwimmer ist.
+                      </FieldDescription>
+                    </FieldContent>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`schwimmabzeichen-${child.positionId}`}>
+                      Schwimmabzeichen
+                    </FieldLabel>
+                    <Select
+                      value={child.schwimmabzeichen}
+                      onValueChange={(value) =>
+                        updateChild(
+                          index,
+                          'schwimmabzeichen',
+                          value as ChildFormState['schwimmabzeichen'],
+                        )
+                      }
+                      disabled={isPending}
+                    >
+                      <SelectTrigger
+                        id={`schwimmabzeichen-${child.positionId}`}
+                        aria-label={`Schwimmabzeichen fuer Kind ${index + 1}`}
+                        className="w-full"
+                      >
+                        <SelectValue placeholder="Kein Abzeichen">
+                          {(value) =>
+                            value === null
+                              ? 'Kein Abzeichen'
+                              : (schwimmabzeichenLabels[
+                                  value as keyof typeof schwimmabzeichenLabels
+                                ] ?? value)
+                          }
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value={null}>Kein Abzeichen</SelectItem>
+                          <SelectItem value="seepferdchen">Seepferdchen</SelectItem>
+                          <SelectItem value="bronze">Bronze</SelectItem>
+                          <SelectItem value="silber">Silber</SelectItem>
+                          <SelectItem value="gold">Gold</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                </FieldGroup>
+              </FieldSet>
+              <FieldSet>
+                <FieldLegend>Sonstiges</FieldLegend>
                 <Field>
-                  <FieldLabel htmlFor={`doctor-${child.positionId}`}>Arzt</FieldLabel>
-                  <Input
-                    id={`doctor-${child.positionId}`}
-                    value={child.arzt}
-                    onChange={(event) => updateChild(index, 'arzt', event.target.value)}
-                    required
-                    disabled={isPending}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor={`doctor-phone-${child.positionId}`}>
-                    Arzt-Telefonnummer
+                  <FieldLabel htmlFor={`bemerkungen-${child.positionId}`}>
+                    Weitere Hinweise
                   </FieldLabel>
-                  <PhoneInput
-                    id={`doctor-phone-${child.positionId}`}
-                    value={child.arztTelefon}
-                    onChange={(value) => updateChild(index, 'arztTelefon', value ?? '')}
-                    required
+                  <Textarea
+                    id={`bemerkungen-${child.positionId}`}
+                    value={child.bemerkungen ?? ''}
+                    onChange={(event) => updateChild(index, 'bemerkungen', event.target.value)}
                     disabled={isPending}
                   />
                 </Field>
-              </div>
-
-              <Field orientation="horizontal">
-                <Checkbox
-                  id={`schwimmer-${child.positionId}`}
-                  checked={child.schwimmer ?? false}
-                  onCheckedChange={(checked) => updateChild(index, 'schwimmer', checked === true)}
-                  disabled={isPending}
-                />
-                <FieldContent>
-                  <FieldLabel htmlFor={`schwimmer-${child.positionId}`}>Schwimmer</FieldLabel>
-                  <FieldDescription>
-                    Bitte gib an, ob {child.firstName} Schwimmer ist.
-                  </FieldDescription>
-                </FieldContent>
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor={`bemerkungen-${child.positionId}`}>
-                  Weitere Hinweise
-                </FieldLabel>
-                <Textarea
-                  id={`bemerkungen-${child.positionId}`}
-                  value={child.bemerkungen ?? ''}
-                  onChange={(event) => updateChild(index, 'bemerkungen', event.target.value)}
-                  disabled={isPending}
-                />
-              </Field>
+              </FieldSet>
+              <FieldSet>
+                <Field></Field>
+              </FieldSet>
+              <FieldSet>
+                <FieldLegend>Rechtliches</FieldLegend>
+                <Field orientation="horizontal">
+                  <Checkbox
+                    id={`agb-${child.positionId}`}
+                    checked={child.agbAkzeptiert}
+                    onCheckedChange={(checked) =>
+                      updateChild(index, 'agbAkzeptiert', checked === true)
+                    }
+                    disabled={isPending}
+                  />
+                  <FieldContent>
+                    <FieldLabel htmlFor={`agb-${child.positionId}`}>AGB akzeptieren</FieldLabel>
+                    <FieldDescription>
+                      {child.firstName} akzeptiert die{' '}
+                      <Link
+                        href="/sommerfreizeit/agb"
+                        target="_blank"
+                        rel="noopener"
+                        className="underline"
+                      >
+                        AGB
+                      </Link>
+                      .
+                    </FieldDescription>
+                  </FieldContent>
+                </Field>
+                <Field orientation="horizontal">
+                  <Checkbox
+                    id={`datenschutz-${child.positionId}`}
+                    checked={child.datenschutzAkzeptiert}
+                    onCheckedChange={(checked) =>
+                      updateChild(index, 'datenschutzAkzeptiert', checked === true)
+                    }
+                    disabled={isPending}
+                  />
+                  <FieldContent>
+                    <FieldLabel htmlFor={`datenschutz-${child.positionId}`}>
+                      Datenschutzerklärung akzeptieren
+                    </FieldLabel>
+                    <FieldDescription>
+                      {child.firstName} akzeptiert die{' '}
+                      <Link
+                        href="/sommerfreizeit/datenschutz"
+                        target="_blank"
+                        rel="noopener"
+                        className="underline"
+                      >
+                        Datenschutzerklärung
+                      </Link>
+                      .
+                    </FieldDescription>
+                  </FieldContent>
+                </Field>
+              </FieldSet>
             </FieldGroup>
           </CardContent>
         </Card>

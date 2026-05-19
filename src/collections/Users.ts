@@ -10,9 +10,9 @@ export const Users: CollectionConfig = {
     singular: 'Benutzer',
     plural: 'Benutzer',
   },
-  /* auth: {
+  auth: {
     useAPIKey: true,
-  }, */
+  },
   fields: [
     {
       name: 'firstName',

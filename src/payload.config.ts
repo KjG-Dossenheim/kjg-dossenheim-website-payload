@@ -124,9 +124,6 @@ export default buildConfig({
     },
     dateFormat: 'dd.MM.yyyy',
     components: {
-      afterLogin: [
-        "@/components/admin/button/AuthentikOAuthLoginButton#AuthentikOAuthLoginButton",
-      ],
       graphics: {
         Logo: '@/graphics/Logo',
         Icon: '@/graphics/Icon',
@@ -134,7 +131,6 @@ export default buildConfig({
       beforeNavLinks: [
         '@/components/admin/beforeNavLinks/NavLogo',
       ],
-      // Nav: '@/components/admin/Nav/CustomNavBasic',
       settingsMenu: ['@/components/admin/settingsMenu/MySettingsMenu'],
       views: {
         knallbonbon: {
@@ -163,12 +159,6 @@ export default buildConfig({
         },
       },
     },
-    /* livePreview: {
-      url: ({
-        data,
-      }) => `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${data.slug}`,
-      collections: [''],
-    }, */
   },
   collections: [
     Jahresplan,
@@ -460,7 +450,5 @@ export default buildConfig({
       ],
       disabled: true,
     }),
-    authentikOAuth,
   ],
-
 })

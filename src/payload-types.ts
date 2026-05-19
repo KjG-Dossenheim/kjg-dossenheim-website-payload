@@ -80,6 +80,7 @@ export interface Config {
     blogCategory: BlogCategory;
     team: Team;
     teambilder: Teambilder;
+    users: User;
     media: Media;
     knallbonbonRegistration: KnallbonbonRegistration;
     knallbonbonEvents: KnallbonbonEvent;
@@ -92,7 +93,6 @@ export interface Config {
     sessions: Session;
     accounts: Account;
     verifications: Verification;
-    users: User;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -126,6 +126,7 @@ export interface Config {
     blogCategory: BlogCategorySelect<false> | BlogCategorySelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     teambilder: TeambilderSelect<false> | TeambilderSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     knallbonbonRegistration: KnallbonbonRegistrationSelect<false> | KnallbonbonRegistrationSelect<true>;
     knallbonbonEvents: KnallbonbonEventsSelect<false> | KnallbonbonEventsSelect<true>;
@@ -138,7 +139,6 @@ export interface Config {
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
-    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -356,11 +356,23 @@ export interface SommerfreizeitAnmeldung {
   /**
    * Falls das Kind ein Schwimmabzeichen besitzt, welches?
    */
-  schwimmabzeichen?: ('kein' | 'bronze' | 'silber' | 'gold') | null;
+  schwimmabzeichen?: ('seepferdchen' | 'bronze' | 'silber' | 'gold') | null;
   /**
    * Teilnahme am Programm?
    */
   programmTeilnahme?: 'klettern' | null;
+  /**
+   * Wurde den AGB zugestimmt?
+   */
+  agbAkzeptiert: boolean;
+  /**
+   * Wurde der Datenschutzerklärung zugestimmt?
+   */
+  datenschutzAkzeptiert: boolean;
+  /**
+   * Welche Bildrechte wurden eingeräumt?
+   */
+  bildrechte: 'no' | 'yes_publicity' | 'yes_internal' | 'yes_both';
   /**
    * Das Konto, über das die Anmeldung erfolgt ist. Wird automatisch mit den Daten des eingeloggten Users befüllt.
    */
@@ -779,9 +791,11 @@ export interface User {
   firstName: string;
   lastName: string;
   teamer?: (string | null) | Team;
-  sub?: string | null;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -1479,6 +1493,10 @@ export interface PayloadLockedDocument {
         value: string | Teambilder;
       } | null)
     | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -1525,10 +1543,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'verifications';
         value: string | Verification;
-      } | null)
-    | ({
-        relationTo: 'users';
-        value: string | User;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1643,6 +1657,9 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   schwimmer?: T;
   schwimmabzeichen?: T;
   programmTeilnahme?: T;
+  agbAkzeptiert?: T;
+  datenschutzAkzeptiert?: T;
+  bildrechte?: T;
   account?: T;
   event?: T;
   child?: T;
@@ -1862,6 +1879,34 @@ export interface TeambilderSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  teamer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2282,32 +2327,6 @@ export interface VerificationsSelect<T extends boolean = true> {
   expiresAt?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  firstName?: T;
-  lastName?: T;
-  teamer?: T;
-  sub?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

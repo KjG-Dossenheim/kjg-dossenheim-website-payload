@@ -297,7 +297,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               label: 'Schwimmabzeichen',
               type: 'select',
               options: [
-                { label: 'Kein Abzeichen', value: 'kein' },
+                { label: 'Seepferdchen', value: 'seepferdchen' },
                 { label: 'Bronze', value: 'bronze' },
                 { label: 'Silber', value: 'silber' },
                 { label: 'Gold', value: 'gold' },
@@ -317,6 +317,39 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
                 description: 'Teilnahme am Programm?',
               },
             },
+            {
+              name: 'agbAkzeptiert',
+              label: 'AGB akzeptiert',
+              type: 'checkbox',
+              required: true,
+              admin: {
+                description: 'Wurde den AGB zugestimmt?',
+              },
+            },
+            {
+              name: 'datenschutzAkzeptiert',
+              label: 'Datenschutz akzeptiert',
+              type: 'checkbox',
+              required: true,
+              admin: {
+                description: 'Wurde der Datenschutzerklärung zugestimmt?',
+              },
+            },
+            {
+              name: 'bildrechte',
+              label: 'Bildrechte',
+              type: 'select',
+              required: true,
+              options: [
+                { label: 'Nein', value: 'no' },
+                { label: 'Ja, für Presse- und Öffentlichkeitsarbeit', value: 'yes_publicity' },
+                { label: 'Ja, für interne Zwecke (z. B. Fotoalben)', value: 'yes_internal' },
+                { label: 'Ja, für beide Zwecke', value: 'yes_both' },
+              ],
+              admin: {
+                description: 'Welche Bildrechte wurden eingeräumt?',
+              },
+            }
           ]
         }
       ]
@@ -372,7 +405,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       relationTo: 'sommerfreizeitOrders',
       admin: {
         description: 'Die zugehörige Bestellung in Pretix, falls vorhanden',
-        hidden: true,
+        hidden: false,
       },
     },
     {
