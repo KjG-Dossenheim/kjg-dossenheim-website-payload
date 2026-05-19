@@ -9,13 +9,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 
 import type { SommerfreizeitChild } from '@/payload-types'
 
@@ -110,27 +103,6 @@ export function ChildCreateForm() {
                 required
                 disabled={isCreatingChild}
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="gender">Geschlecht</Label>
-              <Select
-                value={formData.gender}
-                onValueChange={(value: string) => {
-                  if (value === 'male' || value === 'female' || value === 'diverse') {
-                    setFormData((prev) => ({ ...prev, gender: value }))
-                  }
-                }}
-                disabled={isCreatingChild}
-              >
-                <SelectTrigger id="gender">
-                  <SelectValue placeholder="Bitte auswaehlen" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Maennlich</SelectItem>
-                  <SelectItem value="female">Weiblich</SelectItem>
-                  <SelectItem value="diverse">Divers</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 

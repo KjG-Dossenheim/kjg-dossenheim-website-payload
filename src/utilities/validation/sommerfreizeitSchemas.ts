@@ -1,4 +1,3 @@
-import { Sommerfreizeit } from '@/globals/Sommerfreizeit'
 import { z } from 'zod'
 import type { SommerfreizeitAnmeldung, SommerfreizeitChild } from '@/payload-types';
 

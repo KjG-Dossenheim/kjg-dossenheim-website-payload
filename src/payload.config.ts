@@ -92,9 +92,6 @@ import { sommerfreizeitLandingPage } from './globals/sommerfreizeit/sommerfreize
 import { sommerfreizeitPackliste } from './globals/sommerfreizeit/sommerfreizeitPackliste'
 import { sommerfreizeitSettings } from './globals/sommerfreizeit/sommerfreizeitSettings'
 
-// Relative imports - lib
-import { authentikOAuth } from './utilities/authentikOAuth'
-
 // Relative imports - jobs
 import { cleanupExpiredConfirmationsJob } from './jobs/cleanupExpiredConfirmations'
 import { sendRegistrationEmailsJob } from './jobs/sendRegistrationEmails'
