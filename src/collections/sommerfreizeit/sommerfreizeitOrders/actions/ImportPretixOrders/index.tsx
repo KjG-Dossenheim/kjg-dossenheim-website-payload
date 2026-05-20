@@ -49,7 +49,7 @@ export const ImportPretixOrdersAction: React.FC = () => {
       disabled={isStarting}
       icon={<RefreshCw className={`size-4 ${isStarting ? 'animate-spin' : ''}`} />}
     >
-      {isStarting ? 'Startet...' : 'Pretix-Bestellimport starten'}
+      {isStarting ? 'Startet...' : 'Pretix Import'}
     </Button>
   )
 }

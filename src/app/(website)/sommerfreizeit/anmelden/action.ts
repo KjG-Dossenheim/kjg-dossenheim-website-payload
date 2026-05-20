@@ -14,8 +14,8 @@ import { lookupOrderSchema, completeOrderSchema } from '@/utilities/validation/s
 import { getRequiredEnv } from '@/utilities/env'
 
 type PretixPosition = {
-  id?: string | number | null
-  positionid?: string | number | null
+  id: string
+  positionid: string
   canceled?: boolean | null
   attendee_name?: string | null
   attendee_name_parts?: Record<string, unknown> | null
@@ -59,6 +59,7 @@ type OrderFlowView = {
   invoiceLastName: string
   positions: Array<{
     positionId: string
+    orderPosition: string
     firstName: string
     lastName: string
     pretixOrderID: string
@@ -121,14 +122,12 @@ function readPretixNameParts(parts: Record<string, unknown> | null | undefined) 
   }
 }
 
-function extractPositionId(position: PretixPosition) {
-  return toOptionalString(position.positionid) || toOptionalString(position.id)
-}
-
 function extractValidPositions(order: PretixOrder): Array<{
   positionId: string
   firstName: string
   lastName: string
+  orderPosition: string
+  pretixPositionID: string
   pretixOrderID: string
   pretixSecret: string
 }> {
@@ -143,18 +142,13 @@ function extractValidPositions(order: PretixOrder): Array<{
   return positions
     .filter((position) => !position?.canceled)
     .map((position) => {
-      const positionId = extractPositionId(position)
-
-      if (!positionId) {
-        return null
-      }
-
       const nameParts = readPretixNameParts(position.attendee_name_parts)
-
       return {
-        positionId,
+        positionId: position.id,
         firstName: nameParts.firstName,
         lastName: nameParts.lastName,
+        orderPosition: position.positionid,
+        pretixPositionID: position.id,
         pretixOrderID,
         pretixSecret,
       }
@@ -162,8 +156,10 @@ function extractValidPositions(order: PretixOrder): Array<{
     .filter(
       (value): value is {
         positionId: string
+        orderPosition: string
         firstName: string
         lastName: string
+        pretixPositionID: string
         pretixOrderID: string
         pretixSecret: string
       } => !!value,
@@ -204,6 +200,52 @@ async function fetchPretixOrder(args: {
   return (await response.json()) as PretixOrder
 }
 
+async function updatePretixPositionAnswer(args: {
+  baseUrl: string
+  organizer: string
+  event: string
+  positionID: string
+  token: string
+  questionID: number
+  answer: string
+}) {
+  try {
+    const endpoint = new URL(
+      `/api/v1/organizers/${encodeURIComponent(args.organizer)}/events/${encodeURIComponent(args.event)}/orderpositions/${encodeURIComponent(args.positionID)}/`,
+      args.baseUrl,
+    )
+
+    const response = await fetch(endpoint, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Token ${args.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        answers: [
+          {
+            question: args.questionID,
+            answer: args.answer,
+          },
+        ],
+      }),
+      cache: 'no-store',
+    })
+
+    if (!response.ok) {
+      const bodyText = await response.text()
+      throw new Error(`Pretix API returned ${response.status}: ${bodyText}`)
+    }
+  } catch (error) {
+    console.error('Failed to sync answer to Pretix', {
+      positionID: args.positionID,
+      questionID: args.questionID,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
+}
+
 type ResolvedOrderFlow = {
   orderCode: string
   email: string
@@ -222,6 +264,7 @@ type ResolvedOrderFlow = {
     positionId: string
     firstName: string
     lastName: string
+    orderPosition: string
     pretixOrderID: string
     pretixSecret: string
   }>
@@ -387,18 +430,31 @@ export async function getOrderFlowView(input: { orderCode: string }): Promise<Or
     invoiceFirstName: flow.invoiceFirstName,
     invoiceLastName: flow.invoiceLastName,
     positions: flow.positions.map((position) => ({
-      positionId: position.positionId,
       firstName: position.firstName,
       lastName: position.lastName,
       pretixOrderID: position.pretixOrderID,
       pretixSecret: position.pretixSecret,
+      positionId: position.positionId,
+      orderPosition: position.orderPosition,
     })),
   }
 }
 
-async function createChildAndRegistration(payload: any, userId: string, childInput: any, eventId: string, orderCode: string) {
+async function createChildAndRegistration(
+  payload: any,
+  userId: string,
+  childInput: any,
+  eventId: string,
+  orderCode: string,
+  pretixParams?: {
+    baseUrl: string
+    organizer: string
+    eventId: string
+    token: string
+  },
+) {
   // Try to find an existing child for this parent with the same name and birthdate
-  async function findExistingChild(payloadInstance: any, parentId: string, firstName?: string, lastName?: string, dateOfBirth?: string) {
+  async function findExistingChild(payloadInstance: any, parentId: string, firstName?: string, lastName?: string) {
 
     const result = await payloadInstance.find({
       collection: 'sommerfreizeitChild',
@@ -407,7 +463,6 @@ async function createChildAndRegistration(payload: any, userId: string, childInp
           { parent: { equals: parentId } },
           { firstName: { equals: firstName } },
           { lastName: { equals: lastName } },
-          { dateOfBirth: { equals: dateOfBirth } },
         ],
       },
       limit: 1,
@@ -419,7 +474,7 @@ async function createChildAndRegistration(payload: any, userId: string, childInp
     return result.docs[0] ?? null
   }
 
-  let childRecord: any = await findExistingChild(payload, userId, childInput.firstName, childInput.lastName, childInput.dateOfBirth)
+  let childRecord: any = await findExistingChild(payload, userId, childInput.firstName, childInput.lastName)
 
   if (childRecord) {
     payload.logger.info(`Bestehendes Kind wiederverwendet: ${childRecord.firstName} ${childRecord.lastName} (id=${childRecord.id}).`)
@@ -481,7 +536,7 @@ async function createChildAndRegistration(payload: any, userId: string, childInp
       account: userId,
       event: eventId,
       child: childRecord.id,
-      pretixPositionId: childInput.positionId,
+      pretixPositionID: childInput.pretixPositionID,
       pretixOrderCode: orderCode,
       _status: 'published',
       bildrechte: childInput.bildrechte,
@@ -490,6 +545,20 @@ async function createChildAndRegistration(payload: any, userId: string, childInp
     },
     depth: 0,
   })
+
+  // Sync impfpass answer to Pretix
+  if (pretixParams && childInput.impfpass !== undefined) {
+    await updatePretixPositionAnswer({
+      baseUrl: pretixParams.baseUrl,
+      organizer: pretixParams.organizer,
+      event: pretixParams.eventId,
+      positionID: childInput.pretixPositionID,
+      token: pretixParams.token,
+      questionID: 14, // impfpass question ID
+      answer: childInput.impfpass ? 'True' : 'False',
+    })
+    payload.logger.info(`impfpass synced to Pretix for position ${childInput.pretixPositionID}`)
+  }
 }
 
 function verifyOwnership(sessionUser: any, flowEmail: string) {
@@ -619,7 +688,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       }
     } */
 
-    const allowedPositionIds = new Set(flow.positions.map((position) => position.positionId))
+    /* const allowedPositionIds = new Set(flow.positions.map((position) => position.id))
     const submittedPositionIds = parsedInput.data.children.map((child) => child.positionId)
     const uniquePositionIds = new Set(submittedPositionIds)
 
@@ -637,7 +706,7 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
           message: 'Eine Position aus deiner Eingabe ist ungültig.',
         }
       }
-    }
+    } */
 
     const eventResult = await payload.find({
       collection: 'sommerfreizeitEvents',
@@ -667,13 +736,19 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
       city: parsedInput.data.city,
     })
 
+    const pretixParams = {
+      baseUrl: process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu',
+      organizer: flow.organizer,
+      eventId: flow.pretixEventId,
+      token: getRequiredEnv('PRETIX_API_TOKEN'),
+    }
 
     for (const childInput of parsedInput.data.children) {
       if (await hasExistingRegistration(payload, flow.orderCode, childInput.positionId)) {
         continue
       }
 
-      await createChildAndRegistration(payload, user.id, childInput, event.id, flow.orderCode)
+      await createChildAndRegistration(payload, user.id, childInput, event.id, flow.orderCode, pretixParams)
     }
     payload.logger.info(`Bestellung ${flow.orderCode} mit ${parsedInput.data.children.length} Kindern in Payload gespeichert.`)
 

@@ -119,9 +119,6 @@ export const importPretixOrdersJob = {
             datetime: order.datetime,
             expires: order.expires,
             pretixEventId: order.event,
-            positions: order.positions ?? undefined,
-            pretixPayload: order,
-            lastImportedAt: new Date().toISOString(),
             requireApproval: order.require_approval,
           }
 

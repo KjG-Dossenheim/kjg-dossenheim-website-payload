@@ -36,7 +36,7 @@ export async function queueImportPretixOrders(args?: {
 
     return {
       success: true,
-      message: 'Pretix-Bestellimport wurde gestartet.',
+      message: 'Pretix Import wurde gestartet.',
       jobId: queuedJob.id,
     }
   } catch (error) {
@@ -44,8 +44,8 @@ export async function queueImportPretixOrders(args?: {
       success: false,
       message:
         error instanceof Error
-          ? `Pretix-Bestellimport konnte nicht gestartet werden: ${error.message}`
-          : 'Pretix-Bestellimport konnte nicht gestartet werden.',
+          ? `Pretix-Import konnte nicht gestartet werden: ${error.message}`
+          : 'Pretix-Import konnte nicht gestartet werden.',
     }
   }
 }

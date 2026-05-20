@@ -423,9 +423,8 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'pretixPositionId',
       label: 'Pretix Position ID',
       type: 'text',
-      index: true,
       admin: {
-        description: 'Die ID der zugehörigen Position in Pretix, z. B. 1',
+        description: 'Die ID der zugehörigen Position in Pretix',
         hidden: true,
       },
     },

@@ -394,7 +394,7 @@ export interface SommerfreizeitAnmeldung {
    */
   pretixOrderCode: string;
   /**
-   * Die ID der zugehörigen Position in Pretix, z. B. 1
+   * Die ID der zugehörigen Position in Pretix
    */
   pretixPositionId?: string | null;
   /**
@@ -688,7 +688,7 @@ export interface SommerfreizeitOrder {
   organizer: string;
   orderCode: string;
   status?: ('n' | 'p' | 'e' | 'c') | null;
-  require_approval?: boolean | null;
+  requireApproval?: boolean | null;
   testMode?: boolean | null;
   email?: string | null;
   total?: number | null;
@@ -696,25 +696,6 @@ export interface SommerfreizeitOrder {
   expires?: string | null;
   pretixEventId?: string | null;
   event?: (string | null) | SommerfreizeitEvent;
-  positions?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  lastImportedAt?: string | null;
-  pretixPayload?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1794,7 +1775,7 @@ export interface SommerfreizeitOrdersSelect<T extends boolean = true> {
   organizer?: T;
   orderCode?: T;
   status?: T;
-  require_approval?: T;
+  requireApproval?: T;
   testMode?: T;
   email?: T;
   total?: T;
@@ -1802,9 +1783,6 @@ export interface SommerfreizeitOrdersSelect<T extends boolean = true> {
   expires?: T;
   pretixEventId?: T;
   event?: T;
-  positions?: T;
-  lastImportedAt?: T;
-  pretixPayload?: T;
   updatedAt?: T;
   createdAt?: T;
 }

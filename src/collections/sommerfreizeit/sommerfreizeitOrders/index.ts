@@ -33,7 +33,7 @@ export const sommerfreizeitOrders: CollectionConfig = {
   admin: {
     group: 'Sommerfreizeit',
     useAsTitle: 'orderCode',
-    defaultColumns: ['orderCode', 'status', 'email', 'pretixEventId', 'total', 'datetime'],
+    defaultColumns: ['orderCode', 'status', 'email', 'pretixEventId',],
     components: {
       views: {
         list: {
@@ -45,7 +45,7 @@ export const sommerfreizeitOrders: CollectionConfig = {
   access: {
     create: ({ req: { user } }) => !!user && user.collection === 'users',
     read: canReadOwnOrders,
-    update: ({ req: { user } }) => !!user && user.collection === 'users',
+    update: () => false,
     delete: ({ req: { user } }) => !!user && user.collection === 'users',
   },
   fields: [
@@ -88,10 +88,9 @@ export const sommerfreizeitOrders: CollectionConfig = {
       },
     },
     {
-      name: 'require_approval',
+      name: 'requireApproval',
       label: 'Benötigt Genehmigung',
       type: 'checkbox',
-      defaultValue: true,
       admin: {
         position: 'sidebar',
         readOnly: true,
@@ -101,7 +100,6 @@ export const sommerfreizeitOrders: CollectionConfig = {
       name: 'testMode',
       label: 'Testmodus',
       type: 'checkbox',
-      defaultValue: false,
       admin: {
         position: 'sidebar',
       },
@@ -134,7 +132,7 @@ export const sommerfreizeitOrders: CollectionConfig = {
     },
     {
       name: 'expires',
-      label: 'Laeuft ab am',
+      label: 'Läuft ab am',
       type: 'date',
       required: false,
       admin: {
@@ -162,27 +160,13 @@ export const sommerfreizeitOrders: CollectionConfig = {
       relationTo: 'sommerfreizeitEvents',
       required: false,
     },
-    {
+    /* {
       name: 'positions',
       label: 'Positionen',
       type: 'json',
       required: false,
-    },
-    {
-      name: 'lastImportedAt',
-      label: 'Zuletzt importiert am',
-      type: 'date',
-      required: false,
-      admin: {
-        position: 'sidebar',
-        readOnly: true,
-        date: {
-          pickerAppearance: 'dayAndTime',
-          displayFormat: 'dd.MM.yyyy HH:mm',
-        },
-      },
-    },
-    {
+    }, */
+    /* {
       name: 'pretixPayload',
       label: 'Pretix Rohdaten',
       type: 'json',
@@ -190,6 +174,6 @@ export const sommerfreizeitOrders: CollectionConfig = {
       admin: {
         hidden: true,
       },
-    },
+    }, */
   ],
 }

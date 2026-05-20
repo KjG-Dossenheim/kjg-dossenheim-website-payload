@@ -32,7 +32,7 @@ export const childInputSchema = z.object({
   arztTelefon: z.string().trim().min(1, 'Arzt-Telefon ist erforderlich.'),
   hausarztmodell: z.boolean().optional().nullish(),
   schwimmer: z.boolean().optional().nullish(),
-  schwimmabzeichen: z.custom<SommerfreizeitAnmeldung['schwimmabzeichen']>(),
+  schwimmabzeichen: z.custom<SommerfreizeitAnmeldung['schwimmabzeichen']>().nullish(),
   bemerkungen: z.string().trim().optional(),
   zimmerwunsch: z.array(z.object({
     firstName: z.string().trim().min(1, 'Vorname ist erforderlich.'),

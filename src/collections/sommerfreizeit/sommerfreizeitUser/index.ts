@@ -67,7 +67,7 @@ export const sommerfreizeitUser: CollectionConfig = {
     },
     {
       name: 'emailVerified',
-      label: 'E-Mail bestaetigt',
+      label: 'E-Mail bestätigt',
       type: 'checkbox',
       admin: {
         hidden: true,

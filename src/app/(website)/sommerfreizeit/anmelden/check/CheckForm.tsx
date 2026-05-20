@@ -37,17 +37,15 @@ import {
   Field,
   FieldContent,
   FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
-  FieldTitle,
 } from '@/components/ui/field'
 
 type PositionView = {
   positionId: string
+  orderPosition: string
   firstName: string
   lastName: string
   pretixOrderID: string
@@ -71,6 +69,7 @@ type CheckFormProps = {
 
 type ChildFormState = {
   positionId: string
+  orderPosition: string
   pretixOrderID: string
   pretixSecret: string
   firstName: SommerfreizeitChild['firstName']
@@ -124,6 +123,7 @@ const krankenversicherungArtLabels = {
 } as const
 
 const schwimmabzeichenLabels = {
+  none: 'Kein Abzeichen',
   seepferdchen: 'Seepferdchen',
   bronze: 'Bronze',
   silber: 'Silber',
@@ -133,6 +133,7 @@ const schwimmabzeichenLabels = {
 function buildInitialChild(position: PositionView): ChildFormState {
   return {
     positionId: position.positionId,
+    orderPosition: position.orderPosition,
     pretixOrderID: position.pretixOrderID,
     pretixSecret: position.pretixSecret,
     firstName: position.firstName,
@@ -373,7 +374,7 @@ export function CheckForm({
               <CardTitle>
                 {child.firstName} {child.lastName}
               </CardTitle>
-              <CardDescription>Position ID: {child.positionId}</CardDescription>
+              <CardDescription>Position ID: {child.orderPosition}</CardDescription>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -667,7 +668,7 @@ export function CheckForm({
                           Krankenkassenkarte vorhanden
                         </FieldLabel>
                         <FieldDescription>
-                          {child.firstName} hat eine Krankenkassenkarte besitzt bringt sie mit.
+                          {child.firstName} hat eine Krankenkassenkarte und bringt sie mit.
                         </FieldDescription>
                       </FieldContent>
                     </Field>
@@ -689,7 +690,7 @@ export function CheckForm({
                           Impfpass vorhanden
                         </FieldLabel>
                         <FieldDescription>
-                          {child.firstName} hat einen Impfpass besitzt bringt ihn mit.
+                          {child.firstName} hat einen Impfpass und bringt ihn mit.
                         </FieldDescription>
                       </FieldContent>
                     </Field>
@@ -935,58 +936,50 @@ export function CheckForm({
               </FieldSet>
               <FieldSet>
                 <FieldLegend>Rechtliches</FieldLegend>
-                <Field orientation="horizontal">
-                  <Checkbox
-                    id={`agb-${child.positionId}`}
-                    checked={child.agbAkzeptiert}
-                    onCheckedChange={(checked) =>
-                      updateChild(index, 'agbAkzeptiert', checked === true)
-                    }
-                    disabled={isPending}
-                  />
-                  <FieldContent>
-                    <FieldLabel htmlFor={`agb-${child.positionId}`}>AGB akzeptieren</FieldLabel>
-                    <FieldDescription>
-                      {child.firstName} akzeptiert die{' '}
-                      <Link
-                        href="/sommerfreizeit/agb"
-                        target="_blank"
-                        rel="noopener"
-                        className="underline"
-                      >
-                        AGB
-                      </Link>
-                      .
-                    </FieldDescription>
-                  </FieldContent>
-                </Field>
-                <Field orientation="horizontal">
-                  <Checkbox
-                    id={`datenschutz-${child.positionId}`}
-                    checked={child.datenschutzAkzeptiert}
-                    onCheckedChange={(checked) =>
-                      updateChild(index, 'datenschutzAkzeptiert', checked === true)
-                    }
-                    disabled={isPending}
-                  />
-                  <FieldContent>
-                    <FieldLabel htmlFor={`datenschutz-${child.positionId}`}>
-                      Datenschutzerklärung akzeptieren
-                    </FieldLabel>
-                    <FieldDescription>
-                      {child.firstName} akzeptiert die{' '}
-                      <Link
-                        href="/sommerfreizeit/datenschutz"
-                        target="_blank"
-                        rel="noopener"
-                        className="underline"
-                      >
-                        Datenschutzerklärung
-                      </Link>
-                      .
-                    </FieldDescription>
-                  </FieldContent>
-                </Field>
+                <FieldGroup className="gap-3">
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      id={`agb-${child.positionId}`}
+                      checked={child.agbAkzeptiert}
+                      onCheckedChange={(checked) =>
+                        updateChild(index, 'agbAkzeptiert', checked === true)
+                      }
+                      disabled={isPending}
+                    />
+                    <FieldContent>
+                      <FieldLabel htmlFor={`agb-${child.positionId}`}>
+                        <Link href="/agb" target="_blank" rel="noopener" className="underline">
+                          AGB
+                        </Link>
+                        {''}
+                        akzeptieren
+                      </FieldLabel>
+                    </FieldContent>
+                  </Field>
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      id={`datenschutz-${child.positionId}`}
+                      checked={child.datenschutzAkzeptiert}
+                      onCheckedChange={(checked) =>
+                        updateChild(index, 'datenschutzAkzeptiert', checked === true)
+                      }
+                      disabled={isPending}
+                    />
+                    <FieldContent>
+                      <FieldLabel htmlFor={`datenschutz-${child.positionId}`}>
+                        <Link
+                          href="/datenschutz/sommerfreizeit"
+                          target="_blank"
+                          rel="noopener"
+                          className="underline"
+                        >
+                          Datenschutzerklärung
+                        </Link>{' '}
+                        akzeptieren
+                      </FieldLabel>
+                    </FieldContent>
+                  </Field>
+                </FieldGroup>
               </FieldSet>
             </FieldGroup>
           </CardContent>
