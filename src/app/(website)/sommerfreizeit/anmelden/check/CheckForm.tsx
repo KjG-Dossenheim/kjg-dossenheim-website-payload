@@ -314,8 +314,10 @@ export function CheckForm({
       }
 
       toast.success(result.message)
-      /*       router.push('/sommerfreizeit/account')
-      router.refresh() */
+      if (process.env.NODE_ENV !== 'development') {
+        router.push('/sommerfreizeit/account')
+        router.refresh()
+      }
     })
   }
 
@@ -507,7 +509,7 @@ export function CheckForm({
                   </Field>
                 </FieldGroup>
               </FieldSet>
-              <FieldSet className="grid grid-cols-1 sm:grid-cols-2">
+              <FieldSet className="md:max-w-2/3 md:pr-1">
                 <Field>
                   <FieldLabel>Zimmerwunsch</FieldLabel>
                   <ItemGroup>
@@ -716,7 +718,7 @@ export function CheckForm({
                     </FieldLabel>
                     <RadioGroup
                       id={`foodPreferences-${child.positionId}`}
-                      defaultValue=""
+                      defaultValue="none"
                       value={child.foodPreferences}
                       onValueChange={(value) =>
                         updateChild(
