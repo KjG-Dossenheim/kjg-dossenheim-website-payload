@@ -74,6 +74,7 @@ async function getData() {
     unterkunft: eventData.unterkunft,
     pricing: eventData.preise,
     pretixEventId: eventData.pretixEventId,
+    backgroundImage: eventData.backgroundImage,
   }
 }
 

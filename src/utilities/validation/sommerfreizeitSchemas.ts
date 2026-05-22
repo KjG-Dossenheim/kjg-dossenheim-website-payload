@@ -24,10 +24,18 @@ export const childInputSchema = z.object({
   krankenkassenKarte: z.boolean().optional().nullish(),
   impfpass: z.boolean().optional().nullish(),
   foodAllergies: z.string().trim(),
-  foodPreferences: z.custom<SommerfreizeitAnmeldung['foodPreferences']>(),
+  foodPreferences: z.custom<SommerfreizeitAnmeldung['foodPreferences']>().nullish(),
   otherAllergies: z.string().trim(),
   medicalConditions: z.string().trim(),
   medikamente: z.string().trim(),
+  medikamenteArray: z
+    .array(
+      z.object({
+        name: z.string().trim().min(1, 'Name des Medikaments ist erforderlich.'),
+        dosierung: z.string().trim().min(1, 'Dosierung ist erforderlich.'),
+      }),
+    )
+    .nullish(),
   arzt: z.string().trim().min(1, 'Arzt ist erforderlich.'),
   arztTelefon: z.string().trim().min(1, 'Arzt-Telefon ist erforderlich.'),
   hausarztmodell: z.boolean().optional().nullish(),

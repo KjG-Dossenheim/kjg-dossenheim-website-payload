@@ -98,7 +98,7 @@ export const pretixOrderSchema = z.object({
   status: z.enum(['n', 'p', 'e', 'c']),
   testmode: z.boolean(),
   secret: z.string(),
-  email: z.string().nullable().optional(),
+  email: z.string(),
   phone: z.string().nullable().optional(),
   locale: z.string().optional(),
   datetime: z.iso.datetime({ offset: true }).optional(),

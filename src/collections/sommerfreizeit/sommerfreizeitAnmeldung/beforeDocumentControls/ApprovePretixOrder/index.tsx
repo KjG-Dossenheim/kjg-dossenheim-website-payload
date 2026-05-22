@@ -64,7 +64,7 @@ export const ApprovePretixOrder: React.FC = () => {
     return () => {
       controller.abort()
     }
-  }, [payloadEventID])
+  }, [payloadEventID, require_approval])
 
   const handleApprovePretixOrder = async () => {
     if (!pretixOrderCode) {

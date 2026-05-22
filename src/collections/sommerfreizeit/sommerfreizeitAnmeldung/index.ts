@@ -237,6 +237,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               label: 'Ernährungspräferenzen',
               type: 'select',
               options: [
+                { label: 'Keine', value: 'none' },
                 { label: 'Vegetarisch', value: 'vegetarisch' },
                 { label: 'Vegan', value: 'vegan' },
               ],
@@ -336,15 +337,22 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               },
             },
             {
+              name: 'bildrechteAkzeptiert',
+              label: 'Bildrechte akzeptiert',
+              type: 'checkbox',
+              required: true,
+              admin: {
+                description: 'Wurden die Bildrechte eingeräumt?',
+              },
+            },
+            {
               name: 'bildrechte',
               label: 'Bildrechte',
               type: 'select',
-              required: true,
+              hasMany: true,
               options: [
-                { label: 'Nein', value: 'no' },
-                { label: 'Ja, für Presse- und Öffentlichkeitsarbeit', value: 'yes_publicity' },
-                { label: 'Ja, für interne Zwecke (z. B. Fotoalben)', value: 'yes_internal' },
-                { label: 'Ja, für beide Zwecke', value: 'yes_both' },
+                { label: 'Presse- und Öffentlichkeitsarbeit', value: 'public' },
+                { label: 'Interne Zwecke (z. B. Fotoalben)', value: 'internal' },
               ],
               admin: {
                 description: 'Welche Bildrechte wurden eingeräumt?',
@@ -420,7 +428,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       },
     },
     {
-      name: 'pretixPositionId',
+      name: 'pretixPositionID',
       label: 'Pretix Position ID',
       type: 'text',
       admin: {

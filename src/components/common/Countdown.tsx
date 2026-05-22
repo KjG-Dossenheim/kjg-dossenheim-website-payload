@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { SlidingNumber } from '../ui/sliding-number'
 import { toZonedTime } from 'date-fns-tz'
+import { cn } from '../../lib/utils'
 
 interface CountdownProps {
   targetDate: string
@@ -70,37 +71,37 @@ export default function Countdown({
 
   return (
     <div className="mx-auto flex justify-center gap-5">
-      <div className={`${textColor}`}>
-        <span className="inline-block font-mono text-4xl">
+      <div className={cn(`${textColor}`, 'flex flex-col items-center')}>
+        <span className="inline-block font-mono text-4xl md:text-5xl xl:text-6xl">
           <span aria-live="polite" aria-label="15">
             <SlidingNumber value={timeLeft.days} padStart={true} />
           </span>
         </span>
-        <span className="sm:pl-1">Tage</span>
+        <span className="text-xs sm:pl-1 sm:text-sm">Tage</span>
       </div>
-      <div className={`${textColor}`}>
-        <span className="inline-block font-mono text-4xl">
+      <div className={cn(`${textColor}`, 'flex flex-col items-center')}>
+        <span className="inline-block font-mono text-4xl md:text-5xl xl:text-6xl">
           <span aria-live="polite" aria-label="10">
             <SlidingNumber value={timeLeft.hours} padStart={true} />
           </span>
         </span>
-        <span className="sm:pl-1">Stunden</span>
+        <span className="text-xs sm:pl-1 sm:text-sm">Stunden</span>
       </div>
-      <div className={`${textColor}`}>
-        <span className="inline-block font-mono text-4xl">
+      <div className={cn(`${textColor}`, 'flex flex-col items-center')}>
+        <span className="inline-block font-mono text-4xl md:text-5xl xl:text-6xl">
           <span aria-live="polite" aria-label="24">
             <SlidingNumber value={timeLeft.minutes} padStart={true} />
           </span>
         </span>
-        <span className="sm:pl-1">Minuten</span>
+        <span className="text-xs sm:pl-1 sm:text-sm">Minuten</span>
       </div>
-      <div className={`${textColor}`}>
-        <span className="inline-block font-mono text-4xl">
+      <div className={cn(`${textColor}`, 'flex flex-col items-center')}>
+        <span className="inline-block font-mono text-4xl md:text-5xl xl:text-6xl">
           <span aria-live="polite" aria-label={`${timeLeft.seconds}`}>
             <SlidingNumber value={timeLeft.seconds} padStart={true} />
           </span>
         </span>
-        <span className="sm:pl-1">Sekunden</span>
+        <span className="text-xs sm:pl-1 sm:text-sm">Sekunden</span>
       </div>
     </div>
   )

@@ -337,7 +337,7 @@ export interface SommerfreizeitAnmeldung {
   /**
    * Z. B. Vegetarisch, Vegan etc.
    */
-  foodPreferences?: ('vegetarisch' | 'vegan') | null;
+  foodPreferences?: ('none' | 'vegetarisch' | 'vegan') | null;
   /**
    * Liste von Zimmerwüschen, geordnet nach Priorität.
    */
@@ -370,9 +370,13 @@ export interface SommerfreizeitAnmeldung {
    */
   datenschutzAkzeptiert: boolean;
   /**
+   * Wurden die Bildrechte eingeräumt?
+   */
+  bildrechteAkzeptiert: boolean;
+  /**
    * Welche Bildrechte wurden eingeräumt?
    */
-  bildrechte: 'no' | 'yes_publicity' | 'yes_internal' | 'yes_both';
+  bildrechte?: ('public' | 'internal')[] | null;
   /**
    * Das Konto, über das die Anmeldung erfolgt ist. Wird automatisch mit den Daten des eingeloggten Users befüllt.
    */
@@ -396,7 +400,7 @@ export interface SommerfreizeitAnmeldung {
   /**
    * Die ID der zugehörigen Position in Pretix
    */
-  pretixPositionId?: string | null;
+  pretixPositionID?: string | null;
   /**
    * Der Status der zugehörigen Pretix-Bestellung, z. B. Pending, Bezahlt, Abgelaufen, Storniert
    */
@@ -474,6 +478,7 @@ export interface SommerfreizeitEvent {
   signupStartDate: string;
   signupEndDate: string;
   motto?: string | null;
+  backgroundImage: string | Media;
   team: (string | Team)[];
   /**
    * Wird benötigt, um die Verknüpfung mit Pretix herzustellen. Kann in den Event-Details in Pretix gefunden werden.
@@ -536,56 +541,6 @@ export interface SommerfreizeitEvent {
   };
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team".
- */
-export interface Team {
-  id: string;
-  firstName: string;
-  lastName: string;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  profilePicture?: (string | null) | Teambilder;
-  email?: string | null;
-  phone?: string | null;
-  position: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teambilder".
- */
-export interface Teambilder {
-  id: string;
-  alt: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -678,6 +633,56 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: string;
+  firstName: string;
+  lastName: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  profilePicture?: (string | null) | Teambilder;
+  email?: string | null;
+  phone?: string | null;
+  position: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teambilder".
+ */
+export interface Teambilder {
+  id: string;
+  alt: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1640,13 +1645,14 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   programmTeilnahme?: T;
   agbAkzeptiert?: T;
   datenschutzAkzeptiert?: T;
+  bildrechteAkzeptiert?: T;
   bildrechte?: T;
   account?: T;
   event?: T;
   child?: T;
   pretixOrder?: T;
   pretixOrderCode?: T;
-  pretixPositionId?: T;
+  pretixPositionID?: T;
   pretixStatus?: T;
   require_approval?: T;
   updatedAt?: T;
@@ -1696,6 +1702,7 @@ export interface SommerfreizeitEventsSelect<T extends boolean = true> {
   signupStartDate?: T;
   signupEndDate?: T;
   motto?: T;
+  backgroundImage?: T;
   team?: T;
   pretixEventId?: T;
   unterkunft?:

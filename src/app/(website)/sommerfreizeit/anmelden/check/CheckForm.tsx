@@ -97,6 +97,7 @@ type ChildFormState = {
   foodPreferences: SommerfreizeitAnmeldung['foodPreferences']
   agbAkzeptiert: SommerfreizeitAnmeldung['agbAkzeptiert']
   datenschutzAkzeptiert: SommerfreizeitAnmeldung['datenschutzAkzeptiert']
+  bildrechteAkzeptiert: SommerfreizeitAnmeldung['bildrechteAkzeptiert']
   bildrechte: SommerfreizeitAnmeldung['bildrechte']
 }
 
@@ -158,10 +159,11 @@ function buildInitialChild(position: PositionView): ChildFormState {
     bemerkungen: '',
     zimmerwunsch: [],
     impfpass: false,
-    foodPreferences: undefined,
+    foodPreferences: 'none',
     agbAkzeptiert: false,
     datenschutzAkzeptiert: false,
-    bildrechte: 'no',
+    bildrechteAkzeptiert: false,
+    bildrechte: [],
   }
 }
 
@@ -288,12 +290,12 @@ export function CheckForm({
           otherAllergies: child.otherAllergies,
           medicalConditions: child.medicalConditions,
           medikamente: child.medikamente,
+          medikamenteArray: child.medikamenteArray,
           arzt: child.arzt,
           arztTelefon: child.arztTelefon,
           schwimmer: child.schwimmer,
           schwimmabzeichen: child.schwimmabzeichen,
           bemerkungen: child.bemerkungen,
-          medikamenteArray: child.medikamenteArray,
           impfpass: child.impfpass,
           zimmerwunsch: child.zimmerwunsch?.map((zimmerwunsch) => ({
             firstName: zimmerwunsch.firstName,
@@ -302,6 +304,7 @@ export function CheckForm({
           datenschutzAkzeptiert: child.datenschutzAkzeptiert,
           agbAkzeptiert: child.agbAkzeptiert,
           bildrechte: child.bildrechte,
+          bildrechteAkzeptiert: child.bildrechteAkzeptiert,
         })),
       })
 
@@ -311,8 +314,8 @@ export function CheckForm({
       }
 
       toast.success(result.message)
-      router.push('/sommerfreizeit/account')
-      router.refresh()
+      /*       router.push('/sommerfreizeit/account')
+      router.refresh() */
     })
   }
 
@@ -653,7 +656,7 @@ export function CheckForm({
                   </Field>
                 </FieldGroup>
                 <FieldSet>
-                  <FieldGroup>
+                  <FieldGroup data-slot="checkbox-group">
                     <Field orientation="horizontal">
                       <Checkbox
                         id={`krankenkassenkarte-${child.positionId}`}
@@ -672,10 +675,6 @@ export function CheckForm({
                         </FieldDescription>
                       </FieldContent>
                     </Field>
-                  </FieldGroup>
-                </FieldSet>
-                <FieldSet>
-                  <FieldGroup>
                     <Field orientation="horizontal">
                       <Checkbox
                         id={`Impfpass-${child.positionId}`}
@@ -729,7 +728,7 @@ export function CheckForm({
                     >
                       <Field orientation="horizontal">
                         <RadioGroupItem
-                          value=""
+                          value="none"
                           id={`none-${child.positionId}`}
                           disabled={isPending}
                         />
@@ -868,10 +867,9 @@ export function CheckForm({
                       disabled={isPending}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`schwimmer-${child.positionId}`}>Schwimmer</FieldLabel>
-                      <FieldDescription>
-                        Bitte gib an, ob {child.firstName} Schwimmer ist.
-                      </FieldDescription>
+                      <FieldLabel htmlFor={`schwimmer-${child.positionId}`}>
+                        {child.firstName} kann schwimmen
+                      </FieldLabel>
                     </FieldContent>
                   </Field>
                   <Field>
@@ -932,7 +930,66 @@ export function CheckForm({
                 </Field>
               </FieldSet>
               <FieldSet>
-                <Field></Field>
+                <FieldLegend>Bildrechte</FieldLegend>
+                <FieldGroup>
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      id={`bildrechte-${child.positionId}`}
+                      checked={child.bildrechteAkzeptiert}
+                      onCheckedChange={(checked) =>
+                        updateChild(index, 'bildrechteAkzeptiert', checked === true)
+                      }
+                      required
+                      disabled={isPending}
+                    />
+                    <FieldContent>
+                      <FieldLabel htmlFor={`bildrechte-${child.positionId}`}>
+                        Ich akzeptiere, dass Fotos von {child.firstName} gemacht werden
+                      </FieldLabel>
+                    </FieldContent>
+                  </Field>
+                  <FieldGroup data-slot="checkbox-group">
+                    <FieldLabel>Für welche Zwecke dürfen die Fotos verwendet werden?</FieldLabel>
+                    <FieldGroup data-slot="checkbox-group">
+                      <Field orientation="horizontal">
+                        <Checkbox
+                          id={`bildrechte-internal-${child.positionId}`}
+                          checked={child.bildrechte?.includes('internal') ?? false}
+                          onCheckedChange={(checked) => {
+                            const updated = checked
+                              ? [...(child.bildrechte ?? []), 'internal' as const]
+                              : (child.bildrechte ?? []).filter((value) => value !== 'internal')
+                            updateChild(index, 'bildrechte', updated as ('public' | 'internal')[])
+                          }}
+                          disabled={isPending}
+                        />
+                        <FieldContent>
+                          <FieldLabel htmlFor={`bildrechte-internal-${child.positionId}`}>
+                            Interne Zwecke (z. B. Fotoalben)
+                          </FieldLabel>
+                        </FieldContent>
+                      </Field>
+                      <Field orientation="horizontal">
+                        <Checkbox
+                          id={`bildrechte-public-${child.positionId}`}
+                          checked={child.bildrechte?.includes('public') ?? false}
+                          onCheckedChange={(checked) => {
+                            const updated = checked
+                              ? [...(child.bildrechte ?? []), 'public' as const]
+                              : (child.bildrechte ?? []).filter((value) => value !== 'public')
+                            updateChild(index, 'bildrechte', updated as ('public' | 'internal')[])
+                          }}
+                          disabled={isPending}
+                        />
+                        <FieldContent>
+                          <FieldLabel htmlFor={`bildrechte-public-${child.positionId}`}>
+                            Öffentliche Zwecke (z. B. Presse- und Öffentlichkeitsarbeit)
+                          </FieldLabel>
+                        </FieldContent>
+                      </Field>
+                    </FieldGroup>
+                  </FieldGroup>
+                </FieldGroup>
               </FieldSet>
               <FieldSet>
                 <FieldLegend>Rechtliches</FieldLegend>
@@ -947,12 +1004,12 @@ export function CheckForm({
                       disabled={isPending}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`agb-${child.positionId}`}>
+                      <FieldLabel htmlFor={`agb-${child.positionId}`} className="gap-1">
+                        <span>Ich habe die</span>
                         <Link href="/agb" target="_blank" rel="noopener" className="underline">
                           AGB
                         </Link>
-                        {''}
-                        akzeptieren
+                        <span>gelesen und akzeptiere sie.</span>
                       </FieldLabel>
                     </FieldContent>
                   </Field>
@@ -966,7 +1023,8 @@ export function CheckForm({
                       disabled={isPending}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`datenschutz-${child.positionId}`}>
+                      <FieldLabel htmlFor={`datenschutz-${child.positionId}`} className="gap-1">
+                        <span>Ich habe die</span>
                         <Link
                           href="/datenschutz/sommerfreizeit"
                           target="_blank"
@@ -975,7 +1033,7 @@ export function CheckForm({
                         >
                           Datenschutzerklärung
                         </Link>{' '}
-                        akzeptieren
+                        <span>gelesen und akzeptiere sie.</span>
                       </FieldLabel>
                     </FieldContent>
                   </Field>

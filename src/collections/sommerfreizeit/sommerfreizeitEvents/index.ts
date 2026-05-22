@@ -81,6 +81,13 @@ export const sommerfreizeitEvents: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'backgroundImage',
+      label: 'Hintergrundbild',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+    {
       name: 'team',
       label: 'Team',
       type: 'relationship',

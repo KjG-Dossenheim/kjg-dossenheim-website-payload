@@ -12,29 +12,9 @@ import {
 } from '@/utilities/sommerfreizeitAccount'
 import { lookupOrderSchema, completeOrderSchema } from '@/utilities/validation/sommerfreizeitSchemas'
 import { getRequiredEnv } from '@/utilities/env'
-
-type PretixPosition = {
-  id: string
-  positionid: string
-  canceled?: boolean | null
-  attendee_name?: string | null
-  attendee_name_parts?: Record<string, unknown> | null
-}
-
-type PretixOrder = {
-  code: string
-  secret: string
-  status: string
-  email: string
-  phone?: string | null
-  invoice_address?: {
-    name?: string | null
-    name_parts?: Record<string, unknown> | null
-  } | null
-  event: string
-  positions?: PretixPosition[] | null
-  require_approval: boolean
-}
+import type { Payload } from 'payload'
+import type { PretixOrder } from '@/types/pretixSchema'
+import type { SommerfreizeitChild } from '@/payload-types'
 
 type LookupOrderResult = {
   success: boolean
@@ -292,14 +272,15 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
     token,
   })
 
-  /*   if (order.status === 'c' || order.status === 'e') {
+  if (process.env.NODE_ENV !== 'development') {
+    if (order.status === 'c' || order.status === 'e') {
       throw new Error('ORDER_NOT_ACTIVE')
-    } */
+    }
+  }
 
   const positions = extractValidPositions(order)
   const invoiceNameParts = readPretixNameParts(order.invoice_address?.name_parts)
   const invoiceAddress = order.invoice_address as Record<string, unknown> | null | undefined
-
 
   return {
     orderCode: orderCode,
@@ -441,7 +422,7 @@ export async function getOrderFlowView(input: { orderCode: string }): Promise<Or
 }
 
 async function createChildAndRegistration(
-  payload: any,
+  payload: Payload,
   userId: string,
   childInput: any,
   eventId: string,
@@ -454,9 +435,9 @@ async function createChildAndRegistration(
   },
 ) {
   // Try to find an existing child for this parent with the same name and birthdate
-  async function findExistingChild(payloadInstance: any, parentId: string, firstName?: string, lastName?: string) {
+  async function findExistingChild(payload: Payload, parentId: string, firstName?: string, lastName?: string) {
 
-    const result = await payloadInstance.find({
+    const result = await payload.find({
       collection: 'sommerfreizeitChild',
       where: {
         and: [
@@ -474,7 +455,7 @@ async function createChildAndRegistration(
     return result.docs[0] ?? null
   }
 
-  let childRecord: any = await findExistingChild(payload, userId, childInput.firstName, childInput.lastName)
+  let childRecord: SommerfreizeitChild = await findExistingChild(payload, userId, childInput.firstName, childInput.lastName)
 
   if (childRecord) {
     payload.logger.info(`Bestehendes Kind wiederverwendet: ${childRecord.firstName} ${childRecord.lastName} (id=${childRecord.id}).`)
@@ -536,12 +517,13 @@ async function createChildAndRegistration(
       account: userId,
       event: eventId,
       child: childRecord.id,
-      pretixPositionID: childInput.pretixPositionID,
+      pretixPositionID: childInput.positionId,
       pretixOrderCode: orderCode,
       _status: 'published',
       bildrechte: childInput.bildrechte,
       agbAkzeptiert: childInput.agbAkzeptiert,
       datenschutzAkzeptiert: childInput.datenschutzAkzeptiert,
+      bildrechteAkzeptiert: childInput.bildrechteAkzeptiert,
     },
     depth: 0,
   })
@@ -552,12 +534,12 @@ async function createChildAndRegistration(
       baseUrl: pretixParams.baseUrl,
       organizer: pretixParams.organizer,
       event: pretixParams.eventId,
-      positionID: childInput.pretixPositionID,
+      positionID: childInput.positionId,
       token: pretixParams.token,
       questionID: 14, // impfpass question ID
       answer: childInput.impfpass ? 'True' : 'False',
     })
-    payload.logger.info(`impfpass synced to Pretix for position ${childInput.pretixPositionID}`)
+    payload.logger.info(`impfpass synced to Pretix for position ${childInput.positionId}`)
   }
 }
 
@@ -566,7 +548,7 @@ function verifyOwnership(sessionUser: any, flowEmail: string) {
   return normalizeSommerfreizeitEmail(sessionUser.email) === normalizeSommerfreizeitEmail(flowEmail)
 }
 
-async function ensureUserAccount(payload: any, flow: ResolvedOrderFlow) {
+async function ensureUserAccount(payload: Payload, flow: ResolvedOrderFlow) {
   const existingUser = await findSommerfreizeitUserByEmail(payload, flow.email)
   if (existingUser) return existingUser
 
@@ -579,7 +561,7 @@ async function ensureUserAccount(payload: any, flow: ResolvedOrderFlow) {
   return accountResult.user
 }
 
-async function updateUserContactInfo(payload: any, userId: string, data: { phone?: string; address?: string; postalCode?: string; city?: string }) {
+async function updateUserContactInfo(payload: Payload, userId: string, data: { phone?: string; address?: string; postalCode?: string; city?: string }) {
   await payload.update({
     collection: 'sommerfreizeitUsers',
     id: userId,
@@ -593,7 +575,7 @@ async function updateUserContactInfo(payload: any, userId: string, data: { phone
   })
 }
 
-async function hasExistingRegistration(payload: any, orderCode: string, positionId: string) {
+async function hasExistingRegistration(payload: Payload, orderCode: string, positionId: string) {
   const existingRegistrationResult = await payload.find({
     collection: 'sommerfreizeitAnmeldung',
     where: {
@@ -604,7 +586,7 @@ async function hasExistingRegistration(payload: any, orderCode: string, position
           },
         },
         {
-          pretixPositionId: {
+          pretixPositionID: {
             equals: positionId,
           },
         },
@@ -681,12 +663,14 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
     }
 
     // Check if the order has already been completed in a previous attempt by looking for existing registrations for the order code
-    /* if (!flow.requireApproval) {
-      return {
-        success: false,
-        message: 'Diese Bestellung wurde bereits abgeschlossen und kann nicht erneut eingereicht werden.',
+    if (process.env.NODE_ENV !== 'development') {
+      if (!flow.requireApproval) {
+        return {
+          success: false,
+          message: 'Diese Bestellung wurde bereits abgeschlossen und kann nicht erneut eingereicht werden.',
+        }
       }
-    } */
+    }
 
     /* const allowedPositionIds = new Set(flow.positions.map((position) => position.id))
     const submittedPositionIds = parsedInput.data.children.map((child) => child.positionId)
