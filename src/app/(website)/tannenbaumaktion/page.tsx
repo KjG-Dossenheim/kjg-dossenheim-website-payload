@@ -18,7 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import ClientMap from './ClientMap'
 
 // Types
 import type { Metadata } from 'next'
@@ -82,13 +82,12 @@ export default async function Page() {
         </h2>
         <Countdown targetDate={tannenbaumaktion.startDate} />
       </div>
-      <section className="bg-primary py-5" id="verkaufstellen">
+      <section className="bg-primary space-y-6 p-6" id="verkaufstellen">
         <h2 className="text-primary-foreground dark:text-foreground text-center text-2xl font-bold sm:text-4xl">
           Unsere Verkaufsstellen
         </h2>
-        {/* Mobile: Accordion */}
-        <div className="mx-auto max-w-2xl p-5 sm:hidden">
-          <Accordion type="single" collapsible>
+        <div className="mx-auto max-w-2xl">
+          <Accordion>
             {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
               <AccordionItem key={vekaufsort.id} value={vekaufsort.id ?? ''}>
                 <AccordionTrigger className="text-primary-foreground dark:text-foreground">
@@ -101,21 +100,13 @@ export default async function Page() {
             ))}
           </Accordion>
         </div>
-        {/* Desktop: Cards */}
-        <div className="hidden flex-wrap justify-center p-5 sm:flex">
-          {tannenbaumaktion.vekaufsort.map((vekaufsort) => (
-            <Card key={vekaufsort.id} className="m-3 w-fit max-w-sm">
-              <CardHeader>
-                <CardTitle id={`${vekaufsort.name}`}>{vekaufsort.name}</CardTitle>
-                <CardDescription id={`${vekaufsort.adresse}`}>{vekaufsort.adresse}</CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+      </section>
+      <section className="h-[420px] w-full">
+        <ClientMap vekaufsort={tannenbaumaktion.vekaufsort} />
       </section>
       <section className="mx-auto max-w-(--breakpoint-md) p-6">
         <h1 className="pb-5 text-center text-3xl font-bold">FAQ</h1>
-        <Accordion type="single" collapsible>
+        <Accordion>
           {tannenbaumaktion.fragen.map((fragen) => (
             <AccordionItem key={fragen.id} value={fragen.id ?? ''}>
               <AccordionTrigger>{fragen.frage}</AccordionTrigger>

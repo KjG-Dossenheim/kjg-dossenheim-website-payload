@@ -2631,6 +2631,11 @@ export interface Tannenbaumaktion {
   vekaufsort: {
     name: string;
     adresse: string;
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    location: [number, number];
     id?: string | null;
   }[];
   fragen: {
@@ -3098,6 +3103,7 @@ export interface TannenbaumaktionSelect<T extends boolean = true> {
     | {
         name?: T;
         adresse?: T;
+        location?: T;
         id?: T;
       };
   fragen?:

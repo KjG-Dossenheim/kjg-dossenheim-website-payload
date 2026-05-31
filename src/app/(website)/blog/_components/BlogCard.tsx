@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { ArrowRight, Calendar, User } from 'lucide-react'
 
 import type { BlogPost } from '@/payload-types'
@@ -50,12 +50,15 @@ export function BlogCard({ post }: { post: BlogPost }) {
       </CardHeader>
 
       <CardFooter>
-        <Button asChild variant="ghost" size="sm" className="group w-full justify-between">
-          <Link href={`/blog/${slug}`}>
-            Mehr lesen
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </Button>
+        <Link
+          href={`/blog/${slug}`}
+          className={
+            buttonVariants({ variant: 'ghost', size: 'sm' }) + 'group w-full justify-between'
+          }
+        >
+          Mehr lesen
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Link>
       </CardFooter>
     </Card>
   )

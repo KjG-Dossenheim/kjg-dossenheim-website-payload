@@ -3,11 +3,11 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 import { updateAccountAction } from '../actions'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { buttonVariants, Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardAction,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -66,9 +67,6 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
   })
   const [isSaving, setIsSaving] = useState(false)
   const [children] = useState<ChildListItem[]>(initialChildren)
-  const [accountStatus, setAccountStatus] = useState<{ success: boolean; message: string } | null>(
-    null,
-  )
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target
@@ -88,38 +86,49 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setAccountStatus(null)
     setIsSaving(true)
 
-    const result = await updateAccountAction({
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      phone: formData.phone,
-      address: formData.address,
-      postalCode: formData.postalCode,
-      city: formData.city,
-    })
+    try {
+      const result = await updateAccountAction({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        address: formData.address,
+        postalCode: formData.postalCode,
+        city: formData.city,
+      })
 
-    setAccountStatus(result)
-
-    if (result.success) {
-      router.refresh()
+      if (result.success) {
+        toast.success(result.message, { toasterId: 'form' })
+        router.refresh()
+      } else {
+        toast.error(result.message, { toasterId: 'form' })
+      }
+    } catch {
+      toast.error('Beim Speichern ist ein unerwarteter Fehler aufgetreten.', {
+        toasterId: 'form',
+      })
+    } finally {
+      setIsSaving(false)
     }
-
-    setIsSaving(false)
   }
 
   return (
     <div className="mx-auto w-full space-y-6">
       <Card>
-        <CardHeader className="flex flex-row justify-between">
+        <CardHeader>
           <CardTitle>Mein Konto</CardTitle>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/sommerfreizeit/logout">Logout</Link>
-          </Button>
+          <CardAction>
+            <Link
+              href="/sommerfreizeit/logout"
+              className={buttonVariants({ variant: 'outline', size: 'sm' })}
+            >
+              Logout
+            </Link>
+          </CardAction>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form id="account-form" onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email">E-Mail</Label>
               <Input id="email" type="email" value={formData.email} disabled />
@@ -191,16 +200,10 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
                 />
               </div>
             </div>
-
-            {accountStatus ? (
-              <Alert variant={accountStatus.success ? 'default' : 'destructive'}>
-                <AlertDescription>{accountStatus.message}</AlertDescription>
-              </Alert>
-            ) : null}
           </form>
         </CardContent>
         <CardFooter>
-          <Button type="submit" disabled={isSaving}>
+          <Button type="submit" form="account-form" disabled={isSaving}>
             {isSaving ? 'Speichert...' : 'Speichern'}
           </Button>
         </CardFooter>
@@ -240,13 +243,6 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialData, initialCh
             </div>
           )}
         </CardContent>
-        {/*  <CardFooter>
-          <Button asChild>
-            <Link href="/sommerfreizeit/account/sommerfreizeitChild/create">
-              Neues Kind anlegen
-            </Link>
-          </Button>
-        </CardFooter> */}
       </Card>
     </div>
   )

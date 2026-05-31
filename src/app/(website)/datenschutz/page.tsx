@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { Shield, Calendar, Ticket } from 'lucide-react'
 
@@ -61,9 +61,9 @@ export default async function Page() {
               </CardHeader>
               <CardContent className="flex-1" />
               <CardFooter className="pt-0">
-                <Button asChild className="w-full">
-                  <Link href={card.href}>Mehr erfahren</Link>
-                </Button>
+                <Link href={card.href} className={buttonVariants() + 'w-full'}>
+                  Mehr erfahren
+                </Link>
               </CardFooter>
             </Card>
           )

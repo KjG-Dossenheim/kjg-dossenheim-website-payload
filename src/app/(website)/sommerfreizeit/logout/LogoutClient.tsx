@@ -13,7 +13,7 @@ export function LogoutClient() {
       await signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.push('/sommerfreizeit?loggedOut=true')
+            router.push('/sommerfreizeit/login')
           },
         },
       })

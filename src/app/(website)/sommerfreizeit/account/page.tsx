@@ -2,10 +2,13 @@ import { redirect } from 'next/navigation'
 
 import { AccountForm } from './AccountForm'
 
+import Link from 'next/link'
+
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { headers as getHeaders } from 'next/headers.js'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { buttonVariants } from '@/components/ui/button'
 import { getSommerfreizeitSessionUser } from '@/lib/auth/server'
 
 export default async function KontoPage() {
@@ -105,6 +108,18 @@ export default async function KontoPage() {
                       <CardTitle>
                         {firstName} {lastName}
                       </CardTitle>
+                      <CardAction>
+                        <Link
+                          href={`/sommerfreizeit/account/sommerfreizeitAnmeldung/informationen?eventID=${encodeURIComponent(
+                            typeof registration.event === 'object' && registration.event !== null
+                              ? (registration.event as { id: string }).id
+                              : (registration.event as string),
+                          )}`}
+                          className={buttonVariants({ variant: 'default', size: 'sm' })}
+                        >
+                          Informationen
+                        </Link>
+                      </CardAction>
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground">

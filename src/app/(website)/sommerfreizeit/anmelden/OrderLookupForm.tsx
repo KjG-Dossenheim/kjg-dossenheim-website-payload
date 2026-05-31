@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Field,
@@ -97,9 +97,9 @@ export function OrderLookupForm() {
               {isSubmitting && <Loader2 data-icon="inline-start" className="animate-spin" />}
               {isSubmitting ? 'Wird geprüft...' : 'Bestellung abrufen'}
             </Button>
-            <Button variant="link" asChild>
-              <Link href="/sommerfreizeit/buchen/">Noch keinen Bestellcode?</Link>
-            </Button>
+            <Link href="/sommerfreizeit/buchen/" className={buttonVariants({ variant: 'link' })}>
+              Noch keinen Bestellcode?
+            </Link>
           </div>
         </form>
       </CardContent>

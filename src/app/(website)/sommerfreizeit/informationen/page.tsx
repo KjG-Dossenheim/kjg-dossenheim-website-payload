@@ -11,7 +11,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 
 // UI Components
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 // ⬇️ ISR-Zeit (in Sekunden) einstellen
@@ -60,11 +60,15 @@ export default async function Page() {
             {eintrag.links && eintrag.links.length > 0 && (
               <CardFooter className="flex flex-wrap gap-2">
                 {eintrag.links.map((link) => (
-                  <Button key={link.linkText} asChild>
-                    <Link href={link.link || ''} target="_blank" rel="noopener noreferrer">
-                      {link.linkText}
-                    </Link>
-                  </Button>
+                  <Link
+                    key={link.linkText}
+                    href={link.link || ''}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonVariants({})}
+                  >
+                    {link.linkText}
+                  </Link>
                 ))}
               </CardFooter>
             )}

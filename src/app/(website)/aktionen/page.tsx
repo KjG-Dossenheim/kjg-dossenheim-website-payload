@@ -15,7 +15,7 @@ import config from '@payload-config'
 import type { Jahresplan, KnallbonbonEvent } from '@/payload-types'
 
 // UI Components
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import {
   Timeline,
@@ -165,17 +165,14 @@ export default async function Page() {
                     {event.description && <p className="mb-3">{event.description}</p>}
                   </TimelineContent>
                   {event.url && (
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="w-fit"
+                    <Link
+                      href={event.url}
+                      className={buttonVariants({ variant: 'outline' }) + 'w-fit gap-1.5'}
                       data-umami-event="Event More Info CTA"
                       data-umami-event-event={event.title}
                     >
-                      <Link href={event.url} className="gap-1.5">
-                        Mehr erfahren <ArrowRight className="size-5" />
-                      </Link>
-                    </Button>
+                      Mehr erfahren <ArrowRight className="size-5" />
+                    </Link>
                   )}
                 </TimelineItem>
               ))}

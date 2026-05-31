@@ -140,7 +140,7 @@ export default async function SommerfreizeitPage() {
 
       <AgeRangeSection {...eventData} />
 
-      <section className="container mx-auto" id="info">
+      <section className="mx-auto" id="info">
         <PricingSection
           pricing={eventData.pricing.priceTiers}
           signupStartDate={eventData.signupStartDate ?? null}

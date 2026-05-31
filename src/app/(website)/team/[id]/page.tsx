@@ -21,7 +21,7 @@ import { bigEarsNeutral } from '@dicebear/collection'
 // UI Components
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -125,20 +125,26 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
         {(member.email || member.phone) && (
           <CardFooter className="flex flex-wrap gap-4">
             {member.email && (
-              <Button variant="outline" size="sm" asChild className="flex items-center gap-2">
-                <Link href={`mailto:${member.email}`} className="flex items-center gap-2">
-                  <Mail className="h-6 w-6" />
-                  <span>{member.email}</span>
-                </Link>
-              </Button>
+              <Link
+                href={`mailto:${member.email}`}
+                className={
+                  buttonVariants({ variant: 'outline', size: 'sm' }) + 'flex items-center gap-2'
+                }
+              >
+                <Mail className="h-6 w-6" />
+                <span>{member.email}</span>
+              </Link>
             )}
             {member.phone && (
-              <Button variant="outline" size="sm" asChild className="flex items-center gap-2">
-                <Link href={`tel:${member.phone}`} className="flex items-center gap-2">
-                  <Phone className="h-6 w-6" />
-                  <span>{member.phone}</span>
-                </Link>
-              </Button>
+              <Link
+                href={`tel:${member.phone}`}
+                className={
+                  buttonVariants({ variant: 'outline', size: 'sm' }) + 'flex items-center gap-2'
+                }
+              >
+                <Phone className="h-6 w-6" />
+                <span>{member.phone}</span>
+              </Link>
             )}
           </CardFooter>
         )}

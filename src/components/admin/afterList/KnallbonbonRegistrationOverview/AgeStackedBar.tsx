@@ -31,18 +31,20 @@ export const AgeStackedBar: React.FC<{
               if (pct <= 0) return null
               return (
                 <Tooltip key={section.age}>
-                  <TooltipTrigger asChild>
-                    <div
-                      style={{
-                        width: `${pct}%`,
-                        backgroundColor: colors[index % colors.length],
-                      }}
-                      className="text-background h-full text-center text-sm leading-10 font-medium"
-                      aria-hidden
-                    >
-                      {section.value}
-                    </div>
-                  </TooltipTrigger>
+                  <TooltipTrigger
+                    render={() => (
+                      <div
+                        style={{
+                          width: `${pct}%`,
+                          backgroundColor: colors[index % colors.length],
+                        }}
+                        className="text-background h-full text-center text-sm leading-10 font-medium"
+                        aria-hidden
+                      >
+                        {section.value}
+                      </div>
+                    )}
+                  />
                   <TooltipContent side="top">
                     {`${section.age} Jahre: ${section.value} (${Math.round(pct)}%)`}
                   </TooltipContent>

@@ -80,6 +80,12 @@ export const Tannenbaumaktion: GlobalConfig = {
           type: 'text',
           required: true,
         },
+        {
+          name: 'location',
+          label: 'Standort',
+          type: 'point',
+          required: true,
+        }
       ],
     },
     {

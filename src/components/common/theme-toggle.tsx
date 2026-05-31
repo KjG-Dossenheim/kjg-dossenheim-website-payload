@@ -46,12 +46,14 @@ export function ModeToggle() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <ThemeIcon className="size-4" />
-          <span className="sr-only">Theme umschalten</span>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" size="icon">
+            <ThemeIcon data-icon="inline-start" />
+            <span className="sr-only">Theme umschalten</span>
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={handleThemeChange('light')} className="flex items-center gap-2">
           <Sun className="size-4" /> Hell

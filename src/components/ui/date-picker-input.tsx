@@ -88,23 +88,25 @@ export function DatePickerInput({
         className="[&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
       />
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
-            onKeyDown={(event) => {
-              // Open calendar with Enter or Space
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault()
-                setOpen(true)
-              }
-            }}
-          >
-            <CalendarIcon />
-            <span className="sr-only">Datum auswählen (Enter oder Leertaste zum Öffnen)</span>
-          </Button>
-        </PopoverTrigger>
+        <PopoverTrigger
+          render={() => (
+            <Button
+              type="button"
+              variant="ghost"
+              className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
+              onKeyDown={(event) => {
+                // Open calendar with Enter or Space
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setOpen(true)
+                }
+              }}
+            >
+              <CalendarIcon />
+              <span className="sr-only">Datum auswählen (Enter oder Leertaste zum Öffnen)</span>
+            </Button>
+          )}
+        />
         <PopoverContent
           className="w-auto overflow-hidden p-0"
           align="end"

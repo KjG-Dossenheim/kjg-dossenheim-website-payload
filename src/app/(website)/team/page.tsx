@@ -25,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 import { createAvatar } from '@dicebear/core'
 import { bigEarsNeutral } from '@dicebear/collection'
@@ -105,16 +105,14 @@ function TeamMemberCard({ member }: { member: Team }) {
         </CardDescription>
       </CardContent>
       <CardFooter>
-        <Button
-          asChild
-          variant="link"
+        <Link
+          href={`/team/${member.id}`}
+          className={buttonVariants({ variant: 'link' })}
           data-umami-event="Team Member More Info Click"
           data-umami-event-member={member.firstName + ' ' + member.lastName}
         >
-          <Link href={`/team/${member.id}`}>
-            Mehr erfahren <ArrowRight data-icon="inline-end" />
-          </Link>
-        </Button>
+          Mehr erfahren <ArrowRight data-icon="inline-end" />
+        </Link>
       </CardFooter>
     </Card>
   )

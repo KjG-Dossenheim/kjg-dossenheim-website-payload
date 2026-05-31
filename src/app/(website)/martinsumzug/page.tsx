@@ -16,7 +16,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ShootingStars } from '@/components/ui/shooting-stars'
 import { StarsBackground } from '@/components/ui/stars-background'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 // Icons
 import { MapPin, ArrowRight } from 'lucide-react'
@@ -137,11 +137,12 @@ export default async function Page() {
             <CardFooter className="flex flex-col items-start justify-start gap-2">
               {martinsumzug.songs?.map((song) => (
                 <div key={song.id}>
-                  <Button asChild variant="outline">
-                    <Link href={`/martinsumzug/lieder/${song.slug}`}>
-                      {song.title} <ArrowRight className="size-4" />
-                    </Link>
-                  </Button>
+                  <Link
+                    href={`/martinsumzug/lieder/${song.slug}`}
+                    className={buttonVariants({ variant: 'outline' })}
+                  >
+                    {song.title} <ArrowRight className="size-4" />
+                  </Link>
                 </div>
               ))}
             </CardFooter>

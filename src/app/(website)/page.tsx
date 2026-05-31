@@ -12,7 +12,7 @@ import config from '@payload-config'
 
 // UI Components
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 // Reusable function to get page data
 async function getPageData() {
@@ -59,18 +59,14 @@ export default async function Page() {
       </p>
 
       <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 md:space-x-6">
-        <Button asChild>
-          <Link href="/aktionen">
-            Unsere Aktionen
-            <Calendar className="ml-2" />
-          </Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link href="/about/">
-            Über uns
-            <ChevronRight className="ml-2" />
-          </Link>
-        </Button>
+        <Link href="/aktionen" className={buttonVariants()}>
+          Unsere Aktionen
+          <Calendar data-icon="inline-end" />
+        </Link>
+        <Link href="/about/" className={buttonVariants({ variant: 'outline' })}>
+          Über uns
+          <ChevronRight data-icon="inline-end" />
+        </Link>
       </div>
 
       {/* Profilthemen Section */}

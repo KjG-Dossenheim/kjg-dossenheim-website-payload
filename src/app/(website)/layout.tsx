@@ -7,6 +7,7 @@ import Script from 'next/script'
 import Footer from '@/components/layout/Footer'
 import Navbar from '@/components/layout/Navbar'
 import { ThemeProvider } from '@/components/common/theme-provider'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 // Styles
 import '@/styles/globals.css'
@@ -57,11 +58,13 @@ export default async function layout({ children }: { children: ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main className="relative min-h-svh">{children}</main>
-          <Toaster />
-          <Toaster id="form" richColors />
-          <Footer />
+          <TooltipProvider>
+            <Navbar />
+            <main className="relative min-h-svh">{children}</main>
+            <Toaster />
+            <Toaster id="form" richColors />
+            <Footer />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -392,11 +392,14 @@ export function CheckForm({
               >
                 <RefreshCw />
               </Button>
-              <Button asChild type="button" variant="outline" size="icon">
-                <Link href={pretixModifyHref} target="_blank" rel="noopener">
-                  <Pen />
-                </Link>
-              </Button>
+              <Link
+                href={pretixModifyHref}
+                target="_blank"
+                rel="noopener"
+                className={buttonVariants({ variant: 'outline', size: 'icon' })}
+              >
+                <Pen />
+              </Link>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">

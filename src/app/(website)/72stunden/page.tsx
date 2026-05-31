@@ -7,7 +7,7 @@ import Countdown from '@/components/common/Countdown'
 import Logo72Stunden from './Logo72Stunden'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
 import { formatInTimeZone } from 'date-fns-tz/formatInTimeZone'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
@@ -67,11 +67,14 @@ export default async function Aktion72StundenPage() {
         <Countdown targetDate={aktion72Stunden.startDate} />
       </section>
       <section className="container mx-auto flex justify-center">
-        <Button asChild size="lg" className="bg-bdkj-green">
-          <Link href="https://www.72stunden.de/" target="_blank" rel="noopener noreferrer">
-            Mehr erfahren <ArrowRight className="ml-2 size-4" />
-          </Link>
-        </Button>
+        <Link
+          href="https://www.72stunden.de/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonVariants({ size: 'lg' }) + 'bg-bdkj-green'}
+        >
+          Mehr erfahren <ArrowRight className="ml-2 size-4" />
+        </Link>
       </section>
     </div>
   )

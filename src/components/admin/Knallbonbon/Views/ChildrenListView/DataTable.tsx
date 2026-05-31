@@ -91,11 +91,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           className="max-w-sm"
         />
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Spalten <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={() => (
+              <Button variant="outline" className="ml-auto">
+                Spalten <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            )}
+          />
           <DropdownMenuContent align="end">
             {table
               .getAllColumns()

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 const Aurora = dynamic(() => import('@/components/Aurora'), {
   loading: () => (
@@ -29,9 +29,9 @@ export default function NotFound() {
           <p>Die von Ihnen gesuchte Seite existiert nicht.</p>
         </CardContent>
         <CardFooter>
-          <Button asChild variant="outline" className="w-full">
-            <Link href="/">Startseite</Link>
-          </Button>
+          <Link href="/" className={buttonVariants({ variant: 'outline' }) + ' w-full'}>
+            Startseite
+          </Link>
         </CardFooter>
       </Card>
     </div>

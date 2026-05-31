@@ -13,7 +13,7 @@ import type { Knallbonbon, KnallbonbonEvent } from '@/payload-types'
 
 // UI Components
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 
 // Custom Components
@@ -70,15 +70,13 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
       )}
       <CardFooter>
         <ButtonGroup>
-          <Button asChild>
-            <Link
-              href={`/knallbonbon/anmelden?event=${event.id}`}
-              className="flex flex-row items-center gap-2"
-            >
-              <User />
-              {isFull ? 'Warteliste' : 'Anmelden'}
-            </Link>
-          </Button>
+          <Link
+            href={`/knallbonbon/anmelden?event=${event.id}`}
+            className={buttonVariants({}) + 'flex flex-row items-center gap-2'}
+          >
+            <User />
+            {isFull ? 'Warteliste' : 'Anmelden'}
+          </Link>
           {!isFull && spotsLeft !== null && (
             <Button variant="outline">
               {spotsLeft} {spotsLeft === 1 ? 'Platz' : 'Plätze'}
@@ -86,12 +84,14 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
           )}
         </ButtonGroup>
         <Dialog>
-          <Button asChild variant="outline" className="ml-2">
-            <DialogTrigger>
-              <QrCode />
-              QR Code
-            </DialogTrigger>
-          </Button>
+          <DialogTrigger
+            render={() => (
+              <Button variant="outline" className="ml-2">
+                <QrCode />
+                QR Code
+              </Button>
+            )}
+          />
           <DialogContent className="w-sm">
             <DialogHeader>
               <DialogTitle>Scanne den QR-Code</DialogTitle>
@@ -184,18 +184,17 @@ export default async function Page() {
           </p>
         </div>
         <div className="flex justify-center">
-          <Button asChild>
-            <Link href="/knallbonbon/anmelden">
-              <User />
-              Jetzt anmelden
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="ml-4">
-            <Link href="mailto:info@evangelischejugend.org">
-              <Mail />
-              Kontaktieren
-            </Link>
-          </Button>
+          <Link href="/knallbonbon/anmelden" className={buttonVariants({})}>
+            <User />
+            Jetzt anmelden
+          </Link>
+          <Link
+            href="mailto:info@evangelischejugend.org"
+            className={buttonVariants({ variant: 'outline' }) + 'ml-4'}
+          >
+            <Mail />
+            Kontaktieren
+          </Link>
         </div>
       </section>
 

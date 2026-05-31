@@ -2,15 +2,15 @@ import React from 'react'
 import Link from 'next/link'
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { ArrowRight, Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface PricingItem {
   name: string
@@ -33,12 +33,11 @@ export default function PricingSection({ pricing, signupStartDate }: PricingSect
   const signupOpen = !signupStartDate || new Date() >= new Date(signupStartDate)
 
   return (
-    <section className="mx-auto p-6">
+    <section className="mx-auto max-w-(--breakpoint-lg) space-y-6 p-6">
       <div className="text-center">
         <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Teilnehmerbeitrag</h2>
-        <p className="text-muted-foreground text-lg">Wähle das passende Paket für dich aus</p>
       </div>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:p-6">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
         {pricing.map((item) => {
           return (
             <Card
@@ -49,17 +48,10 @@ export default function PricingSection({ pricing, signupStartDate }: PricingSect
                 <CardTitle className="text-2xl">{item.name}</CardTitle>
                 <CardDescription className="mt-2 text-base">{item.beschreibung}</CardDescription>
               </CardHeader>
-
               <CardContent className="grow">
                 <div className="mb-6">
-                  <div className="flex items-baseline">
-                    <span className="text-5xl font-bold tracking-tight">{item.price}€</span>
-                    <span className="text-muted-foreground ml-2 text-base font-medium">
-                      / Teilnehmer
-                    </span>
-                  </div>
+                  <span className="text-5xl font-bold tracking-tight">{item.price}€</span>
                 </div>
-
                 <div className="mb-6">
                   <h3 className="mb-4 text-sm font-semibold tracking-wide uppercase">Inklusive:</h3>
                   <ul className="space-y-3">
@@ -81,34 +73,30 @@ export default function PricingSection({ pricing, signupStartDate }: PricingSect
 
               <CardFooter className="flex flex-col gap-1 pt-0">
                 {signupOpen ? (
-                  <Button asChild className="h-12 w-full text-base transition-all" size="lg">
-                    <Link href="/sommerfreizeit/buchen/">Jetzt Buchen</Link>
-                  </Button>
+                  <Link
+                    href="/sommerfreizeit/buchen/"
+                    className={cn(
+                      buttonVariants({ size: 'lg' }),
+                      'h-12 w-full text-base transition-all',
+                    )}
+                  >
+                    Jetzt Buchen
+                  </Link>
                 ) : (
-                  <>
-                    <Button disabled className="h-12 w-full text-base transition-all" size="lg">
-                      Jetzt Buchen
-                    </Button>
-                  </>
+                  <Button disabled className="h-12 w-full text-base transition-all" size="lg">
+                    Jetzt Buchen
+                  </Button>
                 )}
+                <Link
+                  href="/sommerfreizeit/anmelden/"
+                  className={buttonVariants({ variant: 'link', size: 'xs' })}
+                >
+                  Anmeldung abschließen <ArrowRight data-icon="inline-end" />
+                </Link>
               </CardFooter>
             </Card>
           )
         })}
-      </div>
-      <div className="mx-auto max-w-(--breakpoint-sm) px-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Schon gebucht?</CardTitle>
-            <CardAction>
-              <Button asChild variant="outline">
-                <Link href="/sommerfreizeit/anmelden/" className="space-x-2">
-                  Anmeldung abschließen <ArrowRight className="ml-1" />
-                </Link>
-              </Button>
-            </CardAction>
-          </CardHeader>
-        </Card>
       </div>
     </section>
   )

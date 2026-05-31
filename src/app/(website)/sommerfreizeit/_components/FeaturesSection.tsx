@@ -24,10 +24,10 @@ export default function FeaturesSection({ eigenschaften }: FeaturesSectionProps)
   return (
     <section className="mx-auto max-w-(--breakpoint-sm) p-6">
       <div>
-        <h2 className="text-center text-4xl font-bold">Was uns ausmacht</h2>
+        <h2 className="text-center text-4xl font-bold sm:text-5xl">Was uns ausmacht</h2>
       </div>
       <div>
-        <Accordion type="single" collapsible>
+        <Accordion>
           {eigenschaften.map((eigenschaft) => (
             <AccordionItem key={eigenschaft.id} value={eigenschaft.id || ''}>
               <AccordionTrigger>{eigenschaft.title}</AccordionTrigger>

@@ -14,7 +14,7 @@ import { RichText } from '@/components/utils/RichText'
 import Countdown from '@/components/common/Countdown'
 
 // UI Components
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { SparklesCore } from '@/components/ui/sparkles'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
 import { formatInTimeZone } from 'date-fns-tz/formatInTimeZone'
@@ -85,16 +85,38 @@ export default async function Page() {
         <div className="absolute inset-0 h-screen w-full">
           <SparklesCore
             id="hero-sparkles"
-            background="transparent"
-            minSize={0.6}
-            maxSize={1.4}
-            particleDensity={100}
+            palette="snowfall"
+            particles={{
+              number: {
+                value: 100,
+              },
+              move: {
+                direction: 'bottom',
+                enable: true,
+                random: false,
+                straight: false,
+              },
+              opacity: {
+                value: { min: 0.1, max: 0.5 },
+              },
+              size: {
+                value: { min: 1, max: 10 },
+              },
+              wobble: {
+                distance: 20,
+                enable: true,
+                speed: {
+                  min: -5,
+                  max: 5,
+                },
+              },
+            }}
             className="h-full w-full"
           />
         </div>
-        <div className="relative container mx-auto flex flex-col items-center justify-center gap-8 px-6 py-24 text-center">
+        <div className="relative container mx-auto flex flex-col items-center justify-center gap-8 px-6 py-24">
           {/* Main Title */}
-          <div className="flex flex-col items-center justify-center gap-4 text-white">
+          <div className="flex flex-col items-center justify-center gap-4 text-center text-white">
             <h1 className="text-5xl font-bold md:text-6xl lg:text-7xl">
               Adventsmarkt {formatDateLocale(adventsmarkt.startDate, 'yyyy')}
             </h1>
@@ -109,49 +131,46 @@ export default async function Page() {
               </div>
             </div>
           </div>
-
           <div>
             <Countdown targetDate={adventsmarkt.startDate} textColor="text-white" />
           </div>
+          <Card className="w-full max-w-3xl">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <Snowflake className="size-6" />
+                Informationen
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-6 md:flex-row">
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle>{formatDateLocale(adventsmarkt.startDate, 'EEEE, d. MMMM')}</CardTitle>
+                  <CardDescription>
+                    Start: {formatDateLocale(adventsmarkt.saturdayTimes.startTime, 'HH:mm')} Uhr
+                  </CardDescription>
+                  <CardDescription>
+                    Ende: {formatDateLocale(adventsmarkt.saturdayTimes.endTime, 'HH:mm')} Uhr
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle>{formatDateLocale(adventsmarkt.endDate, 'EEEE, d. MMMM')}</CardTitle>
+                  <CardDescription>
+                    Start: {formatDateLocale(adventsmarkt.sundayTimes.startTime, 'HH:mm')} Uhr
+                  </CardDescription>
+                  <CardDescription>
+                    Ende: {formatDateLocale(adventsmarkt.sundayTimes.endTime, 'HH:mm')} Uhr
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </CardContent>
+            <CardContent>
+              <RichText data={adventsmarkt.content} />
+            </CardContent>
+          </Card>
         </div>
       </div>
-
-      {/* Content Section */}
-      <section className="container mx-auto p-6">
-        <Card>
-          <CardHeader className="rounded-t-lg bg-linear-to-r from-red-700 to-emerald-700 text-white">
-            <CardTitle className="flex items-center gap-3">
-              <Snowflake className="size-6" />
-              Informationen
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-6 p-6 md:flex-row">
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>{formatDateLocale(adventsmarkt.startDate, 'EEEE, d. MMMM')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Start: {formatDateLocale(adventsmarkt.saturdayTimes.startTime, 'HH:mm')} Uhr</p>
-                <p>Ende: {formatDateLocale(adventsmarkt.saturdayTimes.endTime, 'HH:mm')} Uhr</p>
-              </CardContent>
-            </Card>
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>{formatDateLocale(adventsmarkt.endDate, 'EEEE, d. MMMM')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Start: {formatDateLocale(adventsmarkt.sundayTimes.startTime, 'HH:mm')} Uhr</p>
-                <p>Ende: {formatDateLocale(adventsmarkt.sundayTimes.endTime, 'HH:mm')} Uhr</p>
-              </CardContent>
-            </Card>
-          </CardContent>
-          <CardContent className="p-6">
-            <div>
-              <RichText data={adventsmarkt.content} />
-            </div>
-          </CardContent>
-        </Card>
-      </section>
     </div>
   )
 }

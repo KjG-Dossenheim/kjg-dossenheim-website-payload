@@ -40,15 +40,17 @@ export function GenderStackedBar({
               if (pct <= 0) return null
               return (
                 <Tooltip key={segment.key}>
-                  <TooltipTrigger asChild>
-                    <div
-                      style={{ width: `${pct}%`, backgroundColor: segment.color }}
-                      className="text-background h-full text-center text-sm leading-10 font-medium"
-                      aria-hidden="true"
-                    >
-                      {segment.value}
-                    </div>
-                  </TooltipTrigger>
+                  <TooltipTrigger
+                    render={() => (
+                      <div
+                        style={{ width: `${pct}%`, backgroundColor: segment.color }}
+                        className="text-background h-full text-center text-sm leading-10 font-medium"
+                        aria-hidden="true"
+                      >
+                        {segment.value}
+                      </div>
+                    )}
+                  />
                   <TooltipContent side="top">
                     {`${labelMap[segment.key]}: ${segment.value} (${Math.round(pct)}%)`}
                   </TooltipContent>
