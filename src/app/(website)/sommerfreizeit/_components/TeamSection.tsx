@@ -24,7 +24,7 @@ export default function TeamSection({ team }: TeamSectionProps) {
       <div className="grid grid-cols-2 gap-6 md:grid-cols-4 xl:grid-cols-5">
         {team.filter(isTeam).map((member, index) => (
           <Link href={`/team/${member.id}`} key={index} className="group relative max-w-sm">
-            <div className="bg-primary group-hover:bg-primary/80 aspect-2/3 size-full rounded-lg">
+            <div className="bg-primary group-hover:bg-primary/80 relative aspect-2/3 size-full rounded-lg">
               {typeof member.profilePicture === 'object' && member.profilePicture !== null ? (
                 <Image
                   className="rounded-lg object-cover"

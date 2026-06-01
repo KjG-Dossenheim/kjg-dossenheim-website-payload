@@ -8,7 +8,6 @@ export const syncAnmeldungenAfterChange: CollectionAfterChangeHook = async ({ do
   if (!doc?.id) {
     return doc
   }
-
   const registrations = await req.payload.find({
     collection: 'sommerfreizeitAnmeldung',
     where: {
@@ -19,6 +18,8 @@ export const syncAnmeldungenAfterChange: CollectionAfterChangeHook = async ({ do
     depth: 0,
     limit: 1000,
     pagination: false,
+    overrideAccess: false,
+    user: req.user,
   })
 
   await Promise.all(
@@ -34,6 +35,8 @@ export const syncAnmeldungenAfterChange: CollectionAfterChangeHook = async ({ do
         context: {
           skipChildAnmeldungSync: true,
         },
+        overrideAccess: false,
+        user: req.user,
       })
     }),
   )

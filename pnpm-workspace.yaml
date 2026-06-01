@@ -6,3 +6,9 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 minimumReleaseAgeStrict: true
+minimumReleaseAgeExclude:
+  - payload-doctor
+  - react-doctor
+  - "@tsparticles/*"
+  - "@better-auth/*"
+  - better-auth

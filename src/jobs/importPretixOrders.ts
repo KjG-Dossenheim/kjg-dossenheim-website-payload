@@ -10,7 +10,10 @@ type ImportPretixOrdersInput = {
 
 type SommerfreizeitOrderDoc = {
   id: string
+  orderCode: string
 }
+
+type PretixOrder = Awaited<ReturnType<typeof fetchOrdersPage>>['results'][number]
 
 function toNonEmpty(value: unknown) {
   if (typeof value !== 'string') {
@@ -92,6 +95,9 @@ export const importPretixOrdersJob = {
       let imported = 0
       let updated = 0
       let skippedExisting = 0
+      const pendingOrders: Array<{
+        order: PretixOrder
+      }> = []
 
       while (true) {
         if (maxPages && page > maxPages) {
@@ -108,63 +114,7 @@ export const importPretixOrdersJob = {
         })
 
         for (const order of pageResult.results) {
-
-          const data = {
-            organizer,
-            orderCode: order.code,
-            status: order.status,
-            testMode: order.testmode,
-            email: order.email,
-            total: order.total,
-            datetime: order.datetime,
-            expires: order.expires,
-            pretixEventId: order.event,
-            requireApproval: order.require_approval,
-          }
-
-          const existingResult = await req.payload.find({
-            collection: 'sommerfreizeitOrders',
-            where: {
-              orderCode: {
-                equals: order.code,
-              },
-            },
-            limit: 1,
-            depth: 0,
-            pagination: false,
-            overrideAccess: true,
-          })
-
-          const existing = (existingResult.docs[0] as SommerfreizeitOrderDoc | undefined) ?? null
-
-          if (!existing) {
-            await req.payload.create({
-              collection: 'sommerfreizeitOrders',
-              data,
-              depth: 0,
-              draft: false,
-              overrideAccess: true,
-            })
-
-            imported += 1
-            continue
-          }
-
-          if (!updateExisting) {
-            skippedExisting += 1
-            continue
-          }
-
-          await req.payload.update({
-            collection: 'sommerfreizeitOrders',
-            id: existing.id,
-            data,
-            depth: 0,
-            draft: false,
-            overrideAccess: true,
-          })
-
-          updated += 1
+          pendingOrders.push({ order })
         }
 
         if (!pageResult.next) {
@@ -172,6 +122,81 @@ export const importPretixOrdersJob = {
         }
 
         page += 1
+      }
+
+      const orderCodes = Array.from(
+        new Set(
+          pendingOrders
+            .map(({ order }) => order.code.trim().toUpperCase())
+            .filter((code) => code.length > 0),
+        ),
+      )
+
+      const existingOrders = orderCodes.length
+        ? await req.payload.find({
+          collection: 'sommerfreizeitOrders',
+          where: {
+            orderCode: {
+              in: orderCodes,
+            },
+          },
+          limit: orderCodes.length,
+          depth: 0,
+          pagination: false,
+          overrideAccess: true,
+        })
+        : { docs: [] as SommerfreizeitOrderDoc[] }
+
+      const existingOrdersByCode = new Map(
+        existingOrders.docs.map((doc) => [doc.orderCode.trim().toUpperCase(), doc]),
+      )
+
+      for (const { order } of pendingOrders) {
+        const orderCode = order.code.trim().toUpperCase()
+
+        const data = {
+          organizer,
+          orderCode,
+          status: order.status,
+          testMode: order.testmode,
+          email: order.email,
+          total: order.total,
+          datetime: order.datetime,
+          expires: order.expires,
+          pretixEventId: order.event,
+          requireApproval: order.require_approval,
+        }
+
+        const existing = existingOrdersByCode.get(orderCode) ?? null
+
+        if (!existing) {
+          await req.payload.create({
+            collection: 'sommerfreizeitOrders',
+            data,
+            depth: 0,
+            draft: false,
+            overrideAccess: true,
+          })
+
+          imported += 1
+          continue
+        }
+
+        if (!updateExisting) {
+          skippedExisting += 1
+          continue
+        }
+
+        await req.payload.update({
+          collection: 'sommerfreizeitOrders',
+          id: existing.id,
+          data,
+          depth: 0,
+          draft: false,
+          overrideAccess: true,
+        })
+
+        updated += 1
       }
 
       req.payload.logger.info(

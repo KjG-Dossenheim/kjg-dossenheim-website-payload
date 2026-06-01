@@ -3350,7 +3350,7 @@ export interface SendConfirmationEmailsJob {
  */
 export interface ImportPretixCustomersJob {
   input: {
-    email?: string | null;
+    customerEmail?: string | null;
     maxPages?: number | null;
     updateExisting?: boolean | null;
   };

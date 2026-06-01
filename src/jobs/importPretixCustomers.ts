@@ -36,7 +36,7 @@ type PretixCustomer = z.infer<typeof pretixCustomerSchema>
 
 // Input parameters for the import job
 type ImportPretixCustomersInput = {
-  email?: string // Optional: filter by specific email
+  customerEmail?: string // Optional: filter by specific email
   maxPages?: number // Optional: limit number of pages to fetch
   updateExisting?: boolean // Optional: whether to update existing users
 }
@@ -44,6 +44,7 @@ type ImportPretixCustomersInput = {
 // Minimal type for Sommerfreizeit user documents we fetch from database
 type SommerfreizeitUserDoc = {
   id: string
+  email: string
   firstName?: string | null
   lastName?: string | null
   name?: string | null
@@ -204,7 +205,7 @@ export const importPretixCustomersJob = {
         typeof jobInput.maxPages === 'number' && Number.isFinite(jobInput.maxPages)
           ? Math.max(1, Math.floor(jobInput.maxPages))
           : undefined
-      const emailFilter = toNonEmpty(jobInput.email)
+      const emailFilter = toNonEmpty(jobInput.customerEmail)
       const updateExisting = Boolean(jobInput.updateExisting)
 
       // Validate required Pretix configuration
@@ -225,6 +226,14 @@ export const importPretixCustomersJob = {
       let skippedNoEmail = 0 // Skipped: no email address
       let skippedInactive = 0 // Skipped: is_active = false
       let skippedExisting = 0 // Skipped: already exists and updateExisting=false
+      const preparedCustomers: Array<{
+        customer: PretixCustomer
+        normalizedEmail: string
+        firstName: string
+        lastName: string
+        identifier: string | null
+      }> = []
+      const normalizedEmails = new Set<string>()
 
       // Fetch customers page by page
       while (true) {
@@ -265,89 +274,14 @@ export const importPretixCustomersJob = {
           const lastName = nameParts.lastName || 'Kunde'
           const identifier = toNonEmpty(customer.identifier) || null
 
-          // Check if user already exists in database
-          const existing = await req.payload.find({
-            collection: 'sommerfreizeitUsers',
-            where: {
-              email: {
-                equals: normalizedEmail,
-              },
-            },
-            limit: 1,
-            depth: 0,
-            pagination: false,
+          normalizedEmails.add(normalizedEmail)
+          preparedCustomers.push({
+            customer,
+            normalizedEmail,
+            firstName,
+            lastName,
+            identifier,
           })
-
-          const existingDoc = (existing.docs[0] as SommerfreizeitUserDoc | undefined) ?? null
-
-          // Create new user if not found in database
-          if (!existingDoc) {
-            const created = await ensureSommerfreizeitUser(req.payload, {
-              email: normalizedEmail,
-              firstName,
-              lastName,
-              phone: toNonEmpty(customer.phone) || null,
-              pretix_Identifier: identifier,
-            })
-
-            if (created.created) {
-              imported += 1
-            }
-
-            continue
-          }
-
-          // Skip existing users if updateExisting is false
-          if (!updateExisting) {
-            skippedExisting += 1
-            continue
-          }
-
-          // Prepare updates for the existing user
-          const updateData: Record<string, unknown> = {}
-          const nextDisplayName = buildDisplayName(firstName, lastName, normalizedEmail)
-          const phone = toNonEmpty(customer.phone)
-
-          // Only add fields to updateData if they've changed
-          if (firstName && firstName !== toNonEmpty(existingDoc.firstName)) {
-            updateData.firstName = firstName
-          }
-
-          if (lastName && lastName !== toNonEmpty(existingDoc.lastName)) {
-            updateData.lastName = lastName
-          }
-
-          if (nextDisplayName && nextDisplayName !== toNonEmpty(existingDoc.name)) {
-            updateData.name = nextDisplayName
-          }
-
-          if (phone && phone !== toNonEmpty(existingDoc.phone)) {
-            updateData.phone = phone
-          }
-
-          // Mark email as verified if it's verified in Pretix
-          if (customer.is_verified && !existingDoc.emailVerified) {
-            updateData.emailVerified = true
-          }
-
-          if (identifier && identifier !== toNonEmpty(existingDoc.pretix_Identifier)) {
-            updateData.pretix_Identifier = identifier
-          }
-
-          // If nothing changed, skip the update
-          if (Object.keys(updateData).length === 0) {
-            skippedExisting += 1
-            continue
-          }
-
-          // Update the user with new data from Pretix
-          await req.payload.update({
-            collection: 'sommerfreizeitUsers',
-            id: existingDoc.id,
-            data: updateData,
-          })
-
-          updated += 1
         }
 
         // Stop pagination if there's no next page
@@ -357,6 +291,97 @@ export const importPretixCustomersJob = {
 
         // Move to next page
         page += 1
+      }
+
+      const existingUsers = normalizedEmails.size
+        ? await req.payload.find({
+          collection: 'sommerfreizeitUsers',
+          where: {
+            email: {
+              in: Array.from(normalizedEmails),
+            },
+          },
+          limit: normalizedEmails.size,
+          depth: 0,
+          pagination: false,
+        })
+        : { docs: [] as SommerfreizeitUserDoc[] }
+
+      const existingUsersByEmail = new Map(
+        existingUsers.docs.map((doc) => [normalizeSommerfreizeitEmail(doc.email), doc]),
+      )
+
+      for (const { customer, normalizedEmail, firstName, lastName, identifier } of preparedCustomers) {
+        const existingDoc = existingUsersByEmail.get(normalizedEmail) ?? null
+
+        // Create new user if not found in database
+        if (!existingDoc) {
+          const created = await ensureSommerfreizeitUser(req.payload, {
+            email: normalizedEmail,
+            firstName,
+            lastName,
+            phone: toNonEmpty(customer.phone) || null,
+            pretix_Identifier: identifier,
+          })
+
+          if (created.created) {
+            imported += 1
+          }
+
+          continue
+        }
+
+        // Skip existing users if updateExisting is false
+        if (!updateExisting) {
+          skippedExisting += 1
+          continue
+        }
+
+        // Prepare updates for the existing user
+        const updateData: Record<string, unknown> = {}
+        const nextDisplayName = buildDisplayName(firstName, lastName, normalizedEmail)
+        const phone = toNonEmpty(customer.phone)
+
+        // Only add fields to updateData if they've changed
+        if (firstName && firstName !== toNonEmpty(existingDoc.firstName)) {
+          updateData.firstName = firstName
+        }
+
+        if (lastName && lastName !== toNonEmpty(existingDoc.lastName)) {
+          updateData.lastName = lastName
+        }
+
+        if (nextDisplayName && nextDisplayName !== toNonEmpty(existingDoc.name)) {
+          updateData.name = nextDisplayName
+        }
+
+        if (phone && phone !== toNonEmpty(existingDoc.phone)) {
+          updateData.phone = phone
+        }
+
+        // Mark email as verified if it's verified in Pretix
+        if (customer.is_verified && !existingDoc.emailVerified) {
+          updateData.emailVerified = true
+        }
+
+        if (identifier && identifier !== toNonEmpty(existingDoc.pretix_Identifier)) {
+          updateData.pretix_Identifier = identifier
+        }
+
+        // If nothing changed, skip the update
+        if (Object.keys(updateData).length === 0) {
+          skippedExisting += 1
+          continue
+        }
+
+        // Update the user with new data from Pretix
+        await req.payload.update({
+          collection: 'sommerfreizeitUsers',
+          id: existingDoc.id,
+          data: updateData,
+        })
+
+        updated += 1
       }
 
       req.payload.logger.info(
@@ -383,7 +408,7 @@ export const importPretixCustomersJob = {
   },
   inputSchema: [
     {
-      name: 'email',
+      name: 'customerEmail',
       type: 'text',
       required: false,
     },

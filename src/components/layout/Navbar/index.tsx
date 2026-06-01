@@ -121,7 +121,7 @@ const ActionsSubmenu = React.memo(function ActionsSubmenu({
 }) {
   return (
     <NavigationMenuContent>
-      <div className="grid gap-2 p-3 md:min-w-95">
+      <div className="grid gap-2 p-3 md:min-w-95!">
         <NavbarNavigationMenuLink
           href="/aktionen"
           className="bg-muted/60 hover:bg-muted hover:text-accent-foreground flex flex-col gap-1 rounded-lg p-4 no-underline transition-colors"
@@ -180,7 +180,7 @@ const MobileActionsSubmenu = React.memo(function MobileActionsSubmenu({
   aktionen: Header['aktionen']
 }) {
   return (
-    <AccordionItem value="Aktionen" className="border-b-0">
+    <AccordionItem value="Aktionen" className="border-b-0 [&_a]:no-underline!">
       <AccordionTrigger
         className="hover:bg-muted rounded-md px-3 py-2 text-base font-semibold hover:no-underline"
         aria-label="Aktionen Menü öffnen/schließen"
@@ -191,7 +191,7 @@ const MobileActionsSubmenu = React.memo(function MobileActionsSubmenu({
         <div className="flex flex-col gap-3">
           <Link
             href="/aktionen"
-            className="bg-muted/60 hover:bg-muted flex flex-col gap-1 rounded-lg p-4 no-underline transition-colors"
+            className="bg-muted/60 hover:bg-muted flex flex-col gap-1 rounded-lg p-4 transition-colors"
             data-umami-event="Navbar Link: Aktionen Übersicht"
           >
             <span className="text-sm font-semibold">Jahresplan</span>
@@ -202,7 +202,7 @@ const MobileActionsSubmenu = React.memo(function MobileActionsSubmenu({
             {aktionen?.map((subItem) => (
               <Link
                 key={subItem.id}
-                className="hover:bg-muted flex items-center gap-2 rounded-md px-3 py-2 no-underline transition-colors outline-none"
+                className="hover:bg-muted flex items-center gap-2 rounded-md px-3 py-2 transition-colors"
                 href={subItem.url}
                 aria-label={`${subItem.title} Aktion`}
                 data-umami-event={`Submenu Link: ${subItem.title}`}
@@ -306,7 +306,10 @@ const MobileNavigation = React.memo(function MobileNavigation({
                   Startseite
                 </Link>
               </div>
-              <Accordion className="flex w-full flex-col gap-2" aria-label="Navigationsmenü">
+              <Accordion
+                className="flex w-full flex-col gap-2 [&_a]:no-underline! [&_div[data-slot=accordion-item]]:border-b-0!"
+                aria-label="Navigationsmenü"
+              >
                 <MobileActionsSubmenu aktionen={headerData.aktionen} />
                 {headerData.navigation.map((item) => (
                   <MobileMenuItem key={item.id || item.title} item={item} />
@@ -373,7 +376,7 @@ const DesktopMenuItem = React.memo(function DesktopMenuItem({ item }: { item: Na
 const MobileMenuItem = React.memo(function MobileMenuItem({ item }: { item: NavigationItem }) {
   if (hasSubNavigation(item)) {
     return (
-      <AccordionItem value={item.title} className="border-b-0">
+      <AccordionItem value={item.title} className="border-b-0 [&_a]:!no-underline">
         <AccordionTrigger
           className="hover:bg-muted rounded-md p-0 text-base font-semibold hover:no-underline"
           aria-label={`${item.title} Menü öffnen/schließen`}

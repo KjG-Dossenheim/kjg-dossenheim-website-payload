@@ -10,8 +10,7 @@ export const sommerfreizeitFeedback: CollectionConfig = {
     group: 'Sommerfreizeit',
   },
   access: {
-    read: () => true,
-    create: () => true,
+    create: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
     update: () => false,
   },
   fields: [

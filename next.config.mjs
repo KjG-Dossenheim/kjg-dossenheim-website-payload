@@ -19,15 +19,20 @@ const nextConfig = {
         hostname: 'api.netlify.com',
       },
     ],
+    localPatterns: [
+      {
+        pathname: '/api/**',
+      },
+    ],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  modularizeImports: {
-    'lucide-react': {
-      transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
-    },
-  },
+  /*   modularizeImports: {
+      'lucide-react': {
+        transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
+      },
+    }, */
   experimental: {
     optimizePackageImports: [
       'lucide-react',

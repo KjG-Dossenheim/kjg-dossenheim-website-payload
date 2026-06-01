@@ -1,5 +1,4 @@
 export const revalidate = 300 // 5 minutes - more frequent updates for events
-export const dynamic = 'force-static' // Force static generation for better performance
 
 // React and Next.js
 import React from 'react'
@@ -15,8 +14,7 @@ import config from '@payload-config'
 import type { Jahresplan, KnallbonbonEvent } from '@/payload-types'
 
 // UI Components
-import { Button, buttonVariants } from '@/components/ui/button'
-import { CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Timeline,
   TimelineContent,
@@ -30,6 +28,7 @@ import {
 
 // Custom Components
 import { formatDateLocale } from '@/components/common/formatDateLocale'
+import { cn } from '@/lib/utils'
 
 export function generateMetadata(): Metadata {
   return {
@@ -53,16 +52,12 @@ export default async function Page() {
   try {
     const payload = await getPayload({ config })
 
-    // Filter events from the last 6 months or in the future at database level
-    const sixMonthsAgo = new Date()
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
-
     // Fetch Jahresplan events
     const { docs: jahresplanEvents } = await payload.find({
       collection: 'jahresplan',
       where: {
         startDate: {
-          greater_than_equal: sixMonthsAgo.toISOString(),
+          greater_than_equal: new Date().toISOString(),
         },
       },
       sort: 'startDate',
@@ -82,7 +77,7 @@ export default async function Page() {
       collection: 'knallbonbonEvents',
       where: {
         date: {
-          greater_than_equal: sixMonthsAgo.toISOString(),
+          greater_than_equal: new Date().toISOString(),
         },
       },
       sort: 'date',
@@ -132,16 +127,18 @@ export default async function Page() {
       firstFutureEventIndex === -1 ? allEvents.length : firstFutureEventIndex + 1
 
     return (
-      <section className="container mx-auto">
-        <CardHeader>
-          <CardTitle>Aktionen</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <section className="mx-auto space-y-6 p-6">
+        <div>
+          <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+            Aktionen
+          </h1>
+        </div>
+        <div>
           {allEvents.length > 0 ? (
             <Timeline
               defaultValue={defaultTimelineValue}
               orientation="vertical"
-              className="max-w-md"
+              className="mx-auto max-w-md"
             >
               {allEvents.map((event: TimelineEvent, index: number) => (
                 <TimelineItem key={`${event.source}-${event.id}`} step={index + 1}>
@@ -167,11 +164,11 @@ export default async function Page() {
                   {event.url && (
                     <Link
                       href={event.url}
-                      className={buttonVariants({ variant: 'outline' }) + 'w-fit gap-1.5'}
+                      className={cn(buttonVariants({ variant: 'outline' }), 'self-start')}
                       data-umami-event="Event More Info CTA"
                       data-umami-event-event={event.title}
                     >
-                      Mehr erfahren <ArrowRight className="size-5" />
+                      Mehr erfahren <ArrowRight data-icon="inline-end" />
                     </Link>
                   )}
                 </TimelineItem>
@@ -182,21 +179,23 @@ export default async function Page() {
               Aktuell sind keine Aktionen aus den letzten 6 Monaten oder für die Zukunft geplant.
             </p>
           )}
-        </CardContent>
+        </div>
       </section>
     )
   } catch (error) {
     console.error('Error loading events:', error)
     return (
-      <section className="container mx-auto">
-        <CardHeader>
-          <CardTitle>Aktionen</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <section className="mx-auto space-y-6 p-6">
+        <div>
+          <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+            Aktionen
+          </h1>
+        </div>
+        <div>
           <p className="text-center text-lg text-red-600">
             Fehler beim Laden der Aktionen. Bitte versuchen Sie es später erneut.
           </p>
-        </CardContent>
+        </div>
       </section>
     )
   }

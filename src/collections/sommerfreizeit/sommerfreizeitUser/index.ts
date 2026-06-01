@@ -55,6 +55,7 @@ export const sommerfreizeitUser: CollectionConfig = {
       type: 'email',
       required: true,
       unique: true,
+      index: true,
     },
     {
       name: 'name',

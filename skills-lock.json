@@ -13,6 +13,12 @@
       "skillPath": "skills/payload/SKILL.md",
       "computedHash": "868c518cec5efe3862accee8ef3751b72fac06d7e12a27c263dc17320f27b20c"
     },
+    "payload-doctor": {
+      "source": "metakraft/payload-doctor",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "593f996edbf34f188aaf5c90f39b23e23ee1cce589df27fe2f6feac558d6c474"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",

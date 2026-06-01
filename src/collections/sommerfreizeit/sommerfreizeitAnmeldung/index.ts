@@ -274,6 +274,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
                   admin: {
                     hidden: true,
                   },
+                  access: {
+                    update: () => false,
+                  },
                 }
               ],
               admin: {
@@ -415,6 +418,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         description: 'Die zugehörige Bestellung in Pretix, falls vorhanden',
         hidden: false,
       },
+      access: {
+        update: () => false,
+      },
     },
     {
       name: 'pretixOrderCode',
@@ -426,6 +432,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         description: 'Der Bestellcode der zugehörigen Pretix-Bestellung, z. B. ABCDE',
         hidden: true,
       },
+      access: {
+        update: () => false,
+      },
     },
     {
       name: 'pretixPositionID',
@@ -434,6 +443,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         description: 'Die ID der zugehörigen Position in Pretix',
         hidden: true,
+      },
+      access: {
+        update: () => false,
       },
     },
     {
@@ -451,6 +463,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         description: 'Der Status der zugehörigen Pretix-Bestellung, z. B. Pending, Bezahlt, Abgelaufen, Storniert',
         hidden: true,
       },
+      access: {
+        update: () => false,
+      },
     },
     {
       name: 'require_approval',
@@ -460,6 +475,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       admin: {
         description: 'Gibt an, ob diese Anmeldung noch genehmigt werden muss. Wird automatisch auf false gesetzt, wenn die zugehörige Pretix-Bestellung bezahlt ist.',
         hidden: true,
+      },
+      access: {
+        update: () => false,
       },
     }
   ],

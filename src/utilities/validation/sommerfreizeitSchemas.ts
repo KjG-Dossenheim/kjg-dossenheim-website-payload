@@ -47,6 +47,9 @@ export const childInputSchema = z.object({
     lastName: z.string().trim(),
   })).optional(),
   bildrechte: z.custom<SommerfreizeitAnmeldung['bildrechte']>(),
+  bildrechteAkzeptiert: z.boolean().refine(value => value === true, {
+    message: 'Du musst die Bildrechte akzeptieren.',
+  }),
   agbAkzeptiert: z.boolean().refine(value => value === true, {
     message: 'Du musst die AGB akzeptieren.',
   }),

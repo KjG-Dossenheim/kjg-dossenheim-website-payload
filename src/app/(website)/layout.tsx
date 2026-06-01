@@ -42,7 +42,7 @@ export function generateMetadata(): Metadata {
 
 export default async function layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="de" className={`${caveat.variable}`}>
+    <html lang="de" className={`${caveat.variable}`} suppressHydrationWarning>
       <head>
         <Script
           strategy="lazyOnload"

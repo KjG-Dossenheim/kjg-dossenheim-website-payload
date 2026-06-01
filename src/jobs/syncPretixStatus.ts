@@ -15,6 +15,12 @@ type PretixOrderSummary = {
   event: string | null
 }
 
+type SommerfreizeitAnmeldungDoc = {
+  id: string
+  pretixOrderCode: string
+  pretixStatus?: string | null
+}
+
 const pretixOrderSchema = z
   .object({
     code: z.string().optional(),
@@ -122,6 +128,7 @@ export const syncPretixStatusJob = {
       let updatedRegistrations = 0
       let unchangedRegistrations = 0
       let skippedWithoutOrderCode = 0
+      const pendingOrders: PretixOrderSummary[] = []
 
       while (true) {
         if (maxPages && page > maxPages) {
@@ -158,52 +165,7 @@ export const syncPretixStatusJob = {
         fetchedOrders += mappedOrders.length
 
         for (const order of mappedOrders) {
-
-          if (!order.status) {
-            continue
-          }
-
-          const registrations = await req.payload.find({
-            collection: 'sommerfreizeitAnmeldung',
-            where: {
-              pretixOrderCode: {
-                equals: order.code,
-              },
-            },
-            limit: 1000,
-            depth: 0,
-            pagination: false,
-            overrideAccess: true,
-          })
-
-          if (registrations.docs.length === 0) {
-            continue
-          }
-
-          matchedRegistrations += registrations.docs.length
-
-          for (const registration of registrations.docs as Array<{
-            id: string
-            pretixStatus?: string | null
-          }>) {
-            if (toNonEmpty(registration.pretixStatus).toLowerCase() === order.status.toLowerCase()) {
-              unchangedRegistrations += 1
-              continue
-            }
-
-            await req.payload.update({
-              collection: 'sommerfreizeitAnmeldung',
-              id: registration.id,
-              data: {
-                pretixStatus: order.status,
-              },
-              depth: 0,
-              draft: false,
-              overrideAccess: true,
-            })
-
-            updatedRegistrations += 1
-          }
+          pendingOrders.push(order)
         }
 
         if (!pageResult.next) {
@@ -211,6 +173,70 @@ export const syncPretixStatusJob = {
         }
 
         page += 1
+      }
+
+      const orderCodes = Array.from(new Set(pendingOrders.map((order) => order.code)))
+
+      const registrationsResult = orderCodes.length
+        ? await req.payload.find({
+          collection: 'sommerfreizeitAnmeldung',
+          where: {
+            pretixOrderCode: {
+              in: orderCodes,
+            },
+          },
+          limit: orderCodes.length,
+          depth: 0,
+          pagination: false,
+          overrideAccess: true,
+        })
+        : { docs: [] as SommerfreizeitAnmeldungDoc[] }
+
+      const registrationsByOrderCode = new Map<string, SommerfreizeitAnmeldungDoc[]>()
+
+      for (const registration of registrationsResult.docs as SommerfreizeitAnmeldungDoc[]) {
+        const normalizedOrderCode = normalizeOrderCode(registration.pretixOrderCode)
+
+        const currentRegistrations = registrationsByOrderCode.get(normalizedOrderCode)
+        if (currentRegistrations) {
+          currentRegistrations.push(registration)
+        } else {
+          registrationsByOrderCode.set(normalizedOrderCode, [registration])
+        }
+      }
+
+      for (const order of pendingOrders) {
+        if (!order.status) {
+          continue
+        }
+
+        const registrations = registrationsByOrderCode.get(order.code) ?? []
+
+        if (registrations.length === 0) {
+          continue
+        }
+
+        matchedRegistrations += registrations.length
+
+        for (const registration of registrations) {
+          if (toNonEmpty(registration.pretixStatus).toLowerCase() === order.status.toLowerCase()) {
+            unchangedRegistrations += 1
+            continue
+          }
+
+          await req.payload.update({
+            collection: 'sommerfreizeitAnmeldung',
+            id: registration.id,
+            data: {
+              pretixStatus: order.status,
+            },
+            depth: 0,
+            draft: false,
+            overrideAccess: true,
+          })
+
+          updatedRegistrations += 1
+        }
       }
 
       req.payload.logger.info(

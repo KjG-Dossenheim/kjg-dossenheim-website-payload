@@ -1,14 +1,14 @@
 @import 'tailwindcss';
 
-@plugin 'tailwindcss-animate';
-
+/* Import animate.css */
+@import 'tw-animate-css';
 /* Unify dark mode for website (.dark) and Payload Admin ([data-theme=dark]) */
 @custom-variant dark (&:is(.dark *));
 
 /* Import shared theme tokens */
 @import './theme.css';
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -36,7 +36,7 @@
     @apply font-sans;
   }
   .maplibregl-popup-content {
-    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+    @apply rounded-none! bg-transparent! p-0! shadow-none!;
   }
   .maplibregl-popup-tip {
     @apply hidden!;
