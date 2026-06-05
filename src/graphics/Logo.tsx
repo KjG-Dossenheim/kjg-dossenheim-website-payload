@@ -1,5 +1,4 @@
 import Wortmarke from '@/graphics/logo/Wortmarke'
-import React from 'react'
 export const Logo = () => (
   <div className="logo">
     <Wortmarke className="h-auto w-full" />

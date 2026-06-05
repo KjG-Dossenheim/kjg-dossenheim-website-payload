@@ -1,5 +1,4 @@
 import Bildmarke from '@/graphics/logo/Bildmarke'
-import React from 'react'
 
 export const Logo = () => (
   <div className="logo">

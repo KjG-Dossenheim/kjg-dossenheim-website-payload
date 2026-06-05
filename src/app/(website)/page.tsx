@@ -25,7 +25,6 @@ export const revalidate = 300 // Revalidate every 5 minutes
 
 export async function generateMetadata(): Promise<Metadata> {
   const { page } = await getPageData()
-
   return {
     title: `${page.meta?.title || 'Startseite'} | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     description: page.meta?.description || '',
@@ -34,7 +33,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Page() {
   const { page } = await getPageData()
-
   return (
     <section className="container mx-auto px-4 py-20 lg:py-32">
       {page.neuigkeiten?.enabled && (

@@ -1009,12 +1009,19 @@ export function CheckForm({
                       disabled={isPending}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`agb-${child.positionId}`} className="gap-1">
-                        <span>Ich habe die</span>
-                        <Link href="/agb" target="_blank" rel="noopener" className="underline">
-                          AGB
-                        </Link>
-                        <span>gelesen und akzeptiere sie.</span>
+                      <FieldLabel htmlFor={`agb-${child.positionId}`}>
+                        <span className="gap-1">
+                          <span>Ich habe die</span>
+                          <Link
+                            href="/agb"
+                            target="_blank"
+                            rel="noopener"
+                            className="mx-1 underline"
+                          >
+                            AGB
+                          </Link>
+                          <span>gelesen und akzeptiere sie.</span>
+                        </span>
                       </FieldLabel>
                     </FieldContent>
                   </Field>
@@ -1029,16 +1036,18 @@ export function CheckForm({
                     />
                     <FieldContent>
                       <FieldLabel htmlFor={`datenschutz-${child.positionId}`} className="gap-1">
-                        <span>Ich habe die</span>
-                        <Link
-                          href="/datenschutz/sommerfreizeit"
-                          target="_blank"
-                          rel="noopener"
-                          className="underline"
-                        >
-                          Datenschutzerklärung
-                        </Link>{' '}
-                        <span>gelesen und akzeptiere sie.</span>
+                        <span>
+                          <span>Ich habe die</span>
+                          <Link
+                            href="/datenschutz/sommerfreizeit"
+                            target="_blank"
+                            rel="noopener"
+                            className="mx-1 underline"
+                          >
+                            Datenschutzerklärung
+                          </Link>{' '}
+                          <span>gelesen und akzeptiere sie.</span>
+                        </span>
                       </FieldLabel>
                     </FieldContent>
                   </Field>

@@ -41,15 +41,12 @@ export function OrderLookupForm() {
 
     try {
       const lookupResult = await lookupOrderAndStartFlowAction({ orderCode })
-
       if (!lookupResult.success || !lookupResult.orderCode) {
         setError(lookupResult.message || 'Bestellung konnte nicht abgerufen werden.')
         return
       }
-
       const nextCallbackURL = `/sommerfreizeit/anmelden/check?orderCode=${encodeURIComponent(lookupResult.orderCode)}${lookupResult.createdAccount ? '&createdAccount=1' : ''}`
       router.push(nextCallbackURL)
-      router.refresh()
     } catch (_error) {
       setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
     } finally {

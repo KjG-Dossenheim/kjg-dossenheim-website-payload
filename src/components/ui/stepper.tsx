@@ -2,7 +2,7 @@ import React from 'react'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export type StepperStep = {
+type StepperStep = {
   label: string
 }
 
@@ -39,7 +39,7 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
               <span
                 className={cn(
                   'hidden text-center text-xs leading-tight sm:block',
-                  isActive ? 'font-medium text-foreground' : 'text-muted-foreground',
+                  isActive ? 'text-foreground font-medium' : 'text-muted-foreground',
                 )}
               >
                 {step.label}
