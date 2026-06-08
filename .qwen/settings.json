@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(payload-doctor)",
+      "Bash(npx *)"
+    ]
+  },
+  "$version": 4
+}
