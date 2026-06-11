@@ -278,6 +278,12 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
     }
   }
 
+  if (process.env.NODE_ENV !== 'development') {
+    if (order.require_approval === false) {
+      throw new Error('ORDER_ALREADY_COMPLETED')
+    }
+  }
+
   const positions = extractValidPositions(order)
   const invoiceNameParts = readPretixNameParts(order.invoice_address?.name_parts)
   const invoiceAddress = order.invoice_address as Record<string, unknown> | null | undefined
@@ -297,7 +303,7 @@ async function resolveOrderFlowFromPretix(orderCode: string): Promise<ResolvedOr
     pretixOrderID: orderCode,
     pretixSecret: order.secret,
     positions,
-    requireApproval: order.require_approval !== false,
+    requireApproval: order.require_approval,
   }
 }
 
@@ -366,6 +372,13 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
       return {
         success: false,
         message: 'Diese Bestellung wurde storniert.',
+      }
+    }
+
+    if (error instanceof Error && error.message === 'ORDER_ALREADY_COMPLETED') {
+      return {
+        success: false,
+        message: 'Diese Bestellung wurde bereits abgeschlossen.',
       }
     }
 
@@ -675,14 +688,14 @@ export async function completeOrderCheckAction(input: z.infer<typeof completeOrd
     /* const allowedPositionIds = new Set(flow.positions.map((position) => position.id))
     const submittedPositionIds = parsedInput.data.children.map((child) => child.positionId)
     const uniquePositionIds = new Set(submittedPositionIds)
-
+ 
     if (uniquePositionIds.size !== submittedPositionIds.length) {
       return {
         success: false,
         message: 'Jede Position darf nur einmal angegeben werden.',
       }
     }
-
+ 
     for (const positionId of submittedPositionIds) {
       if (!allowedPositionIds.has(positionId)) {
         return {

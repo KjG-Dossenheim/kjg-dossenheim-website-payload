@@ -32,7 +32,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type { SommerfreizeitAnmeldung, SommerfreizeitChild } from '@/payload-types'
 
 import { completeOrderCheckAction, getOrderFlowView } from '../action'
-import { Pen, RefreshCw, Trash, Plus } from 'lucide-react'
+import { Pen, RefreshCw, Trash, Plus, Download } from 'lucide-react'
 import {
   Field,
   FieldContent,
@@ -191,7 +191,28 @@ export function CheckForm({
       toast.success('Für diese Bestellung wurde ein Konto angelegt.')
     }
   }, [showAccountCreatedMessage])
-  const canSubmit = children.length > 0
+
+  const isFormValid =
+    children.length > 0 &&
+    phone.trim().length > 0 &&
+    address.trim().length > 0 &&
+    postalCode.trim().length > 0 &&
+    city.trim().length > 0 &&
+    children.every(
+      (child) =>
+        child.firstName.trim().length > 0 &&
+        child.lastName.trim().length > 0 &&
+        child.dateOfBirth.trim().length > 0 &&
+        child.gender != null &&
+        child.class != null &&
+        child.krankenversicherung.trim().length > 0 &&
+        child.krankenversicherungArt != null &&
+        child.arzt.trim().length > 0 &&
+        child.arztTelefon.trim().length > 0 &&
+        child.agbAkzeptiert === true &&
+        child.datenschutzAkzeptiert === true &&
+        child.bildrechteAkzeptiert === true,
+    )
   const pretixModifyHref = `${process.env.NEXT_PUBLIC_PRETIX_URL}/${process.env.NEXT_PUBLIC_PRETIX_ORGANIZER}/${pretixEvent}/order/${pretixOrderID}/${pretixSecret}/modify`
   const updateChild = <K extends keyof ChildFormState>(
     index: number,
@@ -263,6 +284,62 @@ export function CheckForm({
     })
   }
 
+  const handleExport = () => {
+    const exportData = {
+      orderCode,
+      pretixOrderID,
+      pretixEvent,
+      contact: {
+        phone,
+        address,
+        postalCode,
+        city,
+      },
+      children: children.map((child) => ({
+        positionId: child.positionId,
+        orderPosition: child.orderPosition,
+        firstName: child.firstName,
+        lastName: child.lastName,
+        dateOfBirth: child.dateOfBirth,
+        gender: child.gender,
+        class: child.class,
+        krankenversicherung: child.krankenversicherung,
+        krankenversicherungArt: child.krankenversicherungArt,
+        krankenversicherungNummer: child.krankenversicherungNummer,
+        krankenkassenKarte: child.krankenkassenKarte,
+        foodAllergies: child.foodAllergies,
+        foodPreferences: child.foodPreferences,
+        otherAllergies: child.otherAllergies,
+        medicalConditions: child.medicalConditions,
+        medikamente: child.medikamente,
+        arzt: child.arzt,
+        arztTelefon: child.arztTelefon,
+        hausarztmodell: child.hausarztmodell,
+        schwimmer: child.schwimmer,
+        schwimmabzeichen: child.schwimmabzeichen,
+        bemerkungen: child.bemerkungen,
+        impfpass: child.impfpass,
+        zimmerwunsch: child.zimmerwunsch,
+        agbAkzeptiert: child.agbAkzeptiert,
+        datenschutzAkzeptiert: child.datenschutzAkzeptiert,
+        bildrechteAkzeptiert: child.bildrechteAkzeptiert,
+        bildrechte: child.bildrechte,
+      })),
+    }
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `anmeldung-${orderCode}.json`
+    document.body.appendChild(anchor)
+    anchor.click()
+    document.body.removeChild(anchor)
+    URL.revokeObjectURL(url)
+
+    toast.success('Daten wurden als JSON exportiert.')
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     // previous notifications are handled via toasts
@@ -330,7 +407,9 @@ export function CheckForm({
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="phone">Telefonnummer</Label>
+            <Label htmlFor="phone" required>
+              Telefonnummer
+            </Label>
             <PhoneInput
               id="phone"
               value={phone}
@@ -340,7 +419,9 @@ export function CheckForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">Adresse</Label>
+            <Label htmlFor="address" required>
+              Adresse
+            </Label>
             <Input
               id="address"
               value={address}
@@ -350,7 +431,9 @@ export function CheckForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="postalCode">Postleitzahl</Label>
+            <Label htmlFor="postalCode" required>
+              Postleitzahl
+            </Label>
             <Input
               id="postalCode"
               value={postalCode}
@@ -360,7 +443,9 @@ export function CheckForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="city">Ort</Label>
+            <Label htmlFor="city" required>
+              Ort
+            </Label>
             <Input
               id="city"
               value={city}
@@ -418,7 +503,9 @@ export function CheckForm({
                 </FieldGroup>
                 <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <Field>
-                    <FieldLabel htmlFor={`birthDate-${child.positionId}`}>Geburtsdatum</FieldLabel>
+                    <FieldLabel htmlFor={`birthDate-${child.positionId}`} required>
+                      Geburtsdatum
+                    </FieldLabel>
                     <Input
                       id={`birthDate-${child.positionId}`}
                       type="date"
@@ -429,12 +516,15 @@ export function CheckForm({
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor={`gender-${child.positionId}`}>Geschlecht</FieldLabel>
+                    <FieldLabel htmlFor={`gender-${child.positionId}`} required>
+                      Geschlecht
+                    </FieldLabel>
                     <Select
                       value={child.gender}
                       onValueChange={(value) =>
                         updateChild(index, 'gender', value as ChildFormState['gender'])
                       }
+                      required
                       disabled={isPending}
                     >
                       <SelectTrigger
@@ -462,7 +552,9 @@ export function CheckForm({
                     </Select>
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor={`class-${child.positionId}`}>Klasse</FieldLabel>
+                    <FieldLabel htmlFor={`class-${child.positionId}`} required>
+                      Klasse
+                    </FieldLabel>
                     <Select
                       value={child.class}
                       onValueChange={(value) =>
@@ -592,7 +684,7 @@ export function CheckForm({
                 <FieldLegend>Krankenkasse</FieldLegend>
                 <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <Field>
-                    <FieldLabel htmlFor={`insurance-${child.positionId}`}>
+                    <FieldLabel htmlFor={`insurance-${child.positionId}`} required>
                       Krankenversicherung
                     </FieldLabel>
                     <Input
@@ -606,7 +698,7 @@ export function CheckForm({
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor={`insurance-type-${child.positionId}`}>
+                    <FieldLabel htmlFor={`insurance-type-${child.positionId}`} required>
                       Versicherungsart
                     </FieldLabel>
                     <Select
@@ -808,7 +900,9 @@ export function CheckForm({
                 <FieldLegend>Ärztliche Versorgung</FieldLegend>
                 <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Field>
-                    <FieldLabel htmlFor={`doctor-${child.positionId}`}>Arzt</FieldLabel>
+                    <FieldLabel htmlFor={`doctor-${child.positionId}`} required>
+                      Arzt
+                    </FieldLabel>
                     <Input
                       id={`doctor-${child.positionId}`}
                       value={child.arzt}
@@ -818,7 +912,7 @@ export function CheckForm({
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor={`doctor-phone-${child.positionId}`}>
+                    <FieldLabel htmlFor={`doctor-phone-${child.positionId}`} required>
                       Arzt-Telefonnummer
                     </FieldLabel>
                     <PhoneInput
@@ -948,7 +1042,7 @@ export function CheckForm({
                       disabled={isPending}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`bildrechte-${child.positionId}`}>
+                      <FieldLabel htmlFor={`bildrechte-${child.positionId}`} required>
                         Ich akzeptiere, dass Fotos von {child.firstName} gemacht werden
                       </FieldLabel>
                     </FieldContent>
@@ -1006,10 +1100,11 @@ export function CheckForm({
                       onCheckedChange={(checked) =>
                         updateChild(index, 'agbAkzeptiert', checked === true)
                       }
+                      required
                       disabled={isPending}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`agb-${child.positionId}`}>
+                      <FieldLabel htmlFor={`agb-${child.positionId}`} required>
                         <span className="gap-1">
                           <span>Ich habe die</span>
                           <Link
@@ -1032,10 +1127,15 @@ export function CheckForm({
                       onCheckedChange={(checked) =>
                         updateChild(index, 'datenschutzAkzeptiert', checked === true)
                       }
+                      required
                       disabled={isPending}
                     />
                     <FieldContent>
-                      <FieldLabel htmlFor={`datenschutz-${child.positionId}`} className="gap-1">
+                      <FieldLabel
+                        htmlFor={`datenschutz-${child.positionId}`}
+                        required
+                        className="gap-1"
+                      >
                         <span>
                           <span>Ich habe die</span>
                           <Link
@@ -1065,9 +1165,19 @@ export function CheckForm({
             Prüfe die Angaben noch einmal und sende die Anmeldung dann ab.
           </CardDescription>
         </CardHeader>
-        <CardFooter>
-          <Button type="submit" disabled={isPending || !canSubmit} className="w-full sm:w-auto">
+        <CardFooter className="flex flex-col gap-2 sm:flex-row sm:justify-between">
+          <Button type="submit" disabled={isPending || !isFormValid} className="w-full sm:w-auto">
             {isPending ? 'Wird gespeichert...' : 'Anmeldung abschliessen'}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleExport}
+            disabled={isPending || !isFormValid}
+            className="w-full sm:w-auto"
+          >
+            <Download className="mr-2 size-4" />
+            Exportieren
           </Button>
         </CardFooter>
       </Card>

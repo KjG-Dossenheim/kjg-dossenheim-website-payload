@@ -37,5 +37,6 @@
   },
   "chat.tools.terminal.autoApprove": {
     "pnpm": true
-  }
+  },
+  "fallow.coverage.capturePath": "/Users/ben.wallner/Developer/GitHub/kjg-dossenheim-website-payload/src"
 }

@@ -32,7 +32,7 @@ export const Martinsumzug: GlobalConfig = {
     {
       label: 'Startort',
       name: 'startLocation',
-      type: 'text',
+      type: 'point',
       required: true,
       admin: {
         position: 'sidebar',
@@ -41,7 +41,7 @@ export const Martinsumzug: GlobalConfig = {
     {
       label: 'Endort',
       name: 'endLocation',
-      type: 'text',
+      type: 'point',
       required: true,
       admin: {
         position: 'sidebar',

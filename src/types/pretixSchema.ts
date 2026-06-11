@@ -118,7 +118,7 @@ export const pretixOrderSchema = z.object({
   last_modified: z.string().optional(),
   payments: z.array(pretixPaymentSchema).optional(),
   refunds: z.array(pretixRefundSchema).optional(),
-  require_approval: z.boolean().optional(),
+  require_approval: z.boolean(),
   sales_channel: z.string().optional(),
   url: z.string().nullable().optional(),
   customer: z.unknown().nullable().optional(),

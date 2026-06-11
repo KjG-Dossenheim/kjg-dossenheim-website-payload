@@ -88,6 +88,8 @@ export interface Config {
     membershipApplication: MembershipApplication;
     feedback: Feedback;
     songs: Song;
+    exports: Export;
+    imports: Import;
     forms: Form;
     'form-submissions': FormSubmission;
     sessions: Session;
@@ -134,6 +136,8 @@ export interface Config {
     membershipApplication: MembershipApplicationSelect<false> | MembershipApplicationSelect<true>;
     feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     songs: SongsSelect<false> | SongsSelect<true>;
+    exports: ExportsSelect<false> | ExportsSelect<true>;
+    imports: ImportsSelect<false> | ImportsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
@@ -196,6 +200,8 @@ export interface Config {
       importPretixCustomers: ImportPretixCustomersJob;
       importPretixOrders: ImportPretixOrdersJob;
       syncPretixStatus: SyncPretixStatusJob;
+      createCollectionExport: TaskCreateCollectionExport;
+      createCollectionImport: TaskCreateCollectionImport;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -1055,6 +1061,80 @@ export interface Song {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports".
+ */
+export interface Export {
+  id: string;
+  name?: string | null;
+  format: 'csv' | 'json';
+  limit?: number | null;
+  page?: number | null;
+  sort?: string | null;
+  sortOrder?: ('asc' | 'desc') | null;
+  drafts?: ('yes' | 'no') | null;
+  selectionToUse?: ('currentSelection' | 'currentFilters' | 'all') | null;
+  fields?: string[] | null;
+  collectionSlug: string;
+  where?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports".
+ */
+export interface Import {
+  id: string;
+  collectionSlug: string;
+  importMode?: ('create' | 'update' | 'upsert') | null;
+  matchField?: string | null;
+  status?: ('pending' | 'completed' | 'partial' | 'failed') | null;
+  summary?: {
+    imported?: number | null;
+    updated?: number | null;
+    total?: number | null;
+    issues?: number | null;
+    issueDetails?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms".
  */
 export interface Form {
@@ -1372,6 +1452,8 @@ export interface PayloadJob {
           | 'importPretixCustomers'
           | 'importPretixOrders'
           | 'syncPretixStatus'
+          | 'createCollectionExport'
+          | 'createCollectionImport'
           | 'schedulePublish';
         taskID: string;
         input?:
@@ -1414,6 +1496,8 @@ export interface PayloadJob {
         | 'importPretixCustomers'
         | 'importPretixOrders'
         | 'syncPretixStatus'
+        | 'createCollectionExport'
+        | 'createCollectionImport'
         | 'schedulePublish'
       )
     | null;
@@ -2124,6 +2208,64 @@ export interface SongsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports_select".
+ */
+export interface ExportsSelect<T extends boolean = true> {
+  name?: T;
+  format?: T;
+  limit?: T;
+  page?: T;
+  sort?: T;
+  sortOrder?: T;
+  drafts?: T;
+  selectionToUse?: T;
+  fields?: T;
+  collectionSlug?: T;
+  where?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports_select".
+ */
+export interface ImportsSelect<T extends boolean = true> {
+  collectionSlug?: T;
+  importMode?: T;
+  matchField?: T;
+  status?: T;
+  summary?:
+    | T
+    | {
+        imported?: T;
+        updated?: T;
+        total?: T;
+        issues?: T;
+        issueDetails?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms_select".
  */
 export interface FormsSelect<T extends boolean = true> {
@@ -2451,8 +2593,16 @@ export interface Martinsumzug {
   id: string;
   startDate: string;
   startDate_tz: SupportedTimezones;
-  startLocation: string;
-  endLocation: string;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  startLocation: [number, number];
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  endLocation: [number, number];
   /**
    * Meta-Daten für SEO
    */
@@ -3378,6 +3528,78 @@ export interface SyncPretixStatusJob {
     maxPages?: number | null;
     pretixEventId?: string | null;
     orderCode?: string | null;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionExport".
+ */
+export interface TaskCreateCollectionExport {
+  input: {
+    id: string;
+    name: string;
+    batchSize?: number | null;
+    collectionSlug:
+      | 'jahresplan'
+      | 'sommerfreizeitAnmeldung'
+      | 'sommerfreizeitChild'
+      | 'sommerfreizeitRooms'
+      | 'sommerfreizeitEvents'
+      | 'sommerfreizeitUsers'
+      | 'sommerfreizeitOrders'
+      | 'sommerfreizeitFeedback'
+      | 'blogPosts'
+      | 'blogCategory'
+      | 'team'
+      | 'teambilder'
+      | 'users'
+      | 'media'
+      | 'knallbonbonRegistration'
+      | 'knallbonbonEvents'
+      | 'knallbonbonWaitlist'
+      | 'membershipApplication'
+      | 'feedback'
+      | 'songs'
+      | 'exports'
+      | 'imports';
+    drafts?: ('yes' | 'no') | null;
+    exportCollection: string;
+    fields?: string[] | null;
+    format: 'csv' | 'json';
+    limit?: number | null;
+    locale?: string | null;
+    maxLimit?: number | null;
+    page?: number | null;
+    sort?: string | null;
+    userCollection?: string | null;
+    userID?: string | null;
+    where?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionImport".
+ */
+export interface TaskCreateCollectionImport {
+  input: {
+    importId: string;
+    importCollection: string;
+    userID?: string | null;
+    userCollection?: string | null;
+    batchSize?: number | null;
+    debug?: boolean | null;
+    defaultVersionStatus?: ('draft' | 'published') | null;
+    maxLimit?: number | null;
   };
   output?: unknown;
 }

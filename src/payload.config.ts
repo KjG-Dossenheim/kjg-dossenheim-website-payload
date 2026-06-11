@@ -12,6 +12,7 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import { payloadEnhancedSidebar } from '@veiag/payload-enhanced-sidebar'
 import {
   betterAuthCollections,
@@ -298,6 +299,9 @@ export default buildConfig({
         `${process.env.NEXT_PUBLIC_SITE_URL}/${doc.title?.toLocaleLowerCase() || ''}`,
       generateTitle: ({ doc }) => `${doc.title || ''}`,
       generateImage: ({ doc }) => `${process.env.NEXT_PUBLIC_SITE_URL}/api/og/?title=${encodeURIComponent(doc.title || '')}`
+    }),
+    importExportPlugin({
+      collections: [{ slug: 'sommerfreizeitAnmeldung' }],
     }),
     formBuilderPlugin({
       formOverrides: {

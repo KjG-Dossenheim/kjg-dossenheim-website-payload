@@ -5,7 +5,7 @@ export const revalidate = 60 // 1 Minute
 import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import type { Song } from '@/payload-types'
+import type { Song, Martinsumzug } from '@/payload-types'
 
 // Payload CMS
 import { getPayload } from 'payload'
@@ -19,12 +19,13 @@ import { StarsBackground } from '@/components/ui/stars-background'
 import { buttonVariants } from '@/components/ui/button'
 
 // Icons
-import { MapPin, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 // Custom Components
 import Countdown from '@/components/common/Countdown'
 import { formatDateLocale } from '@/components/common/formatDateLocale'
 import { formatInTimeZone } from 'date-fns-tz'
+import { MartinsumzugMap } from './MartinsumzugMap'
 
 export function generateMetadata(): Metadata {
   return {
@@ -39,8 +40,8 @@ export default async function Page() {
   const martinsumzug = (await payload.findGlobal({
     slug: 'martinsumzug',
   })) as {
-    startDate: string
-    startLocation: string
+    startDate: Martinsumzug['startDate']
+    //startLocation: string
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     content: any
     songs: Song[]
@@ -58,7 +59,7 @@ export default async function Page() {
     eventStatus: 'https://schema.org/EventScheduled',
     location: {
       '@type': 'Place',
-      name: martinsumzug.startLocation,
+      name: 'Dossenheim',
     },
     description: `Der Martinsumzug der ${process.env.NEXT_PUBLIC_SITE_NAME}`,
     organizer: {
@@ -94,12 +95,6 @@ export default async function Page() {
           <CardContent>
             <Countdown targetDate={martinsumzug.startDate} />
           </CardContent>
-          <CardFooter>
-            <p className="mx-auto flex items-center justify-center gap-2 text-xl">
-              <MapPin className="size-5" />
-              {martinsumzug.startLocation}
-            </p>
-          </CardFooter>
         </div>
         <ShootingStars
           minSpeed={10}
@@ -120,7 +115,7 @@ export default async function Page() {
         />
       </div>
       <section className="container mx-auto p-6">
-        <Card className="mx-auto max-w-md">
+        <Card className="mx-auto mt-6 max-w-md">
           <CardHeader>
             <h2 className="flex items-center gap-2 text-2xl font-semibold">
               <span className="bg-primary h-8 w-1 rounded-full"></span>
@@ -152,6 +147,10 @@ export default async function Page() {
             </CardFooter>
           )}
         </Card>
+      </section>
+      <section className="space-y-6">
+        <h2 className="text-center text-4xl font-bold sm:text-5xl">Strecke des Martinsumzugs</h2>
+        <MartinsumzugMap />
       </section>
     </section>
   )

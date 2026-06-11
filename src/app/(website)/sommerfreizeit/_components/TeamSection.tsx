@@ -31,6 +31,7 @@ export default function TeamSection({ team }: TeamSectionProps) {
                   src={(member.profilePicture as { url: string }).url}
                   alt={`${member.firstName} ${member.lastName}`}
                   fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 20vw"
                 />
               ) : (
                 <Image
@@ -43,6 +44,7 @@ export default function TeamSection({ team }: TeamSectionProps) {
                   }).toDataUri()}
                   alt={`${member.firstName} ${member.lastName}`}
                   fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 20vw"
                 />
               )}
             </div>
