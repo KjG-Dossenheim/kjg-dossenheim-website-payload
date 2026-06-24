@@ -39,6 +39,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'firstName',
       label: 'Vorname',
       type: 'text',
+      required: true,
       admin: {
         description: 'Der Vorname des Kindes',
         readOnly: true,
@@ -49,6 +50,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'lastName',
       label: 'Nachname',
       type: 'text',
+      required: true,
       admin: {
         description: 'Der Nachname des Kindes',
         readOnly: true,
@@ -59,6 +61,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'dateOfBirth',
       label: 'Geburtsdatum',
       type: 'date',
+      required: true,
       admin: {
         description: 'Das Geburtsdatum des Kindes',
         readOnly: true,
@@ -72,6 +75,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       name: 'class',
       label: 'Klasse / Jahrgangsstufe',
       type: 'select',
+      required: true,
       admin: {
         description: 'Z. B. 5. Klasse oder 10. Klasse',
         readOnly: true,

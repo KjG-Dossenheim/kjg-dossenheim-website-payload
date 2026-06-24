@@ -72,7 +72,7 @@ export const sommerfreizeitChild: CollectionConfig = {
       name: 'dateOfBirth',
       label: 'Geburtsdatum',
       type: 'date',
-      required: false,
+      required: true,
       admin: {
         readOnly: false,
         date: {
@@ -94,14 +94,14 @@ export const sommerfreizeitChild: CollectionConfig = {
       name: 'gender',
       label: 'Geschlecht',
       type: 'select',
-      required: false,
+      required: true,
       options: [
         { label: 'Maennlich', value: 'male' },
         { label: 'Weiblich', value: 'female' },
         { label: 'Divers', value: 'diverse' },
       ],
       admin: {
-        readOnly: false,
+        readOnly: true,
       },
     },
   ],

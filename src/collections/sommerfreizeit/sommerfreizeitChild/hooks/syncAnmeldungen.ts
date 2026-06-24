@@ -18,8 +18,7 @@ export const syncAnmeldungenAfterChange: CollectionAfterChangeHook = async ({ do
     depth: 0,
     limit: 1000,
     pagination: false,
-    overrideAccess: false,
-    user: req.user,
+    overrideAccess: true,
   })
 
   await Promise.all(
@@ -35,8 +34,7 @@ export const syncAnmeldungenAfterChange: CollectionAfterChangeHook = async ({ do
         context: {
           skipChildAnmeldungSync: true,
         },
-        overrideAccess: false,
-        user: req.user,
+        overrideAccess: true,
       })
     }),
   )

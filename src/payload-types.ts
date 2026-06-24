@@ -271,19 +271,19 @@ export interface SommerfreizeitAnmeldung {
   /**
    * Der Vorname des Kindes
    */
-  firstName?: string | null;
+  firstName: string;
   /**
    * Der Nachname des Kindes
    */
-  lastName?: string | null;
+  lastName: string;
   /**
    * Das Geburtsdatum des Kindes
    */
-  dateOfBirth?: string | null;
+  dateOfBirth: string;
   /**
    * Z. B. 5. Klasse oder 10. Klasse
    */
-  class?: ('3' | '4' | '5' | '6' | '7' | '8' | '9' | '10') | null;
+  class: '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10';
   bemerkungen?: string | null;
   /**
    * Name der Krankenversicherung, z. B. AOK oder TK
@@ -460,12 +460,12 @@ export interface SommerfreizeitChild {
   };
   firstName: string;
   lastName: string;
-  dateOfBirth?: string | null;
+  dateOfBirth: string;
   /**
    * Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.
    */
   age?: number | null;
-  gender?: ('male' | 'female' | 'diverse') | null;
+  gender: 'male' | 'female' | 'diverse';
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
