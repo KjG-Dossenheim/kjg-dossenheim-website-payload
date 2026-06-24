@@ -75,8 +75,8 @@ type ChildFormState = {
   firstName: SommerfreizeitChild['firstName']
   lastName: SommerfreizeitChild['lastName']
   dateOfBirth: string
-  gender: SommerfreizeitChild['gender']
-  class: SommerfreizeitAnmeldung['class']
+  gender: SommerfreizeitChild['gender'] | undefined
+  class: SommerfreizeitAnmeldung['class'] | undefined
   krankenversicherung: string
   krankenversicherungArt: SommerfreizeitAnmeldung['krankenversicherungArt']
   krankenversicherungNummer: string
@@ -356,8 +356,8 @@ export function CheckForm({
           firstName: child.firstName,
           lastName: child.lastName,
           dateOfBirth: child.dateOfBirth,
-          gender: child.gender,
-          class: child.class,
+          gender: child.gender as SommerfreizeitChild['gender'],
+          class: child.class as SommerfreizeitAnmeldung['class'],
           krankenversicherung: child.krankenversicherung,
           krankenversicherungArt: child.krankenversicherungArt ?? null,
           krankenversicherungNummer: child.krankenversicherungNummer,

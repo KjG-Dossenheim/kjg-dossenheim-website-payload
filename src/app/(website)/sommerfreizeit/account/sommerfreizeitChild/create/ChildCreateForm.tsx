@@ -16,7 +16,7 @@ type ChildFormData = {
   firstName: string
   lastName: string
   dateOfBirth: string
-  gender: Exclude<SommerfreizeitChild['gender'], null>
+  gender: SommerfreizeitChild['gender'] | undefined
 }
 
 const initialFormState: ChildFormData = {
@@ -49,7 +49,7 @@ export function ChildCreateForm() {
       firstName: formData.firstName,
       lastName: formData.lastName,
       dateOfBirth: formData.dateOfBirth,
-      gender: formData.gender,
+      gender: formData.gender as SommerfreizeitChild['gender'],
     })
     setStatus({ success: result.success, message: result.message })
 
