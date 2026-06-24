@@ -2,7 +2,6 @@ import { ExportListMenuItem as ExportListMenuItem_cdf7e044479f899a31f804427d568b
 import { ImportListMenuItem as ImportListMenuItem_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { default as default_9b86e98e9cb88f266cc5610ba84f27f2 } from '@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/OpenPretixOrder'
 import { default as default_1d461d66f258470c25e850264e455a47 } from '@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/ApprovePretixOrder'
-import { default as default_8405b998d7973107979ab364ee79a7d2 } from '@/collections/sommerfreizeit/sommerfreizeitAnmeldung/actions/ImportJson'
 import { default as default_5cb5d3602d1dd126d163c6a2e3af8809 } from 'src/components/admin/rowLable/ArrayRowLabelName.tsx'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -72,7 +71,6 @@ export const importMap = {
   "@payloadcms/plugin-import-export/rsc#ImportListMenuItem": ImportListMenuItem_cdf7e044479f899a31f804427d568b36,
   "@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/OpenPretixOrder#default": default_9b86e98e9cb88f266cc5610ba84f27f2,
   "@/collections/sommerfreizeit/sommerfreizeitAnmeldung/beforeDocumentControls/ApprovePretixOrder#default": default_1d461d66f258470c25e850264e455a47,
-  "@/collections/sommerfreizeit/sommerfreizeitAnmeldung/actions/ImportJson#default": default_8405b998d7973107979ab364ee79a7d2,
   "src/components/admin/rowLable/ArrayRowLabelName.tsx#default": default_5cb5d3602d1dd126d163c6a2e3af8809,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
