@@ -28,6 +28,7 @@ type OrderFlowView = {
   orderCode: string
   email: string
   pretixEvent: string
+  pretixEventId: string
   pretixOrderID: string
   pretixSecret: string
   phone: string
@@ -418,6 +419,7 @@ export async function getOrderFlowView(input: { orderCode: string }): Promise<Or
     postalCode: flow.postalCode,
     city: flow.city,
     pretixEvent: flow.pretixEvent,
+    pretixEventId: flow.pretixEventId,
     pretixOrderID: flow.pretixOrderID,
     pretixSecret: flow.pretixSecret,
     positionCount: flow.positions.length,

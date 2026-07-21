@@ -151,6 +151,10 @@ export default buildConfig({
           path: '/sommerfreizeit/dashboard',
           Component: '@/components/admin/sommerfreizeit/dashboard',
         },
+        sommerfreizeitImportJson: {
+          path: '/sommerfreizeit/import-json',
+          Component: '@/components/admin/sommerfreizeit/importJson',
+        },
         emailPreview: {
           path: '/email-preview',
           Component: '@/components/admin/views/PreviewEmailView',
@@ -438,6 +442,12 @@ export default buildConfig({
               slug: 'sommerfreizeitFeedback',
               href: '/collections/sommerfreizeitFeedback',
               label: 'Feedback',
+            },
+            {
+              slug: 'sommerfreizeit-import-json',
+              href: '/sommerfreizeit/import-json',
+              label: 'JSON importieren',
+              position: 'bottom',
             },
           ],
         },

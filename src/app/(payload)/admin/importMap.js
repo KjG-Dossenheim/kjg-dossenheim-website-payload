@@ -62,6 +62,7 @@ import { default as default_290e0a8c59d7e067b68e692ff1af72ee } from '@/component
 import { default as default_eb46b223f8c1acb340a8fe94711c71e2 } from '@/components/admin/Knallbonbon/Views/WaitlistView'
 import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/components/admin/views/SettingsView'
 import { default as default_b9b5c78380620634560a69810a73cbb8 } from '@/components/admin/sommerfreizeit/dashboard'
+import { default as default_b20d6190c880518d6f010f0c0fae90ce } from '@/components/admin/sommerfreizeit/importJson'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -131,6 +132,7 @@ export const importMap = {
   "@/components/admin/Knallbonbon/Views/WaitlistView#default": default_eb46b223f8c1acb340a8fe94711c71e2,
   "@/components/admin/views/SettingsView#default": default_ab50c006cc520cf36af67ec593724ed8,
   "@/components/admin/sommerfreizeit/dashboard#default": default_b9b5c78380620634560a69810a73cbb8,
+  "@/components/admin/sommerfreizeit/importJson#default": default_b20d6190c880518d6f010f0c0fae90ce,
   "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

@@ -63,6 +63,7 @@ type CheckFormProps = {
   pretixOrderID: string
   pretixSecret: string
   pretixEvent: string
+  pretixEventId: string
   positions: PositionView[]
   showAccountCreatedMessage: boolean
 }
@@ -172,7 +173,7 @@ export function CheckForm({
   orderCode,
   pretixOrderID,
   pretixSecret,
-  pretixEvent,
+  pretixEventId,
   positions,
   showAccountCreatedMessage,
 }: CheckFormProps) {
@@ -213,7 +214,7 @@ export function CheckForm({
         child.datenschutzAkzeptiert === true &&
         child.bildrechteAkzeptiert === true,
     )
-  const pretixModifyHref = `${process.env.NEXT_PUBLIC_PRETIX_URL}/${process.env.NEXT_PUBLIC_PRETIX_ORGANIZER}/${pretixEvent}/order/${pretixOrderID}/${pretixSecret}/modify`
+  const pretixModifyHref = `${process.env.NEXT_PUBLIC_PRETIX_URL}/${process.env.NEXT_PUBLIC_PRETIX_ORGANIZER}/${pretixEventId}/order/${pretixOrderID}/${pretixSecret}/modify`
   const updateChild = <K extends keyof ChildFormState>(
     index: number,
     key: K,
@@ -288,7 +289,7 @@ export function CheckForm({
     const exportData = {
       orderCode,
       pretixOrderID,
-      pretixEvent,
+      pretixEvent: pretixEventId,
       contact: {
         phone,
         address,

@@ -3,7 +3,7 @@
 # ============================================
 # Dependencies Stage
 # ============================================
-FROM node:20-alpine AS deps
+FROM node:26-alpine AS deps
 
 WORKDIR /app
 
@@ -29,12 +29,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 # ============================================
 # Builder Stage
 # ============================================
-FROM node:20-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /app
 
 # Enable corepack and prepare pnpm
-RUN corepack enable && corepack prepare pnpm@10.18.0 --activate
+RUN corepack enable && corepack prepare pnpm --activate
 
 # Configure pnpm
 ENV PNPM_HOME="/pnpm"
@@ -66,7 +66,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 # ============================================
 # Production Stage
 # ============================================
-FROM node:20-alpine AS runner
+FROM node:26-alpine AS runner
 
 WORKDIR /app
 

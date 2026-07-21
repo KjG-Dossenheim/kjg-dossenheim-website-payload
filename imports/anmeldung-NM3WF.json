@@ -1,0 +1,50 @@
+{
+  "orderCode": "NM3WF",
+  "pretixOrderID": "NM3WF",
+  "pretixEvent": "69c57966840e05a929610c5e",
+  "contact": {
+    "phone": "+491776892608",
+    "address": "Pfarrgasse 19",
+    "postalCode": "69121",
+    "city": "Heidelberg"
+  },
+  "children": [
+    {
+      "positionId": 340,
+      "orderPosition": 1,
+      "firstName": "Fabian",
+      "lastName": "Kroschewski",
+      "dateOfBirth": "2013-11-11",
+      "gender": "male",
+      "class": "6",
+      "krankenversicherung": "BKK SCHEUFELEN ",
+      "krankenversicherungArt": "gesetzlich",
+      "krankenversicherungNummer": "K485215993",
+      "krankenkassenKarte": true,
+      "foodAllergies": "",
+      "foodPreferences": "none",
+      "otherAllergies": "",
+      "medicalConditions": "",
+      "medikamente": "",
+      "arzt": "Frau Dr. Gebhardt",
+      "arztTelefon": "+496221470147",
+      "hausarztmodell": false,
+      "schwimmer": true,
+      "bemerkungen": "",
+      "impfpass": true,
+      "zimmerwunsch": [
+        {
+          "firstName": "Oskar",
+          "lastName": "Burgmeier"
+        }
+      ],
+      "agbAkzeptiert": true,
+      "datenschutzAkzeptiert": true,
+      "bildrechteAkzeptiert": true,
+      "bildrechte": [
+        "internal",
+        "public"
+      ]
+    }
+  ]
+}

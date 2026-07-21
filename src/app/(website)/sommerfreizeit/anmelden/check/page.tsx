@@ -72,6 +72,7 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
         }}
         orderCode={flow.orderCode}
         pretixEvent={flow.pretixEvent}
+        pretixEventId={flow.pretixEventId}
         pretixOrderID={flow.pretixOrderID}
         pretixSecret={flow.pretixSecret}
         positions={flow.positions}
