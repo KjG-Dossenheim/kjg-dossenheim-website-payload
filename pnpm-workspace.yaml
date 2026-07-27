@@ -1,14 +1,19 @@
 allowBuilds:
-  "@tsparticles/engine": true
+  '@tsparticles/engine': true
   esbuild: true
   fallow: true
   msw: true
   sharp: true
   unrs-resolver: true
-minimumReleaseAgeStrict: true
+
 minimumReleaseAgeExclude:
   - payload-doctor
   - react-doctor
-  - "@tsparticles/*"
-  - "@better-auth/*"
+  - '@tsparticles/*'
+  - '@better-auth/*'
   - better-auth
+
+minimumReleaseAgeStrict: true
+
+onlyBuiltDependencies:
+  - '@fallow-cli/fallow-cov'

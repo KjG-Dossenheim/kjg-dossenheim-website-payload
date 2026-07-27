@@ -160,6 +160,16 @@ export const sommerfreizeitOrders: CollectionConfig = {
       relationTo: 'sommerfreizeitEvents',
       required: false,
     },
+    {
+      name: 'sommerfreizeitAnmeldungen',
+      label: 'Anmeldungen',
+      type: 'relationship',
+      relationTo: 'sommerfreizeitAnmeldung',
+      hasMany: true,
+      admin: {
+        description: 'Die Anmeldungen, die zu dieser Bestellung gehören. Wird automatisch basierend auf den Bestellcodes der Anmeldungen gefüllt.',
+      },
+    },
     /* {
       name: 'positions',
       label: 'Positionen',
