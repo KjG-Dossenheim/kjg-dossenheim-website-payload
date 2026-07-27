@@ -73,6 +73,7 @@ export async function moveRegistrationToWaitlist(
     // Create waitlist entry
     const waitlistEntry = await payload.create({
       collection: 'knallbonbonWaitlist',
+      overrideAccess: true, // Admin document control context
       data: {
         event: eventId,
         parentName,
@@ -94,6 +95,7 @@ export async function moveRegistrationToWaitlist(
     await payload.delete({
       collection: 'knallbonbonRegistration',
       id: registrationId,
+      overrideAccess: true, // Admin document control context
     })
 
     return {

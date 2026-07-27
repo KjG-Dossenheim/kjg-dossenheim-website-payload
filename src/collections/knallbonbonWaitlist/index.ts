@@ -15,7 +15,11 @@ export const knallbonbonWaitlist: CollectionConfig = {
     hidden: true, // Hide from main admin sidebar
   },
   access: {
-    create: () => true, // Allow public creation (handled with care in application logic)
+    // payload-doctor-disable-next-line open-access-function — public form creates waitlist entries; business logic validates in server action
+    create: () => true,
+    read: ({ req: { user } }) => !!user,
+    update: ({ req: { user } }) => !!user,
+    delete: ({ req: { user } }) => !!user,
   },
   hooks: {
     afterChange: [recalculateQueuePositionsAfterChange],

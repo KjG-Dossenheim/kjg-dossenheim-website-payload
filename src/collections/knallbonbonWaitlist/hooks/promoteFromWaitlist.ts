@@ -27,6 +27,7 @@ async function markEntryPromoted(req: PayloadRequest, entryId: string, now: Date
       promotionSentAt: now.toISOString(),
       confirmationDeadline: confirmationDeadline.toISOString(),
     },
+    overrideAccess: true, // System hook context
   })
 }
 

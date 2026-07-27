@@ -126,6 +126,7 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
     if (isWaitlist) {
       await payloadClient.create({
         collection: 'knallbonbonWaitlist',
+        overrideAccess: false,
         data: {
           // Event relationship
           event: formValues.event,
@@ -153,6 +154,7 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
       // If NOT waitlisted, create directly in registration collection
       await payloadClient.create({
         collection: 'knallbonbonRegistration',
+        overrideAccess: false,
         data: {
           ...formValues,
         },

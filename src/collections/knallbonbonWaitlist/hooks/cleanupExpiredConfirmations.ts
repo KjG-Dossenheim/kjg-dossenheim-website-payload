@@ -60,6 +60,7 @@ export async function cleanupExpiredConfirmations(
             status: 'expired',
             expiredAt: now.toISOString(),
           },
+          overrideAccess: true, // System job context
         })
 
         payload.logger.info(

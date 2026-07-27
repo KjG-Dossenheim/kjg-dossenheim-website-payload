@@ -66,6 +66,7 @@ async function recalculatePositionsForEvent(req: PayloadRequest, eventId: string
           collection: 'knallbonbonWaitlist',
           id: entry.id,
           data: { queuePosition: newPosition },
+          overrideAccess: true, // System hook context
         })
       }
     }

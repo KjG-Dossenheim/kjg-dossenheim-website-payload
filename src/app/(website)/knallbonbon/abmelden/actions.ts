@@ -272,6 +272,7 @@ export async function deleteChildren(registrationId: string, childrenIds: string
       await payload.delete({
         collection: 'knallbonbonRegistration',
         id: registrationId,
+        overrideAccess: true, // Token-based ownership verification above
       })
 
       return {
@@ -285,6 +286,7 @@ export async function deleteChildren(registrationId: string, childrenIds: string
     await payload.update({
       collection: 'knallbonbonRegistration',
       id: registrationId,
+      overrideAccess: true, // Token-based ownership verification above
       data: {
         child: remainingChildren,
       },
@@ -350,6 +352,7 @@ export async function deleteRegistration(registrationId: string, token: string) 
     await payload.delete({
       collection: 'knallbonbonRegistration',
       id: registrationId,
+      overrideAccess: true, // Token-based ownership verification above
     })
 
     return {

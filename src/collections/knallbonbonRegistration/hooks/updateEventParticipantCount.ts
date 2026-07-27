@@ -50,6 +50,7 @@ export const updateEventParticipantCountAfterChange: CollectionAfterChangeHook =
         participantCount: totalChildren,
         isFull,
       },
+      overrideAccess: true, // System hook context
     })
 
     console.log(
@@ -111,6 +112,7 @@ export const updateEventParticipantCountAfterDelete: CollectionAfterDeleteHook =
         participantCount: totalChildren,
         isFull,
       },
+      overrideAccess: true, // System hook context
     })
 
     console.log(

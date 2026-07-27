@@ -120,6 +120,7 @@ export async function confirmRegistrationAction(
     // All validations passed - create registration from waitlist data
     const newRegistration = await payload.create({
       collection: 'knallbonbonRegistration',
+      overrideAccess: true, // Token-based confirmation — manual validation above
       data: {
         event: eventId,
         firstName: entry.firstName,
@@ -137,6 +138,7 @@ export async function confirmRegistrationAction(
     await payload.update({
       collection: 'knallbonbonWaitlist',
       id: entry.id,
+      overrideAccess: true, // Token-based confirmation — manual validation above
       data: {
         status: 'confirmed',
         confirmedAt: now.toISOString(),

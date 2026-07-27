@@ -44,7 +44,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Toaster } from '@/components/ui/sonner'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Plus, Send, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
@@ -671,25 +670,25 @@ export function KnallbonbonAnmeldungForm() {
               { toasterId: 'knallbonbon-anmeldung-form' },
             )
           } else {
-            toast.success('Anmeldung erfolgreich!', { toasterId: 'knallbonbon-anmeldung-form' })
+            toast.success('Anmeldung erfolgreich!', { toasterId: 'form' })
           }
         } else {
           if (result.error === 'invalid-captcha') {
             toast.error('Bitte bestätigen Sie die Captcha-Prüfung erneut.', {
-              toasterId: 'knallbonbon-anmeldung-form',
+              toasterId: 'form',
             })
             form.setValue('captchaToken', '', { shouldValidate: true })
             return
           }
           const message = typeof result.message === 'string' ? result.message : undefined
           toast.error(message ?? 'Fehler bei der Anmeldung.', {
-            toasterId: 'knallbonbon-anmeldung-form',
+            toasterId: 'form',
           })
         }
       } catch (error) {
         console.error('Form submission error:', error)
         toast.error('Netzwerkfehler. Bitte versuchen Sie es später erneut.', {
-          toasterId: 'knallbonbon-anmeldung-form',
+          toasterId: 'form',
         })
       }
     },
@@ -700,7 +699,6 @@ export function KnallbonbonAnmeldungForm() {
 
   return (
     <>
-      <Toaster richColors id="knallbonbon-anmeldung-form" />
       <CardHeader>
         <CardTitle>Knallbonbon Anmeldung</CardTitle>
         <CardDescription>

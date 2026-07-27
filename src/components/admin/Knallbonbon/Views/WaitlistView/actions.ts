@@ -66,6 +66,7 @@ export async function moveWaitlistToRegistration(waitlistEntryId: string): Promi
     // Note: No spot availability check - admins can override capacity manually
     const registration = await payload.create({
       collection: 'knallbonbonRegistration',
+      overrideAccess: true, // Admin context
       data: {
         event: eventId,
         firstName: entry.firstName,
@@ -87,6 +88,7 @@ export async function moveWaitlistToRegistration(waitlistEntryId: string): Promi
     await payload.update({
       collection: 'knallbonbonWaitlist',
       id: entry.id,
+      overrideAccess: true, // Admin context
       data: {
         status: 'confirmed',
         confirmedAt: new Date().toISOString(),
@@ -189,6 +191,7 @@ export async function promoteWaitlistEntry(waitlistEntryId: string): Promise<{
     await payload.update({
       collection: 'knallbonbonWaitlist',
       id: entry.id,
+      overrideAccess: true, // Admin context
       data: {
         status: 'promoted',
         promotionSentAt: now.toISOString(),
