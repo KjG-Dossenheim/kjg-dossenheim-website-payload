@@ -4,46 +4,13 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { render } from '@react-email/render';
 import { confirmationEmailTemplate, adminNotificationEmailTemplate } from './emailTemplate';
+import { verifyCaptchaToken } from '@/utilities/verifyCaptcha'
 
 import { FormValues } from './schema';
 
 type SendMailResult = {
   success: boolean
   error?: 'invalid-captcha'
-}
-
-type VerificationResponse = {
-  success: boolean
-}
-
-const CAPTCHA_VERIFY_ENDPOINT = `${process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'}validate`
-
-async function verifyCaptchaToken(token: string): Promise<boolean> {
-  if (!token) {
-    return false
-  }
-
-  try {
-    const response = await fetch(CAPTCHA_VERIFY_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token, keepToken: true }),
-      cache: 'no-store',
-    })
-
-    if (!response.ok) {
-      console.error('Captcha verification failed with status:', response.status)
-      return false
-    }
-
-    const result = (await response.json()) as VerificationResponse
-    return Boolean(result?.success)
-  } catch (error) {
-    console.error('Captcha verification error:', error)
-    return false
-  }
 }
 
 export async function sendMail(values: FormValues): Promise<SendMailResult> {

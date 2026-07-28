@@ -9,7 +9,7 @@ import {
 import {
   confirmationEmailTemplate as knallbonbonConfirmation,
   adminNotificationEmailTemplate as knallbonbonAdmin,
-} from '@/app/(website)/knallbonbon/anmeldung/emailTemplate'
+} from '@/app/(website)/knallbonbon/anmelden/emailTemplate'
 import {
   confirmationEmailTemplate as contactConfirmation,
   adminNotificationEmailTemplate as contactAdmin,

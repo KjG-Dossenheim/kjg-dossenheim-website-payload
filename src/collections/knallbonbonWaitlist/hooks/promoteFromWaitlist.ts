@@ -4,7 +4,7 @@ import { render } from '@react-email/render'
 import {
   spotAvailableEmailTemplate,
   adminPromotionNotificationEmailTemplate,
-} from '@/app/(website)/knallbonbon/anmeldung/emailTemplate'
+} from '@/app/(website)/knallbonbon/anmelden/emailTemplate'
 
 /**
  * Generate secure confirmation token for waitlist promotion

@@ -2,53 +2,15 @@
 
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { verifyCaptchaToken } from '@/utilities/verifyCaptcha'
 
 import { formSchema } from './schema'
-
-type VerificationResponse = {
-  success: boolean
-}
 
 function calcAgeAtDate(birthDate: Date, referenceDate: Date): number {
   let age = referenceDate.getFullYear() - birthDate.getFullYear()
   const m = referenceDate.getMonth() - birthDate.getMonth()
   if (m < 0 || (m === 0 && referenceDate.getDate() < birthDate.getDate())) age--
   return age
-}
-
-async function verifyCaptchaToken(token: string): Promise<boolean> {
-
-  if (!token) {
-    return false
-  }
-
-  try {
-    const captchaUrl = process.env.NEXT_PUBLIC_CAPTCHA_URL
-    if (!captchaUrl) {
-      console.error('CAPTCHA_URL is not configured')
-      return false
-    }
-
-    const response = await fetch(`${captchaUrl}validate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: token,
-        keepToken: true,
-      }),
-    })
-
-    if (!response.ok) {
-      console.error('Captcha verification failed with status:', response.status)
-      return false
-    }
-
-    const result = (await response.json()) as VerificationResponse
-    return Boolean(result?.success)
-  } catch (error) {
-    console.error('Captcha verification error:', error)
-    return false
-  }
 }
 
 export async function submitKnallbonbonRegistration(formData: unknown) {

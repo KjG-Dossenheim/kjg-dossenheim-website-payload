@@ -2,8 +2,8 @@ import { render } from '@react-email/render'
 import {
   adminNotificationEmailTemplate,
   confirmationEmailTemplate,
-} from '@/app/(website)/knallbonbon/anmeldung/emailTemplate'
-import type { FormValues } from '@/app/(website)/knallbonbon/anmeldung/schema'
+} from '@/app/(website)/knallbonbon/anmelden/emailTemplate'
+import type { FormValues } from '@/app/(website)/knallbonbon/anmelden/schema'
 import type { PayloadRequest } from 'payload'
 
 /**

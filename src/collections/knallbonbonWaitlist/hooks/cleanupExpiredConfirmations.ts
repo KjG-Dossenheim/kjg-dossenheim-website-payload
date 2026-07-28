@@ -1,6 +1,6 @@
 import type { PayloadRequest } from 'payload'
 import { render } from '@react-email/render'
-import { adminExpirationNotificationEmailTemplate } from '@/app/(website)/knallbonbon/anmeldung/emailTemplate'
+import { adminExpirationNotificationEmailTemplate } from '@/app/(website)/knallbonbon/anmelden/emailTemplate'
 
 /**
  * Cleanup expired waitlist promotion confirmations

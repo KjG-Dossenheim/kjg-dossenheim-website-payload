@@ -2,7 +2,7 @@ import { render } from '@react-email/render'
 import {
   confirmationSuccessEmailTemplate,
   adminConfirmationNotificationEmailTemplate,
-} from '@/app/(website)/knallbonbon/anmeldung/emailTemplate'
+} from '@/app/(website)/knallbonbon/anmelden/emailTemplate'
 import type { KnallbonbonRegistration } from '@/payload-types'
 import type { PayloadRequest } from 'payload'
 
