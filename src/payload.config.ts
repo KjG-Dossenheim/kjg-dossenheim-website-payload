@@ -43,16 +43,9 @@ import {
   TextStateFeature,
   // defaultColors,
   UploadFeature,
-  BlocksFeature
 } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { de } from '@payloadcms/translations/languages/de'
-
-// Relative imports - blocks
-// import { Lyrics } from './blocks/lyrics/'
-import { FormBlock } from './blocks/FormBlock/config'
-import { Code } from './blocks/Code/config'
-import { Gallery } from './blocks/gallery/config'
 
 // Relative imports - collections
 import { Users } from './collections/Users'
@@ -235,9 +228,6 @@ export default buildConfig({
       }),
       FixedToolbarFeature(),
       UploadFeature(),
-      BlocksFeature({
-        blocks: [FormBlock, Code, Gallery],
-      })
     ]
   }),
   i18n: {

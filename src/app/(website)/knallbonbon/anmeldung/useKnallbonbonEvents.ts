@@ -5,16 +5,25 @@ import type { Config } from '@/payload-types'
 import type { EventOption } from './schema'
 
 /**
- * Custom hook to fetch and format Knallbonbon events
- * Handles loading state, error handling, and data formatting
- * Uses Payload CMS SDK for type-safe API calls
+ * Custom hook to provide Knallbonbon event options to the registration form.
+ *
+ * When `initialEvents` is provided (server-side pre-fetched via ISR), the hook
+ * returns them immediately with `loading: false`, eliminating the client-side
+ * REST API waterfall. The client-side fetch is only used as a fallback when no
+ * initial data is available.
+ *
+ * @param initialEvents - Pre-fetched event options from the server component
  */
-export function useKnallbonbonEvents() {
-  const [eventOptions, setEventOptions] = useState<EventOption[]>([])
-  const [loading, setLoading] = useState(true)
+export function useKnallbonbonEvents(initialEvents?: EventOption[]) {
+  const [eventOptions, setEventOptions] = useState<EventOption[]>(initialEvents ?? [])
+  const [loading, setLoading] = useState(!initialEvents)
   const [error, setError] = useState<Error | null>(null)
+  const hasInitialData = typeof initialEvents !== 'undefined' && initialEvents.length > 0
 
   useEffect(() => {
+    // Skip the client fetch when server already provided event data
+    if (hasInitialData) return
+
     const eventDateFormatter = new Intl.DateTimeFormat('de-DE', {
       day: '2-digit',
       month: '2-digit',
@@ -38,6 +47,7 @@ export function useKnallbonbonEvents() {
         const data = await sdk.find({
           collection: 'knallbonbonEvents',
           sort: '-date',
+          depth: 0, // Prevent join field resolution — only scalar fields needed
           limit: 100,
         })
 
@@ -86,7 +96,7 @@ export function useKnallbonbonEvents() {
     }
 
     void fetchEvents()
-  }, [])
+  }, [hasInitialData])
 
   return { eventOptions, loading, error }
 }

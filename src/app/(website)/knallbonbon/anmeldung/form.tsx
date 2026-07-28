@@ -488,9 +488,16 @@ function ReviewStep({ values, selectedEvent }: ReviewStepProps) {
  *
  * A single useForm instance spans all steps so data is preserved when navigating back.
  * Clicking "Weiter" validates only the current step's fields before advancing.
+ *
+ * @param initialEvents - Pre-fetched event options from the server component.
+ *   When provided, the event radio group renders immediately with no loading skeleton.
  */
-export function KnallbonbonAnmeldungForm() {
-  const { eventOptions, loading } = useKnallbonbonEvents()
+export function KnallbonbonAnmeldungForm({
+  initialEvents,
+}: {
+  initialEvents?: EventOption[]
+}) {
+  const { eventOptions, loading } = useKnallbonbonEvents(initialEvents)
   const searchParams = useSearchParams()
   const eventFromUrl = searchParams.get('event')
   const hasResolvedEventFromUrl = useRef(false)

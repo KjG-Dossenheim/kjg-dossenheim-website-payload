@@ -14,6 +14,7 @@ import '@/styles/globals.css'
 
 // Fonts
 import { Caveat } from 'next/font/google'
+import { Geist, Geist_Mono } from 'next/font/google'
 import { WebVitals } from '@/utilities/web-vitals'
 import { Toaster } from 'sonner'
 
@@ -23,6 +24,15 @@ const caveat = Caveat({
   variable: '--font-caveat',
   display: 'swap',
   preload: true,
+})
+const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-geist',
+})
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
 })
 
 export function generateMetadata(): Metadata {
@@ -42,7 +52,11 @@ export function generateMetadata(): Metadata {
 
 export default async function layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="de" className={`${caveat.variable}`} suppressHydrationWarning>
+    <html
+      lang="de"
+      className={`${caveat.variable} ${geist.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <Script
           strategy="lazyOnload"

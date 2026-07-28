@@ -4,7 +4,6 @@ export const revalidate = 60
 import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 
 // Payload CMS
 import { getPayload } from 'payload'
@@ -19,24 +18,10 @@ import { ButtonGroup } from '@/components/ui/button-group'
 // Custom Components
 import { formatDateLocale } from '@/components/common/formatDateLocale'
 import LogoEvangelisch from '@/graphics/logo/LogoEvangelisch'
-import { User, QrCode, Mail } from 'lucide-react'
+import { User, Mail } from 'lucide-react'
 
-// Dynamically imported components
-const Dialog = dynamic(() => import('@/components/ui/dialog').then((mod) => mod.Dialog))
-const DialogContent = dynamic(() =>
-  import('@/components/ui/dialog').then((mod) => mod.DialogContent),
-)
-const DialogHeader = dynamic(() => import('@/components/ui/dialog').then((mod) => mod.DialogHeader))
-const DialogTitle = dynamic(() => import('@/components/ui/dialog').then((mod) => mod.DialogTitle))
-const DialogTrigger = dynamic(() =>
-  import('@/components/ui/dialog').then((mod) => mod.DialogTrigger),
-)
-const QRCode = dynamic(
-  () => import('@/components/ui/shadcn-io/qr-code').then((mod) => mod.QRCode),
-  {
-    loading: () => <div className="h-[200px] w-[200px] animate-pulse rounded bg-gray-200" />,
-  },
-)
+// Client Components
+import { QRDialog } from './QRDialog'
 
 export function generateMetadata(): Metadata {
   return {
@@ -83,26 +68,7 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
             </Button>
           )}
         </ButtonGroup>
-        <Dialog>
-          <DialogTrigger
-            render={() => (
-              <Button variant="outline" className="ml-2">
-                <QrCode />
-                QR Code
-              </Button>
-            )}
-          />
-          <DialogContent className="w-sm">
-            <DialogHeader>
-              <DialogTitle>Scanne den QR-Code</DialogTitle>
-            </DialogHeader>
-            <div>
-              <QRCode
-                data={`${process.env.NEXT_PUBLIC_SITE_URL}/knallbonbon/anmelden?event=${event.id}`}
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
+        <QRDialog eventId={event.id} siteUrl={process.env.NEXT_PUBLIC_SITE_URL ?? ''} />
       </CardFooter>
     </Card>
   )
