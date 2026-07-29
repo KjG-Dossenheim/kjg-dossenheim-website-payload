@@ -61,7 +61,6 @@ import { useKnallbonbonEvents } from './useKnallbonbonEvents'
 import { submitKnallbonbonRegistration } from './actions'
 
 import { PhoneInput } from '@/components/ui/phone-input'
-import { DatePickerInput } from '@/components/ui/date-picker-input'
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -190,16 +189,10 @@ function DateOfBirthField({
   const isInvalid = fieldState.invalid || ageError !== null
   return (
     <Field data-invalid={isInvalid}>
-      <FieldLabel htmlFor={`date-of-birth-child-${index}`}>Geburtsdatum</FieldLabel>
-      <DatePickerInput
-        id={`date-of-birth-child-${index}`}
-        name={field.name}
-        value={field.value}
-        onChange={field.onChange}
-        onBlur={field.onBlur}
-        inputRef={field.ref}
-        invalid={isInvalid}
-      />
+      <FieldLabel htmlFor={`date-of-birth-child-${index}`} required>
+        Geburtsdatum
+      </FieldLabel>
+      <Input id={`date-of-birth-child-${index}`} type="date" {...field} aria-invalid={isInvalid} />
       {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
       {!fieldState.invalid && ageError && <FieldError errors={[{ message: ageError }]} />}
     </Field>
@@ -230,7 +223,7 @@ const ChildFieldset = memo(function ChildFieldset({
   onAgeError,
 }: ChildFieldsetProps) {
   return (
-    <div className="border-border space-y-4 rounded-md border p-4">
+    <FieldSet className="border-border gap-4 rounded-md border p-4">
       <div className="flex items-start justify-between gap-4">
         <FieldLegend variant="legend">{index + 1}. Kind</FieldLegend>
         {canRemove && (
@@ -239,13 +232,15 @@ const ChildFieldset = memo(function ChildFieldset({
           </Button>
         )}
       </div>
-      <FieldGroup className="flex flex-col gap-4 md:flex-row md:space-y-0">
+      <FieldGroup className="flex flex-col gap-4 md:flex-row">
         <Controller
           control={control}
           name={`child.${index}.firstName`}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={`first-name-child-${index}`}>Vorname</FieldLabel>
+              <FieldLabel htmlFor={`first-name-child-${index}`} required>
+                Vorname
+              </FieldLabel>
               <Input
                 id={`first-name-child-${index}`}
                 type="text"
@@ -262,7 +257,9 @@ const ChildFieldset = memo(function ChildFieldset({
           name={`child.${index}.lastName`}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={`last-name-child-${index}`}>Nachname</FieldLabel>
+              <FieldLabel htmlFor={`last-name-child-${index}`} required>
+                Nachname
+              </FieldLabel>
               <Input
                 id={`last-name-child-${index}`}
                 type="text"
@@ -372,27 +369,29 @@ const ChildFieldset = memo(function ChildFieldset({
       <Controller
         control={control}
         name={`child.${index}.photoConsent`}
-        render={({ field }) => (
-          <FieldSet>
-            <FieldLegend variant="label">Bilder</FieldLegend>
-            <Field orientation="horizontal">
-              <Checkbox
-                id={`photo-consent-${index}`}
-                name={field.name}
-                checked={!!field.value}
-                onCheckedChange={(checked) => {
-                  field.onChange(checked === true)
-                  field.onBlur()
-                }}
-              />
-              <FieldLabel htmlFor={`photo-consent-${index}`} className="font-normal">
-                Ich bin damit einverstanden, dass Fotos meines Kindes veröffentlicht werden
-              </FieldLabel>
-            </Field>
-          </FieldSet>
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldGroup data-slot="checkbox-group">
+              <Field orientation="horizontal">
+                <Checkbox
+                  id={`photo-consent-${index}`}
+                  name={field.name}
+                  checked={!!field.value}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked === true)
+                    field.onBlur()
+                  }}
+                />
+                <FieldLabel htmlFor={`photo-consent-${index}`} className="font-normal">
+                  Ich bin damit einverstanden, dass Fotos meines Kindes veröffentlicht werden
+                </FieldLabel>
+              </Field>
+            </FieldGroup>
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
         )}
       />
-    </div>
+    </FieldSet>
   )
 })
 
@@ -422,36 +421,28 @@ function ReviewStep({ values, selectedEvent }: ReviewStepProps) {
   const pickupLabel = (p: string) => PICKUP_OPTIONS.find((o) => o.value === p)?.label ?? p
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
+    <>
+      <FieldSet>
         <FieldLegend variant="legend">Veranstaltung</FieldLegend>
-        <div className="space-y-1">
-          <SummaryRow
-            label="Termin"
-            value={
-              selectedEvent ? `${selectedEvent.title} – ${selectedEvent.dateLabel}` : values.event
-            }
-          />
-        </div>
-      </div>
+        <SummaryRow
+          label="Termin"
+          value={
+            selectedEvent ? `${selectedEvent.title} – ${selectedEvent.dateLabel}` : values.event
+          }
+        />
+      </FieldSet>
 
-      <FieldSeparator />
-
-      <div className="space-y-2">
+      <FieldSet>
         <FieldLegend variant="legend">Kontakt</FieldLegend>
-        <div className="space-y-1">
-          <SummaryRow label="Name" value={`${values.firstName} ${values.lastName}`} />
-          <SummaryRow label="E-Mail" value={values.email} />
-          <SummaryRow label="Telefon" value={values.phone} />
-          <SummaryRow label="Adresse" value={values.address} />
-          <SummaryRow label="PLZ" value={values.postalCode} />
-          <SummaryRow label="Stadt" value={values.city} />
-        </div>
-      </div>
+        <SummaryRow label="Name" value={`${values.firstName} ${values.lastName}`} />
+        <SummaryRow label="E-Mail" value={values.email} />
+        <SummaryRow label="Telefon" value={values.phone} />
+        <SummaryRow label="Adresse" value={values.address} />
+        <SummaryRow label="PLZ" value={values.postalCode} />
+        <SummaryRow label="Stadt" value={values.city} />
+      </FieldSet>
 
-      <FieldSeparator />
-
-      <div className="space-y-4">
+      <FieldSet>
         <FieldLegend variant="legend">Kinder</FieldLegend>
         {values.child.map((child, i) => (
           <div key={i} className="space-y-1">
@@ -470,8 +461,8 @@ function ReviewStep({ values, selectedEvent }: ReviewStepProps) {
             </div>
           </div>
         ))}
-      </div>
-    </div>
+      </FieldSet>
+    </>
   )
 }
 
@@ -492,11 +483,7 @@ function ReviewStep({ values, selectedEvent }: ReviewStepProps) {
  * @param initialEvents - Pre-fetched event options from the server component.
  *   When provided, the event radio group renders immediately with no loading skeleton.
  */
-export function KnallbonbonAnmeldungForm({
-  initialEvents,
-}: {
-  initialEvents?: EventOption[]
-}) {
+export function KnallbonbonAnmeldungForm({ initialEvents }: { initialEvents?: EventOption[] }) {
   const { eventOptions, loading } = useKnallbonbonEvents(initialEvents)
   const searchParams = useSearchParams()
   const eventFromUrl = searchParams.get('event')
@@ -725,7 +712,7 @@ export function KnallbonbonAnmeldungForm({
                   name="event"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Veranstaltung auswählen</FieldLabel>
+                      <FieldLabel required>Veranstaltung auswählen</FieldLabel>
                       {loading ? (
                         <div className="space-y-2">
                           <Skeleton className="h-6 w-full" />
@@ -763,7 +750,9 @@ export function KnallbonbonAnmeldungForm({
                     name="firstName"
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="first-name-parent">Vorname</FieldLabel>
+                        <FieldLabel htmlFor="first-name-parent" required>
+                          Vorname
+                        </FieldLabel>
                         <Input
                           id="first-name-parent"
                           type="text"
@@ -780,7 +769,9 @@ export function KnallbonbonAnmeldungForm({
                     name="lastName"
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="last-name">Nachname</FieldLabel>
+                        <FieldLabel htmlFor="last-name" required>
+                          Nachname
+                        </FieldLabel>
                         <Input
                           id="last-name"
                           type="text"
@@ -851,7 +842,9 @@ export function KnallbonbonAnmeldungForm({
                   name="phone"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="phone">Notfallnummer</FieldLabel>
+                      <FieldLabel htmlFor="phone" required>
+                        Notfallnummer
+                      </FieldLabel>
                       <PhoneInput
                         {...field}
                         placeholder="Telefonnummer"
@@ -869,7 +862,9 @@ export function KnallbonbonAnmeldungForm({
                   name="email"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="email">E-Mail</FieldLabel>
+                      <FieldLabel htmlFor="email" required>
+                        E-Mail
+                      </FieldLabel>
                       <Input
                         id="email"
                         type="email"
@@ -900,21 +895,19 @@ export function KnallbonbonAnmeldungForm({
                 <FieldDescription>
                   Fügen Sie Kinder hinzu, für die Sie Angaben machen möchten.
                 </FieldDescription>
-                <FieldGroup className="flex flex-col gap-6">
-                  {fields.map((child, index) => (
-                    <ChildFieldset
-                      key={child.id}
-                      control={form.control}
-                      index={index}
-                      onRemove={handleRemoveChild}
-                      canRemove={fields.length > 1}
-                      minAge={selectedEvent?.minAge}
-                      maxAge={selectedEvent?.maxAge}
-                      eventDate={selectedEvent?.date}
-                      onAgeError={handleAgeError}
-                    />
-                  ))}
-                </FieldGroup>
+                {fields.map((child, index) => (
+                  <ChildFieldset
+                    key={child.id}
+                    control={form.control}
+                    index={index}
+                    onRemove={handleRemoveChild}
+                    canRemove={fields.length > 1}
+                    minAge={selectedEvent?.minAge}
+                    maxAge={selectedEvent?.maxAge}
+                    eventDate={selectedEvent?.date}
+                    onAgeError={handleAgeError}
+                  />
+                ))}
                 <Button
                   type="button"
                   variant="outline"
@@ -941,7 +934,7 @@ export function KnallbonbonAnmeldungForm({
               <FieldSeparator />
               <FieldSet>
                 <Field data-invalid={Boolean(form.formState.errors.captchaToken)}>
-                  <FieldLabel>Spam-Schutz</FieldLabel>
+                  <FieldLabel required>Spam-Schutz</FieldLabel>
                   <input type="hidden" {...form.register('captchaToken')} />
                   <CapWidget
                     endpoint={

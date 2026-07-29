@@ -1,3 +1,5 @@
+'use client'
+
 import { de } from 'react-day-picker/locale'
 
 import React, { useState, useEffect } from 'react'
@@ -5,9 +7,13 @@ import React, { useState, useEffect } from 'react'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Calendar } from '@/components/ui/calendar'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 type DatePickerInputProps = {
@@ -51,8 +57,8 @@ export function DatePickerInput({
   }, [value])
 
   return (
-    <div className="relative flex gap-2">
-      <Input
+    <InputGroup>
+      <InputGroupInput
         id={id}
         ref={inputRef}
         value={value || ''}
@@ -87,48 +93,45 @@ export function DatePickerInput({
         type="date"
         className="[&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
       />
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger
-          render={() => (
-            <Button
-              type="button"
-              variant="ghost"
-              className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
-              onKeyDown={(event) => {
-                // Open calendar with Enter or Space
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  setOpen(true)
-                }
-              }}
-            >
-              <CalendarIcon />
-              <span className="sr-only">Datum auswählen (Enter oder Leertaste zum Öffnen)</span>
-            </Button>
-          )}
-        />
-        <PopoverContent
-          className="w-auto overflow-hidden p-0"
-          align="end"
-          alignOffset={-8}
-          sideOffset={10}
-        >
-          <Calendar
-            mode="single"
-            locale={de}
-            selected={date}
-            captionLayout="dropdown"
-            defaultMonth={date}
-            onSelect={(selectedDate) => {
-              if (selectedDate) {
-                setDate(selectedDate)
-                onChange(format(selectedDate, 'yyyy-MM-dd'))
-              }
-              setOpen(false)
-            }}
+      <InputGroupAddon align="inline-end">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger
+            render={(triggerProps) => (
+              <InputGroupButton
+                {...triggerProps}
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                aria-label="Datum auswählen"
+              >
+                <CalendarIcon />
+                <span className="sr-only">Datum auswählen</span>
+              </InputGroupButton>
+            )}
           />
-        </PopoverContent>
-      </Popover>
-    </div>
+          <PopoverContent
+            className="w-auto overflow-hidden p-0"
+            align="end"
+            alignOffset={-8}
+            sideOffset={10}
+          >
+            <Calendar
+              mode="single"
+              locale={de}
+              selected={date}
+              captionLayout="dropdown"
+              defaultMonth={date}
+              onSelect={(selectedDate) => {
+                if (selectedDate) {
+                  setDate(selectedDate)
+                  onChange(format(selectedDate, 'yyyy-MM-dd'))
+                }
+                setOpen(false)
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+      </InputGroupAddon>
+    </InputGroup>
   )
 }

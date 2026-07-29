@@ -12,8 +12,8 @@ import type { Knallbonbon, KnallbonbonEvent } from '@/payload-types'
 
 // UI Components
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { ButtonGroup } from '@/components/ui/button-group'
+import { buttonVariants } from '@/components/ui/button'
+import { ButtonGroup, ButtonGroupText } from '@/components/ui/button-group'
 
 // Custom Components
 import { formatDateLocale } from '@/components/common/formatDateLocale'
@@ -31,7 +31,7 @@ export function generateMetadata(): Metadata {
 }
 
 // Extracted event card component for better readability and performance
-function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: number }) {
+function EventCard({ event }: { event: KnallbonbonEvent }) {
   const spotsLeft =
     event.maxParticipants && event.participantCount != null
       ? event.maxParticipants - event.participantCount
@@ -48,24 +48,25 @@ function EventCard({ event }: { event: KnallbonbonEvent; registrationCount: numb
         <CardDescription>Ort: {event.location}</CardDescription>
       </CardHeader>
       {event.additionalInfo && (
-        <div className="px-6 pb-4">
+        <CardHeader>
           <h3 className="font-medium">Zusätzliche Informationen:</h3>
           <p className="text-muted-foreground text-sm">{event.additionalInfo}</p>
-        </div>
+        </CardHeader>
       )}
       <CardFooter>
         <ButtonGroup>
           <Link
             href={`/knallbonbon/anmelden?event=${event.id}`}
-            className={buttonVariants({}) + 'flex flex-row items-center gap-2'}
+            data-slot="button"
+            className={`${buttonVariants({})} flex flex-row items-center gap-2`}
           >
             <User />
             {isFull ? 'Warteliste' : 'Anmelden'}
           </Link>
           {!isFull && spotsLeft !== null && (
-            <Button variant="outline">
+            <ButtonGroupText>
               {spotsLeft} {spotsLeft === 1 ? 'Platz' : 'Plätze'}
-            </Button>
+            </ButtonGroupText>
           )}
         </ButtonGroup>
         <QRDialog eventId={event.id} siteUrl={process.env.NEXT_PUBLIC_SITE_URL ?? ''} />
@@ -108,34 +109,6 @@ export default async function Page() {
     }),
   ])
 
-  // Fetch registration counts for each event (counting children, not registrations)
-  const eventRegistrationCounts = await Promise.all(
-    knallbonbonEvents.docs.map(async (event) => {
-      const registrations = await payload.find({
-        collection: 'knallbonbonRegistration',
-        where: {
-          event: {
-            equals: event.id,
-          },
-        },
-        limit: 1000, // Fetch all registrations to count children
-      })
-      // Count total number of children across all registrations
-      const totalChildren = registrations.docs.reduce((total, registration) => {
-        return total + (registration.child?.length || 0)
-      }, 0)
-      return {
-        eventId: event.id,
-        count: totalChildren,
-      }
-    }),
-  )
-
-  // Create a map for easy lookup
-  const registrationCountMap = new Map(
-    eventRegistrationCounts.map((item) => [item.eventId, item.count]),
-  )
-
   return (
     <section>
       {/* Hero Section */}
@@ -156,7 +129,7 @@ export default async function Page() {
           </Link>
           <Link
             href="mailto:info@evangelischejugend.org"
-            className={buttonVariants({ variant: 'outline' }) + 'ml-4'}
+            className={`${buttonVariants({ variant: 'outline' })} ml-4`}
           >
             <Mail />
             Kontaktieren
@@ -169,13 +142,7 @@ export default async function Page() {
         <h2 className="mb-8 text-3xl font-bold tracking-tight">Kommende Veranstaltungen</h2>
         <div className="max-w-md">
           {knallbonbonEvents.docs.length > 0 ? (
-            knallbonbonEvents.docs.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                registrationCount={registrationCountMap.get(event.id) || 0}
-              />
-            ))
+            knallbonbonEvents.docs.map((event) => <EventCard key={event.id} event={event} />)
           ) : (
             <NoEventsCard />
           )}

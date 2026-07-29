@@ -56,3 +56,7 @@ public/robots.txt
 /.vscode
 lighthouse-report.json
 lighthouse-report.html
+.fallow/
+
+# Skills
+/.agents/skills

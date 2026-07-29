@@ -124,10 +124,10 @@ export default buildConfig({
       ],
       settingsMenu: ['@/components/admin/settingsMenu/MySettingsMenu'],
       views: {
-        knallbonbon: {
-          path: '/knallbonbon',
-          Component: '@/components/admin/Knallbonbon/Views/DefaultView',
-        },
+        /*         knallbonbon: {
+                  path: '/knallbonbon',
+                  Component: '@/components/admin/Knallbonbon/Views/DefaultView',
+                }, */
         knallbonbonChildren: {
           path: '/knallbonbon/list-children',
           Component: '@/components/admin/Knallbonbon/Views/ChildrenListView',
