@@ -34,6 +34,10 @@ export const knallbonbonRegistration: CollectionConfig = {
       },
     },
   },
+  access: {
+    create: () => true,
+    read: () => true,
+  },
   fields: [
     {
       name: 'event',

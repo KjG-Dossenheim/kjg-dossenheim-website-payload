@@ -26,6 +26,7 @@ export const updateEventParticipantCountAfterChange: CollectionAfterChangeHook =
         },
       },
       limit: 1000, // Fetch all registrations to count children
+      overrideAccess: true,
     })
 
     // Count total number of children across all registrations
@@ -88,6 +89,7 @@ export const updateEventParticipantCountAfterDelete: CollectionAfterDeleteHook =
         },
       },
       limit: 1000, // Fetch all registrations to count children
+      overrideAccess: true,
     })
 
     // Count total number of children across all registrations

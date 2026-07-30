@@ -124,21 +124,31 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
     }
 
     // Queue email sending job to run asynchronously
-    // This improves response time and handles email failures gracefully
-    await payloadClient.jobs.queue({
-      task: 'sendRegistrationEmails',
-      input: {
-        formValues,
-        eventTitle: event.title,
-        isWaitlist,
-      },
-    })
+    // This improves response time and handles email failures gracefully.
+    // Wrapped in its own try/catch so job failures don't cause the form to report an error.
+    try {
+      await payloadClient.jobs.queue({
+        task: 'sendRegistrationEmails',
+        input: {
+          formValues,
+          eventTitle: event.title,
+          isWaitlist,
+        },
+      })
+    } catch (queueError) {
+      console.error('Failed to queue registration email job:', queueError)
+      // Don't fail the form submission — the registration was already created
+    }
 
     return { success: true, isWaitlist }
   } catch (error) {
-    console.error('Unexpected error while submitting registration:', error)
-    console.log('Error:', error)
-    console.log('Form data received:', formData)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorStack = error instanceof Error ? error.stack : undefined
+    console.error('Unexpected error while submitting Knallbonbon registration:', {
+      message: errorMessage,
+      stack: errorStack,
+      formDataKind: typeof formData,
+    })
     return {
       success: false,
       error: 'server-error',
