@@ -137,6 +137,8 @@ export async function submitKnallbonbonRegistration(formData: unknown) {
     return { success: true, isWaitlist }
   } catch (error) {
     console.error('Unexpected error while submitting registration:', error)
+    console.log('Error:', error)
+    console.log('Form data received:', formData)
     return {
       success: false,
       error: 'server-error',
