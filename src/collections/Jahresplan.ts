@@ -16,6 +16,10 @@ export const Jahresplan: CollectionConfig = {
     },
     group: 'Aktionen',
   },
+  access: {
+    read: () => true,
+  },
+  hooks: {},
   fields: [
     {
       name: 'title',

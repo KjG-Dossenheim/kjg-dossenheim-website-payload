@@ -47,7 +47,17 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Plus, Send, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
-import { Stepper } from '@/components/ui/stepper'
+import {
+  Stepper,
+  StepperContent,
+  StepperIndicator,
+  StepperItem,
+  StepperNav,
+  StepperPanel,
+  StepperSeparator,
+  StepperTitle,
+  StepperTrigger,
+} from '@/components/reui/stepper'
 
 import { CapWidget } from '@/components/common/cap-widget'
 import {
@@ -246,7 +256,6 @@ const ChildFieldset = memo(function ChildFieldset({
                 type="text"
                 {...field}
                 aria-invalid={fieldState.invalid}
-                autoComplete="off"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -265,7 +274,6 @@ const ChildFieldset = memo(function ChildFieldset({
                 type="text"
                 {...field}
                 aria-invalid={fieldState.invalid}
-                autoComplete="off"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -299,13 +307,14 @@ const ChildFieldset = memo(function ChildFieldset({
                 field.onChange(value)
                 field.onBlur()
               }}
+              items={GENDER_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
             >
               <SelectTrigger
                 id={`gender-child-${index}`}
                 aria-invalid={fieldState.invalid}
                 onBlur={field.onBlur}
               >
-                <SelectValue placeholder="Bitte wählen" />
+                <SelectValue placeholder="Bitte wählen"></SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {GENDER_OPTIONS.map((option) => (
@@ -692,277 +701,303 @@ export function KnallbonbonAnmeldungForm({ initialEvents }: { initialEvents?: Ev
   const formValues = form.watch()
 
   return (
-    <>
-      <CardHeader>
-        <CardTitle>Knallbonbon Anmeldung</CardTitle>
-        <CardDescription>
+    <FieldSet>
+      <FieldSet>
+        <FieldLegend>Knallbonbon Anmeldung</FieldLegend>
+        <FieldDescription>
           Hier können Sie sich für unser Knallbonbon Event anmelden.
-        </CardDescription>
-      </CardHeader>
+        </FieldDescription>
+      </FieldSet>
       <CardContent className="space-y-6">
-        <Stepper steps={STEPS} currentStep={currentStep} />
-
-        <form id="knallbonbon-form" onSubmit={form.handleSubmit(onSubmit)}>
-          {/* ── Step 1: Veranstaltung ── */}
-          {currentStep === 1 && (
-            <FieldGroup>
-              <FieldSet>
-                <Controller
-                  control={form.control}
-                  name="event"
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel required>Veranstaltung auswählen</FieldLabel>
-                      {loading ? (
-                        <div className="space-y-2">
-                          <Skeleton className="h-6 w-full" />
-                          <Skeleton className="h-6 w-full" />
-                        </div>
-                      ) : (
-                        <RadioGroup
-                          value={field.value}
-                          onValueChange={(value) => {
-                            field.onChange(value)
-                            field.onBlur()
-                          }}
-                          aria-invalid={fieldState.invalid}
-                        >
-                          {eventRadioOptions}
-                        </RadioGroup>
+        <Stepper
+          value={currentStep}
+          onValueChange={(step) => {
+            // Only allow navigating back via stepper clicks (forward requires validation)
+            if (step < currentStep) {
+              setCurrentStep(step)
+            }
+          }}
+        >
+          <StepperNav>
+            {STEPS.map((step, index) => {
+              const stepNum = index + 1
+              const isLast = stepNum === STEPS.length
+              return (
+                <StepperItem key={stepNum} step={stepNum} disabled={stepNum > currentStep}>
+                  <StepperTrigger className="flex flex-col gap-2.5">
+                    <StepperIndicator>{stepNum}</StepperIndicator>
+                    <StepperTitle>{step.label}</StepperTitle>
+                  </StepperTrigger>
+                  {STEPS.length > index + 1 && (
+                    <StepperSeparator className="group-data-[state=completed]/step:bg-primary absolute inset-x-0 top-3 left-[calc(50%+0.875rem)] m-0 group-data-[orientation=horizontal]/stepper-nav:w-[calc(100%-2rem+0.225rem)] group-data-[orientation=horizontal]/stepper-nav:flex-none" />
+                  )}
+                </StepperItem>
+              )
+            })}
+          </StepperNav>
+          <StepperPanel>
+            <form id="knallbonbon-form" onSubmit={form.handleSubmit(onSubmit)}>
+              <StepperContent value={1}>
+                <FieldGroup>
+                  <FieldSet>
+                    <Controller
+                      control={form.control}
+                      name="event"
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel required>Veranstaltung auswählen</FieldLabel>
+                          {loading ? (
+                            <div className="space-y-2">
+                              <Skeleton className="h-6 w-full" />
+                              <Skeleton className="h-6 w-full" />
+                            </div>
+                          ) : (
+                            <RadioGroup
+                              value={field.value}
+                              onValueChange={(value) => {
+                                field.onChange(value)
+                                field.onBlur()
+                              }}
+                              aria-invalid={fieldState.invalid}
+                            >
+                              {eventRadioOptions}
+                            </RadioGroup>
+                          )}
+                          <FieldDescription>Wählen Sie eine Veranstaltung aus.</FieldDescription>
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
                       )}
-                      <FieldDescription>Wählen Sie eine Veranstaltung aus.</FieldDescription>
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-              </FieldSet>
-            </FieldGroup>
-          )}
+                    />
+                  </FieldSet>
+                </FieldGroup>
+              </StepperContent>
 
-          {/* ── Step 2: Kontakt ── */}
-          {currentStep === 2 && (
-            <FieldGroup>
-              <FieldSet>
-                <FieldLegend>Kontaktdaten</FieldLegend>
-                <FieldGroup className="flex flex-col gap-4 md:flex-row md:space-y-0">
-                  <Controller
-                    control={form.control}
-                    name="firstName"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="first-name-parent" required>
-                          Vorname
-                        </FieldLabel>
-                        <Input
-                          id="first-name-parent"
-                          type="text"
-                          {...field}
-                          aria-invalid={fieldState.invalid}
-                          autoComplete="given-name"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    control={form.control}
-                    name="lastName"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="last-name" required>
-                          Nachname
-                        </FieldLabel>
-                        <Input
-                          id="last-name"
-                          type="text"
-                          {...field}
-                          aria-invalid={fieldState.invalid}
-                          autoComplete="family-name"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                </FieldGroup>
-                <Controller
-                  control={form.control}
-                  name="address"
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="address">Adresse</FieldLabel>
-                      <Input
-                        id="address"
-                        type="text"
-                        {...field}
-                        aria-invalid={fieldState.invalid}
-                        autoComplete="street-address"
+              {/* ── Step 2: Kontakt ── */}
+              <StepperContent value={2}>
+                <FieldGroup>
+                  <FieldSet>
+                    <FieldLegend>Kontaktdaten</FieldLegend>
+                    <FieldGroup className="flex flex-col gap-4 md:flex-row md:space-y-0">
+                      <Controller
+                        control={form.control}
+                        name="firstName"
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="first-name-parent" required>
+                              Vorname
+                            </FieldLabel>
+                            <Input
+                              id="first-name-parent"
+                              type="text"
+                              {...field}
+                              aria-invalid={fieldState.invalid}
+                              autoComplete="given-name"
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                          </Field>
+                        )}
                       />
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-                <FieldGroup className="flex flex-col gap-4 md:flex-row md:space-y-0">
-                  <Controller
-                    control={form.control}
-                    name="postalCode"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="postal-code">Postleitzahl</FieldLabel>
-                        <Input
-                          id="postal-code"
-                          type="text"
-                          {...field}
-                          aria-invalid={fieldState.invalid}
-                          autoComplete="postal-code"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    control={form.control}
-                    name="city"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="city">Stadt</FieldLabel>
-                        <Input
-                          id="city"
-                          type="text"
-                          {...field}
-                          aria-invalid={fieldState.invalid}
-                          autoComplete="address-level2"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )}
-                  />
-                </FieldGroup>
-                <Controller
-                  control={form.control}
-                  name="phone"
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="phone" required>
-                        Notfallnummer
-                      </FieldLabel>
-                      <PhoneInput
-                        {...field}
-                        placeholder="Telefonnummer"
-                        onChange={(value) => {
-                          field.onChange(value)
-                          debouncedPhoneValidation()
-                        }}
+                      <Controller
+                        control={form.control}
+                        name="lastName"
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="last-name" required>
+                              Nachname
+                            </FieldLabel>
+                            <Input
+                              id="last-name"
+                              type="text"
+                              {...field}
+                              aria-invalid={fieldState.invalid}
+                              autoComplete="family-name"
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                          </Field>
+                        )}
                       />
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  control={form.control}
-                  name="email"
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="email" required>
-                        E-Mail
-                      </FieldLabel>
-                      <Input
-                        id="email"
-                        type="email"
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e)
-                          debouncedEmailValidation()
+                    </FieldGroup>
+                    <Controller
+                      control={form.control}
+                      name="address"
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="address">Adresse</FieldLabel>
+                          <Input
+                            id="address"
+                            type="text"
+                            {...field}
+                            aria-invalid={fieldState.invalid}
+                            autoComplete="street-address"
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                    <FieldGroup className="flex flex-col gap-4 md:flex-row md:space-y-0">
+                      <Controller
+                        control={form.control}
+                        name="postalCode"
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="postal-code">Postleitzahl</FieldLabel>
+                            <Input
+                              id="postal-code"
+                              type="text"
+                              {...field}
+                              aria-invalid={fieldState.invalid}
+                              autoComplete="postal-code"
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                          </Field>
+                        )}
+                      />
+                      <Controller
+                        control={form.control}
+                        name="city"
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="city">Stadt</FieldLabel>
+                            <Input
+                              id="city"
+                              type="text"
+                              {...field}
+                              aria-invalid={fieldState.invalid}
+                              autoComplete="address-level2"
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                          </Field>
+                        )}
+                      />
+                    </FieldGroup>
+                    <Controller
+                      control={form.control}
+                      name="phone"
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="phone" required>
+                            Notfallnummer
+                          </FieldLabel>
+                          <PhoneInput
+                            {...field}
+                            placeholder="Telefonnummer"
+                            onChange={(value) => {
+                              field.onChange(value)
+                              debouncedPhoneValidation()
+                            }}
+                          />
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      control={form.control}
+                      name="email"
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="email" required>
+                            E-Mail
+                          </FieldLabel>
+                          <Input
+                            id="email"
+                            type="email"
+                            {...field}
+                            onChange={(e) => {
+                              field.onChange(e)
+                              debouncedEmailValidation()
+                            }}
+                            aria-invalid={fieldState.invalid}
+                            autoComplete="email"
+                          />
+                          <FieldDescription>
+                            Wir senden Ihnen eine Bestätigung per E-Mail.
+                          </FieldDescription>
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                  </FieldSet>
+                </FieldGroup>
+              </StepperContent>
+
+              {/* ── Step 3: Kinder ── */}
+              <StepperContent value={3}>
+                <FieldGroup>
+                  <FieldSet className="gap-6">
+                    <FieldLegend variant="label">Kinder</FieldLegend>
+                    <FieldDescription>
+                      Fügen Sie Kinder hinzu, für die Sie Angaben machen möchten.
+                    </FieldDescription>
+                    {fields.map((child, index) => (
+                      <ChildFieldset
+                        key={child.id}
+                        control={form.control}
+                        index={index}
+                        onRemove={handleRemoveChild}
+                        canRemove={fields.length > 1}
+                        minAge={selectedEvent?.minAge}
+                        maxAge={selectedEvent?.maxAge}
+                        eventDate={selectedEvent?.date}
+                        onAgeError={handleAgeError}
+                      />
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => append(INITIAL_CHILD_VALUES)}
+                      disabled={fields.length >= MAX_CHILDREN}
+                    >
+                      <Plus />
+                      Weiteres Kind hinzufügen
+                    </Button>
+                    {hasAgeErrors && (
+                      <p className="text-destructive text-sm">
+                        Ein oder mehrere Kinder erfüllen nicht die Altersvoraussetzungen für diese
+                        Veranstaltung.
+                      </p>
+                    )}
+                  </FieldSet>
+                </FieldGroup>
+              </StepperContent>
+
+              {/* ── Step 4: Überprüfen & Absenden ── */}
+              <StepperContent value={4}>
+                <FieldGroup>
+                  <ReviewStep values={formValues} selectedEvent={selectedEvent} />
+                  <FieldSeparator />
+                  <FieldSet>
+                    <Field data-invalid={Boolean(form.formState.errors.captchaToken)}>
+                      <FieldLabel required>Spam-Schutz</FieldLabel>
+                      <input type="hidden" {...form.register('captchaToken')} />
+                      <CapWidget
+                        endpoint={
+                          process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'
+                        }
+                        onSolve={handleCaptchaSolve}
+                        locale={{
+                          initial: 'Ich bin (k)ein Roboter',
+                          verifying: 'Überprüfung...',
+                          solved: 'Verifiziert',
+                          error: 'Überprüfung fehlgeschlagen',
+                          wasmDisabled: 'WebAssembly ist deaktiviert',
+                          verifyingAria: 'Überprüfung, ob Sie ein Mensch sind',
+                          solvedAria: 'Überprüfung erfolgreich',
+                          errorAria: 'Überprüfung fehlgeschlagen, bitte versuchen Sie es erneut',
                         }}
-                        aria-invalid={fieldState.invalid}
-                        autoComplete="email"
                       />
                       <FieldDescription>
-                        Wir senden Ihnen eine Bestätigung per E-Mail.
+                        Bitte lösen Sie das CAPTCHA, um die Anmeldung abzuschließen.
                       </FieldDescription>
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      {form.formState.errors.captchaToken && (
+                        <FieldError errors={[form.formState.errors.captchaToken]} />
+                      )}
                     </Field>
-                  )}
-                />
-              </FieldSet>
-            </FieldGroup>
-          )}
-
-          {/* ── Step 3: Kinder ── */}
-          {currentStep === 3 && (
-            <FieldGroup>
-              <FieldSet className="gap-6">
-                <FieldLegend variant="label">Kinder</FieldLegend>
-                <FieldDescription>
-                  Fügen Sie Kinder hinzu, für die Sie Angaben machen möchten.
-                </FieldDescription>
-                {fields.map((child, index) => (
-                  <ChildFieldset
-                    key={child.id}
-                    control={form.control}
-                    index={index}
-                    onRemove={handleRemoveChild}
-                    canRemove={fields.length > 1}
-                    minAge={selectedEvent?.minAge}
-                    maxAge={selectedEvent?.maxAge}
-                    eventDate={selectedEvent?.date}
-                    onAgeError={handleAgeError}
-                  />
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => append(INITIAL_CHILD_VALUES)}
-                  disabled={fields.length >= MAX_CHILDREN}
-                >
-                  <Plus />
-                  Weiteres Kind hinzufügen
-                </Button>
-                {hasAgeErrors && (
-                  <p className="text-destructive text-sm">
-                    Ein oder mehrere Kinder erfüllen nicht die Altersvoraussetzungen für diese
-                    Veranstaltung.
-                  </p>
-                )}
-              </FieldSet>
-            </FieldGroup>
-          )}
-
-          {/* ── Step 4: Überprüfen & Absenden ── */}
-          {currentStep === 4 && (
-            <FieldGroup>
-              <ReviewStep values={formValues} selectedEvent={selectedEvent} />
-              <FieldSeparator />
-              <FieldSet>
-                <Field data-invalid={Boolean(form.formState.errors.captchaToken)}>
-                  <FieldLabel required>Spam-Schutz</FieldLabel>
-                  <input type="hidden" {...form.register('captchaToken')} />
-                  <CapWidget
-                    endpoint={
-                      process.env.NEXT_PUBLIC_CAPTCHA_URL || 'https://captcha.gurl.eu.org/api/'
-                    }
-                    onSolve={handleCaptchaSolve}
-                    locale={{
-                      initial: 'Ich bin (k)ein Roboter',
-                      verifying: 'Überprüfung...',
-                      solved: 'Verifiziert',
-                      error: 'Überprüfung fehlgeschlagen',
-                      wasmDisabled: 'WebAssembly ist deaktiviert',
-                      verifyingAria: 'Überprüfung, ob Sie ein Mensch sind',
-                      solvedAria: 'Überprüfung erfolgreich',
-                      errorAria: 'Überprüfung fehlgeschlagen, bitte versuchen Sie es erneut',
-                    }}
-                  />
-                  <FieldDescription>
-                    Bitte lösen Sie das CAPTCHA, um die Anmeldung abzuschließen.
-                  </FieldDescription>
-                  {form.formState.errors.captchaToken && (
-                    <FieldError errors={[form.formState.errors.captchaToken]} />
-                  )}
-                </Field>
-              </FieldSet>
-            </FieldGroup>
-          )}
-        </form>
+                  </FieldSet>
+                </FieldGroup>
+              </StepperContent>
+            </form>
+          </StepperPanel>
+        </Stepper>
       </CardContent>
 
       {/* ── Navigation ── */}
@@ -999,6 +1034,6 @@ export function KnallbonbonAnmeldungForm({ initialEvents }: { initialEvents?: Ev
           </CardDescription>
         </CardFooter>
       )}
-    </>
+    </FieldSet>
   )
 }
