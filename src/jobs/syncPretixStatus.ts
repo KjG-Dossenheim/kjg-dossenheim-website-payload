@@ -2,6 +2,14 @@ import type { PayloadRequest } from 'payload'
 import { z } from 'zod'
 
 import type { SommerfreizeitOrder } from '@/payload-types'
+import {
+  buildPretixEndpoint,
+  fetchPretixPage,
+  getPretixConfig,
+  normalizeOrderCode,
+  parseMaxPages,
+  toOptionalNonEmpty,
+} from '@/utilities/pretix'
 
 type SyncPretixStatusInput = {
   maxPages?: number
@@ -36,31 +44,6 @@ const pretixOrderListSchema = z
     results: z.array(pretixOrderSchema),
   })
 
-function toNonEmpty(value: unknown) {
-  if (typeof value !== 'string') {
-    return ''
-  }
-
-  return value.trim()
-}
-
-function toOptionalString(value: unknown): string | null {
-  if (typeof value === 'string') {
-    const trimmed = value.trim()
-    return trimmed || null
-  }
-
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return String(value)
-  }
-
-  return null
-}
-
-function normalizeOrderCode(value: unknown): string {
-  return toNonEmpty(value).toUpperCase()
-}
-
 async function fetchOrdersPage(args: {
   baseUrl: string
   organizer: string
@@ -68,31 +51,15 @@ async function fetchOrdersPage(args: {
   page: number
   pretixEventId?: string
 }) {
-  const endpoint = new URL(
-    `/api/v1/organizers/${encodeURIComponent(args.organizer)}/orders/`,
-    args.baseUrl,
-  )
-
-  endpoint.searchParams.set('page', String(args.page))
-
-  if (args.pretixEventId) {
-    endpoint.searchParams.set('event', args.pretixEventId)
-  }
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Token ${args.token}`,
-    },
+  const endpoint = buildPretixEndpoint({
+    baseUrl: args.baseUrl,
+    organizer: args.organizer,
+    resource: 'orders',
+    page: args.page,
+    pretixEventId: args.pretixEventId,
   })
 
-  if (!response.ok) {
-    const bodyText = await response.text()
-    throw new Error(`Pretix API returned ${response.status}: ${bodyText}`)
-  }
-
-  const json = await response.json()
+  const json = await fetchPretixPage<unknown>(endpoint, args.token)
   return pretixOrderListSchema.parse(json)
 }
 
@@ -102,21 +69,13 @@ export const syncPretixStatusJob = {
   handler: async ({ req, input }: { req: PayloadRequest; input: unknown }) => {
     try {
       const jobInput = (input ?? {}) as SyncPretixStatusInput
-      const baseUrl = (process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu').trim()
-      const organizer = (process.env.NEXT_PUBLIC_PRETIX_ORGANIZER || '').trim()
-      const token = (process.env.PRETIX_API_TOKEN || '').trim()
-      const maxPages =
-        typeof jobInput.maxPages === 'number' && Number.isFinite(jobInput.maxPages)
-          ? Math.max(1, Math.floor(jobInput.maxPages))
-          : undefined
-      const pretixEventIdFilter = toNonEmpty(jobInput.pretixEventId)
-      const orderCodeFilter = normalizeOrderCode(jobInput.orderCode)
 
-      if (!organizer || !token) {
-        throw new Error(
-          'Missing NEXT_PUBLIC_PRETIX_ORGANIZER or PRETIX_API_TOKEN. Configure both environment variables.',
-        )
-      }
+      // Validate environment configuration early
+      const { baseUrl, organizer, token } = getPretixConfig()
+
+      const maxPages = parseMaxPages(jobInput.maxPages)
+      const pretixEventIdFilter = toOptionalNonEmpty(jobInput.pretixEventId)
+      const orderCodeFilter = normalizeOrderCode(jobInput.orderCode)
 
       req.payload.logger.info(
         `Starting Pretix status sync (organizer=${organizer}, pretixEventId=${pretixEventIdFilter || 'none'}, orderCode=${orderCodeFilter || 'none'})`,
@@ -140,14 +99,17 @@ export const syncPretixStatusJob = {
           organizer,
           token,
           page,
-          pretixEventId: pretixEventIdFilter || undefined,
+          pretixEventId: pretixEventIdFilter,
         })
 
         const mappedOrders: PretixOrderSummary[] = pageResult.results
           .map((order) => ({
             code: normalizeOrderCode(order.code),
             status: order.status,
-            event: toOptionalString(order.event),
+            event:
+              typeof order.event === 'number'
+                ? String(order.event)
+                : (toOptionalNonEmpty(order.event) ?? null),
           }))
           .filter((order) => {
             if (!order.code) {
@@ -219,7 +181,7 @@ export const syncPretixStatusJob = {
         matchedRegistrations += registrations.length
 
         for (const registration of registrations) {
-          if (toNonEmpty(registration.pretixStatus).toLowerCase() === order.status.toLowerCase()) {
+          if (normalizeOrderCode(registration.pretixStatus) === normalizeOrderCode(order.status)) {
             unchangedRegistrations += 1
             continue
           }

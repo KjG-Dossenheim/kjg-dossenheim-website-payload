@@ -24,7 +24,7 @@ import {
   TimelineItem,
   TimelineSeparator,
   TimelineTitle,
-} from '@/components/ui/timeline'
+} from '@/components/reui/timeline'
 
 // Custom Components
 import { formatDateLocale } from '@/components/common/formatDateLocale'
@@ -55,6 +55,7 @@ export default async function Page() {
     // Fetch Jahresplan events
     const { docs: jahresplanEvents } = await payload.find({
       collection: 'jahresplan',
+      overrideAccess: false,
       where: {
         startDate: {
           greater_than_equal: new Date().toISOString(),

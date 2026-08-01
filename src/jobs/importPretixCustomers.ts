@@ -12,6 +12,14 @@ import {
   ensureSommerfreizeitUser,
   normalizeSommerfreizeitEmail,
 } from '@/utilities/sommerfreizeitAccount'
+import {
+  buildPretixEndpoint,
+  fetchPretixPage,
+  getPretixConfig,
+  parseMaxPages,
+  toNonEmpty,
+  toOptionalNonEmpty,
+} from '@/utilities/pretix'
 
 // Zod schema to validate individual customer objects from Pretix API
 const pretixCustomerSchema = z.object({
@@ -51,18 +59,6 @@ type SommerfreizeitUserDoc = {
   phone?: string | null
   emailVerified?: boolean | null
   pretix_Identifier?: string | null // Stores the Pretix customer identifier
-}
-
-/**
- * Converts a value to a non-empty string.
- * Returns empty string if value is not a string or is whitespace-only.
- */
-function toNonEmpty(value: unknown) {
-  if (typeof value !== 'string') {
-    return ''
-  }
-
-  return value.trim()
 }
 
 /**
@@ -144,36 +140,17 @@ async function fetchCustomerPage(args: {
   organizer: string
   token: string
   page: number
-  email?: string // Optional: filter by specific email
+  email?: string
 }) {
-  const endpoint = new URL(
-    `/api/v1/organizers/${encodeURIComponent(args.organizer)}/customers/`,
-    args.baseUrl,
-  )
-
-  endpoint.searchParams.set('page', String(args.page))
-
-  // Add email filter if provided
-  if (args.email) {
-    endpoint.searchParams.set('email', args.email)
-  }
-
-  // Fetch with Pretix API token authentication
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Token ${args.token}`,
-    },
+  const endpoint = buildPretixEndpoint({
+    baseUrl: args.baseUrl,
+    organizer: args.organizer,
+    resource: 'customers',
+    page: args.page,
+    extraParams: args.email ? { email: args.email } : undefined,
   })
 
-  if (!response.ok) {
-    const bodyText = await response.text()
-    throw new Error(`Pretix API returned ${response.status}: ${bodyText}`)
-  }
-
-  const json = await response.json()
-  // Validate response against expected schema
+  const json = await fetchPretixPage<unknown>(endpoint, args.token)
   return pretixCustomerListSchema.parse(json)
 }
 
@@ -198,22 +175,13 @@ export const importPretixCustomersJob = {
     try {
       // Parse and validate job input parameters
       const jobInput = (input ?? {}) as ImportPretixCustomersInput
-      const baseUrl = (process.env.NEXT_PUBLIC_PRETIX_URL || 'https://pretix.eu').trim()
-      const organizer = (process.env.NEXT_PUBLIC_PRETIX_ORGANIZER || '').trim()
-      const token = (process.env.PRETIX_API_TOKEN || '').trim()
-      const maxPages =
-        typeof jobInput.maxPages === 'number' && Number.isFinite(jobInput.maxPages)
-          ? Math.max(1, Math.floor(jobInput.maxPages))
-          : undefined
-      const emailFilter = toNonEmpty(jobInput.customerEmail)
-      const updateExisting = Boolean(jobInput.updateExisting)
 
-      // Validate required Pretix configuration
-      if (!organizer || !token) {
-        throw new Error(
-          'Missing NEXT_PUBLIC_PRETIX_ORGANIZER or PRETIX_API_TOKEN. Configure both environment variables.',
-        )
-      }
+      // Validate environment configuration early
+      const { baseUrl, organizer, token } = getPretixConfig()
+
+      const maxPages = parseMaxPages(jobInput.maxPages)
+      const emailFilter = toOptionalNonEmpty(jobInput.customerEmail)
+      const updateExisting = Boolean(jobInput.updateExisting)
 
       req.payload.logger.info(
         `Starting Pretix customer import (organizer=${organizer}, emailFilter=${emailFilter || 'none'}, updateExisting=${updateExisting})`,
@@ -248,7 +216,7 @@ export const importPretixCustomersJob = {
           organizer,
           token,
           page,
-          email: emailFilter || undefined,
+          email: emailFilter,
         })
 
         // Process each customer on this page

@@ -3,13 +3,13 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth/client'
 import { checkSommerfreizeitUserEmailAction } from './actions'
+import { toast, Toaster } from 'sonner'
 
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 
@@ -27,14 +27,10 @@ export function LoginForm({ returnTo }: LoginFormProps) {
   const [step, setStep] = useState<AuthStep>('email')
   const [email, setEmail] = useState<string>('')
   const [otp, setOtp] = useState<string>('')
-  const [error, setError] = useState<string>('')
-  const [successMessage, setSuccessMessage] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setError('')
-    setSuccessMessage('')
     setIsSubmitting(true)
 
     try {
@@ -42,12 +38,16 @@ export function LoginForm({ returnTo }: LoginFormProps) {
         const result = await checkSommerfreizeitUserEmailAction(email)
 
         if (!result.success) {
-          setError(result.message || 'E-Mail-Adresse konnte nicht geprueft werden.')
+          toast.error(result.message || 'E-Mail-Adresse konnte nicht geprueft werden.', {
+            toasterId: 'sommerfreizeit-login',
+          })
           return
         }
 
         if (!result.exists) {
-          setError('Fuer diese E-Mail-Adresse existiert kein Konto.')
+          toast.error('Fuer diese E-Mail-Adresse existiert kein Konto.', {
+            toasterId: 'sommerfreizeit-login',
+          })
           return
         }
 
@@ -57,13 +57,18 @@ export function LoginForm({ returnTo }: LoginFormProps) {
         })
 
         if (sendResult.error) {
-          setError('Der Bestätigungscode konnte nicht gesendet werden. Bitte versuche es erneut.')
+          toast.error(
+            'Der Bestätigungscode konnte nicht gesendet werden. Bitte versuche es erneut.',
+            { toasterId: 'sommerfreizeit-login' },
+          )
           return
         }
 
         setOtp('')
         setStep('otp')
-        setSuccessMessage('Wir haben dir einen Bestätigungscode per E-Mail geschickt.')
+        toast.success('Wir haben dir einen Bestätigungscode per E-Mail geschickt.', {
+          toasterId: 'sommerfreizeit-login',
+        })
         return
       }
 
@@ -73,7 +78,10 @@ export function LoginForm({ returnTo }: LoginFormProps) {
       })
 
       if (signInResult.error) {
-        setError('Der Bestätigungscode ist ungültig oder abgelaufen. Bitte versuche es erneut.')
+        toast.error(
+          'Der Bestätigungscode ist ungültig oder abgelaufen. Bitte versuche es erneut.',
+          { toasterId: 'sommerfreizeit-login' },
+        )
         return
       }
 
@@ -83,10 +91,15 @@ export function LoginForm({ returnTo }: LoginFormProps) {
       const errorMessage = error instanceof Error ? error.message : ''
       const invalidOtp = /otp|code|invalid|expired/i.test(errorMessage)
 
-      setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
+      toast.error('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', {
+        toasterId: 'sommerfreizeit-login',
+      })
 
       if (invalidOtp) {
-        setError('Der Bestätigungscode ist ungültig oder abgelaufen. Bitte versuche es erneut.')
+        toast.error(
+          'Der Bestätigungscode ist ungültig oder abgelaufen. Bitte versuche es erneut.',
+          { toasterId: 'sommerfreizeit-login' },
+        )
       }
     } finally {
       setIsSubmitting(false)
@@ -101,6 +114,7 @@ export function LoginForm({ returnTo }: LoginFormProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
+      <Toaster richColors id="sommerfreizeit-login" />
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{cardTitle}</CardTitle>
@@ -117,7 +131,7 @@ export function LoginForm({ returnTo }: LoginFormProps) {
                 placeholder="beispiel@email.de"
                 value={email}
                 required
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isEmailStep}
               />
             </div>
             {!isEmailStep ? (
@@ -135,16 +149,6 @@ export function LoginForm({ returnTo }: LoginFormProps) {
                 </InputOTP>
               </div>
             ) : null}
-            {error ? (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            ) : null}
-            {successMessage ? (
-              <Alert>
-                <AlertDescription>{successMessage}</AlertDescription>
-              </Alert>
-            ) : null}
             {!isEmailStep ? (
               <Button
                 type="button"
@@ -153,8 +157,6 @@ export function LoginForm({ returnTo }: LoginFormProps) {
                 onClick={() => {
                   setStep('email')
                   setOtp('')
-                  setError('')
-                  setSuccessMessage('')
                 }}
                 disabled={isSubmitting}
               >

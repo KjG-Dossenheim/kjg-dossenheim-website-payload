@@ -6,6 +6,7 @@ import { render } from '@react-email/render';
 export const membershipApplication: CollectionConfig = {
   slug: 'membershipApplication',
   access: {
+    // payload-doctor-disable-next-line open-access-function — public membership form; captcha-validated in server action
     create: () => true,
   },
   labels: {

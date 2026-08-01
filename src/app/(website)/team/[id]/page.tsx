@@ -21,7 +21,7 @@ import { bigEarsNeutral } from '@dicebear/collection'
 // UI Components
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,

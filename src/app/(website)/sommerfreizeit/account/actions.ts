@@ -6,43 +6,20 @@ import { z } from 'zod'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { getSommerfreizeitSessionUser } from '@/lib/auth/server'
-import type { SommerfreizeitChild, SommerfreizeitUser } from '@/payload-types'
-
-const updateAccountSchema = z
-  .object({
-    firstName: z.string().trim().min(1, 'Vorname ist erforderlich.'),
-    lastName: z.string().trim().min(1, 'Nachname ist erforderlich.'),
-    phone: z.string().trim().optional(),
-    address: z.string().trim().optional(),
-    postalCode: z.string().trim().optional(),
-    city: z.string().trim().optional(),
-  })
-
-export type UpdateAccountInput = Pick<SommerfreizeitUser, 'firstName' | 'lastName' | 'phone' | 'address' | 'postalCode' | 'city'> & {
-}
+import {
+  updateAccountSchema,
+  createChildSchema,
+} from '@/utilities/validation/sommerfreizeit'
+import type {
+  UpdateAccountInput,
+  CreateChildInput,
+} from '@/utilities/validation/sommerfreizeit'
+import type { SommerfreizeitChild } from '@/payload-types'
 
 type UpdateAccountResult = {
   success: boolean
   message: string
 }
-
-export type CreateChildInput = {
-  firstName: string
-  lastName: string
-  dateOfBirth: SommerfreizeitChild['dateOfBirth']
-  gender: SommerfreizeitChild['gender']
-}
-
-const createChildSchema: z.ZodType<CreateChildInput> = z.object({
-  firstName: z.string().trim().min(1, 'Vorname ist erforderlich.'),
-  lastName: z.string().trim().min(1, 'Nachname ist erforderlich.'),
-  dateOfBirth: z.string().trim().min(1, 'Geburtsdatum ist erforderlich.'),
-  gender: z
-    .enum(['male', 'female', 'diverse'], {
-      error: 'Geschlecht ist erforderlich.',
-    })
-  ,
-})
 
 type CreateChildResult = {
   success: boolean
@@ -83,6 +60,7 @@ export async function updateAccountAction(data: UpdateAccountInput): Promise<Upd
     await payload.update({
       collection: 'sommerfreizeitUsers',
       id: user.id,
+      overrideAccess: true, // User verified via getSommerfreizeitSessionUser above
       data: {
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
@@ -149,6 +127,7 @@ export async function createChildAction(data: CreateChildInput): Promise<CreateC
     const child = await payload.create({
       collection: 'sommerfreizeitChild',
       data: childData,
+      overrideAccess: true, // User verified via getSommerfreizeitSessionUser above
       draft: false,
       select: {
         id: true,
@@ -178,136 +157,6 @@ export async function createChildAction(data: CreateChildInput): Promise<CreateC
     return {
       success: false,
       message: 'Beim Hinzufuegen des Kindes ist ein Fehler aufgetreten. Bitte versuche es erneut.',
-    }
-  }
-}
-
-export async function updateChildAction(
-  childId: string,
-  data: UpdateChildInput,
-): Promise<UpdateChildResult> {
-  const validationResult = createChildSchema.safeParse(data)
-
-  if (!validationResult.success) {
-    return {
-      success: false,
-      message: validationResult.error.issues[0]?.message ?? 'Bitte ueberpruefe deine Angaben.',
-    }
-  }
-
-  try {
-    const headers = await getHeaders()
-    const payload = await getPayload({ config })
-    const user = await getSommerfreizeitSessionUser(payload, headers)
-
-    if (!user) {
-      return {
-        success: false,
-        message: 'Nicht autorisiert. Bitte erneut anmelden.',
-      }
-    }
-
-    const child = await payload.findByID({
-      collection: 'sommerfreizeitChild',
-      id: childId,
-      draft: false,
-      select: {
-        id: true,
-        parent: true,
-      },
-    })
-
-    const parentId = typeof child.parent === 'string' ? child.parent : child.parent?.id
-
-    if (!parentId || parentId !== user.id) {
-      return {
-        success: false,
-        message: 'Du kannst nur eigene Kinder bearbeiten.',
-      }
-    }
-
-    const childData = {
-      firstName: validationResult.data.firstName,
-      lastName: validationResult.data.lastName,
-      dateOfBirth: validationResult.data.dateOfBirth,
-      gender: validationResult.data.gender,
-      _status: 'published',
-    } satisfies Partial<
-      Omit<SommerfreizeitChild, 'id' | 'parent' | 'anmeldungen' | 'updatedAt' | 'createdAt'>
-    >
-
-    await payload.update({
-      collection: 'sommerfreizeitChild',
-      id: child.id,
-      data: childData,
-    })
-
-    revalidatePath('/sommerfreizeit/account')
-    revalidatePath('/sommerfreizeit/anmeldung')
-    revalidatePath(`/sommerfreizeit/account/kinder/${childId}`)
-
-    return {
-      success: true,
-      message: 'Kind wurde erfolgreich aktualisiert.',
-    }
-  } catch {
-    return {
-      success: false,
-      message: 'Beim Speichern ist ein Fehler aufgetreten. Bitte versuche es erneut.',
-    }
-  }
-}
-
-export async function deleteChildAction(childId: string): Promise<DeleteChildResult> {
-  try {
-    const headers = await getHeaders()
-    const payload = await getPayload({ config })
-    const user = await getSommerfreizeitSessionUser(payload, headers)
-
-    if (!user) {
-      return {
-        success: false,
-        message: 'Nicht autorisiert. Bitte erneut anmelden.',
-      }
-    }
-
-    const child = await payload.findByID({
-      collection: 'sommerfreizeitChild',
-      id: childId,
-      depth: 0,
-      select: {
-        id: true,
-        parent: true,
-      },
-    })
-
-    const parentId = typeof child.parent === 'string' ? child.parent : child.parent?.id
-
-    if (!parentId || parentId !== user.id) {
-      return {
-        success: false,
-        message: 'Du kannst nur eigene Kinder loeschen.',
-      }
-    }
-
-    await payload.delete({
-      collection: 'sommerfreizeitChild',
-      id: child.id,
-      trash: true,
-    })
-
-    revalidatePath('/sommerfreizeit/account')
-    revalidatePath('/sommerfreizeit/anmelden')
-    revalidatePath(`/sommerfreizeit/account/kinder/${childId}`)
-
-    return {
-      success: true,
-      message: 'Kind wurde erfolgreich archiviert.',
-    }
-  } catch {
-    return {
-      success: false,
-      message: 'Beim Loeschen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
     }
   }
 }

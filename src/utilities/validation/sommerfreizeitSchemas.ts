@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { SommerfreizeitAnmeldung, SommerfreizeitChild } from '@/payload-types';
 
-const orderCode = z.string().trim().min(5, 'Bitte gib einen gueltigen Bestellcode ein.').max(5, 'Bitte gib einen gueltigen Bestellcode ein.')
+const orderCode = z.string().trim().min(5, 'Bitte gib einen gültigen Bestellcode ein.').max(5, 'Bitte gib einen gültigen Bestellcode ein.')
 
 export const lookupOrderSchema = z.object({
   orderCode: orderCode

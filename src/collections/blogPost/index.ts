@@ -23,6 +23,10 @@ export const blogPosts: CollectionConfig = {
   },
   hooks: {
     afterChange: [revalidatePost],
+    beforeChange: [({ req, data, operation }) => {
+      if (operation === 'create' && req.user) data.author = req.user.id
+      return data
+    }]
   },
   versions: {
     drafts: {

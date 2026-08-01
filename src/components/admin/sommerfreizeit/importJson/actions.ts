@@ -2,67 +2,12 @@
 
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { z } from 'zod'
-
-// ---------------------------------------------------------------------------
-// Zod schema matching the CheckForm JSON export shape
-// ---------------------------------------------------------------------------
-
-const zimmerwunschEntrySchema = z.object({
-  firstName: z.string(),
-  lastName: z.string().optional(),
-})
-
-const childEntrySchema = z.object({
-  positionId: z.coerce.string().min(1),
-  orderPosition: z.coerce.string().min(1),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  dateOfBirth: z.string(),
-  gender: z.enum(['male', 'female', 'diverse']).nullable().optional(),
-  class: z.enum(['3', '4', '5', '6', '7', '8', '9', '10']).nullable().optional(),
-  krankenversicherung: z.string().optional(),
-  krankenversicherungArt: z.enum(['gesetzlich', 'privat']).nullable().optional(),
-  krankenversicherungNummer: z.string().optional(),
-  krankenkassenKarte: z.boolean().optional(),
-  foodAllergies: z.string().optional(),
-  foodPreferences: z.enum(['none', 'vegetarisch', 'vegan']).nullable().optional(),
-  otherAllergies: z.string().optional(),
-  medicalConditions: z.string().optional(),
-  medikamente: z.string().optional(),
-  arzt: z.string().optional(),
-  arztTelefon: z.string().optional(),
-  hausarztmodell: z.boolean().optional(),
-  schwimmer: z.boolean().optional(),
-  schwimmabzeichen: z
-    .enum(['seepferdchen', 'bronze', 'silber', 'gold'])
-    .nullable()
-    .optional(),
-  bemerkungen: z.string().optional(),
-  impfpass: z.boolean().optional(),
-  zimmerwunsch: z.array(zimmerwunschEntrySchema).optional(),
-  agbAkzeptiert: z.boolean().optional(),
-  datenschutzAkzeptiert: z.boolean().optional(),
-  bildrechteAkzeptiert: z.boolean().optional(),
-  bildrechte: z.array(z.enum(['public', 'internal'])).optional(),
-})
-
-const contactSchema = z.object({
-  phone: z.string().optional(),
-  address: z.string().optional(),
-  postalCode: z.string().optional(),
-  city: z.string().optional(),
-})
-
-const importJsonSchema = z.object({
-  orderCode: z.string().min(1),
-  pretixOrderID: z.string().min(1),
-  pretixEvent: z.string().min(1),
-  contact: contactSchema.optional(),
-  children: z.array(childEntrySchema).min(1),
-})
-
-type ImportJsonInput = z.infer<typeof importJsonSchema>
+import {
+  importJsonSchema,
+} from '@/utilities/validation/sommerfreizeit'
+import type {
+  ImportJsonInput,
+} from '@/utilities/validation/sommerfreizeit'
 
 export type ImportResult = {
   success: boolean
@@ -273,32 +218,51 @@ export async function importCheckFormJson(jsonString: string): Promise<ImportRes
   let anmeldungenCreated = 0
   let anmeldungenUpdated = 0
 
+  // Batch-fetch all existing Anmeldungen for this order to avoid N+1 queries
+  const allAnmeldungenResult = await payload.find({
+    collection: 'sommerfreizeitAnmeldung',
+    where: { pretixOrderCode: { equals: parsed.orderCode } },
+    limit: 500,
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+  })
+  const anmeldungenByPositionId = new Map<string, (typeof allAnmeldungenResult.docs)[number]>()
+  for (const a of allAnmeldungenResult.docs) {
+    if (a.pretixPositionID) {
+      anmeldungenByPositionId.set(a.pretixPositionID, a)
+    }
+  }
+
+  // Batch-fetch all existing children for this user to avoid N+1 queries
+  const allChildrenResult = await payload.find({
+    collection: 'sommerfreizeitChild',
+    where: { parent: { equals: userId } },
+    limit: 500,
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+  })
+  const childrenByName = new Map<string, (typeof allChildrenResult.docs)[number]>()
+  for (const c of allChildrenResult.docs) {
+    const key = `${c.firstName}:${c.lastName}`
+    if (!childrenByName.has(key)) childrenByName.set(key, c)
+  }
+
   for (const child of parsed.children) {
     try {
       // --- Find or create Child ---
-      const existingChildResult = await payload.find({
-        collection: 'sommerfreizeitChild',
-        where: {
-          and: [
-            { parent: { equals: userId } },
-            { firstName: { equals: child.firstName } },
-            { lastName: { equals: child.lastName } },
-          ],
-        },
-        limit: 1,
-        depth: 0,
-        pagination: false,
-        overrideAccess: true,
-      })
+      const childKey = `${child.firstName}:${child.lastName}`
+      const existingChild = childrenByName.get(childKey)
 
       let childId: string
 
-      if (existingChildResult.docs[0]) {
-        childId = existingChildResult.docs[0].id as string
+      if (existingChild) {
+        childId = existingChild.id as string
 
         // Merge missing child fields
         const childUpdate: Record<string, unknown> = {}
-        const existing = existingChildResult.docs[0]
+        const existing = existingChild
 
         if (child.gender && !isPresent(existing.gender)) {
           childUpdate.gender = child.gender
@@ -337,21 +301,7 @@ export async function importCheckFormJson(jsonString: string): Promise<ImportRes
       }
 
       // --- Find or create Anmeldung ---
-      const existingAnmeldungResult = await payload.find({
-        collection: 'sommerfreizeitAnmeldung',
-        where: {
-          and: [
-            { pretixOrderCode: { equals: parsed.orderCode } },
-            { pretixPositionID: { equals: child.positionId } },
-          ],
-        },
-        limit: 1,
-        depth: 0,
-        pagination: false,
-        overrideAccess: true,
-      })
-
-      const existingAnmeldung = existingAnmeldungResult.docs[0]
+      const existingAnmeldung = anmeldungenByPositionId.get(child.positionId)
 
       if (existingAnmeldung) {
         // Merge editable fields (only set if currently empty)

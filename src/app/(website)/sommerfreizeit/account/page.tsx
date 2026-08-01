@@ -108,7 +108,13 @@ export default async function KontoPage() {
                       <CardTitle>
                         {firstName} {lastName}
                       </CardTitle>
-                      <CardAction>
+                      <CardAction className="flex gap-2">
+                        <Link
+                          href={`/sommerfreizeit/account/sommerfreizeitAnmeldung/${registration.id}/edit`}
+                          className={buttonVariants({ variant: 'outline', size: 'sm' })}
+                        >
+                          Bearbeiten
+                        </Link>
                         <Link
                           href={`/sommerfreizeit/account/sommerfreizeitAnmeldung/informationen?eventID=${encodeURIComponent(
                             typeof registration.event === 'object' && registration.event !== null

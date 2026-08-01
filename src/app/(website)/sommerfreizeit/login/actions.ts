@@ -6,7 +6,7 @@ import config from '@payload-config'
 import { normalizeSommerfreizeitEmail } from '@/utilities/sommerfreizeitAccount'
 
 const checkEmailSchema = z.object({
-  email: z.string().trim().email('Bitte gib eine gueltige E-Mail-Adresse ein.'),
+  email: z.string().trim().email('Bitte gib eine gültigen E-Mail-Adresse ein.'),
 })
 
 type CheckEmailResult = {

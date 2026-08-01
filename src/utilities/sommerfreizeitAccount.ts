@@ -129,6 +129,7 @@ export async function ensureSommerfreizeitUser(
         city: input.city ?? null,
         emailVerified: false,
       },
+      overrideAccess: true, // System-level account creation utility
       depth: 0,
     })
   }

@@ -10,7 +10,7 @@ import {
   findSommerfreizeitUserByEmail,
   normalizeSommerfreizeitEmail,
 } from '@/utilities/sommerfreizeitAccount'
-import { lookupOrderSchema, completeOrderSchema } from '@/utilities/validation/sommerfreizeitSchemas'
+import { lookupOrderSchema, completeOrderSchema } from '@/utilities/validation/sommerfreizeit'
 import { getRequiredEnv } from '@/utilities/env'
 import type { Payload } from 'payload'
 import type { PretixOrder } from '@/types/pretixSchema'
@@ -19,6 +19,7 @@ import type { SommerfreizeitChild } from '@/payload-types'
 type LookupOrderResult = {
   success: boolean
   message: string
+  wrongAccount?: boolean
   email?: string
   orderCode?: string
   createdAccount?: boolean
@@ -330,6 +331,7 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
       return {
         success: false,
         message: 'Das eingeloggte Konto passt nicht zur Bestellung.',
+        wrongAccount: true,
       }
     }
 
@@ -485,6 +487,7 @@ async function createChildAndRegistration(
         collection: 'sommerfreizeitChild',
         id: childRecord.id,
         data: updateData,
+        overrideAccess: true, // System-level Pretix import flow
         depth: 0,
       })
     }
@@ -499,6 +502,7 @@ async function createChildAndRegistration(
         gender: childInput.gender,
         _status: 'published',
       },
+      overrideAccess: true, // System-level Pretix import flow
       depth: 0,
     })
 
@@ -540,6 +544,7 @@ async function createChildAndRegistration(
       datenschutzAkzeptiert: childInput.datenschutzAkzeptiert,
       bildrechteAkzeptiert: childInput.bildrechteAkzeptiert,
     },
+    overrideAccess: true, // System-level Pretix import flow
     depth: 0,
   })
 
@@ -586,6 +591,7 @@ async function updateUserContactInfo(payload: Payload, userId: string, data: { p
       postalCode: data.postalCode,
       city: data.city,
     },
+    overrideAccess: true, // System-level Pretix import flow
     depth: 0,
   })
 }

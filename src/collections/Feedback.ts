@@ -12,6 +12,7 @@ export const Feedback: CollectionConfig = {
     useAsTitle: 'name',
   },
   access: {
+    // payload-doctor-disable-next-line open-access-function — public feedback form; captcha-validated in server action
     create: () => true,
     read: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,

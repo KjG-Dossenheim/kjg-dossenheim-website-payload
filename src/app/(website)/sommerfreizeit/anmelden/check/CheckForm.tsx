@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { toast } from 'sonner'
+import { toast, Toaster } from 'sonner'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Card,
@@ -90,7 +90,7 @@ type ChildFormState = {
   arzt: string
   arztTelefon: string
   hausarztmodell: SommerfreizeitAnmeldung['hausarztmodell']
-  schwimmer: SommerfreizeitAnmeldung['krankenkassenKarte']
+  schwimmer: SommerfreizeitAnmeldung['schwimmer']
   schwimmabzeichen: SommerfreizeitAnmeldung['schwimmabzeichen']
   bemerkungen: string
   impfpass: SommerfreizeitAnmeldung['impfpass']
@@ -189,7 +189,11 @@ export function CheckForm({
   )
   useEffect(() => {
     if (showAccountCreatedMessage) {
-      toast.success('Für diese Bestellung wurde ein Konto angelegt.')
+      toast.success('Für diese Bestellung wurde ein Konto angelegt.', {
+        toasterId: 'sommerfreizeit-check',
+        closeButton: true,
+        duration: Infinity,
+      })
     }
   }, [showAccountCreatedMessage])
 
@@ -231,8 +235,6 @@ export function CheckForm({
   }
 
   const handleRefresh = () => {
-    // clear previous notifications handled via toasts
-
     startTransition(async () => {
       setIsRefreshing(true)
 
@@ -240,7 +242,11 @@ export function CheckForm({
         const flow = await getOrderFlowView({ orderCode })
 
         if (!flow) {
-          toast.error('Die Bestellung konnte nicht geladen werden.')
+          toast.error('Die Bestellung konnte nicht geladen werden.', {
+            toasterId: 'sommerfreizeit-check',
+            closeButton: true,
+            duration: Infinity,
+          })
           return
         }
 
@@ -273,12 +279,25 @@ export function CheckForm({
         if (removed.length > 0) {
           toast.error(
             `Einige Positionen wurden in Pretix entfernt (${removed.length}). Die Bestellung wurde aktualisiert.`,
+            {
+              toasterId: 'sommerfreizeit-check',
+              closeButton: true,
+              duration: Infinity,
+            },
           )
         } else {
-          toast.success('Die Bestellung wurde aktualisiert.')
+          toast.success('Die Bestellung wurde aktualisiert.', {
+            toasterId: 'sommerfreizeit-check',
+            closeButton: true,
+            duration: Infinity,
+          })
         }
       } catch (_err) {
-        toast.error('Beim Aktualisieren ist ein Fehler aufgetreten. Bitte versuche es erneut.')
+        toast.error('Beim Aktualisieren ist ein Fehler aufgetreten. Bitte versuche es erneut.', {
+          toasterId: 'sommerfreizeit-check',
+          closeButton: true,
+          duration: Infinity,
+        })
       } finally {
         setIsRefreshing(false)
       }
@@ -338,7 +357,11 @@ export function CheckForm({
     document.body.removeChild(anchor)
     URL.revokeObjectURL(url)
 
-    toast.success('Daten wurden als JSON exportiert.')
+    toast.success('Daten wurden als JSON exportiert.', {
+      toasterId: 'sommerfreizeit-check',
+      closeButton: true,
+      duration: Infinity,
+    })
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -371,6 +394,7 @@ export function CheckForm({
           medikamenteArray: child.medikamenteArray,
           arzt: child.arzt,
           arztTelefon: child.arztTelefon,
+          hausarztmodell: child.hausarztmodell,
           schwimmer: child.schwimmer,
           schwimmabzeichen: child.schwimmabzeichen,
           bemerkungen: child.bemerkungen,
@@ -387,11 +411,19 @@ export function CheckForm({
       })
 
       if (!result.success) {
-        toast.error(result.message || 'Die Anmeldung konnte nicht abgeschlossen werden.')
+        toast.error(result.message || 'Die Anmeldung konnte nicht abgeschlossen werden.', {
+          toasterId: 'sommerfreizeit-check',
+          closeButton: true,
+          duration: Infinity,
+        })
         return
       }
 
-      toast.success(result.message)
+      toast.success(result.message, {
+        toasterId: 'sommerfreizeit-check',
+        closeButton: true,
+        duration: Infinity,
+      })
       if (process.env.NODE_ENV !== 'development') {
         router.push('/sommerfreizeit/account')
         router.refresh()
@@ -401,6 +433,7 @@ export function CheckForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <Toaster richColors id="sommerfreizeit-check" />
       <Card>
         <CardHeader>
           <CardTitle>Kontaktdaten</CardTitle>
