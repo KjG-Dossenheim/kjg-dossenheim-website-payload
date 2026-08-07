@@ -502,6 +502,7 @@ async function createChildAndRegistration(
         gender: childInput.gender,
         _status: 'published',
       },
+      draft: false,
       overrideAccess: true, // System-level Pretix import flow
       depth: 0,
     })
@@ -515,6 +516,7 @@ async function createChildAndRegistration(
       firstName: childInput.firstName,
       lastName: childInput.lastName,
       dateOfBirth: childInput.dateOfBirth,
+      gender: childInput.gender,
       class: childInput.class,
       krankenversicherung: childInput.krankenversicherung,
       krankenversicherungArt: childInput.krankenversicherungArt,
@@ -544,6 +546,7 @@ async function createChildAndRegistration(
       datenschutzAkzeptiert: childInput.datenschutzAkzeptiert,
       bildrechteAkzeptiert: childInput.bildrechteAkzeptiert,
     },
+    draft: false,
     overrideAccess: true, // System-level Pretix import flow
     depth: 0,
   })
