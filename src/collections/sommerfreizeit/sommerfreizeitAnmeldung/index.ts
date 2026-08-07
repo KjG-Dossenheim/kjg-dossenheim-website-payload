@@ -361,6 +361,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               required: true,
               admin: {
                 description: 'Wurde den AGB zugestimmt?',
+                hidden: true,
               },
             },
             {
@@ -370,6 +371,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               required: true,
               admin: {
                 description: 'Wurde der Datenschutzerklärung zugestimmt?',
+                hidden: true,
               },
             },
             {
@@ -379,6 +381,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               required: true,
               admin: {
                 description: 'Wurden die Bildrechte eingeräumt?',
+                hidden: true,
               },
             },
             {

@@ -28,7 +28,7 @@ export default async function SommerfreizeitOrderCheckPage({ searchParams }: Che
   const showAccountCreatedMessage = createdAccountParam === '1'
 
   if (!safeOrderCode) {
-    redirect('/sommerfreizeit/anmeldung')
+    redirect('/sommerfreizeit/anmelden')
   }
 
   const headers = await getHeaders()
