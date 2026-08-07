@@ -6,7 +6,7 @@ export const sommerfreizeitRooms: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Sommerfreizeit',
     groupBy: true,
-    defaultColumns: ['name', 'price',],
+    defaultColumns: ['name', 'gender', 'capacity', 'freizeit'],
   },
   labels: {
     singular: 'Zimmer',
@@ -25,9 +25,21 @@ export const sommerfreizeitRooms: CollectionConfig = {
       type: "text",
     },
     {
+      name: "capacity",
+      label: "Kapazität",
+      type: "number",
+      min: 1,
+      admin: {
+        description: 'Maximale Anzahl an Bewohnern. Leer lassen für unbegrenzt.',
+      },
+    },
+    {
       name: "gender",
       label: "Geschlecht",
       type: "select",
+      admin: {
+        description: 'Leer lassen, damit der Algorithmus das beste Geschlecht für dieses Zimmer ermittelt.',
+      },
       options: [
         {
           label: "Männlich",
@@ -36,7 +48,7 @@ export const sommerfreizeitRooms: CollectionConfig = {
         {
           label: "Weiblich",
           value: "female",
-        },
+        }
       ],
     },
     {

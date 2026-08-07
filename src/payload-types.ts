@@ -281,6 +281,10 @@ export interface SommerfreizeitAnmeldung {
    */
   dateOfBirth: string;
   /**
+   * Das Geschlecht des Kindes
+   */
+  gender: 'male' | 'female' | 'diverse';
+  /**
    * Z. B. 5. Klasse oder 10. Klasse
    */
   class: '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10';
@@ -352,9 +356,11 @@ export interface SommerfreizeitAnmeldung {
         firstName: string;
         lastName?: string | null;
         childRelation?: (string | null) | SommerfreizeitAnmeldung;
+        wishSatisfied?: boolean | null;
         id?: string | null;
       }[]
     | null;
+  room?: (string | null) | SommerfreizeitRoom;
   /**
    * Ist das Kind ein sicherer Schwimmer?
    */
@@ -422,54 +428,27 @@ export interface SommerfreizeitAnmeldung {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitUsers".
+ * via the `definition` "sommerfreizeitRooms".
  */
-export interface SommerfreizeitUser {
+export interface SommerfreizeitRoom {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
   name: string;
-  emailVerified?: boolean | null;
-  image?: string | null;
-  phone?: string | null;
-  address?: string | null;
-  postalCode?: string | null;
-  city?: string | null;
-  pretix_Identifier?: string | null;
-  children?: {
-    docs?: (string | SommerfreizeitChild)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-  collection: 'sommerfreizeitUsers';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitChild".
- */
-export interface SommerfreizeitChild {
-  id: string;
-  parent: string | SommerfreizeitUser;
-  anmeldungen?: {
-    docs?: (string | SommerfreizeitAnmeldung)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
+  beschreibung?: string | null;
   /**
-   * Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.
+   * Maximale Anzahl an Bewohnern. Leer lassen für unbegrenzt.
    */
-  age?: number | null;
-  gender: 'male' | 'female' | 'diverse';
+  capacity?: number | null;
+  /**
+   * Leer lassen, damit der Algorithmus das beste Geschlecht für dieses Zimmer ermittelt.
+   */
+  gender?: ('male' | 'female') | null;
+  /**
+   * Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.
+   */
+  occupants?: (string | SommerfreizeitAnmeldung)[] | null;
+  freizeit: string | SommerfreizeitEvent;
   updatedAt: string;
   createdAt: string;
-  deletedAt?: string | null;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -692,6 +671,57 @@ export interface Teambilder {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitUsers".
+ */
+export interface SommerfreizeitUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  name: string;
+  emailVerified?: boolean | null;
+  image?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
+  pretix_Identifier?: string | null;
+  children?: {
+    docs?: (string | SommerfreizeitChild)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+  collection: 'sommerfreizeitUsers';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitChild".
+ */
+export interface SommerfreizeitChild {
+  id: string;
+  parent: string | SommerfreizeitUser;
+  anmeldungen?: {
+    docs?: (string | SommerfreizeitAnmeldung)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  /**
+   * Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.
+   */
+  age?: number | null;
+  gender: 'male' | 'female' | 'diverse';
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitOrders".
  */
 export interface SommerfreizeitOrder {
@@ -711,23 +741,6 @@ export interface SommerfreizeitOrder {
    * Die Anmeldungen, die zu dieser Bestellung gehören. Wird automatisch basierend auf den Bestellcodes der Anmeldungen gefüllt.
    */
   sommerfreizeitAnmeldungen?: (string | SommerfreizeitAnmeldung)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitRooms".
- */
-export interface SommerfreizeitRoom {
-  id: string;
-  name: string;
-  beschreibung?: string | null;
-  gender?: ('male' | 'female') | null;
-  /**
-   * Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.
-   */
-  occupants?: (string | SommerfreizeitAnmeldung)[] | null;
-  freizeit: string | SommerfreizeitEvent;
   updatedAt: string;
   createdAt: string;
 }
@@ -1683,6 +1696,7 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
   dateOfBirth?: T;
+  gender?: T;
   class?: T;
   bemerkungen?: T;
   krankenversicherung?: T;
@@ -1717,8 +1731,10 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
         firstName?: T;
         lastName?: T;
         childRelation?: T;
+        wishSatisfied?: T;
         id?: T;
       };
+  room?: T;
   schwimmer?: T;
   schwimmabzeichen?: T;
   programmTeilnahme?: T;
@@ -1763,6 +1779,7 @@ export interface SommerfreizeitChildSelect<T extends boolean = true> {
 export interface SommerfreizeitRoomsSelect<T extends boolean = true> {
   name?: T;
   beschreibung?: T;
+  capacity?: T;
   gender?: T;
   occupants?: T;
   freizeit?: T;

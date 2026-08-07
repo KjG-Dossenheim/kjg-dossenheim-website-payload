@@ -148,6 +148,10 @@ export default buildConfig({
           path: '/sommerfreizeit/import-json',
           Component: '@/components/admin/sommerfreizeit/importJson',
         },
+        sommerfreizeitRaumplan: {
+          path: '/sommerfreizeit/raumplan',
+          Component: '@/components/admin/sommerfreizeit/raumplan',
+        },
         emailPreview: {
           path: '/email-preview',
           Component: '@/components/admin/views/PreviewEmailView',

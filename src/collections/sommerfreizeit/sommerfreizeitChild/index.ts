@@ -10,7 +10,7 @@ export const sommerfreizeitChild: CollectionConfig = {
   access: {
     create: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
     read: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
-    update: ({ req: { user } }) => !!user && ['sommerfreizeitUsers'].includes(user.collection),
+    // update: ({ req: { user } }) => !!user && ['sommerfreizeitUsers'].includes(user.collection),
     delete: ({ req: { user } }) => !!user && ['users'].includes(user.collection),
     readVersions: ({ req: { user } }) => !!user && ['sommerfreizeitUsers'].includes(user.collection),
   },
@@ -96,13 +96,10 @@ export const sommerfreizeitChild: CollectionConfig = {
       type: 'select',
       required: true,
       options: [
-        { label: 'Maennlich', value: 'male' },
+        { label: 'Männlich', value: 'male' },
         { label: 'Weiblich', value: 'female' },
         { label: 'Divers', value: 'diverse' },
       ],
-      admin: {
-        readOnly: true,
-      },
     },
   ],
 }

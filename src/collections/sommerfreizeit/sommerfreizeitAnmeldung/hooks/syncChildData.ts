@@ -37,18 +37,42 @@ export const syncChildDataBeforeChange: CollectionBeforeChangeHook = async ({ da
     return data
   }
 
-  const child =
-    childValue && typeof childValue === 'object' && 'firstName' in childValue && 'lastName' in childValue
-      ? childValue
-      : await req.payload.findByID({
+  let child: {
+    firstName?: string | null
+    lastName?: string | null
+    dateOfBirth?: string | null
+    gender?: string | null
+  }
+
+  if (
+    childValue &&
+    typeof childValue === 'object' &&
+    'firstName' in childValue &&
+    'lastName' in childValue
+  ) {
+    child = childValue as typeof child
+  } else {
+    try {
+      child = await req.payload.findByID({
         collection: 'sommerfreizeitChild',
         id: childId,
         depth: 0,
+        overrideAccess: true,
+        req,
       })
+    } catch (err) {
+      req.payload.logger.error({
+        msg: `Failed to fetch child ${childId} for Anmeldung sync`,
+        err,
+      })
+      return data
+    }
+  }
 
   data.firstName = child.firstName ?? null
   data.lastName = child.lastName ?? null
   data.dateOfBirth = child.dateOfBirth ?? null
+  data.gender = child.gender ?? null
 
   return data
 }

@@ -72,6 +72,22 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       },
     },
     {
+      name: 'gender',
+      label: 'Geschlecht',
+      type: 'select',
+      required: true,
+      admin: {
+        description: 'Das Geschlecht des Kindes',
+        readOnly: true,
+        position: 'sidebar',
+      },
+      options: [
+        { label: 'Männlich', value: 'male' },
+        { label: 'Weiblich', value: 'female' },
+        { label: 'Divers', value: 'diverse' },
+      ],
+    },
+    {
       name: 'class',
       label: 'Klasse / Jahrgangsstufe',
       type: 'select',
@@ -252,7 +268,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
           ]
         },
         {
-          label: 'Zimmerwünsche',
+          label: 'Zimmer',
           fields: [
             {
               name: 'zimmerwunsch',
@@ -281,12 +297,25 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
                   access: {
                     update: () => false,
                   },
+                },
+                {
+                  name: 'wishSatisfied',
+                  type: 'checkbox',
+                  admin: {
+                    hidden: true,
+                  },
                 }
               ],
               admin: {
                 description: 'Liste von Zimmerwüschen, geordnet nach Priorität.',
               },
             },
+            {
+              name: 'room',
+              label: 'Zugewiesenes Zimmer',
+              type: 'relationship',
+              relationTo: 'sommerfreizeitRooms',
+            }
           ],
         },
         {
