@@ -36,7 +36,8 @@
     "**/.vscode/**": true
   },
   "chat.tools.terminal.autoApprove": {
-    "pnpm": true
+    "pnpm": true,
+    "npx tsc": true
   },
   "fallow.coverage.capturePath": "/Users/ben.wallner/Developer/GitHub/kjg-dossenheim-website-payload/src"
 }

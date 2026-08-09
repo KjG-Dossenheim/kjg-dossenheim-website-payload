@@ -4,16 +4,19 @@ import type { RoomWithOccupants } from './types'
 import { ChildCard } from './ChildCard'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Mars, Venus } from 'lucide-react'
+import { Mars, Venus, Pencil, Trash2 } from 'lucide-react'
 
 interface RoomCardProps {
   room: RoomWithOccupants
   onDrop: (roomId: string | null) => void
   onDragStart: (childId: string, childName: string, fromRoomId: string | null) => void
+  onEdit?: (room: RoomWithOccupants) => void
+  onDelete?: (room: RoomWithOccupants) => void
 }
 
-export function RoomCard({ room, onDrop, onDragStart }: RoomCardProps) {
+export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete }: RoomCardProps) {
   const occupantCount = room.occupants.length
   const capacityText = room.capacity ? ` / ${room.capacity}` : ''
   const isOverCapacity = room.capacity !== null && occupantCount > room.capacity
@@ -38,13 +41,46 @@ export function RoomCard({ room, onDrop, onDragStart }: RoomCardProps) {
     >
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle>{room.name}</CardTitle>
-          {room.gender &&
-            (room.gender === 'male' ? (
-              <Mars className="text-blue-500" />
-            ) : (
-              <Venus className="text-pink-500" />
-            ))}
+          <div className="flex min-w-0 items-center gap-2">
+            <CardTitle className="truncate">{room.name}</CardTitle>
+            {room.gender &&
+              (room.gender === 'male' ? (
+                <Mars className="h-4 w-4 shrink-0 text-blue-500" />
+              ) : (
+                <Venus className="h-4 w-4 shrink-0 text-pink-500" />
+              ))}
+          </div>
+          {(onEdit || onDelete) && (
+            <div className="flex shrink-0 gap-0.5">
+              {onEdit && (
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label="Zimmer bearbeiten"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onEdit(room)
+                  }}
+                >
+                  <Pencil />
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label="Zimmer löschen"
+                  className="text-destructive hover:text-destructive"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDelete(room)
+                  }}
+                >
+                  <Trash2 />
+                </Button>
+              )}
+            </div>
+          )}
         </div>
         <p
           className={cn(

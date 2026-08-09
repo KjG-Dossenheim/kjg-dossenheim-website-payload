@@ -72,6 +72,7 @@ export interface Config {
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldung;
     sommerfreizeitChild: SommerfreizeitChild;
     sommerfreizeitRooms: SommerfreizeitRoom;
+    sommerfreizeitFloors: SommerfreizeitFloor;
     sommerfreizeitEvents: SommerfreizeitEvent;
     sommerfreizeitUsers: SommerfreizeitUser;
     sommerfreizeitOrders: SommerfreizeitOrder;
@@ -120,6 +121,7 @@ export interface Config {
     sommerfreizeitAnmeldung: SommerfreizeitAnmeldungSelect<false> | SommerfreizeitAnmeldungSelect<true>;
     sommerfreizeitChild: SommerfreizeitChildSelect<false> | SommerfreizeitChildSelect<true>;
     sommerfreizeitRooms: SommerfreizeitRoomsSelect<false> | SommerfreizeitRoomsSelect<true>;
+    sommerfreizeitFloors: SommerfreizeitFloorsSelect<false> | SommerfreizeitFloorsSelect<true>;
     sommerfreizeitEvents: SommerfreizeitEventsSelect<false> | SommerfreizeitEventsSelect<true>;
     sommerfreizeitUsers: SommerfreizeitUsersSelect<false> | SommerfreizeitUsersSelect<true>;
     sommerfreizeitOrders: SommerfreizeitOrdersSelect<false> | SommerfreizeitOrdersSelect<true>;
@@ -447,6 +449,14 @@ export interface SommerfreizeitRoom {
    */
   occupants?: (string | SommerfreizeitAnmeldung)[] | null;
   freizeit: string | SommerfreizeitEvent;
+  /**
+   * Wenn aktiviert, wird dieses Zimmer als Teamer-Zimmer behandelt
+   */
+  teamerRoom?: boolean | null;
+  /**
+   * Die Etage, zu der dieses Zimmer gehört. Das Geschlecht der Etage wird verwendet, falls das Zimmer kein eigenes Geschlecht hat.
+   */
+  floor?: (string | null) | SommerfreizeitFloor;
   updatedAt: string;
   createdAt: string;
 }
@@ -516,13 +526,30 @@ export interface SommerfreizeitEvent {
       } | null;
       links?:
         | {
-            linkText?: string | null;
-            link?: string | null;
+            linkText: string;
+            link: string;
             id?: string | null;
           }[]
         | null;
       id?: string | null;
     }[];
+  };
+  packliste: {
+    text: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
   };
   updatedAt: string;
   createdAt: string;
@@ -627,6 +654,8 @@ export interface Team {
   id: string;
   firstName: string;
   lastName: string;
+  dateOfBirth?: string | null;
+  gender: 'male' | 'female';
   description?: {
     root: {
       type: string;
@@ -668,6 +697,24 @@ export interface Teambilder {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFloors".
+ */
+export interface SommerfreizeitFloor {
+  id: string;
+  /**
+   * z.B. "Erdgeschoss", "1. Stock", "Dachgeschoss"
+   */
+  name: string;
+  /**
+   * Leer lassen für gemischte Etage. Wird überschrieben, wenn ein Zimmer ein eigenes Geschlecht hat.
+   */
+  gender?: ('male' | 'female') | null;
+  freizeit: string | SommerfreizeitEvent;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1539,6 +1586,10 @@ export interface PayloadLockedDocument {
         value: string | SommerfreizeitRoom;
       } | null)
     | ({
+        relationTo: 'sommerfreizeitFloors';
+        value: string | SommerfreizeitFloor;
+      } | null)
+    | ({
         relationTo: 'sommerfreizeitEvents';
         value: string | SommerfreizeitEvent;
       } | null)
@@ -1783,6 +1834,19 @@ export interface SommerfreizeitRoomsSelect<T extends boolean = true> {
   gender?: T;
   occupants?: T;
   freizeit?: T;
+  teamerRoom?: T;
+  floor?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sommerfreizeitFloors_select".
+ */
+export interface SommerfreizeitFloorsSelect<T extends boolean = true> {
+  name?: T;
+  gender?: T;
+  freizeit?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1846,6 +1910,11 @@ export interface SommerfreizeitEventsSelect<T extends boolean = true> {
                   };
               id?: T;
             };
+      };
+  packliste?:
+    | T
+    | {
+        text?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1935,6 +2004,8 @@ export interface BlogCategorySelect<T extends boolean = true> {
 export interface TeamSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
+  dateOfBirth?: T;
+  gender?: T;
   description?: T;
   profilePicture?: T;
   email?: T;
@@ -3558,6 +3629,7 @@ export interface TaskCreateCollectionExport {
       | 'sommerfreizeitAnmeldung'
       | 'sommerfreizeitChild'
       | 'sommerfreizeitRooms'
+      | 'sommerfreizeitFloors'
       | 'sommerfreizeitEvents'
       | 'sommerfreizeitUsers'
       | 'sommerfreizeitOrders'

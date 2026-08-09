@@ -3,11 +3,19 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { toast } from '@payloadcms/ui'
 import { Button } from '@/components/ui/button'
-import { RotateCcw, Save, Trash2 } from 'lucide-react'
-import { fetchRoomPlanData, runAutoAssign, saveRoomAssignments } from './actions'
-import type { RoomPlanData, RoomWithOccupants, AutoAssignPreview } from './types'
+import { RotateCcw, Save, Trash2, Mars, Venus, Plus, Pencil } from 'lucide-react'
+import {
+  fetchRoomPlanData,
+  runAutoAssign,
+  saveRoomAssignments,
+  deleteRoom,
+  deleteFloor,
+} from './actions'
+import type { FloorInfo, RoomPlanData, RoomWithOccupants, AutoAssignPreview } from './types'
 import { RoomCard } from './RoomCard'
 import { ChildCard } from './ChildCard'
+import { RoomDialog } from './RoomDialog'
+import { FloorDialog } from './FloorDialog'
 import { Spinner } from '@/components/ui/spinner'
 import {
   Select,
@@ -55,6 +63,36 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
 
   const initialDataRef = useRef<string>('')
 
+  // ── Dialog state ──────────────────────────────────────────
+  const [roomDialogOpen, setRoomDialogOpen] = useState(false)
+  const [editingRoom, setEditingRoom] = useState<RoomWithOccupants | null>(null)
+  const [defaultFloorId, setDefaultFloorId] = useState<string | null>(null)
+
+  const [floorDialogOpen, setFloorDialogOpen] = useState(false)
+  const [editingFloor, setEditingFloor] = useState<FloorInfo | null>(null)
+
+  const [deleteRoomTarget, setDeleteRoomTarget] = useState<RoomWithOccupants | null>(null)
+  const [deleteFloorTarget, setDeleteFloorTarget] = useState<{ id: string; name: string } | null>(
+    null,
+  )
+
+  const [floors, setFloors] = useState<FloorInfo[]>([])
+
+  // Build floors list from data whenever it changes
+  const extractFloorsFromData = useCallback((planData: RoomPlanData): FloorInfo[] => {
+    const floorMap = new Map<string, FloorInfo>()
+    for (const room of planData.rooms) {
+      if (room.floorId && !floorMap.has(room.floorId)) {
+        floorMap.set(room.floorId, {
+          id: room.floorId,
+          name: room.floorName ?? room.floorId,
+          gender: room.floorGender ?? null,
+        })
+      }
+    }
+    return Array.from(floorMap.values()).sort((a, b) => a.name.localeCompare(b.name, 'de'))
+  }, [])
+
   // Load data when event changes
   useEffect(() => {
     if (!selectedEventId) {
@@ -71,6 +109,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     fetchRoomPlanData(selectedEventId)
       .then((result) => {
         setData(result)
+        setFloors(extractFloorsFromData(result))
         initialDataRef.current = JSON.stringify({
           rooms: result.rooms.map((r) => ({ id: r.id, occIds: r.occupants.map((o) => o.id) })),
           unassigned: result.unassigned.map((u) => u.id),
@@ -379,8 +418,126 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     toast.success('Alle Zimmer geleert. Klicke "Speichern" zum Persistieren.')
   }, [data])
 
+  // ── Dialog handlers ───────────────────────────────────────
+  const handleRefresh = useCallback(() => {
+    if (!selectedEventId) return
+    setLoading(true)
+    setPreview(null)
+    setDirty(false)
+    fetchRoomPlanData(selectedEventId)
+      .then((result) => {
+        setData(result)
+        setFloors(extractFloorsFromData(result))
+        initialDataRef.current = JSON.stringify({
+          rooms: result.rooms.map((r) => ({ id: r.id, occIds: r.occupants.map((o) => o.id) })),
+          unassigned: result.unassigned.map((u) => u.id),
+        })
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error('Failed to refresh room plan data:', err)
+        toast.error('Fehler beim Aktualisieren der Daten.')
+        setLoading(false)
+      })
+  }, [selectedEventId, extractFloorsFromData])
+
+  const openCreateRoom = useCallback((floorId?: string | null) => {
+    setEditingRoom(null)
+    setDefaultFloorId(floorId ?? null)
+    setRoomDialogOpen(true)
+  }, [])
+
+  const openEditRoom = useCallback((room: RoomWithOccupants) => {
+    setEditingRoom(room)
+    setDefaultFloorId(null)
+    setRoomDialogOpen(true)
+  }, [])
+
+  const handleDeleteRoom = useCallback(async () => {
+    if (!deleteRoomTarget) return
+    try {
+      const result = await deleteRoom(deleteRoomTarget.id)
+      if (result.success) {
+        toast.success(`Zimmer "${deleteRoomTarget.name}" gelöscht.`)
+        setDeleteRoomTarget(null)
+        handleRefresh()
+      } else {
+        toast.error(`Fehler beim Löschen: ${result.error}`)
+        setDeleteRoomTarget(null)
+      }
+    } catch (err) {
+      console.error('Delete room failed:', err)
+      toast.error('Fehler beim Löschen des Zimmers.')
+      setDeleteRoomTarget(null)
+    }
+  }, [deleteRoomTarget, handleRefresh])
+
+  const openCreateFloor = useCallback(() => {
+    setEditingFloor(null)
+    setFloorDialogOpen(true)
+  }, [])
+
+  const openEditFloor = useCallback((floor: FloorInfo) => {
+    setEditingFloor(floor)
+    setFloorDialogOpen(true)
+  }, [])
+
+  const handleDeleteFloor = useCallback(async () => {
+    if (!deleteFloorTarget) return
+    try {
+      const result = await deleteFloor(deleteFloorTarget.id)
+      if (result.success) {
+        toast.success(`Etage "${deleteFloorTarget.name}" gelöscht.`)
+        setDeleteFloorTarget(null)
+        handleRefresh()
+      } else {
+        toast.error(`Fehler beim Löschen: ${result.error}`)
+        setDeleteFloorTarget(null)
+      }
+    } catch (err) {
+      console.error('Delete floor failed:', err)
+      toast.error('Fehler beim Löschen der Etage.')
+      setDeleteFloorTarget(null)
+    }
+  }, [deleteFloorTarget, handleRefresh])
+
   // Total occupants across all rooms (for disabling the clear button)
   const totalOccupants = data?.rooms.reduce((sum, r) => sum + r.occupants.length, 0) ?? 0
+
+  // Group rooms by floor for rendering
+  const floorGroups = data
+    ? (() => {
+        const groups = new Map<
+          string,
+          {
+            floorId: string | null
+            floorName: string
+            floorGender: 'male' | 'female' | null
+            rooms: RoomWithOccupants[]
+          }
+        >()
+
+        for (const room of data.rooms) {
+          const key = room.floorId ?? '__none__'
+          if (!groups.has(key)) {
+            groups.set(key, {
+              floorId: room.floorId ?? null,
+              floorName: room.floorName ?? 'Ohne Etage',
+              floorGender: room.floorGender ?? null,
+              rooms: [],
+            })
+          }
+          groups.get(key)!.rooms.push(room)
+        }
+
+        // Sort: named floors alphabetically, "Ohne Etage" last
+        return Array.from(groups.values()).sort((a, b) => {
+          if (a.floorId === null) return 1
+          if (b.floorId === null) return -1
+          return a.floorName.localeCompare(b.floorName, 'de')
+        })
+      })()
+    : []
 
   // ---- render ----
   return (
@@ -444,6 +601,17 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+            </ButtonGroup>
+          )}
+
+          {selectedEventId && !loading && (
+            <ButtonGroup>
+              <Button variant="outline" onClick={() => openCreateRoom()}>
+                <Plus /> Zimmer
+              </Button>
+              <Button variant="outline" onClick={openCreateFloor}>
+                <Plus /> Etage
+              </Button>
             </ButtonGroup>
           )}
         </div>
@@ -538,15 +706,76 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
               </div>
             </Card>
 
-            {/* Room columns */}
-            <div className="flex flex-1 gap-4">
-              {data.rooms.map((room) => (
-                <RoomCard
-                  key={room.id}
-                  room={room}
-                  onDrop={handleDrop}
-                  onDragStart={handleDragStart}
-                />
+            {/* Rooms grouped by floor */}
+            <div className="flex flex-1 flex-col gap-6">
+              {floorGroups.map((group) => (
+                <div key={group.floorId ?? '__none__'}>
+                  {/* Floor header */}
+                  <div className="mb-3 flex items-center gap-2">
+                    <h3 className="text-base font-semibold">{group.floorName}</h3>
+                    {group.floorGender === 'male' && <Mars className="h-4 w-4 text-blue-500" />}
+                    {group.floorGender === 'female' && <Venus className="h-4 w-4 text-pink-500" />}
+                    <span className="text-muted-foreground text-xs">
+                      ({group.rooms.length} {group.rooms.length === 1 ? 'Zimmer' : 'Zimmer'})
+                    </span>
+                    {/* Floor actions */}
+                    <div className="flex gap-0.5">
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
+                        aria-label="Zimmer zu dieser Etage hinzufügen"
+                        onClick={() => openCreateRoom(group.floorId)}
+                      >
+                        <Plus />
+                      </Button>
+                      {group.floorId && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            aria-label="Etage bearbeiten"
+                            onClick={() =>
+                              openEditFloor({
+                                id: group.floorId!,
+                                name: group.floorName,
+                                gender: group.floorGender,
+                              })
+                            }
+                          >
+                            <Pencil />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            aria-label="Etage löschen"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() =>
+                              setDeleteFloorTarget({
+                                id: group.floorId!,
+                                name: group.floorName,
+                              })
+                            }
+                          >
+                            <Trash2 />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  {/* Room cards for this floor */}
+                  <div className="flex gap-4">
+                    {group.rooms.map((room) => (
+                      <RoomCard
+                        key={room.id}
+                        room={room}
+                        onDrop={handleDrop}
+                        onDragStart={handleDragStart}
+                        onEdit={openEditRoom}
+                        onDelete={setDeleteRoomTarget}
+                      />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -558,6 +787,82 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
           </CardContent>
         </Card>
       )}
+      {/* ── Dialogs ────────────────────────────────────────── */}
+      <RoomDialog
+        open={roomDialogOpen}
+        onOpenChange={setRoomDialogOpen}
+        onSaved={handleRefresh}
+        eventId={selectedEventId}
+        floors={floors}
+        room={editingRoom}
+        defaultFloorId={defaultFloorId}
+      />
+
+      <FloorDialog
+        open={floorDialogOpen}
+        onOpenChange={setFloorDialogOpen}
+        onSaved={handleRefresh}
+        eventId={selectedEventId}
+        floor={editingFloor}
+      />
+
+      {/* Delete room confirmation */}
+      <AlertDialog
+        open={!!deleteRoomTarget}
+        onOpenChange={(open) => {
+          if (!open) setDeleteRoomTarget(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Zimmer löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchtest du das Zimmer &quot;{deleteRoomTarget?.name}&quot; wirklich löschen?
+              {deleteRoomTarget && deleteRoomTarget.occupants.length > 0 && (
+                <>
+                  {' '}
+                  Die {deleteRoomTarget.occupants.length} Bewohner werden in &quot;Nicht
+                  zugewiesen&quot; verschoben.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteRoomTarget(null)}>
+              Abbrechen
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteRoom} variant="destructive">
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete floor confirmation */}
+      <AlertDialog
+        open={!!deleteFloorTarget}
+        onOpenChange={(open) => {
+          if (!open) setDeleteFloorTarget(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Etage löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchtest du die Etage &quot;{deleteFloorTarget?.name}&quot; wirklich löschen? Alle
+              Zimmer dieser Etage werden in &quot;Ohne Etage&quot; verschoben.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteFloorTarget(null)}>
+              Abbrechen
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteFloor} variant="destructive">
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

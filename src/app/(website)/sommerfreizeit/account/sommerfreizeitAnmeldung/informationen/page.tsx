@@ -23,7 +23,8 @@ type InformationenPageProps = {
   }>
 }
 
-async function getData(eventID: string) {
+async function getData(eventID: string | undefined) {
+  if (!eventID) return null
   const payload = await getPayload({ config })
   return payload.findByID({
     collection: 'sommerfreizeitEvents',
@@ -52,13 +53,12 @@ export default async function Page({ searchParams }: InformationenPageProps) {
   const eventIDParam = Array.isArray(resolvedSearchParams?.eventID)
     ? resolvedSearchParams?.eventID[0]
     : resolvedSearchParams?.eventID
-  const eventID = eventIDParam ?? 'sommerfreizeit-2024' // Fallback für direkte Aufrufe
-  const eventData = await getData(eventID)
+  const eventData = await getData(eventIDParam)
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="mb-6 text-3xl font-bold">Informationen</h1>
       <div className="flex flex-col gap-4">
-        {eventData.informationen?.eintrag?.length ? (
+        {eventData?.informationen?.eintrag?.length ? (
           eventData.informationen.eintrag.map((eintrag) => (
             <Card key={eintrag.id ?? eintrag.title}>
               {eintrag.title ? (
@@ -66,7 +66,7 @@ export default async function Page({ searchParams }: InformationenPageProps) {
                   <CardTitle>{eintrag.title}</CardTitle>
                 </CardHeader>
               ) : null}
-              {eintrag.text && eintrag.text.root?.direction !== null && (
+              {eintrag.text && (
                 <CardContent>
                   <RichText data={eintrag.text} />
                 </CardContent>

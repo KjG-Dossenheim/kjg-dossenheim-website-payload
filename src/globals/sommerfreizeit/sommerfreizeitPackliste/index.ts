@@ -10,11 +10,11 @@ export const sommerfreizeitPackliste: GlobalConfig = {
   },
   label: 'Packliste',
   fields: [
-            {
-              name: 'text',
-              label: '',
-              type: 'richText',
-              required: true,
-            }
-          ],
+    {
+      name: 'text',
+      label: '',
+      type: 'richText',
+      required: true,
+    }
+  ],
 }

@@ -68,6 +68,7 @@ import { sommerfreizeitChild } from './collections/sommerfreizeit/sommerfreizeit
 import { sommerfreizeitEvents } from './collections/sommerfreizeit/sommerfreizeitEvents'
 import { sommerfreizeitOrders } from './collections/sommerfreizeit/sommerfreizeitOrders'
 import { sommerfreizeitRooms } from './collections/sommerfreizeit/sommerfreizeitRooms'
+import { sommerfreizeitFloors } from './collections/sommerfreizeit/sommerfreizeitFloors'
 
 // Relative imports - globals
 import { Header } from './globals/Header'
@@ -164,6 +165,7 @@ export default buildConfig({
     sommerfreizeitAnmeldung,
     sommerfreizeitChild,
     sommerfreizeitRooms,
+    sommerfreizeitFloors,
     sommerfreizeitEvents,
     sommerfreizeitUser,
     sommerfreizeitOrders,

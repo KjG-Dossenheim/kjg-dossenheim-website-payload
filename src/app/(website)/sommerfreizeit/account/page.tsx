@@ -125,6 +125,16 @@ export default async function KontoPage() {
                         >
                           Informationen
                         </Link>
+                        <Link
+                          href={`/sommerfreizeit/account/sommerfreizeitAnmeldung/packliste?eventID=${encodeURIComponent(
+                            typeof registration.event === 'object' && registration.event !== null
+                              ? (registration.event as { id: string }).id
+                              : (registration.event as string),
+                          )}`}
+                          className={buttonVariants({ variant: 'outline', size: 'sm' })}
+                        >
+                          Packliste
+                        </Link>
                       </CardAction>
                     </CardHeader>
                     <CardContent>

@@ -7,6 +7,7 @@ export const sommerfreizeitRooms: CollectionConfig = {
     group: 'Sommerfreizeit',
     groupBy: true,
     defaultColumns: ['name', 'gender', 'capacity', 'freizeit'],
+    hidden: true, // hide from sidebar, since this is a sub-collection of sommerfreizeitEvents
   },
   labels: {
     singular: 'Zimmer',
@@ -70,6 +71,24 @@ export const sommerfreizeitRooms: CollectionConfig = {
       index: true,
       admin: {
         position: "sidebar",
+      },
+    },
+    {
+      name: "teamerRoom",
+      label: "Teamer Zimmer",
+      type: "checkbox",
+      admin: {
+        description: 'Wenn aktiviert, wird dieses Zimmer als Teamer-Zimmer behandelt',
+      },
+    },
+    {
+      name: 'floor',
+      label: 'Etage',
+      type: 'relationship',
+      relationTo: 'sommerfreizeitFloors',
+      admin: {
+        description:
+          'Die Etage, zu der dieses Zimmer gehört. Das Geschlecht der Etage wird verwendet, falls das Zimmer kein eigenes Geschlecht hat.',
       },
     },
   ],

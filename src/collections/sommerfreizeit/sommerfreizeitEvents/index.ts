@@ -258,11 +258,13 @@ export const sommerfreizeitEvents: CollectionConfig = {
                       name: 'linkText',
                       label: 'Link Text',
                       type: 'text',
+                      required: true,
                     },
                     {
                       name: 'link',
                       label: 'Link',
                       type: 'text',
+                      required: true,
                     },
                   ],
                 },
@@ -270,6 +272,18 @@ export const sommerfreizeitEvents: CollectionConfig = {
             }
           ],
         },
+        {
+          label: 'Packliste',
+          name: 'packliste',
+          fields: [
+            {
+              name: 'text',
+              label: '',
+              type: 'richText',
+              required: true,
+            }
+          ],
+        }
       ],
     }
   ],

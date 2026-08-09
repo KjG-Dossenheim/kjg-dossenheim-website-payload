@@ -2,6 +2,7 @@ import type { Payload } from 'payload'
 import type {
   SommerfreizeitAnmeldung,
   SommerfreizeitChild,
+  SommerfreizeitFloor,
   SommerfreizeitRoom,
 } from '@/payload-types'
 
@@ -88,6 +89,7 @@ export async function computeRoomAssignments(
     payload.find({
       collection: 'sommerfreizeitRooms',
       where: { freizeit: { equals: eventId } },
+      depth: 1, // populate floor relationship
       limit: 0,
       overrideAccess: true,
     }),
@@ -107,11 +109,23 @@ export async function computeRoomAssignments(
 
   const rooms: RoomInfo[] = roomsResult.docs.map((r) => {
     const room = r as unknown as SommerfreizeitRoom
+    // Resolve floor gender if floor is populated
+    const floorGender =
+      room.floor && typeof room.floor === 'object'
+        ? (room.floor as SommerfreizeitFloor).gender ?? null
+        : null
+    // Effective gender: room gender overrides floor gender, both null = neutral
+    const effectiveGender: 'male' | 'female' | null =
+      room.gender === 'male' || room.gender === 'female'
+        ? room.gender
+        : floorGender === 'male' || floorGender === 'female'
+          ? floorGender
+          : null
     return {
       id: room.id,
       name: room.name,
-      gender: (room.gender === 'male' || room.gender === 'female') ? room.gender : null,
-      capacity: (room as any).capacity ?? null,
+      gender: effectiveGender,
+      capacity: room.capacity ?? null,
       currentOccupants: (room.occupants ?? [])
         .map((o) => resolveId(o as string | { id: string }))
         .filter(Boolean) as string[],

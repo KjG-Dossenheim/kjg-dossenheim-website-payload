@@ -54,6 +54,33 @@ export const Team: CollectionConfig = {
       },
     },
     {
+      name: 'dateOfBirth',
+      label: 'Geburtsdatum',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'gender',
+      label: 'Geschlecht',
+      type: 'select',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+      options: [
+        {
+          label: 'Männlich',
+          value: 'male',
+        },
+        {
+          label: 'Weiblich',
+          value: 'female',
+        },
+      ],
+    },
+    {
       name: 'description',
       label: 'Beschreibung',
       type: 'richText',
