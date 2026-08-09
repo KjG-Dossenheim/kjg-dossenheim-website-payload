@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { toast } from '@payloadcms/ui'
 import { Button } from '@/components/ui/button'
-import { RotateCcw, Save, Trash2, Mars, Venus, Plus, Pencil } from 'lucide-react'
+import { RotateCcw, Save, Trash2, Mars, Venus, Plus, Pencil, Download } from 'lucide-react'
 import {
   fetchRoomPlanData,
   runAutoAssign,
@@ -11,11 +11,14 @@ import {
   deleteRoom,
   deleteFloor,
 } from './actions'
+import { getEffectiveRoomGender, isGenderCompatible } from '@/utilities/roomAssignment'
 import type { FloorInfo, RoomPlanData, RoomWithOccupants, AutoAssignPreview } from './types'
 import { RoomCard } from './RoomCard'
 import { ChildCard } from './ChildCard'
 import { RoomDialog } from './RoomDialog'
 import { FloorDialog } from './FloorDialog'
+import { RaumplanDocument } from './RaumplanDocument'
+import { pdf } from '@react-pdf/renderer'
 import { Spinner } from '@/components/ui/spinner'
 import {
   Select,
@@ -77,6 +80,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
   )
 
   const [floors, setFloors] = useState<FloorInfo[]>([])
+  const [exportLoading, setExportLoading] = useState(false)
 
   // Build floors list from data whenever it changes
   const extractFloorsFromData = useCallback((planData: RoomPlanData): FloorInfo[] => {
@@ -140,6 +144,42 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
       if (fromRoomId === toRoomId) {
         setDragState(null)
         return
+      }
+
+      // ---- gender validation: prevent cross-gender mixing ----
+      if (toRoomId) {
+        const targetRoom = data.rooms.find((r) => r.id === toRoomId)
+        if (targetRoom) {
+          const child = findChild(data, childId)
+          if (child && child.childGender !== 'diverse') {
+            // Compute the effective gender of the target room AFTER removing the
+            // child from its source (the child being dragged isn't in the target yet)
+            const targetOccupantGenders = targetRoom.occupants.map((o) => o.childGender)
+            const effectiveGender = getEffectiveRoomGender(
+              targetRoom.gender,
+              targetRoom.floorGender ?? null,
+              targetOccupantGenders,
+            )
+
+            if (!isGenderCompatible(child.childGender, effectiveGender)) {
+              const roomHasGender =
+                effectiveGender === 'male'
+                  ? 'Jungen'
+                  : effectiveGender === 'female'
+                    ? 'Mädchen'
+                    : effectiveGender === 'mixed'
+                      ? 'Jungen und Mädchen (gemischt)'
+                      : null
+              if (roomHasGender) {
+                toast.error(
+                  `Dieses Zimmer enthält ${roomHasGender}. ${child.childGender === 'male' ? 'Jungen' : 'Mädchen'} können nicht in ein Zimmer mit ${roomHasGender} gelegt werden.`,
+                )
+              }
+              setDragState(null)
+              return
+            }
+          }
+        }
       }
 
       setData((prev) => {
@@ -213,9 +253,14 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     try {
       const result = await runAutoAssign(selectedEventId)
       setPreview(result)
-      toast.success(
-        `Auto-Zuweisung berechnet: ${result.mutualWishScore}% gegenseitige Wünsche erfüllt.`,
-      )
+      const msg = `Auto-Zuweisung berechnet: ${result.mutualWishScore}% gegenseitige Wünsche erfüllt.`
+      if (result.conflictedRoomIds.length > 0) {
+        toast.warning(
+          `${msg} ${result.conflictedRoomIds.length} Zimmer haben gemischte Belegung und wurden übersprungen.`,
+        )
+      } else {
+        toast.success(msg)
+      }
     } catch (err) {
       console.error('Auto-assign failed:', err)
       toast.error('Fehler bei der Auto-Zuweisung.')
@@ -418,6 +463,69 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     toast.success('Alle Zimmer geleert. Klicke "Speichern" zum Persistieren.')
   }, [data])
 
+  // ---- clear single room ----
+  const handleClearRoom = useCallback(
+    (room: RoomWithOccupants) => {
+      if (!data) return
+
+      if (room.occupants.length === 0) return
+
+      // Collect room occupants as unassigned children
+      const clearedOccupants = room.occupants.map((occ) => ({
+        id: occ.id,
+        firstName: occ.firstName,
+        lastName: occ.lastName,
+        class: occ.class,
+        childGender: occ.childGender,
+        wishNames: occ.wishNames,
+      }))
+
+      setData((prev) => {
+        if (!prev) return prev
+        return {
+          ...prev,
+          rooms: prev.rooms.map((r) => (r.id === room.id ? { ...r, occupants: [] } : r)),
+          unassigned: [...prev.unassigned, ...clearedOccupants],
+        }
+      })
+      setDirty(true)
+      setPreview(null)
+      toast.success(`Zimmer "${room.name}" geleert. Klicke "Speichern" zum Persistieren.`)
+    },
+    [data],
+  )
+
+  // ---- PDF export ----
+  const handleExportPdf = useCallback(async () => {
+    if (!selectedEventId) return
+
+    setExportLoading(true)
+    try {
+      const planData = await fetchRoomPlanData(selectedEventId)
+      const blob = await pdf(<RaumplanDocument data={planData} />).toBlob()
+      const blobUrl = URL.createObjectURL(blob)
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+      const eventSlug = planData.eventName.replace(/[^a-zA-Z0-9äöüßÄÖÜ_-]/g, '_').slice(0, 40)
+      const filename = `raumplan-${eventSlug}_${timestamp}.pdf`
+
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(blobUrl)
+
+      toast.success('Raumplan als PDF exportiert.')
+    } catch (err) {
+      console.error('PDF export failed:', err)
+      toast.error('Fehler beim PDF-Export.')
+    } finally {
+      setExportLoading(false)
+    }
+  }, [selectedEventId])
+
   // ── Dialog handlers ───────────────────────────────────────
   const handleRefresh = useCallback(() => {
     if (!selectedEventId) return
@@ -606,6 +714,15 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
 
           {selectedEventId && !loading && (
             <ButtonGroup>
+              <Button variant="outline" onClick={handleExportPdf} disabled={exportLoading}>
+                {exportLoading ? (
+                  'Exportiere...'
+                ) : (
+                  <>
+                    <Download /> PDF
+                  </>
+                )}
+              </Button>
               <Button variant="outline" onClick={() => openCreateRoom()}>
                 <Plus /> Zimmer
               </Button>
@@ -620,18 +737,29 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
       {/* Preview banner */}
       {preview && (
         <Card className="border-emerald-500 bg-emerald-50 dark:bg-emerald-950">
-          <CardContent className="flex flex-wrap items-center justify-between gap-3 py-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <span className="font-semibold">Auto-Zuweisung Vorschau</span>
-              <span className="text-muted-foreground text-sm">
-                Gegenseitige Wünsche: {preview.mutualWishScore}% • Alle Wünsche:{' '}
-                {preview.totalWishScore}% • Nicht zugewiesen: {preview.unassigned.length}
-              </span>
+          <CardContent className="flex flex-col gap-3 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="font-semibold">Auto-Zuweisung Vorschau</span>
+                <span className="text-muted-foreground text-sm">
+                  Gegenseitige Wünsche: {preview.mutualWishScore}% • Alle Wünsche:{' '}
+                  {preview.totalWishScore}% • Nicht zugewiesen: {preview.unassigned.length}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleApplyPreview}>Vorschau übernehmen</Button>
+                <Button onClick={() => setPreview(null)}>Verwerfen</Button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button onClick={handleApplyPreview}>Vorschau übernehmen</Button>
-              <Button onClick={() => setPreview(null)}>Verwerfen</Button>
-            </div>
+            {preview.conflictedRoomIds.length > 0 && (
+              <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                <span>
+                  ⚠️ {preview.conflictedRoomIds.length} Zimmer haben bereits gemischte Belegung
+                  (Jungen und Mädchen) und wurden bei der Auto-Zuweisung übersprungen. Bitte manuell
+                  korrigieren.
+                </span>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -772,6 +900,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
                         onDragStart={handleDragStart}
                         onEdit={openEditRoom}
                         onDelete={setDeleteRoomTarget}
+                        onClean={handleClearRoom}
                       />
                     ))}
                   </div>

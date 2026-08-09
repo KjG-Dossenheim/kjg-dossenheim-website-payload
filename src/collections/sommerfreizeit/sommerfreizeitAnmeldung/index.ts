@@ -294,6 +294,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
                   admin: {
                     hidden: true,
                   },
+                  maxDepth: 1,
                   access: {
                     update: () => false,
                   },
@@ -423,6 +424,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       relationTo: 'sommerfreizeitEvents',
       required: true,
       index: true,
+      maxDepth: 1,
       admin: {
         description: 'Das Event, für das diese Anmeldung gilt. Wird automatisch mit den Daten aus dem Account befüllt.',
         hidden: true,
@@ -437,6 +439,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       type: 'relationship',
       relationTo: 'sommerfreizeitChild',
       required: true,
+      maxDepth: 1,
       admin: {
         description: 'Das Kind, für das diese Anmeldung gilt. Wird automatisch mit den Daten aus dem Account befüllt.',
         hidden: true,
@@ -452,7 +455,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       relationTo: 'sommerfreizeitOrders',
       admin: {
         description: 'Die zugehörige Bestellung in Pretix, falls vorhanden',
-        hidden: false,
+        hidden: true,
       },
       access: {
         update: () => false,

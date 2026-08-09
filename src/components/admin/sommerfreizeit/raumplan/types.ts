@@ -9,6 +9,8 @@ export interface RoomWithOccupants {
   floorName?: string | null
   floorGender?: 'male' | 'female' | null
   occupants: OccupantInfo[]
+  /** True if occupants already contain both male and female children */
+  genderConflict: boolean
 }
 
 export interface OccupantInfo {
@@ -47,6 +49,8 @@ export interface AutoAssignPreview {
   mutualWishScore: number
   totalWishScore: number
   unassigned: string[]
+  /** Room IDs that already had mixed-gender occupants before assignment */
+  conflictedRoomIds: string[]
 }
 
 export interface FloorInfo {

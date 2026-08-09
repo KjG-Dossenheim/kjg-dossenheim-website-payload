@@ -1,10 +1,11 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
+import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { Mars, Transgender, Venus } from 'lucide-react'
+import { ExternalLinkIcon, Mars, Transgender, Venus } from 'lucide-react'
+import Link from 'next/link'
 
 interface ChildCardProps {
   id: string
@@ -39,62 +40,65 @@ export function ChildCard({
     <Tooltip>
       <TooltipTrigger
         render={
-          <a
-            href={`/admin/collections/sommerfreizeitAnmeldung/${id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="no-underline"
+          <Item
+            draggable
+            variant="outline"
+            size="xs"
+            onDragStart={(e) => {
+              e.dataTransfer.setData('text/plain', id)
+              e.dataTransfer.effectAllowed = 'move'
+              onDragStart(id, fullName, fromRoomId)
+            }}
+            className={cn(
+              'cursor-grab transition-shadow select-none hover:shadow-sm active:cursor-grabbing',
+            )}
           >
-            <Item
-              draggable
-              variant="outline"
-              size="xs"
-              onDragStart={(e) => {
-                e.dataTransfer.setData('text/plain', id)
-                e.dataTransfer.effectAllowed = 'move'
-                onDragStart(id, fullName, fromRoomId)
-              }}
-              className={cn(
-                'cursor-grab transition-shadow select-none hover:shadow-sm active:cursor-grabbing',
-              )}
-            >
-              {/* Wish indicator dot */}
-              <ItemMedia variant="icon">
-                <span
-                  className={cn(
-                    'h-2 w-2 rounded-full',
-                    hasWishes ? 'bg-primary' : 'bg-muted-foreground',
-                  )}
-                />
-              </ItemMedia>
+            {/* Wish indicator dot */}
+            <ItemMedia variant="icon">
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  hasWishes ? 'bg-primary' : 'bg-muted-foreground',
+                )}
+              />
+            </ItemMedia>
 
-              {/* Name + class */}
-              <ItemContent>
-                <ItemTitle>
-                  {firstName} {lastName}
-                  {childClass && (
-                    <Badge variant="outline" className="h-4 px-1 text-[10px]">
-                      {childClass}
-                    </Badge>
-                  )}
-                </ItemTitle>
-              </ItemContent>
+            {/* Name + class */}
+            <ItemContent>
+              <ItemTitle>
+                {firstName} {lastName}
+                {childClass && (
+                  <Badge variant="outline" className="h-4 px-1 text-[10px]">
+                    {childClass}
+                  </Badge>
+                )}
+              </ItemTitle>
+            </ItemContent>
 
-              {/* Gender icon */}
-              <ItemMedia variant="icon">
-                <span
-                  className={cn(
-                    'text-xs font-bold',
-                    childGender === 'male' && 'text-blue-600 dark:text-blue-400',
-                    childGender === 'female' && 'text-rose-600 dark:text-rose-400',
-                    childGender === 'diverse' && 'text-amber-600 dark:text-amber-400',
-                  )}
-                >
-                  {genderIcon}
-                </span>
-              </ItemMedia>
-            </Item>
-          </a>
+            {/* Gender icon */}
+            <ItemMedia variant="icon">
+              <span
+                className={cn(
+                  'text-xs font-bold',
+                  childGender === 'male' && 'text-blue-600 dark:text-blue-400',
+                  childGender === 'female' && 'text-rose-600 dark:text-rose-400',
+                  childGender === 'diverse' && 'text-amber-600 dark:text-amber-400',
+                )}
+              >
+                {genderIcon}
+              </span>
+            </ItemMedia>
+
+            <ItemMedia variant="icon">
+              <Link
+                href={`/admin/collections/sommerfreizeitAnmeldung/${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLinkIcon />
+              </Link>
+            </ItemMedia>
+          </Item>
         }
       />
       <TooltipContent side="right">

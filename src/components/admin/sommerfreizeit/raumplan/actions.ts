@@ -92,6 +92,9 @@ export async function fetchRoomPlanData(eventId: string): Promise<RoomPlanData> 
         ? ((room.floor as any).gender === 'male' || (room.floor as any).gender === 'female' ? (room.floor as any).gender : null)
         : null,
       occupants,
+      genderConflict:
+        (room.genderComposition?.male ?? 0) > 0 &&
+        (room.genderComposition?.female ?? 0) > 0,
     }
   })
 
@@ -119,6 +122,7 @@ export async function fetchRoomPlanData(eventId: string): Promise<RoomPlanData> 
     collection: 'sommerfreizeitEvents',
     id: eventId,
     overrideAccess: true,
+    select: ['name'],
   })
 
   return {
@@ -138,6 +142,7 @@ export async function runAutoAssign(eventId: string): Promise<AutoAssignPreview>
     mutualWishScore: result.mutualWishScore,
     totalWishScore: result.totalWishScore,
     unassigned: result.unassigned,
+    conflictedRoomIds: result.conflictedRoomIds,
   }
 }
 
@@ -148,13 +153,81 @@ export async function saveRoomAssignments(
   const payload = await getPayload({ config })
 
   try {
-    // Update each room's occupants
+    // ---- validate: no cross-gender mixing ----
+    // Fetch all registration genders + all affected rooms in parallel
+    const allRegIds = new Set<string>()
+    for (const regIds of Object.values(assignments)) {
+      for (const rid of regIds) allRegIds.add(rid)
+    }
+
+    const roomIds = Object.keys(assignments)
+
+    const [regsResult, roomsResult] = await Promise.all([
+      allRegIds.size > 0
+        ? payload.find({
+            collection: 'sommerfreizeitAnmeldung',
+            where: { id: { in: Array.from(allRegIds) } },
+            limit: 0,
+            overrideAccess: true,
+          })
+        : Promise.resolve({ docs: [] }),
+      payload.find({
+        collection: 'sommerfreizeitRooms',
+        where: { id: { in: roomIds } },
+        limit: roomIds.length,
+        overrideAccess: true,
+      }),
+    ])
+
+    // Build lookup maps
+    const regMap = new Map<string, 'male' | 'female' | 'diverse'>()
+    for (const r of regsResult.docs) {
+      const reg = r as any
+      regMap.set(reg.id, reg.gender ?? 'diverse')
+    }
+
+    const roomMap = new Map(roomsResult.docs.map((r) => [(r as any).id, r as any]))
+
+    // Validate each room — use stored genderComposition for existence check
+    for (const [roomId, regIds] of Object.entries(assignments)) {
+      const occupantGenders = regIds
+        .map((rid) => regMap.get(rid))
+        .filter((g): g is 'male' | 'female' | 'diverse' => g !== undefined)
+
+      const binaryGenders = occupantGenders.filter((g) => g !== 'diverse')
+      const hasMale = binaryGenders.includes('male')
+      const hasFemale = binaryGenders.includes('female')
+
+      if (!hasMale || !hasFemale) continue
+
+      // Check stored composition for pre-existing mixing (O(1) read)
+      const existingRoom = roomMap.get(roomId)
+      const comp = (existingRoom as any)?.genderComposition as
+        | { male: number; female: number }
+        | undefined
+      const wasMixed = (comp?.male ?? 0) > 0 && (comp?.female ?? 0) > 0
+
+      if (!wasMixed) {
+        const roomName = (existingRoom as any)?.name ?? roomId
+        return {
+          success: false,
+          error: `Zimmer "${roomName}" enthält sowohl Jungen als auch Mädchen. Gemischte Belegung ist nicht erlaubt.`,
+        }
+      }
+      // Existing mixing — warn but allow
+      payload.logger.warn(
+        `Room ${roomId} already has mixed-gender occupants — save allowed but should be fixed manually.`,
+      )
+    }
+
+    // Update each room — skip hook re-validation via context
     for (const [roomId, regIds] of Object.entries(assignments)) {
       await payload.update({
         collection: 'sommerfreizeitRooms',
         id: roomId,
         data: { occupants: regIds },
         overrideAccess: true,
+        context: { skipGenderValidation: true },
       })
     }
     return { success: true }

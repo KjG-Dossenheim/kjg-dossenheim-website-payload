@@ -16,6 +16,8 @@ export interface RoomInfo {
   gender: 'male' | 'female' | null
   capacity: number | null // null = unlimited
   currentOccupants: string[] // registration IDs already in the room
+  /** True if existing occupants already contain both male and female children */
+  genderConflict: boolean
 }
 
 export interface RegistrationInfo {
@@ -42,6 +44,8 @@ export interface AssignmentResult {
   totalWishScore: number
   /** Registrations that couldn't be auto-assigned (e.g. diverse gender, no matching room) */
   unassigned: string[]
+  /** Room IDs that already had mixed-gender occupants before assignment */
+  conflictedRoomIds: string[]
 }
 
 // ---------------------------------------------------------------------------
@@ -62,6 +66,56 @@ function resolveChildGender(
   if (!child) return 'diverse'
   if (typeof child === 'string') return 'diverse' // can't determine without population
   return child.gender
+}
+
+// ---------------------------------------------------------------------------
+// Gender compatibility helpers (exported for reuse in UI validation)
+// ---------------------------------------------------------------------------
+
+/**
+ * Determine the de-facto gender of a room, considering:
+ * 1. Room's declared gender setting
+ * 2. Floor's declared gender (if room has none)
+ * 3. Consensus of existing occupants' genders
+ *
+ * Returns 'mixed' if existing occupants already contain both male and female.
+ */
+export function getEffectiveRoomGender(
+  roomGender: 'male' | 'female' | null | undefined,
+  floorGender: 'male' | 'female' | null | undefined,
+  occupantGenders: ('male' | 'female' | 'diverse')[],
+): 'male' | 'female' | 'mixed' | null {
+  // Explicit room gender takes priority
+  if (roomGender === 'male' || roomGender === 'female') return roomGender
+  // Floor gender as fallback
+  if (floorGender === 'male' || floorGender === 'female') return floorGender
+
+  // No explicit gender — derive from existing occupants (excluding diverse)
+  const binaryGenders = occupantGenders.filter((g) => g !== 'diverse')
+  if (binaryGenders.length === 0) return null
+
+  const hasMale = binaryGenders.includes('male')
+  const hasFemale = binaryGenders.includes('female')
+
+  if (hasMale && hasFemale) return 'mixed'
+  if (hasMale) return 'male'
+  return 'female'
+}
+
+/**
+ * Check whether a child of the given gender can be placed in a room
+ * with the given effective gender.
+ * Diverse children are always compatible.
+ * No child is compatible with a 'mixed' room (manual fix needed).
+ */
+export function isGenderCompatible(
+  childGender: 'male' | 'female' | 'diverse',
+  effectiveRoomGender: 'male' | 'female' | 'mixed' | null,
+): boolean {
+  if (childGender === 'diverse') return true
+  if (effectiveRoomGender === 'mixed') return false
+  if (effectiveRoomGender === null) return true
+  return childGender === effectiveRoomGender
 }
 
 // ---------------------------------------------------------------------------
@@ -121,14 +175,24 @@ export async function computeRoomAssignments(
         : floorGender === 'male' || floorGender === 'female'
           ? floorGender
           : null
+
+    const occupantIds = (room.occupants ?? [])
+      .map((o) => resolveId(o as string | { id: string }))
+      .filter(Boolean) as string[]
+
+    // Read conflict state from denormalized genderComposition field (O(1))
+    const comp = (room as any).genderComposition as
+      | { male: number; female: number }
+      | undefined
+    const hasConflict = (comp?.male ?? 0) > 0 && (comp?.female ?? 0) > 0
+
     return {
       id: room.id,
       name: room.name,
       gender: effectiveGender,
       capacity: room.capacity ?? null,
-      currentOccupants: (room.occupants ?? [])
-        .map((o) => resolveId(o as string | { id: string }))
-        .filter(Boolean) as string[],
+      currentOccupants: occupantIds,
+      genderConflict: hasConflict,
     }
   })
 
@@ -171,9 +235,9 @@ export async function computeRoomAssignments(
   const female = pool.filter((r) => r.childGender === 'female')
   const diverse = pool.filter((r) => r.childGender === 'diverse')
 
-  const maleRooms = rooms.filter((r) => r.gender === 'male')
-  const femaleRooms = rooms.filter((r) => r.gender === 'female')
-  const neutralRooms = rooms.filter((r) => r.gender === null)
+  const maleRooms = rooms.filter((r) => r.gender === 'male' && !r.genderConflict)
+  const femaleRooms = rooms.filter((r) => r.gender === 'female' && !r.genderConflict)
+  const neutralRooms = rooms.filter((r) => r.gender === null && !r.genderConflict)
 
   // ---- helper: build clusters (wish graph + class groups) ----
   function buildWishClusters(group: RegistrationInfo[]): RegistrationInfo[][] {
@@ -439,7 +503,29 @@ export async function computeRoomAssignments(
       ? Infinity
       : Math.max(0, room.capacity - room.currentOccupants.length)
 
-    if (maleDeficit >= femaleDeficit) {
+    // Determine existing occupant gender to avoid mixing
+    let existingOccupantGender: 'male' | 'female' | null = null
+    if (room.currentOccupants.length > 0) {
+      let hasMale = false
+      let hasFemale = false
+      for (const occId of room.currentOccupants) {
+        const reg = regMap.get(occId)
+        if (reg?.childGender === 'male') hasMale = true
+        if (reg?.childGender === 'female') hasFemale = true
+      }
+      // If already mixed, skip this room (it's conflicted and handled elsewhere)
+      if (hasMale && hasFemale) continue
+      if (hasMale) existingOccupantGender = 'male'
+      else if (hasFemale) existingOccupantGender = 'female'
+    }
+
+    if (existingOccupantGender === 'male') {
+      assignedMaleRooms.push(room)
+      maleDeficit = Math.max(0, maleDeficit - (spots === Infinity ? maleDeficit : spots))
+    } else if (existingOccupantGender === 'female') {
+      assignedFemaleRooms.push(room)
+      femaleDeficit = Math.max(0, femaleDeficit - (spots === Infinity ? femaleDeficit : spots))
+    } else if (maleDeficit >= femaleDeficit) {
       assignedMaleRooms.push(room)
       maleDeficit = Math.max(0, maleDeficit - (spots === Infinity ? maleDeficit : spots))
     } else {
@@ -518,10 +604,14 @@ export async function computeRoomAssignments(
   const mutualWishScore = mutualWishes > 0 ? Math.round((mutualWishesSatisfied / mutualWishes) * 100) : 100
   const totalWishScore = totalWishes > 0 ? Math.round((totalWishesSatisfied / totalWishes) * 100) : 100
 
+  // Derive conflicted room IDs from the room flags (set during building phase)
+  const conflictedRoomIds = rooms.filter((r) => r.genderConflict).map((r) => r.id)
+
   return {
     assignments,
     mutualWishScore,
     totalWishScore,
     unassigned,
+    conflictedRoomIds,
   }
 }

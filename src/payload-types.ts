@@ -448,6 +448,15 @@ export interface SommerfreizeitRoom {
    * Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.
    */
   occupants?: (string | SommerfreizeitAnmeldung)[] | null;
+  genderComposition?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   freizeit: string | SommerfreizeitEvent;
   /**
    * Wenn aktiviert, wird dieses Zimmer als Teamer-Zimmer behandelt
@@ -1833,6 +1842,7 @@ export interface SommerfreizeitRoomsSelect<T extends boolean = true> {
   capacity?: T;
   gender?: T;
   occupants?: T;
+  genderComposition?: T;
   freizeit?: T;
   teamerRoom?: T;
   floor?: T;
@@ -3150,9 +3160,6 @@ export interface SommerfreizeitLandingPage {
  */
 export interface SommerfreizeitSetting {
   id: string;
-  bankName?: string | null;
-  iban?: string | null;
-  bic?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3514,9 +3521,6 @@ export interface SommerfreizeitLandingPageSelect<T extends boolean = true> {
  * via the `definition` "sommerfreizeitSettings_select".
  */
 export interface SommerfreizeitSettingsSelect<T extends boolean = true> {
-  bankName?: T;
-  iban?: T;
-  bic?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

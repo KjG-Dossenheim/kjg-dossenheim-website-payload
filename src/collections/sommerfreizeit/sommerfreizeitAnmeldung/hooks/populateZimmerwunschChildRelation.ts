@@ -49,6 +49,9 @@ export const populateZimmerwunschChildRelation: CollectionBeforeChangeHook = asy
         })
         // Return item unchanged if error occurs
         return item
+        req.payload.logger.info({
+          msg: `Zimmerwunsch childRelation populated for name "${item?.firstName} ${item?.lastName ?? ''}".`,
+        })
       }
     }),
   )

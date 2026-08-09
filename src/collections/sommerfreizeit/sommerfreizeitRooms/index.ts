@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { validateGenderHomogeneity } from './hooks/validateGenderHomogeneity'
 
 export const sommerfreizeitRooms: CollectionConfig = {
   slug: 'sommerfreizeitRooms',
@@ -12,6 +13,9 @@ export const sommerfreizeitRooms: CollectionConfig = {
   labels: {
     singular: 'Zimmer',
     plural: 'Zimmer',
+  },
+  hooks: {
+    beforeChange: [validateGenderHomogeneity],
   },
   fields: [
     {
@@ -61,6 +65,12 @@ export const sommerfreizeitRooms: CollectionConfig = {
       admin: {
         description: 'Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.',
       },
+    },
+    {
+      name: 'genderComposition',
+      label: 'Geschlechter-Zusammensetzung',
+      type: 'json',
+      admin: { hidden: true },
     },
     {
       name: "freizeit",

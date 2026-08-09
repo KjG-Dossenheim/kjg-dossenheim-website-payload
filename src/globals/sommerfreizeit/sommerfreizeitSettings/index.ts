@@ -13,26 +13,6 @@ export const sommerfreizeitSettings: GlobalConfig = {
     {
       type: 'tabs',
       tabs: [
-        {
-          label: 'Zahlungsinformationen',
-          fields: [
-            {
-              name: 'bankName',
-              label: 'Name der Bank',
-              type: 'text',
-            },
-            {
-              name: 'iban',
-              label: 'IBAN',
-              type: 'text',
-            },
-            {
-              name: 'bic',
-              label: 'BIC',
-              type: 'text',
-            },
-          ],
-        },
       ],
     },
   ],
