@@ -48,15 +48,15 @@ async function getData() {
 }
 
 export const metadata: Metadata = {
-  title: 'Letzte Informationen',
-  description: 'Letzte Informationen für die Sommerfreizeit',
+  title: 'Informationen',
+  description: 'Informationen für die Sommerfreizeit',
   openGraph: {
-    title: 'Letzte Informationen',
-    description: 'Letzte Informationen für die Sommerfreizeit',
+    title: 'Informationen',
+    description: 'Informationen für die Sommerfreizeit',
   },
   twitter: {
-    title: 'Letzte Informationen',
-    description: 'Letzte Informationen für die Sommerfreizeit',
+    title: 'Informationen',
+    description: 'Informationen für die Sommerfreizeit',
   },
 }
 
@@ -65,14 +65,14 @@ export default async function Page() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold">Letzte Informationen</h1>
+      <h1 className="mb-6 text-3xl font-bold">Informationen</h1>
       <div className="flex flex-col gap-4">
         {sommerfreizeit.informationen.eintrag.map((eintrag) => (
           <Card key={eintrag.title}>
             <CardHeader>
               <CardTitle>{eintrag.title}</CardTitle>
             </CardHeader>
-            {eintrag.text && eintrag.text?.root?.direction !== null && (
+            {eintrag.text && (
               <CardContent>
                 <RichText data={eintrag.text} />
               </CardContent>
