@@ -19,12 +19,32 @@ export const revalidate = 60 // alle 60s neue Daten abrufen
 
 async function getData() {
   const payload = await getPayload({ config })
-  return payload.findGlobal({
-    slug: 'sommerfreizeit',
+
+  const landingPageData = await payload.findGlobal({
+    slug: 'sommerfreizeitLandingPage',
+    select: {
+      freizeit: true,
+    },
+  })
+
+  const eventId =
+    typeof landingPageData.freizeit === 'string'
+      ? landingPageData.freizeit
+      : landingPageData.freizeit?.id
+
+  if (!eventId) {
+    throw new Error('Keine Sommerfreizeit im Landing-Global verknuepft.')
+  }
+
+  const eventData = await payload.findByID({
+    collection: 'sommerfreizeitEvents',
+    id: eventId,
     select: {
       informationen: true,
     },
   })
+
+  return { informationen: eventData.informationen }
 }
 
 export const metadata: Metadata = {
