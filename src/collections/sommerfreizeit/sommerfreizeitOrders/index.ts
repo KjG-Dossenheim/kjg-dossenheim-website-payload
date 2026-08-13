@@ -41,9 +41,7 @@ export const sommerfreizeitOrders: CollectionConfig = {
         },
       },
     },
-    hidden: {
-      environment: process.env.NODE_ENV === 'production', // hide from sidebar in production, since this is a sub-collection of sommerfreizeitEvents
-    }
+    hidden: () => process.env.NODE_ENV === 'production',
   },
   access: {
     create: ({ req: { user } }) => !!user && user.collection === 'users',

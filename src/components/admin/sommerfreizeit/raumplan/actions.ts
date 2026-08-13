@@ -122,7 +122,7 @@ export async function fetchRoomPlanData(eventId: string): Promise<RoomPlanData> 
     collection: 'sommerfreizeitEvents',
     id: eventId,
     overrideAccess: true,
-    select: ['name'],
+    select: { name: true },
   })
 
   return {
@@ -165,11 +165,11 @@ export async function saveRoomAssignments(
     const [regsResult, roomsResult] = await Promise.all([
       allRegIds.size > 0
         ? payload.find({
-            collection: 'sommerfreizeitAnmeldung',
-            where: { id: { in: Array.from(allRegIds) } },
-            limit: 0,
-            overrideAccess: true,
-          })
+          collection: 'sommerfreizeitAnmeldung',
+          where: { id: { in: Array.from(allRegIds) } },
+          limit: 0,
+          overrideAccess: true,
+        })
         : Promise.resolve({ docs: [] }),
       payload.find({
         collection: 'sommerfreizeitRooms',

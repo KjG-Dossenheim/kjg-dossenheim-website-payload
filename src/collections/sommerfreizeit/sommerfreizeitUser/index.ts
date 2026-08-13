@@ -11,9 +11,6 @@ export const sommerfreizeitUser: CollectionConfig = {
         idType: 'text',
       }),
     ],
-    hidden: {
-      environment: process.env.NODE_ENV === 'production', // hide from sidebar in production, since this is a sub-collection of sommerfreizeitEvents
-    }
   },
   access: {
     create: () => true,
@@ -21,6 +18,7 @@ export const sommerfreizeitUser: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     group: 'Sommerfreizeit',
+    hidden: () => process.env.NODE_ENV === 'production', // hide from sidebar in production, since this is a sub-collection of sommerfreizeitEvents
     components: {
       views: {
         list: {

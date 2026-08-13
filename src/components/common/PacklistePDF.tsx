@@ -220,7 +220,11 @@ function renderInlineChildren(children: SerializedLexicalNode[]): React.ReactNod
     if (child.type === 'text') {
       const textNode = child as SerializedTextNode
       const fmt = decodeFormat(textNode.format ?? 0)
-      const style: Record<string, unknown> = {}
+      const style: {
+        fontWeight?: 'bold'
+        fontStyle?: 'italic'
+        textDecoration?: 'underline' | 'line-through'
+      } = {}
       if (fmt.bold) style.fontWeight = 'bold'
       if (fmt.italic) style.fontStyle = 'italic'
       if (fmt.underline) style.textDecoration = 'underline'

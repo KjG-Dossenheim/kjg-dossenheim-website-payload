@@ -6,9 +6,7 @@ export const sommerfreizeitFloors: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Sommerfreizeit',
     defaultColumns: ['name', 'gender', 'freizeit'],
-    hidden: {
-      environment: process.env.NODE_ENV === 'production', // hide from sidebar in production, since this is a sub-collection of sommerfreizeitEvents
-    }
+    hidden: () => process.env.NODE_ENV === 'production', // hide from sidebar in production, since this is a sub-collection of sommerfreizeitEvents
   },
   labels: {
     singular: 'Etage',

@@ -8,7 +8,7 @@ export const sommerfreizeitRooms: CollectionConfig = {
     group: 'Sommerfreizeit',
     groupBy: true,
     defaultColumns: ['name', 'gender', 'capacity', 'freizeit'],
-    hidden: true, // hide from sidebar, since this is a sub-collection of sommerfreizeitEvents
+    hidden: () => process.env.NODE_ENV === 'production',
   },
   labels: {
     singular: 'Zimmer',
