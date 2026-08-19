@@ -150,7 +150,7 @@ export async function fetchRoomPlanData(eventId: string): Promise<RoomPlanData> 
       name: room.name,
       beschreibung: room.beschreibung,
       gender: (room.gender === 'male' || room.gender === 'female') ? room.gender : null,
-      capacity: room.capacity ?? null,
+      capacity: room.capacity,
       teamerRoom: !!room.teamerRoom,
       floorId: room.floor && typeof room.floor === 'object' ? (room.floor as any).id ?? null : (typeof room.floor === 'string' ? room.floor : null),
       floorName: room.floor && typeof room.floor === 'object' ? (room.floor as any).name ?? null : null,
@@ -496,7 +496,7 @@ export async function createRoom(
       data: {
         name: data.name,
         beschreibung: data.beschreibung ?? '',
-        capacity: data.capacity ?? undefined,
+        capacity: data.capacity,
         gender: data.gender ?? undefined,
         freizeit: eventId,
         teamerRoom: data.teamerRoom,
@@ -506,6 +506,7 @@ export async function createRoom(
         // erhalten neue Zimmer den Default `_status: 'draft'`.
         _status: 'published',
       },
+      draft: false,
       overrideAccess: true,
     })
 

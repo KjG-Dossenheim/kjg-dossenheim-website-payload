@@ -26,9 +26,8 @@ export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean 
   const occupantCount = room.teamerRoom ? room.teamerOccupants.length : room.occupants.length
   const occupantLabel = room.teamerRoom ? 'Teamer' : 'Bewohner'
   const capacityText = room.capacity ? ` / ${room.capacity}` : ''
-  const isOverCapacity = room.capacity !== null && occupantCount > room.capacity
-  const isNearCapacity =
-    room.capacity !== null && !isOverCapacity && occupantCount >= room.capacity * 0.8
+  const isOverCapacity = occupantCount > room.capacity
+  const isNearCapacity = !isOverCapacity && occupantCount >= room.capacity * 0.8
 
   return (
     <Card

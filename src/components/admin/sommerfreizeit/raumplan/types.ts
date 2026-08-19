@@ -3,7 +3,7 @@ export interface RoomWithOccupants {
   name: string
   beschreibung?: string | null
   gender: 'male' | 'female' | null
-  capacity: number | null
+  capacity: number
   /** True if this room is reserved for teamers (excluded from auto-assign) */
   teamerRoom: boolean
   /** The floor this room belongs to (if any) */
@@ -89,7 +89,7 @@ export interface EventFloor extends FloorInfo {
 export interface RoomFormData {
   name: string
   beschreibung?: string
-  capacity: number | null
+  capacity: number
   gender: 'male' | 'female' | null
   floorId: string | null
   teamerRoom: boolean

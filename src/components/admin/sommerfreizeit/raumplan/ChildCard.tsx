@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
+import { Item, ItemContent, ItemMedia, ItemTitle, ItemActions } from '@/components/ui/item'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { ChildDetailsDrawer } from './ChildDetailsDrawer'
 import { cn } from '@/lib/utils'
@@ -94,7 +94,7 @@ export function ChildCard({
               </ItemMedia>
 
               {/* Details drawer trigger */}
-              <ItemMedia variant="icon">
+              <ItemActions>
                 <Button
                   variant="ghost"
                   size="icon-xs"
@@ -103,7 +103,7 @@ export function ChildCard({
                 >
                   <Eye />
                 </Button>
-              </ItemMedia>
+              </ItemActions>
             </Item>
           }
         />

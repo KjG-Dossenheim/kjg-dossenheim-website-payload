@@ -442,9 +442,9 @@ export interface SommerfreizeitRoom {
   name: string;
   beschreibung?: string | null;
   /**
-   * Maximale Anzahl an Bewohnern. Leer lassen für unbegrenzt.
+   * Maximale Anzahl an Bewohnern
    */
-  capacity?: number | null;
+  capacity: number;
   /**
    * Leer lassen, damit der Algorithmus das beste Geschlecht für dieses Zimmer ermittelt.
    */

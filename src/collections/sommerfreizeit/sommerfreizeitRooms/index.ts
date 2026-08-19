@@ -56,9 +56,9 @@ export const sommerfreizeitRooms: CollectionConfig = {
       name: "capacity",
       label: "Kapazität",
       type: "number",
-      min: 1,
+      required: true,
       admin: {
-        description: 'Maximale Anzahl an Bewohnern. Leer lassen für unbegrenzt.',
+        description: 'Maximale Anzahl an Bewohnern',
       },
     },
     {

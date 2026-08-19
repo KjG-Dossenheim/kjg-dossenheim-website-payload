@@ -66,7 +66,7 @@ export function RoomDialog({
       if (room) {
         setName(room.name)
         setBeschreibung(room.beschreibung ?? '')
-        setCapacity(room.capacity?.toString() ?? '')
+        setCapacity(room.capacity.toString())
         setGender(room.gender ?? '')
         setFloorId(room.floorId ?? '')
         setTeamerRoom(room.teamerRoom ?? false)
@@ -86,13 +86,18 @@ export function RoomDialog({
       toast.error('Bitte gib einen Namen für das Zimmer ein.')
       return
     }
+    const parsedCapacity = parseInt(capacity, 10)
+    if (Number.isNaN(parsedCapacity) || parsedCapacity <= 0) {
+      toast.error('Bitte gib eine gültige Kapazität ein.')
+      return
+    }
 
     setSaving(true)
     try {
       const data: RoomFormData = {
         name: name.trim(),
         beschreibung: beschreibung.trim() || undefined,
-        capacity: capacity ? parseInt(capacity, 10) : null,
+        capacity: parsedCapacity,
         gender: gender || null,
         floorId: floorId || null,
         teamerRoom,
@@ -170,6 +175,7 @@ export function RoomDialog({
               value={capacity}
               onChange={(e) => setCapacity(e.target.value)}
               placeholder="Leer lassen für unbegrenzt"
+              required
             />
           </div>
 
