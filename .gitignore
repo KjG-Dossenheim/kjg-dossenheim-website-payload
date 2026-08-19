@@ -60,3 +60,5 @@ lighthouse-report.html
 
 # Skills
 /.agents/skills
+/.qwen
+/.claude

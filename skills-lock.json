@@ -5,31 +5,25 @@
       "source": "fallow-rs/fallow-skills",
       "sourceType": "github",
       "skillPath": "fallow/skills/fallow/SKILL.md",
-      "computedHash": "147994f755661d29af02885233fd4267fb9fe9dba1f403facbeadca82019b0a5"
+      "computedHash": "a10e0b0cc6c02333650c2604c5b75151ed0c6866d8fa2e0290ea2ccd9559e15b"
     },
     "payload": {
       "source": "payloadcms/skills",
       "sourceType": "github",
       "skillPath": "skills/payload/SKILL.md",
-      "computedHash": "868c518cec5efe3862accee8ef3751b72fac06d7e12a27c263dc17320f27b20c"
+      "computedHash": "4abfcc828ca2cc0d9142b2fee2456f257f73dd7a37bd1cce2d354231b08b8767"
     },
     "payload-doctor": {
       "source": "metakraft/payload-doctor",
       "sourceType": "github",
       "skillPath": "SKILL.md",
-      "computedHash": "593f996edbf34f188aaf5c90f39b23e23ee1cce589df27fe2f6feac558d6c474"
+      "computedHash": "517e0952a32a5ce91252228422bf40ef11de47a92f9416fe6bab63b915ae447e"
     },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
       "skillPath": "skills/shadcn/SKILL.md",
-      "computedHash": "8f8bcc9024aa068245fac646d654a18c80280e4b06112ccd3e691a8c96cd66bd"
-    },
-    "shadcn-ui": {
-      "source": "google-labs-code/stitch-skills",
-      "sourceType": "github",
-      "skillPath": "plugins/stitch-build/skills/shadcn-ui/SKILL.md",
-      "computedHash": "6c1f0ce10a1ceaee5715a1e50a2e3a3159496910364d643bc2a8cab3f2eec4a8"
+      "computedHash": "c1a68ee06a668aced9ab2b5fbdea5f989864123794eb2e056b339a072dbb7f10"
     }
   }
 }
