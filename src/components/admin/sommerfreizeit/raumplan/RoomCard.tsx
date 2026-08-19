@@ -2,22 +2,28 @@
 
 import type { RoomWithOccupants } from './types'
 import { ChildCard } from './ChildCard'
+import { TeamerCard } from './TeamerCard'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Mars, Venus, Pencil, Trash2, Eraser, AlertTriangle } from 'lucide-react'
 
+export type DragKind = 'child' | 'teamer'
+
 interface RoomCardProps {
   room: RoomWithOccupants
   onDrop: (roomId: string | null) => void
-  onDragStart: (childId: string, childName: string, fromRoomId: string | null) => void
+  onDragStart: (id: string, name: string, fromRoomId: string | null, kind: DragKind) => void
   onEdit?: (room: RoomWithOccupants) => void
   onDelete?: (room: RoomWithOccupants) => void
   onClean?: (room: RoomWithOccupants) => void
 }
 
 export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean }: RoomCardProps) {
-  const occupantCount = room.occupants.length
+  // Teamer rooms count teamers; normal rooms count children
+  const occupantCount = room.teamerRoom ? room.teamerOccupants.length : room.occupants.length
+  const occupantLabel = room.teamerRoom ? 'Teamer' : 'Bewohner'
   const capacityText = room.capacity ? ` / ${room.capacity}` : ''
   const isOverCapacity = room.capacity !== null && occupantCount > room.capacity
   const isNearCapacity =
@@ -45,6 +51,11 @@ export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean 
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <CardTitle className="truncate">{room.name}</CardTitle>
+            {room.teamerRoom && (
+              <Badge variant="secondary" className="shrink-0">
+                Teamer
+              </Badge>
+            )}
             {room.gender &&
               (room.gender === 'male' ? (
                 <Mars className="h-4 w-4 shrink-0 text-blue-500" />
@@ -113,7 +124,7 @@ export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean 
           )}
         >
           {occupantCount}
-          {capacityText} Bewohner
+          {capacityText} {occupantLabel}
           {isOverCapacity && ' ⚠️'}
         </p>
       </CardHeader>
@@ -125,14 +136,27 @@ export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean 
             id={occ.id}
             firstName={occ.firstName}
             lastName={occ.lastName}
-            childClass={occ.class}
+            childAge={occ.age}
             childGender={occ.childGender}
             wishNames={occ.wishNames}
-            onDragStart={onDragStart}
+            onDragStart={(childId, childName) => onDragStart(childId, childName, room.id, 'child')}
             fromRoomId={room.id}
           />
         ))}
-        {room.occupants.length === 0 && (
+        {room.teamerOccupants.map((t) => (
+          <TeamerCard
+            key={t.id}
+            id={t.id}
+            firstName={t.firstName}
+            lastName={t.lastName}
+            gender={t.gender}
+            onDragStart={(teamerId, teamerName) =>
+              onDragStart(teamerId, teamerName, room.id, 'teamer')
+            }
+            fromRoomId={room.id}
+          />
+        ))}
+        {room.occupants.length === 0 && room.teamerOccupants.length === 0 && (
           <div className="text-muted-foreground py-4 text-center text-xs">Leer</div>
         )}
       </CardContent>

@@ -84,7 +84,6 @@ import { Knallbonbon } from './globals/Knallbonbon'
 import { knallbonbonSettings } from './globals/knallbonbonSettings'
 import { aktion72Stunden } from './globals/aktionen/72stunden'
 import { sommerfreizeitLandingPage } from './globals/sommerfreizeit/sommerfreizeitLandingPage'
-import { sommerfreizeitPackliste } from './globals/sommerfreizeit/sommerfreizeitPackliste'
 import { sommerfreizeitSettings } from './globals/sommerfreizeit/sommerfreizeitSettings'
 
 // Relative imports - jobs
@@ -196,7 +195,6 @@ export default buildConfig({
     Rechtliches,
     Knallbonbon,
     knallbonbonSettings,
-    sommerfreizeitPackliste,
     sommerfreizeitLandingPage,
     sommerfreizeitSettings,
   ],

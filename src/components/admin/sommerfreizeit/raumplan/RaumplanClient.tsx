@@ -6,15 +6,26 @@ import { Button } from '@/components/ui/button'
 import { RotateCcw, Save, Trash2, Mars, Venus, Plus, Pencil, Download } from 'lucide-react'
 import {
   fetchRoomPlanData,
-  runAutoAssign,
+  fetchFloors,
+  runChildAutoAssign,
+  runTeamerAutoAssign,
   saveRoomAssignments,
   deleteRoom,
   deleteFloor,
 } from './actions'
 import { getEffectiveRoomGender, isGenderCompatible } from '@/utilities/roomAssignment'
-import type { FloorInfo, RoomPlanData, RoomWithOccupants, AutoAssignPreview } from './types'
-import { RoomCard } from './RoomCard'
+import type {
+  EventFloor,
+  FloorInfo,
+  RoomPlanData,
+  RoomWithOccupants,
+  TeamerOccupant,
+  ChildAutoAssignPreview,
+  TeamerAutoAssignPreview,
+} from './types'
+import { RoomCard, type DragKind } from './RoomCard'
 import { ChildCard } from './ChildCard'
+import { TeamerCard } from './TeamerCard'
 import { RoomDialog } from './RoomDialog'
 import { FloorDialog } from './FloorDialog'
 import { RaumplanDocument } from './RaumplanDocument'
@@ -50,18 +61,33 @@ interface EventOption {
   startDate: string
 }
 
-export function RaumplanClient({ events }: { events: EventOption[] }) {
-  const [selectedEventId, setSelectedEventId] = useState<string>('')
+interface RaumplanClientProps {
+  events: EventOption[]
+  /** All floors from the sommerfreizeitFloors collection, keyed by their event */
+  floors: EventFloor[]
+  /** Event preselected from the sommerfreizeit landing page global */
+  defaultEventId?: string | null
+}
+
+export function RaumplanClient({
+  events,
+  floors: floorsByEvent,
+  defaultEventId,
+}: RaumplanClientProps) {
+  const [selectedEventId, setSelectedEventId] = useState<string>(defaultEventId ?? '')
   const [data, setData] = useState<RoomPlanData | null>(null)
   const [loading, setLoading] = useState(false)
   const [autoLoading, setAutoLoading] = useState(false)
+  const [teamerLoading, setTeamerLoading] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [preview, setPreview] = useState<AutoAssignPreview | null>(null)
+  const [preview, setPreview] = useState<ChildAutoAssignPreview | null>(null)
+  const [teamerPreview, setTeamerPreview] = useState<TeamerAutoAssignPreview | null>(null)
   const [dirty, setDirty] = useState(false)
   const [dragState, setDragState] = useState<{
-    childId: string
-    childName: string
+    id: string
+    name: string
     fromRoomId: string | null
+    kind: DragKind
   } | null>(null)
 
   const initialDataRef = useRef<string>('')
@@ -82,21 +108,6 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
   const [floors, setFloors] = useState<FloorInfo[]>([])
   const [exportLoading, setExportLoading] = useState(false)
 
-  // Build floors list from data whenever it changes
-  const extractFloorsFromData = useCallback((planData: RoomPlanData): FloorInfo[] => {
-    const floorMap = new Map<string, FloorInfo>()
-    for (const room of planData.rooms) {
-      if (room.floorId && !floorMap.has(room.floorId)) {
-        floorMap.set(room.floorId, {
-          id: room.floorId,
-          name: room.floorName ?? room.floorId,
-          gender: room.floorGender ?? null,
-        })
-      }
-    }
-    return Array.from(floorMap.values()).sort((a, b) => a.name.localeCompare(b.name, 'de'))
-  }, [])
-
   // Load data when event changes
   useEffect(() => {
     if (!selectedEventId) {
@@ -108,15 +119,20 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
 
     setLoading(true)
     setPreview(null)
+    setTeamerPreview(null)
     setDirty(false)
 
     fetchRoomPlanData(selectedEventId)
       .then((result) => {
         setData(result)
-        setFloors(extractFloorsFromData(result))
         initialDataRef.current = JSON.stringify({
-          rooms: result.rooms.map((r) => ({ id: r.id, occIds: r.occupants.map((o) => o.id) })),
+          rooms: result.rooms.map((r) => ({
+            id: r.id,
+            occIds: r.occupants.map((o) => o.id),
+            teamerIds: r.teamerOccupants.map((t) => t.id),
+          })),
           unassigned: result.unassigned.map((u) => u.id),
+          unassignedTeamers: result.unassignedTeamers.map((t) => t.id),
         })
         setLoading(false)
       })
@@ -127,10 +143,21 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
       })
   }, [selectedEventId])
 
+  // Sync floors for the selected event from the server-provided collection data
+  useEffect(() => {
+    setFloors(
+      selectedEventId
+        ? floorsByEvent
+            .filter((f) => f.eventId === selectedEventId)
+            .sort((a, b) => a.name.localeCompare(b.name, 'de'))
+        : [],
+    )
+  }, [selectedEventId, floorsByEvent])
+
   // ---- drag and drop handlers ----
   const handleDragStart = useCallback(
-    (childId: string, childName: string, fromRoomId: string | null) => {
-      setDragState({ childId, childName, fromRoomId })
+    (id: string, name: string, fromRoomId: string | null, kind: DragKind) => {
+      setDragState({ id, name, fromRoomId, kind })
     },
     [],
   )
@@ -139,18 +166,35 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     (toRoomId: string | null) => {
       if (!dragState || !data) return
 
-      const { childId, fromRoomId } = dragState
+      const { id, fromRoomId, kind } = dragState
 
       if (fromRoomId === toRoomId) {
         setDragState(null)
         return
       }
 
-      // ---- gender validation: prevent cross-gender mixing ----
+      // ---- room restriction: children only into normal rooms, teamers only into teamer rooms ----
       if (toRoomId) {
         const targetRoom = data.rooms.find((r) => r.id === toRoomId)
         if (targetRoom) {
-          const child = findChild(data, childId)
+          if (kind === 'child' && targetRoom.teamerRoom) {
+            toast.error('Kinder können nicht in Teamer-Zimmern untergebracht werden.')
+            setDragState(null)
+            return
+          }
+          if (kind === 'teamer' && !targetRoom.teamerRoom) {
+            toast.error('Teamer können nur in Teamer-Zimmern untergebracht werden.')
+            setDragState(null)
+            return
+          }
+        }
+      }
+
+      // ---- gender validation (children only): prevent cross-gender mixing ----
+      if (kind === 'child' && toRoomId) {
+        const targetRoom = data.rooms.find((r) => r.id === toRoomId)
+        if (targetRoom) {
+          const child = findChild(data, id)
           if (child && child.childGender !== 'diverse') {
             // Compute the effective gender of the target room AFTER removing the
             // child from its source (the child being dragged isn't in the target yet)
@@ -182,59 +226,122 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
         }
       }
 
+      // ---- gender validation (teamers only): respect an explicit teamer room gender ----
+      if (kind === 'teamer' && toRoomId) {
+        const targetRoom = data.rooms.find((r) => r.id === toRoomId)
+        if (targetRoom?.gender) {
+          const teamer = findTeamer(data, id)
+          if (teamer && teamer.gender !== targetRoom.gender) {
+            const roomHasGender = targetRoom.gender === 'male' ? 'Jungen' : 'Mädchen'
+            toast.error(
+              `Dieses Teamer-Zimmer ist für ${roomHasGender} vorgesehen. ${teamer.gender === 'male' ? 'Männliche' : 'Weibliche'} Teamer können hier nicht untergebracht werden.`,
+            )
+            setDragState(null)
+            return
+          }
+        }
+      }
+
       setData((prev) => {
         if (!prev) return prev
 
-        // Capture child data BEFORE removing from source location
-        const child = findChild(prev, childId)
-        if (!child) return prev
-
         const newData = { ...prev }
 
-        if (fromRoomId) {
-          newData.rooms = newData.rooms.map((r) => {
-            if (r.id === fromRoomId) {
-              return { ...r, occupants: r.occupants.filter((o) => o.id !== childId) }
-            }
-            return r
-          })
-        } else {
-          newData.unassigned = newData.unassigned.filter((u) => u.id !== childId)
-        }
+        if (kind === 'child') {
+          // Capture child data BEFORE removing from source location
+          const child = findChild(prev, id)
+          if (!child) return prev
 
-        if (toRoomId) {
-          newData.rooms = newData.rooms.map((r) => {
-            if (r.id === toRoomId) {
-              return {
-                ...r,
-                occupants: [
-                  ...r.occupants,
-                  {
-                    id: child.id,
-                    firstName: child.firstName,
-                    lastName: child.lastName,
-                    class: child.class,
-                    childGender: child.childGender,
-                    wishNames: child.wishNames,
-                    wishTargets: [],
-                  },
-                ],
+          if (fromRoomId) {
+            newData.rooms = newData.rooms.map((r) => {
+              if (r.id === fromRoomId) {
+                return { ...r, occupants: r.occupants.filter((o) => o.id !== id) }
               }
-            }
-            return r
-          })
+              return r
+            })
+          } else {
+            newData.unassigned = newData.unassigned.filter((u) => u.id !== id)
+          }
+
+          if (toRoomId) {
+            newData.rooms = newData.rooms.map((r) => {
+              if (r.id === toRoomId) {
+                return {
+                  ...r,
+                  occupants: [
+                    ...r.occupants,
+                    {
+                      id: child.id,
+                      firstName: child.firstName,
+                      lastName: child.lastName,
+                      age: child.age,
+                      childGender: child.childGender,
+                      wishNames: child.wishNames,
+                      wishTargets: [],
+                    },
+                  ],
+                }
+              }
+              return r
+            })
+          } else {
+            newData.unassigned = [
+              ...newData.unassigned,
+              {
+                id: child.id,
+                firstName: child.firstName,
+                lastName: child.lastName,
+                age: child.age,
+                childGender: child.childGender,
+                wishNames: child.wishNames,
+              },
+            ]
+          }
         } else {
-          newData.unassigned = [
-            ...newData.unassigned,
-            {
-              id: child.id,
-              firstName: child.firstName,
-              lastName: child.lastName,
-              class: child.class,
-              childGender: child.childGender,
-              wishNames: child.wishNames,
-            },
-          ]
+          // kind === 'teamer'
+          const teamer = findTeamer(prev, id)
+          if (!teamer) return prev
+
+          if (fromRoomId) {
+            newData.rooms = newData.rooms.map((r) => {
+              if (r.id === fromRoomId) {
+                return { ...r, teamerOccupants: r.teamerOccupants.filter((t) => t.id !== id) }
+              }
+              return r
+            })
+          } else {
+            newData.unassignedTeamers = newData.unassignedTeamers.filter((t) => t.id !== id)
+          }
+
+          if (toRoomId) {
+            newData.rooms = newData.rooms.map((r) => {
+              if (r.id === toRoomId) {
+                return {
+                  ...r,
+                  teamerOccupants: [
+                    ...r.teamerOccupants,
+                    {
+                      id: teamer.id,
+                      firstName: teamer.firstName,
+                      lastName: teamer.lastName,
+                      gender: teamer.gender,
+                    },
+                  ],
+                }
+              }
+              return r
+            })
+          } else {
+            newData.unassignedTeamers = [
+              ...newData.unassignedTeamers,
+              {
+                id: teamer.id,
+                firstName: teamer.firstName,
+                lastName: teamer.lastName,
+                gender: teamer.gender,
+              },
+            ]
+          }
         }
 
         return newData
@@ -246,12 +353,12 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     [dragState, data],
   )
 
-  // ---- auto-assign ----
-  const handleAutoAssign = useCallback(async () => {
+  // ---- auto-assign (children) ----
+  const handleChildAutoAssign = useCallback(async () => {
     if (!selectedEventId) return
     setAutoLoading(true)
     try {
-      const result = await runAutoAssign(selectedEventId)
+      const result = await runChildAutoAssign(selectedEventId)
       setPreview(result)
       const msg = `Auto-Zuweisung berechnet: ${result.mutualWishScore}% gegenseitige Wünsche erfüllt.`
       if (result.conflictedRoomIds.length > 0) {
@@ -269,7 +376,29 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     }
   }, [selectedEventId])
 
-  const handleApplyPreview = useCallback(() => {
+  // ---- auto-assign (teamers, independent from children) ----
+  const handleTeamerAutoAssign = useCallback(async () => {
+    if (!selectedEventId) return
+    setTeamerLoading(true)
+    try {
+      const result = await runTeamerAutoAssign(selectedEventId)
+      setTeamerPreview(result)
+      const unassigned = result.unassignedTeamers.length
+      toast.success(
+        unassigned === 0
+          ? 'Teamer-Zuweisung berechnet: alle Teamer zugewiesen.'
+          : `Teamer-Zuweisung berechnet: ${unassigned} Teamer nicht zugewiesen.`,
+      )
+    } catch (err) {
+      console.error('Teamer auto-assign failed:', err)
+      toast.error('Fehler bei der Teamer-Zuweisung.')
+    } finally {
+      setTeamerLoading(false)
+    }
+  }, [selectedEventId])
+
+  // Apply children preview (independent from teamers)
+  const handleApplyChildPreview = useCallback(() => {
     if (!preview || !data) return
 
     const newRooms = data.rooms.map((room) => {
@@ -284,7 +413,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
             id: unassigned.id,
             firstName: unassigned.firstName,
             lastName: unassigned.lastName,
-            class: unassigned.class,
+            age: unassigned.age,
             childGender: unassigned.childGender,
             wishNames: unassigned.wishNames,
             wishTargets: [],
@@ -296,7 +425,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
           id: rid,
           firstName,
           lastName: lastParts.join(' '),
-          class: '',
+          age: null,
           childGender: 'diverse' as const,
           wishNames: [],
           wishTargets: [],
@@ -313,7 +442,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
             id: existing.id,
             firstName: existing.firstName,
             lastName: existing.lastName,
-            class: existing.class,
+            age: existing.age,
             childGender: existing.childGender,
             wishNames: existing.wishNames,
           }
@@ -324,7 +453,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
           id: rid,
           firstName,
           lastName: lastParts.join(' '),
-          class: '',
+          age: null,
           childGender: 'diverse' as const,
           wishNames: [],
         }
@@ -334,8 +463,29 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     setData({ ...data, rooms: newRooms, unassigned: newUnassigned })
     setDirty(true)
     setPreview(null)
-    toast.success('Vorschau übernommen. Klicke "Speichern" zum Persistieren.')
+    toast.success('Kinder-Vorschau übernommen. Klicke "Speichern" zum Persistieren.')
   }, [preview, data])
+
+  // Apply teamer preview (independent from children)
+  const handleApplyTeamerPreview = useCallback(() => {
+    if (!teamerPreview || !data) return
+
+    const newRooms = data.rooms.map((room) => {
+      const previewTeamer = teamerPreview.teamerAssignments.find((a) => a.roomId === room.id)
+      const teamerIds = previewTeamer?.teamerIds ?? []
+      const teamerOccupants = teamerIds.map((tid) => resolveTeamer(data, tid))
+      return { ...room, teamerOccupants }
+    })
+
+    const newUnassignedTeamers = teamerPreview.unassignedTeamers
+      .map((tid) => resolveTeamer(data, tid))
+      .filter((u) => !newRooms.some((r) => r.teamerOccupants.some((t) => t.id === u.id)))
+
+    setData({ ...data, rooms: newRooms, unassignedTeamers: newUnassignedTeamers })
+    setDirty(true)
+    setTeamerPreview(null)
+    toast.success('Teamer-Vorschau übernommen. Klicke "Speichern" zum Persistieren.')
+  }, [teamerPreview, data])
 
   // ---- save ----
   const handleSave = useCallback(async () => {
@@ -344,17 +494,24 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     setSaving(true)
     try {
       const assignments: Record<string, string[]> = {}
+      const teamerAssignments: Record<string, string[]> = {}
       for (const room of data.rooms) {
         assignments[room.id] = room.occupants.map((o) => o.id)
+        teamerAssignments[room.id] = room.teamerOccupants.map((t) => t.id)
       }
 
-      const result = await saveRoomAssignments(selectedEventId, assignments)
+      const result = await saveRoomAssignments(selectedEventId, assignments, teamerAssignments)
       if (result.success) {
         toast.success('Raumplan gespeichert!')
         setDirty(false)
         initialDataRef.current = JSON.stringify({
-          rooms: data.rooms.map((r) => ({ id: r.id, occIds: r.occupants.map((o) => o.id) })),
+          rooms: data.rooms.map((r) => ({
+            id: r.id,
+            occIds: r.occupants.map((o) => o.id),
+            teamerIds: r.teamerOccupants.map((t) => t.id),
+          })),
           unassigned: data.unassigned.map((u) => u.id),
+          unassignedTeamers: data.unassignedTeamers.map((t) => t.id),
         })
       } else {
         toast.error(`Fehler beim Speichern: ${result.error}`)
@@ -384,13 +541,15 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
                 id: rid,
                 firstName: rid,
                 lastName: '',
-                class: '',
+                age: null,
                 childGender: 'diverse' as const,
                 wishNames: [],
                 wishTargets: [],
               } as NonNullable<ReturnType<typeof findChildInAnyRoom>>),
           )
-          return { ...room, occupants }
+          const teamerIds: string[] = savedRoom?.teamerIds ?? []
+          const teamerOccupants = teamerIds.map((tid) => resolveTeamer(prev, tid))
+          return { ...room, occupants, teamerOccupants }
         })
         const unassignedIds: string[] = saved.unassigned ?? []
         const newUnassigned = unassignedIds.map((rid) => {
@@ -400,7 +559,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
               id: c.id,
               firstName: c.firstName,
               lastName: c.lastName,
-              class: c.class,
+              age: c.age,
               childGender: c.childGender,
               wishNames: c.wishNames,
             }
@@ -410,15 +569,25 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
             id: rid,
             firstName: fn,
             lastName: ln.join(' '),
-            class: '',
+            age: null,
             childGender: 'diverse' as const,
             wishNames: [],
           }
         })
-        return { ...prev, rooms: newRooms, unassigned: newUnassigned }
+        const unassignedTeamerIds: string[] = saved.unassignedTeamers ?? []
+        const newUnassignedTeamers = unassignedTeamerIds
+          .map((tid) => resolveTeamer(prev, tid))
+          .filter((u) => !newRooms.some((r) => r.teamerOccupants.some((t) => t.id === u.id)))
+        return {
+          ...prev,
+          rooms: newRooms,
+          unassigned: newUnassigned,
+          unassignedTeamers: newUnassignedTeamers,
+        }
       })
       setDirty(false)
       setPreview(null)
+      setTeamerPreview(null)
       toast.success('Zurückgesetzt.')
     } catch {
       setSelectedEventId((prev) => {
@@ -435,7 +604,10 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
   const handleClearAllRooms = useCallback(() => {
     if (!data) return
 
-    const totalOccupants = data.rooms.reduce((sum, r) => sum + r.occupants.length, 0)
+    const totalOccupants = data.rooms.reduce(
+      (sum, r) => sum + r.occupants.length + r.teamerOccupants.length,
+      0,
+    )
     if (totalOccupants === 0) return
 
     // Collect all occupants from all rooms as unassigned children
@@ -444,22 +616,27 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
         id: occ.id,
         firstName: occ.firstName,
         lastName: occ.lastName,
-        class: occ.class,
+        age: occ.age,
         childGender: occ.childGender,
         wishNames: occ.wishNames,
       })),
     )
 
+    // Collect all teamers from all rooms as unassigned teamers
+    const allUnassignedTeamers = data.rooms.flatMap((room) => room.teamerOccupants)
+
     setData((prev) => {
       if (!prev) return prev
       return {
         ...prev,
-        rooms: prev.rooms.map((room) => ({ ...room, occupants: [] })),
+        rooms: prev.rooms.map((room) => ({ ...room, occupants: [], teamerOccupants: [] })),
         unassigned: [...prev.unassigned, ...allUnassigned],
+        unassignedTeamers: [...prev.unassignedTeamers, ...allUnassignedTeamers],
       }
     })
     setDirty(true)
     setPreview(null)
+    setTeamerPreview(null)
     toast.success('Alle Zimmer geleert. Klicke "Speichern" zum Persistieren.')
   }, [data])
 
@@ -468,28 +645,35 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     (room: RoomWithOccupants) => {
       if (!data) return
 
-      if (room.occupants.length === 0) return
+      if (room.occupants.length === 0 && room.teamerOccupants.length === 0) return
 
       // Collect room occupants as unassigned children
       const clearedOccupants = room.occupants.map((occ) => ({
         id: occ.id,
         firstName: occ.firstName,
         lastName: occ.lastName,
-        class: occ.class,
+        age: occ.age,
         childGender: occ.childGender,
         wishNames: occ.wishNames,
       }))
+
+      // Collect room teamers as unassigned teamers
+      const clearedTeamers = room.teamerOccupants
 
       setData((prev) => {
         if (!prev) return prev
         return {
           ...prev,
-          rooms: prev.rooms.map((r) => (r.id === room.id ? { ...r, occupants: [] } : r)),
+          rooms: prev.rooms.map((r) =>
+            r.id === room.id ? { ...r, occupants: [], teamerOccupants: [] } : r,
+          ),
           unassigned: [...prev.unassigned, ...clearedOccupants],
+          unassignedTeamers: [...prev.unassignedTeamers, ...clearedTeamers],
         }
       })
       setDirty(true)
       setPreview(null)
+      setTeamerPreview(null)
       toast.success(`Zimmer "${room.name}" geleert. Klicke "Speichern" zum Persistieren.`)
     },
     [data],
@@ -531,14 +715,20 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     if (!selectedEventId) return
     setLoading(true)
     setPreview(null)
+    setTeamerPreview(null)
     setDirty(false)
-    fetchRoomPlanData(selectedEventId)
-      .then((result) => {
+    Promise.all([fetchRoomPlanData(selectedEventId), fetchFloors(selectedEventId)])
+      .then(([result, freshFloors]) => {
         setData(result)
-        setFloors(extractFloorsFromData(result))
+        setFloors(freshFloors)
         initialDataRef.current = JSON.stringify({
-          rooms: result.rooms.map((r) => ({ id: r.id, occIds: r.occupants.map((o) => o.id) })),
+          rooms: result.rooms.map((r) => ({
+            id: r.id,
+            occIds: r.occupants.map((o) => o.id),
+            teamerIds: r.teamerOccupants.map((t) => t.id),
+          })),
           unassigned: result.unassigned.map((u) => u.id),
+          unassignedTeamers: result.unassignedTeamers.map((t) => t.id),
         })
         setLoading(false)
       })
@@ -547,7 +737,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
         toast.error('Fehler beim Aktualisieren der Daten.')
         setLoading(false)
       })
-  }, [selectedEventId, extractFloorsFromData])
+  }, [selectedEventId])
 
   const openCreateRoom = useCallback((floorId?: string | null) => {
     setEditingRoom(null)
@@ -610,7 +800,8 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
   }, [deleteFloorTarget, handleRefresh])
 
   // Total occupants across all rooms (for disabling the clear button)
-  const totalOccupants = data?.rooms.reduce((sum, r) => sum + r.occupants.length, 0) ?? 0
+  const totalOccupants =
+    data?.rooms.reduce((sum, r) => sum + r.occupants.length + r.teamerOccupants.length, 0) ?? 0
 
   // Group rooms by floor for rendering
   const floorGroups = data
@@ -625,6 +816,16 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
           }
         >()
 
+        // Seed groups from the collection floors so floors without rooms still render
+        for (const floor of floors) {
+          groups.set(floor.id, {
+            floorId: floor.id,
+            floorName: floor.name,
+            floorGender: floor.gender ?? null,
+            rooms: [],
+          })
+        }
+
         for (const room of data.rooms) {
           const key = room.floorId ?? '__none__'
           if (!groups.has(key)) {
@@ -636,6 +837,11 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
             })
           }
           groups.get(key)!.rooms.push(room)
+        }
+
+        // Sort rooms within each floor alphabetically by name
+        for (const group of groups.values()) {
+          group.rooms.sort((a, b) => a.name.localeCompare(b.name, 'de'))
         }
 
         // Sort: named floors alphabetically, "Ohne Etage" last
@@ -652,8 +858,8 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
     <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Raumplan</h1>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-4">
+          <h1 className="text-2xl font-bold">Raumplan</h1>
           <Select
             value={selectedEventId}
             onValueChange={(val) => setSelectedEventId(val ?? '')}
@@ -670,11 +876,15 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
               ))}
             </SelectContent>
           </Select>
-
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
           {selectedEventId && (
             <ButtonGroup>
-              <Button onClick={handleAutoAssign} disabled={autoLoading || loading}>
-                {autoLoading ? 'Berechne...' : 'Auto-Zuweisen'}
+              <Button onClick={handleChildAutoAssign} disabled={autoLoading || loading}>
+                {autoLoading ? 'Berechne...' : 'Kinder zuweisen'}
+              </Button>
+              <Button onClick={handleTeamerAutoAssign} disabled={teamerLoading || loading}>
+                {teamerLoading ? 'Berechne...' : 'Teamer zuweisen'}
               </Button>
               <Button onClick={handleSave} disabled={!dirty || saving}>
                 {saving ? <Spinner /> : <Save />}
@@ -696,9 +906,9 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Alle Zimmer leeren?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Alle {totalOccupants} Bewohner werden in &quot;Nicht zugewiesen&quot;
-                      verschoben. Dies kann nicht rückgängig gemacht werden, solange du nicht
-                      gespeichert hast.
+                      Alle {totalOccupants} Bewohner und Teamer werden in &quot;Nicht
+                      zugewiesen&quot; verschoben. Dies kann nicht rückgängig gemacht werden,
+                      solange du nicht gespeichert hast.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -734,20 +944,20 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
         </div>
       </div>
 
-      {/* Preview banner */}
+      {/* Child auto-assign preview banner */}
       {preview && (
         <Card className="border-emerald-500 bg-emerald-50 dark:bg-emerald-950">
           <CardContent className="flex flex-col gap-3 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-4">
-                <span className="font-semibold">Auto-Zuweisung Vorschau</span>
+                <span className="font-semibold">Vorschau Kinder-Auto-Zuweisung</span>
                 <span className="text-muted-foreground text-sm">
                   Gegenseitige Wünsche: {preview.mutualWishScore}% • Alle Wünsche:{' '}
                   {preview.totalWishScore}% • Nicht zugewiesen: {preview.unassigned.length}
                 </span>
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleApplyPreview}>Vorschau übernehmen</Button>
+                <Button onClick={handleApplyChildPreview}>Vorschau übernehmen</Button>
                 <Button onClick={() => setPreview(null)}>Verwerfen</Button>
               </div>
             </div>
@@ -760,6 +970,26 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
                 </span>
               </div>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Teamer auto-assign preview banner */}
+      {teamerPreview && (
+        <Card className="border-sky-500 bg-sky-50 dark:bg-sky-950">
+          <CardContent className="flex flex-col gap-3 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="font-semibold">Vorschau Teamer-Zuweisung</span>
+                <span className="text-muted-foreground text-sm">
+                  Nicht zugewiesene Teamer: {teamerPreview.unassignedTeamers.length}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleApplyTeamerPreview}>Vorschau übernehmen</Button>
+                <Button onClick={() => setTeamerPreview(null)}>Verwerfen</Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -780,7 +1010,7 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
           <Skeleton className="h-[400px] w-[220px] rounded-xl" />
         </div>
       ) : data ? (
-        data.rooms.length === 0 && data.unassigned.length === 0 ? (
+        data.rooms.length === 0 && data.unassigned.length === 0 && floors.length === 0 ? (
           <Card className="border-dashed">
             <CardContent className="text-muted-foreground py-12 text-center">
               <p className="font-medium">
@@ -819,16 +1049,49 @@ export function RaumplanClient({ events }: { events: EventOption[] }) {
                     id={child.id}
                     firstName={child.firstName}
                     lastName={child.lastName}
-                    childClass={child.class}
+                    childAge={child.age}
                     childGender={child.childGender}
                     wishNames={child.wishNames}
-                    onDragStart={handleDragStart}
+                    onDragStart={(childId, childName) =>
+                      handleDragStart(childId, childName, null, 'child')
+                    }
                     fromRoomId={null}
                   />
                 ))}
                 {data.unassigned.length === 0 && (
                   <div className="text-muted-foreground py-4 text-center text-xs">
                     Alle zugewiesen ✓
+                  </div>
+                )}
+
+                {/* Unassigned teamers */}
+                {data.allTeamers.size > 0 && (
+                  <div className="mt-3 border-t pt-3">
+                    <CardHeader>
+                      <CardTitle>
+                        Nicht zugewiesene Teamer ({data.unassignedTeamers.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-1">
+                      {data.unassignedTeamers.map((t) => (
+                        <TeamerCard
+                          key={t.id}
+                          id={t.id}
+                          firstName={t.firstName}
+                          lastName={t.lastName}
+                          gender={t.gender}
+                          onDragStart={(teamerId, teamerName) =>
+                            handleDragStart(teamerId, teamerName, null, 'teamer')
+                          }
+                          fromRoomId={null}
+                        />
+                      ))}
+                      {data.unassignedTeamers.length === 0 && (
+                        <div className="text-muted-foreground py-2 text-center text-xs">
+                          Alle Teamer zugewiesen ✓
+                        </div>
+                      )}
+                    </CardContent>
                   </div>
                 )}
               </div>
@@ -1024,4 +1287,28 @@ function findChildInAnyRoom(
     if (found) return found
   }
   return undefined
+}
+
+function findTeamer(data: RoomPlanData, id: string): TeamerOccupant | undefined {
+  for (const room of data.rooms) {
+    const found = room.teamerOccupants.find((t) => t.id === id)
+    if (found) return found
+  }
+  return data.unassignedTeamers.find((t) => t.id === id)
+}
+
+/**
+ * Resolve a teamer by ID, falling back to the known team members of the event
+ * and finally to a placeholder (used when applying auto-assign previews).
+ */
+function resolveTeamer(data: RoomPlanData, id: string): TeamerOccupant {
+  return (
+    findTeamer(data, id) ??
+    data.allTeamers.get(id) ?? {
+      id,
+      firstName: id,
+      lastName: '',
+      gender: 'male' as const,
+    }
+  )
 }

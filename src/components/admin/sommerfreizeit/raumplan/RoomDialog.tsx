@@ -69,7 +69,7 @@ export function RoomDialog({
         setCapacity(room.capacity?.toString() ?? '')
         setGender(room.gender ?? '')
         setFloorId(room.floorId ?? '')
-        setTeamerRoom(false) // teamerRoom not in RoomWithOccupants
+        setTeamerRoom(room.teamerRoom ?? false)
       } else {
         setName('')
         setBeschreibung('')

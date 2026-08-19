@@ -23,19 +23,49 @@ export default async function RaumplanView({
     redirect('/admin/login?redirect=/admin/sommerfreizeit/raumplan')
   }
 
-  // Fetch all events for the selector
+  // Fetch all events (for the selector) and all floors (for the plan) in parallel
   const payloadInst = await getPayload({ config })
-  const eventsResult = await payloadInst.find({
-    collection: 'sommerfreizeitEvents',
-    limit: 0,
-    overrideAccess: true,
-    sort: '-startDate',
-  })
+  const [eventsResult, floorsResult] = await Promise.all([
+    payloadInst.find({
+      collection: 'sommerfreizeitEvents',
+      limit: 0,
+      overrideAccess: true,
+      sort: '-startDate',
+    }),
+    payloadInst.find({
+      collection: 'sommerfreizeitFloors',
+      limit: 0,
+      overrideAccess: true,
+    }),
+  ])
+
+  // Default selection: the event linked in the Sommerfreizeit landing page global
+  let defaultEventId: string | null = null
+  try {
+    const landingPage = await payloadInst.findGlobal({
+      slug: 'sommerfreizeitLandingPage',
+      select: { freizeit: true },
+      overrideAccess: true,
+    })
+    defaultEventId =
+      typeof landingPage?.freizeit === 'string'
+        ? landingPage.freizeit
+        : (landingPage?.freizeit?.id ?? null)
+  } catch {
+    // Global not configured yet — fall back to no default selection
+  }
 
   const events = eventsResult.docs.map((e: any) => ({
     id: e.id,
     name: e.name,
     startDate: e.startDate,
+  }))
+
+  const floors = floorsResult.docs.map((f: any) => ({
+    id: f.id,
+    name: f.name,
+    gender: f.gender === 'male' || f.gender === 'female' ? f.gender : null,
+    eventId: typeof f.freizeit === 'string' ? f.freizeit : (f.freizeit?.id ?? ''),
   }))
 
   return (
@@ -51,7 +81,7 @@ export default async function RaumplanView({
     >
       <Gutter>
         <TooltipProvider>
-          <RaumplanClient events={events} />
+          <RaumplanClient events={events} floors={floors} defaultEventId={defaultEventId} />
         </TooltipProvider>
       </Gutter>
     </DefaultTemplate>

@@ -15,7 +15,11 @@ export interface RoomInfo {
   name: string
   gender: 'male' | 'female' | null
   capacity: number | null // null = unlimited
+  /** True if this room is reserved for teamers (excluded from auto-assign) */
+  teamerRoom: boolean
   currentOccupants: string[] // registration IDs already in the room
+  /** Team member IDs already assigned to this teamer room */
+  teamerOccupantIds: string[]
   /** True if existing occupants already contain both male and female children */
   genderConflict: boolean
 }
@@ -24,10 +28,17 @@ export interface RegistrationInfo {
   id: string
   firstName: string
   lastName: string
-  class: string
+  age: number | null
   childGender: 'male' | 'female' | 'diverse'
   /** Registration IDs this child wishes to room with (resolved from childRelation) */
   wishTargets: string[]
+}
+
+export interface TeamerInfo {
+  id: string
+  firstName: string
+  lastName: string
+  gender: 'male' | 'female'
 }
 
 export interface RoomAssignment {
@@ -36,7 +47,7 @@ export interface RoomAssignment {
   registrationIds: string[]
 }
 
-export interface AssignmentResult {
+export interface ChildAssignmentResult {
   assignments: RoomAssignment[]
   /** 0-100 percentage of mutual wishes satisfied */
   mutualWishScore: number
@@ -46,6 +57,13 @@ export interface AssignmentResult {
   unassigned: string[]
   /** Room IDs that already had mixed-gender occupants before assignment */
   conflictedRoomIds: string[]
+}
+
+export interface TeamerAssignmentResult {
+  /** Teamer room assignments: roomId → team member IDs (only teamer rooms) */
+  teamerAssignments: { roomId: string; teamerIds: string[] }[]
+  /** Team member IDs that couldn't be auto-assigned (no fitting teamer room) */
+  unassignedTeamers: string[]
 }
 
 // ---------------------------------------------------------------------------
@@ -119,49 +137,19 @@ export function isGenderCompatible(
 }
 
 // ---------------------------------------------------------------------------
-// Main algorithm
+// Shared data helpers (used by both child and teamer assignment)
 // ---------------------------------------------------------------------------
 
-/**
- * Compute room assignments for all registrations of a given event.
- *
- * Algorithm:
- * 1. Fetch rooms & registrations for the event
- * 2. Build wish graph from zimmerwunsch[].childRelation
- * 3. Split by child gender
- * 4. Build wish-based connected components from children with room wishes
- * 5. Group remaining children without wishes by school class
- * 6. Greedy bin-pack clusters into matching-gender rooms (wish clusters first,
- *    then class clusters)
- */
-export async function computeRoomAssignments(
-  eventId: string,
-  payload: Payload,
-): Promise<AssignmentResult> {
-  // ---- fetch data ----
-  const [roomsResult, registrationsResult] = await Promise.all([
-    payload.find({
-      collection: 'sommerfreizeitRooms',
-      where: { freizeit: { equals: eventId } },
-      depth: 1, // populate floor relationship
-      limit: 0,
-      overrideAccess: true,
-    }),
-    payload.find({
-      collection: 'sommerfreizeitAnmeldung',
-      where: {
-        and: [
-          { event: { equals: eventId } },
-          { _status: { equals: 'published' } },
-        ],
-      },
-      depth: 1, // populate child + zimmerwunsch.childRelation one level
-      limit: 0,
-      overrideAccess: true,
-    }),
-  ])
+async function buildRoomInfos(eventId: string, payload: Payload): Promise<RoomInfo[]> {
+  const roomsResult = await payload.find({
+    collection: 'sommerfreizeitRooms',
+    where: { freizeit: { equals: eventId } },
+    depth: 1, // populate floor relationship
+    limit: 0,
+    overrideAccess: true,
+  })
 
-  const rooms: RoomInfo[] = roomsResult.docs.map((r) => {
+  return roomsResult.docs.map((r) => {
     const room = r as unknown as SommerfreizeitRoom
     // Resolve floor gender if floor is populated
     const floorGender =
@@ -180,6 +168,10 @@ export async function computeRoomAssignments(
       .map((o) => resolveId(o as string | { id: string }))
       .filter(Boolean) as string[]
 
+    const teamerOccupantIds = (room.teamerOccupants ?? [])
+      .map((o) => resolveId(o as string | { id: string }))
+      .filter(Boolean) as string[]
+
     // Read conflict state from denormalized genderComposition field (O(1))
     const comp = (room as any).genderComposition as
       | { male: number; female: number }
@@ -191,12 +183,32 @@ export async function computeRoomAssignments(
       name: room.name,
       gender: effectiveGender,
       capacity: room.capacity ?? null,
+      teamerRoom: !!room.teamerRoom,
       currentOccupants: occupantIds,
+      teamerOccupantIds,
       genderConflict: hasConflict,
     }
   })
+}
 
-  const registrations: RegistrationInfo[] = registrationsResult.docs.map((r) => {
+async function fetchRegistrations(
+  eventId: string,
+  payload: Payload,
+): Promise<RegistrationInfo[]> {
+  const registrationsResult = await payload.find({
+    collection: 'sommerfreizeitAnmeldung',
+    where: {
+      and: [
+        { event: { equals: eventId } },
+        { _status: { equals: 'published' } },
+      ],
+    },
+    depth: 1, // populate child + zimmerwunsch.childRelation one level
+    limit: 0,
+    overrideAccess: true,
+  })
+
+  return registrationsResult.docs.map((r) => {
     const reg = r as unknown as SommerfreizeitAnmeldung
     const wishTargets: string[] = []
     if (reg.zimmerwunsch) {
@@ -211,11 +223,73 @@ export async function computeRoomAssignments(
       id: reg.id,
       firstName: reg.firstName,
       lastName: reg.lastName,
-      class: reg.class,
+      age: reg.age ?? null,
       childGender: resolveChildGender(reg.child),
       wishTargets,
     }
   })
+}
+
+async function fetchTeamers(eventId: string, payload: Payload): Promise<TeamerInfo[]> {
+  const eventResult = await payload.findByID({
+    collection: 'sommerfreizeitEvents',
+    id: eventId,
+    overrideAccess: true,
+    select: { team: true },
+  })
+
+  const rawTeam = ((eventResult as any)?.team ?? []) as (string | { id: string })[]
+  const teamIds = rawTeam
+    .map((t) => (typeof t === 'string' ? t : t?.id))
+    .filter((id): id is string => Boolean(id))
+
+  const teamers: TeamerInfo[] = []
+  if (teamIds.length > 0) {
+    const teamResult = await payload.find({
+      collection: 'team',
+      where: { id: { in: teamIds } },
+      limit: 0,
+      overrideAccess: true,
+    })
+    for (const t of teamResult.docs as any[]) {
+      teamers.push({
+        id: t.id,
+        firstName: t.firstName ?? '',
+        lastName: t.lastName ?? '',
+        gender: t.gender === 'female' ? 'female' : 'male',
+      })
+    }
+  }
+
+  return teamers
+}
+
+// ---------------------------------------------------------------------------
+// Child assignment (independent from teamer assignment)
+// ---------------------------------------------------------------------------
+
+/**
+ * Compute room assignments for all registrations (children) of a given event.
+ * Runs independently from teamer assignment.
+ *
+ * Algorithm:
+ * 1. Fetch rooms & registrations for the event
+ * 2. Build wish graph from zimmerwunsch[].childRelation
+ * 3. Split by child gender
+ * 4. Build wish-based connected components from children with room wishes
+ * 5. Group remaining children without wishes by school class
+ * 6. Greedy bin-pack clusters into matching-gender rooms (wish clusters first,
+ *    then class clusters)
+ */
+export async function computeChildRoomAssignments(
+  eventId: string,
+  payload: Payload,
+): Promise<ChildAssignmentResult> {
+  // ---- fetch data ----
+  const [rooms, registrations] = await Promise.all([
+    buildRoomInfos(eventId, payload),
+    fetchRegistrations(eventId, payload),
+  ])
 
   const regMap = new Map(registrations.map((r) => [r.id, r]))
 
@@ -235,9 +309,11 @@ export async function computeRoomAssignments(
   const female = pool.filter((r) => r.childGender === 'female')
   const diverse = pool.filter((r) => r.childGender === 'diverse')
 
-  const maleRooms = rooms.filter((r) => r.gender === 'male' && !r.genderConflict)
-  const femaleRooms = rooms.filter((r) => r.gender === 'female' && !r.genderConflict)
-  const neutralRooms = rooms.filter((r) => r.gender === null && !r.genderConflict)
+  // Teamer rooms are never auto-assigned — children are only placed manually
+  const assignableRooms = rooms.filter((r) => !r.teamerRoom)
+  const maleRooms = assignableRooms.filter((r) => r.gender === 'male' && !r.genderConflict)
+  const femaleRooms = assignableRooms.filter((r) => r.gender === 'female' && !r.genderConflict)
+  const neutralRooms = assignableRooms.filter((r) => r.gender === null && !r.genderConflict)
 
   // ---- helper: build clusters (wish graph + class groups) ----
   function buildWishClusters(group: RegistrationInfo[]): RegistrationInfo[][] {
@@ -280,20 +356,20 @@ export async function computeRoomAssignments(
     // sort wish clusters largest first
     clusters.sort((a, b) => b.length - a.length)
 
-    // ---- Group unconnected children (no wishes) by school class ----
-    const classGroups = new Map<string, RegistrationInfo[]>()
+    // ---- Group unconnected children (no wishes) by age ----
+    const ageGroups = new Map<string, RegistrationInfo[]>()
     for (const r of withoutWishes) {
-      const className = r.class || 'unknown'
-      if (!classGroups.has(className)) classGroups.set(className, [])
-      classGroups.get(className)!.push(r)
+      const ageGroup = r.age != null ? String(r.age) : 'unknown'
+      if (!ageGroups.has(ageGroup)) ageGroups.set(ageGroup, [])
+      ageGroups.get(ageGroup)!.push(r)
     }
 
-    const classClusters = Array.from(classGroups.values())
-    // sort class clusters largest first
-    classClusters.sort((a, b) => b.length - a.length)
+    const ageClusters = Array.from(ageGroups.values())
+    // sort age clusters largest first
+    ageClusters.sort((a, b) => b.length - a.length)
 
-    // Wish clusters first (priority), then class clusters
-    return [...clusters, ...classClusters]
+    // Wish clusters first (priority), then age clusters
+    return [...clusters, ...ageClusters]
   }
 
   // ---- helper: assign clusters to rooms (First Fit Decreasing, grade-aware) ----
@@ -313,42 +389,38 @@ export async function computeRoomAssignments(
       roomCounts.set(room.id, initialCounts?.get(room.id) ?? room.currentOccupants.length)
     }
 
-    // track class stats per room for grade-gap scoring
-    // roomId -> { sum of numeric classes, count of occupants }
-    const roomClassStats = new Map<string, { sum: number; count: number }>()
+    // track age stats per room for age-gap scoring
+    // roomId -> { sum of ages, count of occupants }
+    const roomAgeStats = new Map<string, { sum: number; count: number }>()
     for (const room of availableRooms) {
       let sum = 0
       let count = 0
       for (const occId of room.currentOccupants) {
         const reg = regMap.get(occId)
-        if (reg) {
-          const num = parseInt(reg.class, 10)
-          if (!isNaN(num)) {
-            sum += num
-            count++
-          }
+        if (reg && reg.age != null) {
+          sum += reg.age
+          count++
         }
       }
-      roomClassStats.set(room.id, { sum, count })
+      roomAgeStats.set(room.id, { sum, count })
     }
 
-    // helper: compute average numeric class of a group of registrations
-    function avgClass(regs: RegistrationInfo[]): number | null {
+    // helper: compute average age of a group of registrations
+    function avgAge(regs: RegistrationInfo[]): number | null {
       let sum = 0
       let count = 0
       for (const r of regs) {
-        const num = parseInt(r.class, 10)
-        if (!isNaN(num)) {
-          sum += num
+        if (r.age != null) {
+          sum += r.age
           count++
         }
       }
       return count > 0 ? sum / count : null
     }
 
-    // helper: get room average class
-    function roomAvgClass(roomId: string): number | null {
-      const stats = roomClassStats.get(roomId)
+    // helper: get room average age
+    function roomAvgAge(roomId: string): number | null {
+      const stats = roomAgeStats.get(roomId)
       if (!stats || stats.count === 0) return null
       return stats.sum / stats.count
     }
@@ -356,13 +428,13 @@ export async function computeRoomAssignments(
     const remaining: RegistrationInfo[] = []
 
     for (const cluster of clusters) {
-      const clusterAvg = avgClass(cluster)
+      const clusterAvg = avgAge(cluster)
 
-      // find best-fit room: prefer grade gap ≤ 1 over capacity utilization
-      // (leaving space is better than mixing grades more than 1 year apart)
+      // find best-fit room: prefer age gap ≤ 1 over capacity utilization
+      // (leaving space is better than mixing ages more than 1 year apart)
       let bestRoom: RoomInfo | null = null
       let bestScore = Infinity
-      let bestGradeGap = Infinity
+      let bestAgeGap = Infinity
 
       for (const room of availableRooms) {
         const current = roomCounts.get(room.id) ?? 0
@@ -375,23 +447,23 @@ export async function computeRoomAssignments(
         // capacity score: lower = fuller room = better fit
         const score = capacity !== null ? capacity - afterAssign : afterAssign
 
-        // grade gap (smaller = closer age match)
-        let gradeGap = 0
+        // age gap (smaller = closer age match)
+        let ageGap = 0
         if (clusterAvg !== null) {
-          const roomAvg = roomAvgClass(room.id)
+          const roomAvg = roomAvgAge(room.id)
           if (roomAvg !== null) {
-            gradeGap = Math.abs(clusterAvg - roomAvg)
+            ageGap = Math.abs(clusterAvg - roomAvg)
           }
         }
 
         // primary: prefer gap ≤ 1 (tier 0) over gap > 1 (tier 1)
         // secondary: within same tier, prefer better capacity fit
-        const gapTier = gradeGap <= 1 ? 0 : 1
-        const bestGapTier = bestGradeGap <= 1 ? 0 : 1
+        const gapTier = ageGap <= 1 ? 0 : 1
+        const bestGapTier = bestAgeGap <= 1 ? 0 : 1
 
         if (gapTier < bestGapTier || (gapTier === bestGapTier && score < bestScore)) {
           bestScore = score
-          bestGradeGap = gradeGap
+          bestAgeGap = ageGap
           bestRoom = room
         }
       }
@@ -402,9 +474,9 @@ export async function computeRoomAssignments(
           bestRoom.id,
           (roomCounts.get(bestRoom.id) ?? 0) + cluster.length,
         )
-        // update room class stats
+        // update room age stats
         if (clusterAvg !== null) {
-          const stats = roomClassStats.get(bestRoom.id)!
+          const stats = roomAgeStats.get(bestRoom.id)!
           stats.sum += clusterAvg * cluster.length
           stats.count += cluster.length
         }
@@ -412,10 +484,10 @@ export async function computeRoomAssignments(
         // no room fits — try splitting the cluster
         // assign individuals to rooms, preferring gap ≤ 1 over capacity
         for (const reg of cluster) {
-          const regAvg = avgClass([reg])
+          const regAvg = avgAge([reg])
           let splitRoom: RoomInfo | null = null
           let splitScore = Infinity
-          let splitGradeGap = Infinity
+          let splitAgeGap = Infinity
           for (const room of availableRooms) {
             const current = roomCounts.get(room.id) ?? 0
             const after = current + 1
@@ -423,29 +495,29 @@ export async function computeRoomAssignments(
             if (cap !== null && after > cap) continue
             const score = cap !== null ? cap - after : after
 
-            let gradeGap = 0
+            let ageGap = 0
             if (regAvg !== null) {
-              const roomAvg = roomAvgClass(room.id)
+              const roomAvg = roomAvgAge(room.id)
               if (roomAvg !== null) {
-                gradeGap = Math.abs(regAvg - roomAvg)
+                ageGap = Math.abs(regAvg - roomAvg)
               }
             }
 
-            const gapTier = gradeGap <= 1 ? 0 : 1
-            const bestGapTier = splitGradeGap <= 1 ? 0 : 1
+            const gapTier = ageGap <= 1 ? 0 : 1
+            const bestGapTier = splitAgeGap <= 1 ? 0 : 1
 
             if (gapTier < bestGapTier || (gapTier === bestGapTier && score < splitScore)) {
               splitScore = score
-              splitGradeGap = gradeGap
+              splitAgeGap = ageGap
               splitRoom = room
             }
           }
           if (splitRoom) {
             assignments.get(splitRoom.id)!.push(reg.id)
             roomCounts.set(splitRoom.id, (roomCounts.get(splitRoom.id) ?? 0) + 1)
-            // update room class stats for this individual
+            // update room age stats for this individual
             if (regAvg !== null) {
-              const stats = roomClassStats.get(splitRoom.id)!
+              const stats = roomAgeStats.get(splitRoom.id)!
               stats.sum += regAvg
               stats.count += 1
             }
@@ -613,5 +685,94 @@ export async function computeRoomAssignments(
     totalWishScore,
     unassigned,
     conflictedRoomIds,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Teamer assignment (independent from child assignment)
+// ---------------------------------------------------------------------------
+
+/**
+ * Compute room assignments for the team members (teamers) of an event.
+ * Runs independently from child assignment.
+ *
+ * Teamers are only placed into rooms flagged `teamerRoom: true`. Mixed
+ * teamer rooms are allowed; an explicit room gender is respected.
+ */
+export async function computeTeamerRoomAssignments(
+  eventId: string,
+  payload: Payload,
+): Promise<TeamerAssignmentResult> {
+  // ---- fetch data ----
+  const [rooms, teamers] = await Promise.all([
+    buildRoomInfos(eventId, payload),
+    fetchTeamers(eventId, payload),
+  ])
+
+  const teamerAssignments: { roomId: string; teamerIds: string[] }[] = []
+  const unassignedTeamers: string[] = []
+
+  // Existing teamer occupants (persisted teamerOccupants) are kept as-is.
+  const teamerRooms = rooms.filter((r) => r.teamerRoom && !r.genderConflict)
+  for (const room of teamerRooms) {
+    teamerAssignments.push({ roomId: room.id, teamerIds: [...room.teamerOccupantIds] })
+  }
+
+  const assignedTeamerIds = new Set<string>()
+  for (const room of teamerRooms) {
+    for (const id of room.teamerOccupantIds) assignedTeamerIds.add(id)
+  }
+
+  const teamerPool = teamers.filter((t) => !assignedTeamerIds.has(t.id))
+
+  if (teamerPool.length > 0) {
+    if (teamerRooms.length > 0) {
+      // Track occupancy per teamer room (capacity-aware)
+      const teamerRoomCounts = new Map<string, number>()
+      for (const room of teamerRooms) {
+        teamerRoomCounts.set(room.id, room.teamerOccupantIds.length)
+      }
+
+      // Prefer filling rooms that already have teamers (grouping) over empty ones
+      const teamerRoomPool = [...teamerRooms].sort((a, b) => {
+        const aCount = teamerRoomCounts.get(a.id) ?? 0
+        const bCount = teamerRoomCounts.get(b.id) ?? 0
+        return bCount - aCount
+      })
+
+      for (const teamer of teamerPool) {
+        // Find first fitting room: within capacity and (if the room declares an
+        // explicit gender) matching the teamer's gender. Mixed teamer rooms are
+        // otherwise allowed.
+        let bestRoom: RoomInfo | null = null
+        for (const room of teamerRoomPool) {
+          const current = teamerRoomCounts.get(room.id) ?? 0
+          const cap = room.capacity
+          if (cap !== null && current >= cap) continue
+          if (room.gender && room.gender !== teamer.gender) continue
+          bestRoom = room
+          break
+        }
+
+        if (bestRoom) {
+          const entry = teamerAssignments.find((a) => a.roomId === bestRoom!.id)
+          if (entry) {
+            entry.teamerIds.push(teamer.id)
+            teamerRoomCounts.set(bestRoom.id, (teamerRoomCounts.get(bestRoom.id) ?? 0) + 1)
+          } else {
+            unassignedTeamers.push(teamer.id)
+          }
+        } else {
+          unassignedTeamers.push(teamer.id)
+        }
+      }
+    } else {
+      unassignedTeamers.push(...teamerPool.map((t) => t.id))
+    }
+  }
+
+  return {
+    teamerAssignments,
+    unassignedTeamers,
   }
 }

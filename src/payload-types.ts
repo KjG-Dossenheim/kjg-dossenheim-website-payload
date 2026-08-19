@@ -168,7 +168,6 @@ export interface Config {
     rechtliches: Rechtlich;
     knallbonbon: Knallbonbon;
     knallbonbonSettings: KnallbonbonSetting;
-    sommerfreizeitPackliste: SommerfreizeitPackliste;
     sommerfreizeitLandingPage: SommerfreizeitLandingPage;
     sommerfreizeitSettings: SommerfreizeitSetting;
   };
@@ -185,7 +184,6 @@ export interface Config {
     rechtliches: RechtlichesSelect<false> | RechtlichesSelect<true>;
     knallbonbon: KnallbonbonSelect<false> | KnallbonbonSelect<true>;
     knallbonbonSettings: KnallbonbonSettingsSelect<false> | KnallbonbonSettingsSelect<true>;
-    sommerfreizeitPackliste: SommerfreizeitPacklisteSelect<false> | SommerfreizeitPacklisteSelect<true>;
     sommerfreizeitLandingPage: SommerfreizeitLandingPageSelect<false> | SommerfreizeitLandingPageSelect<true>;
     sommerfreizeitSettings: SommerfreizeitSettingsSelect<false> | SommerfreizeitSettingsSelect<true>;
   };
@@ -283,6 +281,10 @@ export interface SommerfreizeitAnmeldung {
    */
   dateOfBirth: string;
   /**
+   * Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.
+   */
+  age?: number | null;
+  /**
    * Das Geschlecht des Kindes
    */
   gender: 'male' | 'female' | 'diverse';
@@ -362,6 +364,9 @@ export interface SommerfreizeitAnmeldung {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Wird automatisch anhand der Bewohner-Liste im Raumplan gesetzt.
+   */
   room?: (string | null) | SommerfreizeitRoom;
   /**
    * Ist das Kind ein sicherer Schwimmer?
@@ -448,6 +453,10 @@ export interface SommerfreizeitRoom {
    * Die Anmeldungen, die in diesem Zimmer wohnen. Wird automatisch basierend auf den Zimmerwünschen der Anmeldungen gefüllt.
    */
   occupants?: (string | SommerfreizeitAnmeldung)[] | null;
+  /**
+   * Die Teamer, die in diesem Zimmer wohnen. Wird im Raumplan zugewiesen.
+   */
+  teamerOccupants?: (string | Team)[] | null;
   genderComposition?:
     | {
         [k: string]: unknown;
@@ -468,6 +477,59 @@ export interface SommerfreizeitRoom {
   floor?: (string | null) | SommerfreizeitFloor;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: string | null;
+  gender: 'male' | 'female';
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  profilePicture?: (string | null) | Teambilder;
+  email?: string | null;
+  phone?: string | null;
+  position: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teambilder".
+ */
+export interface Teambilder {
+  id: string;
+  alt: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -654,58 +716,6 @@ export interface Media {
       filename?: string | null;
     };
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team".
- */
-export interface Team {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth?: string | null;
-  gender: 'male' | 'female';
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  profilePicture?: (string | null) | Teambilder;
-  email?: string | null;
-  phone?: string | null;
-  position: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teambilder".
- */
-export interface Teambilder {
-  id: string;
-  alt: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1400,7 +1410,7 @@ export interface Session {
   token: string;
   ipAddress?: string | null;
   userAgent?: string | null;
-  user: string | SommerfreizeitUser;
+  user: string | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -1414,7 +1424,7 @@ export interface Account {
   id: string;
   accountId: string;
   providerId: string;
-  user: string | SommerfreizeitUser;
+  user: string | User;
   accessToken?: string | null;
   refreshToken?: string | null;
   idToken?: string | null;
@@ -1756,6 +1766,7 @@ export interface SommerfreizeitAnmeldungSelect<T extends boolean = true> {
   firstName?: T;
   lastName?: T;
   dateOfBirth?: T;
+  age?: T;
   gender?: T;
   class?: T;
   bemerkungen?: T;
@@ -1842,12 +1853,14 @@ export interface SommerfreizeitRoomsSelect<T extends boolean = true> {
   capacity?: T;
   gender?: T;
   occupants?: T;
+  teamerOccupants?: T;
   genderComposition?: T;
   freizeit?: T;
   teamerRoom?: T;
   floor?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3121,30 +3134,6 @@ export interface KnallbonbonSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitPackliste".
- */
-export interface SommerfreizeitPackliste {
-  id: string;
-  text: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitLandingPage".
  */
 export interface SommerfreizeitLandingPage {
@@ -3491,16 +3480,6 @@ export interface KnallbonbonSelect<T extends boolean = true> {
  */
 export interface KnallbonbonSettingsSelect<T extends boolean = true> {
   confirmationDeadlineDays?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitPackliste_select".
- */
-export interface SommerfreizeitPacklisteSelect<T extends boolean = true> {
-  text?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

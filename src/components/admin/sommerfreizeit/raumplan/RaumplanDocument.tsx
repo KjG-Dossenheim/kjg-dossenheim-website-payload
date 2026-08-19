@@ -1,6 +1,6 @@
 import React from 'react'
 import { Page, Text, View, Document, StyleSheet, Svg, Path, Circle } from '@react-pdf/renderer'
-import type { RoomPlanData, UnassignedChild } from './types'
+import type { RoomPlanData, TeamerOccupant, UnassignedChild } from './types'
 
 const styles = StyleSheet.create({
   page: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     width: 120,
   },
-  occupantClass: {
+  occupantAge: {
     fontSize: 8,
     color: '#666',
     width: 30,
@@ -145,6 +145,13 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 6,
   },
+  unassignedSubHeader: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#888',
+    marginBottom: 4,
+    marginTop: 6,
+  },
   unassignedRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -161,7 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     width: 120,
   },
-  unassignedClass: {
+  unassignedAge: {
     fontSize: 8,
     color: '#666',
     width: 30,
@@ -264,13 +271,13 @@ function OccupantRow({
   index,
   firstName,
   lastName,
-  childClass,
+  childAge,
   childGender,
 }: {
   index: number
   firstName: string
   lastName: string
-  childClass: string
+  childAge: number | null
   childGender: 'male' | 'female' | 'diverse'
 }) {
   return (
@@ -279,10 +286,10 @@ function OccupantRow({
       <Text style={styles.occupantName}>
         {firstName} {lastName}
       </Text>
-      {childClass ? (
-        <Text style={styles.occupantClass}>{childClass}</Text>
+      {childAge != null ? (
+        <Text style={styles.occupantAge}>{childAge} J.</Text>
       ) : (
-        <Text style={styles.occupantClass} />
+        <Text style={styles.occupantAge} />
       )}
       <GenderSymbol gender={childGender} />
     </View>
@@ -296,18 +303,56 @@ function UnassignedRow({ child }: { child: UnassignedChild }) {
       <Text style={styles.unassignedName}>
         {child.firstName} {child.lastName}
       </Text>
-      {child.class ? (
-        <Text style={styles.unassignedClass}>{child.class}</Text>
+      {child.age != null ? (
+        <Text style={styles.unassignedAge}>{child.age} J.</Text>
       ) : (
-        <Text style={styles.unassignedClass} />
+        <Text style={styles.unassignedAge} />
       )}
       <GenderSymbol gender={child.childGender} />
     </View>
   )
 }
 
+function TeamerRow({
+  index,
+  firstName,
+  lastName,
+  gender,
+}: {
+  index: number
+  firstName: string
+  lastName: string
+  gender: 'male' | 'female'
+}) {
+  return (
+    <View style={styles.occupantRow} wrap={false}>
+      <Text style={styles.occupantIndex}>{index}.</Text>
+      <Text style={styles.occupantName}>
+        {firstName} {lastName}
+      </Text>
+      <Text style={styles.occupantAge} />
+      <GenderSymbol gender={gender} />
+    </View>
+  )
+}
+
+function UnassignedTeamerRow({ teamer }: { teamer: TeamerOccupant }) {
+  return (
+    <View style={styles.unassignedRow} wrap={false}>
+      <Text style={styles.unassignedBullet}>•</Text>
+      <Text style={styles.unassignedName}>
+        {teamer.firstName} {teamer.lastName}
+      </Text>
+      <Text style={styles.unassignedAge} />
+      <GenderSymbol gender={teamer.gender} />
+    </View>
+  )
+}
+
 export function RaumplanDocument({ data }: { data: RoomPlanData }) {
-  const totalOccupants = data.rooms.reduce((sum, r) => sum + r.occupants.length, 0)
+  const totalChildren = data.rooms.reduce((sum, r) => sum + r.occupants.length, 0)
+  const totalTeamers = data.rooms.reduce((sum, r) => sum + r.teamerOccupants.length, 0)
+  const totalOccupants = totalChildren + totalTeamers
   const totalCapacity = data.rooms.reduce((sum, r) => sum + (r.capacity ?? 0), 0)
 
   // Group rooms by floor
@@ -369,9 +414,20 @@ export function RaumplanDocument({ data }: { data: RoomPlanData }) {
                   <Text style={styles.summaryLabel}>{totalOccupants}</Text>{' '}
                   {totalOccupants === 1 ? 'Bewohner' : 'Bewohner'}
                 </Text>
+                {totalTeamers > 0 && (
+                  <Text style={styles.summaryItem}>
+                    <Text style={styles.summaryLabel}>{totalTeamers}</Text> Teamer
+                  </Text>
+                )}
                 <Text style={styles.summaryItem}>
                   <Text style={styles.summaryLabel}>{data.unassigned.length}</Text> nicht zugewiesen
                 </Text>
+                {data.unassignedTeamers.length > 0 && (
+                  <Text style={styles.summaryItem}>
+                    <Text style={styles.summaryLabel}>{data.unassignedTeamers.length}</Text> Teamer
+                    nicht zugewiesen
+                  </Text>
+                )}
               </View>
             </View>
           )}
@@ -425,19 +481,30 @@ export function RaumplanDocument({ data }: { data: RoomPlanData }) {
                     {room.beschreibung && <Text style={styles.roomMeta}>{room.beschreibung}</Text>}
                   </View>
 
-                  {room.occupants.length === 0 ? (
+                  {room.occupants.length === 0 && room.teamerOccupants.length === 0 ? (
                     <Text style={styles.emptyRoom}>leer</Text>
                   ) : (
-                    room.occupants.map((occ, idx) => (
-                      <OccupantRow
-                        key={occ.id}
-                        index={idx + 1}
-                        firstName={occ.firstName}
-                        lastName={occ.lastName}
-                        childClass={occ.class}
-                        childGender={occ.childGender}
-                      />
-                    ))
+                    <>
+                      {room.occupants.map((occ, idx) => (
+                        <OccupantRow
+                          key={occ.id}
+                          index={idx + 1}
+                          firstName={occ.firstName}
+                          lastName={occ.lastName}
+                          childAge={occ.age}
+                          childGender={occ.childGender}
+                        />
+                      ))}
+                      {room.teamerOccupants.map((t, idx) => (
+                        <TeamerRow
+                          key={t.id}
+                          index={room.occupants.length + idx + 1}
+                          firstName={t.firstName}
+                          lastName={t.lastName}
+                          gender={t.gender}
+                        />
+                      ))}
+                    </>
                   )}
                 </View>
               )
@@ -445,16 +512,34 @@ export function RaumplanDocument({ data }: { data: RoomPlanData }) {
           </View>
 
           {/* Unassigned — only on last page */}
-          {index === floorGroups.length - 1 && data.unassigned.length > 0 && (
-            <View style={styles.unassignedSection}>
-              <Text style={styles.unassignedHeader}>
-                Nicht zugewiesen ({data.unassigned.length})
-              </Text>
-              {data.unassigned.map((child) => (
-                <UnassignedRow key={child.id} child={child} />
-              ))}
-            </View>
-          )}
+          {index === floorGroups.length - 1 &&
+            (data.unassigned.length > 0 || data.unassignedTeamers.length > 0) && (
+              <View style={styles.unassignedSection}>
+                <Text style={styles.unassignedHeader}>
+                  Nicht zugewiesen ({data.unassigned.length + data.unassignedTeamers.length})
+                </Text>
+                {data.unassigned.length > 0 && (
+                  <>
+                    <Text style={styles.unassignedSubHeader}>
+                      Kinder ({data.unassigned.length})
+                    </Text>
+                    {data.unassigned.map((child) => (
+                      <UnassignedRow key={child.id} child={child} />
+                    ))}
+                  </>
+                )}
+                {data.unassignedTeamers.length > 0 && (
+                  <>
+                    <Text style={styles.unassignedSubHeader}>
+                      Teamer ({data.unassignedTeamers.length})
+                    </Text>
+                    {data.unassignedTeamers.map((t) => (
+                      <UnassignedTeamerRow key={t.id} teamer={t} />
+                    ))}
+                  </>
+                )}
+              </View>
+            )}
 
           {/* Page number */}
           <Text

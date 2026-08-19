@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { syncChildDataBeforeChange } from './hooks/syncChildData'
 import { populateZimmerwunschChildRelation } from './hooks/populateZimmerwunschChildRelation'
+import { calculateAgeBeforeChange } from './hooks/calculateAge'
 
 export const sommerfreizeitAnmeldung: CollectionConfig = {
   slug: 'sommerfreizeitAnmeldung',
@@ -13,7 +14,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
   },
   trash: true,
   hooks: {
-    beforeChange: [syncChildDataBeforeChange, populateZimmerwunschChildRelation],
+    beforeChange: [syncChildDataBeforeChange, calculateAgeBeforeChange, populateZimmerwunschChildRelation],
   },
   access: {
     create: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
@@ -69,6 +70,16 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
         date: {
           displayFormat: 'dd.MM.yyyy',
         },
+      },
+    },
+    {
+      name: 'age',
+      label: 'Alter',
+      type: 'number',
+      admin: {
+        description: 'Das Alter wird automatisch basierend auf dem Geburtsdatum berechnet.',
+        readOnly: true,
+        position: 'sidebar',
       },
     },
     {
@@ -294,7 +305,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
                   admin: {
                     hidden: true,
                   },
-                  maxDepth: 1,
+                  maxDepth: 0,
                   access: {
                     update: () => false,
                   },
@@ -316,7 +327,16 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               label: 'Zugewiesenes Zimmer',
               type: 'relationship',
               relationTo: 'sommerfreizeitRooms',
-            }
+              maxDepth: 0,
+              admin: {
+                description:
+                  'Wird automatisch anhand der Bewohner-Liste im Raumplan gesetzt.',
+                readOnly: true,
+              },
+              access: {
+                update: () => false,
+              },
+            },
           ],
         },
         {
