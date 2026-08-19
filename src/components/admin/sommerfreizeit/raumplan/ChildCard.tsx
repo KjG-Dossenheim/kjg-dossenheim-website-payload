@@ -62,7 +62,7 @@ export function ChildCard({
                 <span
                   className={cn(
                     'h-2 w-2 rounded-full',
-                    hasWishes ? 'bg-primary' : 'bg-muted-foreground',
+                    hasWishes ? 'bg-secondary' : 'bg-muted-foreground',
                   )}
                 />
               </ItemMedia>

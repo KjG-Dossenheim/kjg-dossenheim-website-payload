@@ -4,6 +4,7 @@ import type { RoomWithOccupants } from './types'
 import { ChildCard } from './ChildCard'
 import { TeamerCard } from './TeamerCard'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress, ProgressLabel, ProgressValue } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -52,8 +53,8 @@ export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean 
           <div className="flex min-w-0 items-center gap-2">
             <CardTitle className="truncate">{room.name}</CardTitle>
             {room.teamerRoom && (
-              <Badge variant="secondary" className="shrink-0">
-                Teamer
+              <Badge className="shrink-0">
+                <p className="">Teamer</p>
               </Badge>
             )}
             {room.gender &&
@@ -85,10 +86,9 @@ export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean 
               )}
               {onClean && occupantCount > 0 && (
                 <Button
-                  variant="ghost"
+                  variant="destructive"
                   size="icon-xs"
                   aria-label="Zimmer leeren"
-                  className="text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300"
                   onClick={(e) => {
                     e.stopPropagation()
                     onClean(room)
@@ -113,20 +113,36 @@ export function RoomCard({ room, onDrop, onDragStart, onEdit, onDelete, onClean 
             </div>
           )}
         </div>
-        <p
+        <Progress
+          value={Math.min(occupantCount, room.capacity)}
+          max={room.capacity}
+          aria-label={`Auslastung: ${occupantCount} von ${room.capacity}`}
           className={cn(
-            'text-xs',
             isOverCapacity
-              ? 'text-destructive font-medium'
+              ? '**:data-[slot=progress-indicator]:bg-destructive'
               : isNearCapacity
-                ? 'text-amber-600 dark:text-amber-400'
-                : 'text-muted-foreground',
+                ? '**:data-[slot=progress-indicator]:bg-primary'
+                : undefined,
           )}
         >
-          {occupantCount}
-          {capacityText} {occupantLabel}
-          {isOverCapacity && ' ⚠️'}
-        </p>
+          <ProgressLabel>
+            <p
+              className={cn(
+                'text-xs',
+                isOverCapacity
+                  ? 'text-destructive font-medium'
+                  : isNearCapacity
+                    ? 'text-primary'
+                    : 'text-muted-foreground',
+              )}
+            >
+              {occupantCount}
+              {capacityText} {occupantLabel}
+              {isOverCapacity && ' ⚠️'}
+            </p>
+          </ProgressLabel>
+          <ProgressValue />
+        </Progress>
       </CardHeader>
 
       <CardContent className="flex min-h-[60px] flex-col gap-1">

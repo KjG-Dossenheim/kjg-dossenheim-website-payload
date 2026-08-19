@@ -12,6 +12,9 @@ export const sommerfreizeitFloors: CollectionConfig = {
     singular: 'Etage',
     plural: 'Etagen',
   },
+  versions: {
+    drafts: true,
+  },
   fields: [
     {
       name: 'name',
