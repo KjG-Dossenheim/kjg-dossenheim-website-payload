@@ -113,6 +113,18 @@ export const sommerfreizeitEvents: CollectionConfig = {
       },
     },
     {
+      name: 'participants',
+      label: 'Teilnehmer',
+      type: 'join',
+      collection: 'sommerfreizeitAnmeldung',
+      on: 'event',
+      hasMany: true,
+      admin: {
+        position: "sidebar",
+        description: 'Teilnehmer, die sich für diese Freizeit angemeldet haben.',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {

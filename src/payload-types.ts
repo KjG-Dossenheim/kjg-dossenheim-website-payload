@@ -106,6 +106,9 @@ export interface Config {
     sommerfreizeitChild: {
       anmeldungen: 'sommerfreizeitAnmeldung';
     };
+    sommerfreizeitEvents: {
+      participants: 'sommerfreizeitAnmeldung';
+    };
     sommerfreizeitUsers: {
       children: 'sommerfreizeitChild';
     };
@@ -550,6 +553,14 @@ export interface SommerfreizeitEvent {
    * Wird benötigt, um die Verknüpfung mit Pretix herzustellen. Kann in den Event-Details in Pretix gefunden werden.
    */
   pretixEventId: string;
+  /**
+   * Teilnehmer, die sich für diese Freizeit angemeldet haben.
+   */
+  participants?: {
+    docs?: (string | SommerfreizeitAnmeldung)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   unterkunft: {
     name: string;
     beschreibung: string;
@@ -1890,6 +1901,7 @@ export interface SommerfreizeitEventsSelect<T extends boolean = true> {
   backgroundImage?: T;
   team?: T;
   pretixEventId?: T;
+  participants?: T;
   unterkunft?:
     | T
     | {
