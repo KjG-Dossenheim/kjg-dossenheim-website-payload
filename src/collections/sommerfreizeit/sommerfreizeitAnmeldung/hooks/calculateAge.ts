@@ -1,4 +1,4 @@
-import type { CollectionBeforeChangeHook } from 'payload'
+import type { FieldHook } from 'payload'
 
 const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000
 
@@ -30,35 +30,43 @@ const resolveRelationshipId = (value: RelationshipValue): string | null => {
 /**
  * Berechnet das Alter des Kindes automatisch auf Basis des Geburtsdatums.
  * Referenzdatum ist das Enddatum des zugehörigen Events (sonst das aktuelle Datum).
- * Läuft nach `syncChildDataBeforeChange`, damit das frisch synchronisierte
- * `dateOfBirth` verwendet wird.
+ * Läuft als Feld-Hook auf `dateOfBirth` und wird bei jedem Speichern neu berechnet.
+ * Da Feld-Hooks nach den Collection-Hooks laufen, steht `dateOfBirth` bereits mit
+ * dem Wert aus `syncChildDataBeforeChange` zur Verfügung.
  */
-export const calculateAgeBeforeChange: CollectionBeforeChangeHook = async ({
-  data,
-  req,
+export const calculateAgeBeforeChange: FieldHook = async ({
+  value,
+  siblingData,
   originalDoc,
+  req,
+  context,
 }) => {
-  if (!data) {
-    return data
+  if (context?.skipAgeCalculation) {
+    return value
   }
 
-  const dateOfBirth = data.dateOfBirth
+  // Feld ist nicht Teil der übermittelten Daten -> `age` nicht anfassen.
+  if (value === undefined) {
+    return value
+  }
+
+  const dateOfBirth = value
 
   if (!dateOfBirth) {
-    data.age = null
-    return data
+    siblingData.age = null
+    return value
   }
 
   const birthDate = new Date(dateOfBirth)
   if (Number.isNaN(birthDate.getTime())) {
-    data.age = null
-    return data
+    siblingData.age = null
+    return value
   }
 
   // Referenzdatum: Enddatum des zugehörigen Events, sonst aktuelles Datum
   let referenceDate = new Date()
 
-  const eventValue = data.event ?? originalDoc?.event
+  const eventValue = siblingData.event ?? originalDoc?.event
   const eventId = resolveRelationshipId(eventValue)
 
   if (eventId) {
@@ -85,7 +93,7 @@ export const calculateAgeBeforeChange: CollectionBeforeChangeHook = async ({
     }
   }
 
-  data.age = Math.floor((referenceDate.getTime() - birthDate.getTime()) / MS_PER_YEAR)
+  siblingData.age = Math.floor((referenceDate.getTime() - birthDate.getTime()) / MS_PER_YEAR)
 
-  return data
+  return value
 }

@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 import { validateGenderHomogeneity } from './hooks/validateGenderHomogeneity'
-import { syncAnmeldungRoom } from './hooks/syncAnmeldungRoom'
 
 export const sommerfreizeitRooms: CollectionConfig = {
   slug: 'sommerfreizeitRooms',
@@ -35,7 +34,6 @@ export const sommerfreizeitRooms: CollectionConfig = {
   },
   hooks: {
     beforeChange: [validateGenderHomogeneity],
-    afterChange: [syncAnmeldungRoom],
   },
   versions: {
     drafts: true,

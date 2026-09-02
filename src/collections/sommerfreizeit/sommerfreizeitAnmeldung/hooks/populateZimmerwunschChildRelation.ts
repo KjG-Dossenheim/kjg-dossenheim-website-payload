@@ -1,18 +1,18 @@
-import type { CollectionBeforeChangeHook } from 'payload'
+import type { FieldHook } from 'payload'
 
-export const populateZimmerwunschChildRelation: CollectionBeforeChangeHook = async ({
-  data,
+export const populateZimmerwunschChildRelation: FieldHook = async ({
+  value,
   req,
   context,
 }) => {
   // Skip if no zimmerwunsch array or if context flag is set
-  if (!data?.zimmerwunsch || context?.skipZimmerwunschSync) {
-    return data
+  if (!value || context?.skipZimmerwunschSync) {
+    return value
   }
 
   // Process each room preference item to populate childRelation
   const updatedZimmerwunsch = await Promise.all(
-    data.zimmerwunsch.map(async (item: Record<string, unknown>) => {
+    value.map(async (item: Record<string, unknown>) => {
       if (!item?.firstName) {
         return item
       }
@@ -37,9 +37,15 @@ export const populateZimmerwunschChildRelation: CollectionBeforeChangeHook = asy
           depth: 0,
         })
         // Set childRelation to matched child ID, or null if not found
+        const childId = children && children.length > 0 ? children[0].id : null
+        if (childId) {
+          req.payload.logger.info({
+            msg: `Zimmerwunsch childRelation populated for name "${item?.firstName} ${item?.lastName ?? ''}" -> ${childId}.`,
+          })
+        }
         return {
           ...item,
-          childRelation: children && children.length > 0 ? children[0].id : null,
+          childRelation: childId,
         }
       } catch (err) {
         // Log warning but don't fail the entire operation
@@ -49,15 +55,9 @@ export const populateZimmerwunschChildRelation: CollectionBeforeChangeHook = asy
         })
         // Return item unchanged if error occurs
         return item
-        req.payload.logger.info({
-          msg: `Zimmerwunsch childRelation populated for name "${item?.firstName} ${item?.lastName ?? ''}".`,
-        })
       }
     }),
   )
 
-  return {
-    ...data,
-    zimmerwunsch: updatedZimmerwunsch,
-  }
+  return updatedZimmerwunsch
 }

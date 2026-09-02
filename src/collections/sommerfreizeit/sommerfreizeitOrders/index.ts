@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { syncAnmeldungPretixStatus } from './hooks/syncAnmeldungPretixStatus'
 
 const canReadOwnOrders: NonNullable<CollectionConfig['access']>['read'] = ({ req: { user } }) => {
   if (!user) {
@@ -48,6 +49,9 @@ export const sommerfreizeitOrders: CollectionConfig = {
     read: canReadOwnOrders,
     update: () => false,
     delete: ({ req: { user } }) => !!user && user.collection === 'users',
+  },
+  hooks: {
+    afterChange: [syncAnmeldungPretixStatus],
   },
   fields: [
     {

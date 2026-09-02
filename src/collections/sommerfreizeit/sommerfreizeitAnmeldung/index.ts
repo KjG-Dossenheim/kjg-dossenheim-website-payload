@@ -14,7 +14,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
   },
   trash: true,
   hooks: {
-    beforeChange: [syncChildDataBeforeChange, calculateAgeBeforeChange, populateZimmerwunschChildRelation],
+    beforeChange: [
+      syncChildDataBeforeChange,
+    ],
   },
   access: {
     create: ({ req: { user } }) => !!user && ['users', 'sommerfreizeitUsers'].includes(user.collection),
@@ -63,6 +65,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
       label: 'Geburtsdatum',
       type: 'date',
       required: true,
+      hooks: {
+        beforeChange: [calculateAgeBeforeChange],
+      },
       admin: {
         description: 'Das Geburtsdatum des Kindes',
         readOnly: true,
@@ -285,6 +290,9 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
               name: 'zimmerwunsch',
               label: 'Zimmerwunsch',
               type: 'array',
+              hooks: {
+                beforeChange: [populateZimmerwunschChildRelation],
+              },
               fields: [
                 {
                   name: 'firstName',
