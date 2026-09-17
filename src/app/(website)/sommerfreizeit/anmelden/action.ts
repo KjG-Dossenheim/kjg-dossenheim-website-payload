@@ -11,6 +11,7 @@ import {
   normalizeSommerfreizeitEmail,
 } from '@/utilities/sommerfreizeitAccount'
 import { lookupOrderSchema, completeOrderSchema } from '@/utilities/validation/sommerfreizeit'
+import { getSommerfreizeitPage } from '@/utilities/sommerfreizeitPage'
 import { getRequiredEnv } from '@/utilities/env'
 import type { Payload } from 'payload'
 import type { PretixOrder } from '@/types/pretixSchema'
@@ -55,32 +56,15 @@ type CompleteOrderResult = {
 }
 
 async function getCurrentPretixEvent() {
-  const payload = await getPayload({ config })
+  const data = await getSommerfreizeitPage()
 
-  const landingPageData = await payload.findGlobal({
-    slug: 'sommerfreizeitLandingPage',
-    select: {
-      freizeit: true,
-    },
-  })
-
-  const eventId =
-    typeof landingPageData.freizeit === 'string'
-      ? landingPageData.freizeit
-      : landingPageData.freizeit?.id
-
-  const event = await payload.findByID({
-    collection: 'sommerfreizeitEvents',
-    id: eventId,
-    select: {
-      id: true,
-      pretixEventId: true,
-    },
-  })
+  if (data.mode !== 'event' || !data.event.pretixEventId) {
+    throw new Error('FREIZEIT_NOT_ACTIVE')
+  }
 
   return {
-    payload,
-    event,
+    payload: await getPayload({ config }),
+    event: data.event,
   }
 }
 
@@ -382,6 +366,13 @@ export async function lookupOrderAndStartFlowAction(input: { orderCode: string }
       return {
         success: false,
         message: 'Diese Bestellung wurde bereits abgeschlossen.',
+      }
+    }
+
+    if (error instanceof Error && error.message === 'FREIZEIT_NOT_ACTIVE') {
+      return {
+        success: false,
+        message: 'Die Anmeldung ist derzeit nicht möglich.',
       }
     }
 

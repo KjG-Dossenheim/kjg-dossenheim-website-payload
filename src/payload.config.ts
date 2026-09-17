@@ -76,14 +76,12 @@ import { Footer } from './globals/Footer'
 import { Rechtliches } from './globals/Rechtliches'
 import { Startseite } from './globals/Startseite'
 import { About } from './globals/About'
-import { Sommerfreizeit } from './globals/Sommerfreizeit'
 import { Adventsmarkt } from './globals/Adventsmarkt'
 import { Martinsumzug } from './globals/Martinsumzug'
 import { Tannenbaumaktion } from './globals/Tannenbaumaktion'
 import { Knallbonbon } from './globals/Knallbonbon'
 import { knallbonbonSettings } from './globals/knallbonbonSettings'
 import { aktion72Stunden } from './globals/aktionen/72stunden'
-import { sommerfreizeitLandingPage } from './globals/sommerfreizeit/sommerfreizeitLandingPage'
 import { sommerfreizeitSettings } from './globals/sommerfreizeit/sommerfreizeitSettings'
 
 // Relative imports - jobs
@@ -152,6 +150,10 @@ export default buildConfig({
           path: '/sommerfreizeit/raumplan',
           Component: '@/components/admin/sommerfreizeit/raumplan',
         },
+        sommerfreizeitExport: {
+          path: '/sommerfreizeit/export',
+          Component: '@/components/admin/sommerfreizeit/export',
+        },
         emailPreview: {
           path: '/email-preview',
           Component: '@/components/admin/views/PreviewEmailView',
@@ -186,7 +188,6 @@ export default buildConfig({
     Startseite,
     Adventsmarkt,
     Martinsumzug,
-    Sommerfreizeit,
     Tannenbaumaktion,
     aktion72Stunden,
     About,
@@ -195,7 +196,6 @@ export default buildConfig({
     Rechtliches,
     Knallbonbon,
     knallbonbonSettings,
-    sommerfreizeitLandingPage,
     sommerfreizeitSettings,
   ],
   editor: lexicalEditor({
@@ -441,6 +441,12 @@ export default buildConfig({
               slug: 'sommerfreizeit-import-json',
               href: '/sommerfreizeit/import-json',
               label: 'JSON importieren',
+              position: 'bottom',
+            },
+            {
+              slug: 'sommerfreizeit-export',
+              href: '/sommerfreizeit/export',
+              label: 'CSV exportieren',
               position: 'bottom',
             },
           ],

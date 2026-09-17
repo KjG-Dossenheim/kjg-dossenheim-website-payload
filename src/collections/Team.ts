@@ -140,5 +140,41 @@ export const Team: CollectionConfig = {
         },
       ],
     },
+    {
+          name: 'street',
+          label: 'Straße',
+          type: 'text',
+    },
+        {
+          name: 'houseNumber',
+          label: 'Hausnummer',
+          type: 'text',
+        },
+        {
+          name: 'postalCode',
+          label: 'Postleitzahl',
+          type: 'text',
+        },
+        {
+          name: 'city',
+          label: 'Ort',
+          type: 'text',
+        },
+        {
+          name: 'country',
+          label: 'Land',
+          type: 'text',
+          admin: {
+            description: 'Ländercode, z. B. "de"',
+          },
+        },
+        {
+          name: 'juleica',
+          label: 'Juleica',
+          type: 'text',
+          admin: {
+            description: 'Juleica-Nummer des Team-Mitglieds',
+          },
+        },
   ],
 }

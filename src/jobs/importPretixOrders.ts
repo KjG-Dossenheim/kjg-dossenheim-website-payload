@@ -10,12 +10,14 @@ import {
   toNonEmpty,
   toOptionalNonEmpty,
 } from '@/utilities/pretix'
+import { syncUserExportData } from './pretix/syncUserExportData'
 
 type ImportPretixOrdersInput = {
   maxPages?: number
   pretixEventId?: string
   statuses?: string
   updateExisting?: boolean
+  syncUserData?: boolean
 }
 
 type SommerfreizeitOrderDoc = {
@@ -355,9 +357,10 @@ export const importPretixOrdersJob = {
         req.payload.logger,
       )
       const updateExisting = jobInput.updateExisting ?? true
+      const syncUserData = jobInput.syncUserData ?? true
 
       req.payload.logger.info(
-        `Starting Pretix order import (organizer=${organizer}, pretixEventId=${pretixEventId || 'none'}, statuses=${statusFilter.length > 0 ? statusFilter.join(',') : 'none'}, updateExisting=${updateExisting})`,
+        `Starting Pretix order import (organizer=${organizer}, pretixEventId=${pretixEventId || 'none'}, statuses=${statusFilter.length > 0 ? statusFilter.join(',') : 'none'}, updateExisting=${updateExisting}, syncUserData=${syncUserData})`,
       )
 
       // ── Phase 1: Fetch all pages ──────────────────────────────────────
@@ -478,10 +481,13 @@ export const importPretixOrdersJob = {
         ...updatedTracking,
       ]
 
-      // ── Phase 4: Resolve relationships (event + Anmeldungen) ───────────
-      const [eventsResolved, anmeldungenLinked] = await Promise.all([
+      // ── Phase 4: Resolve relationships (event + Anmeldungen) & sync export data ─
+      const [eventsResolved, anmeldungenLinked, userExportSynced] = await Promise.all([
         batchResolveEventRelationships(req.payload, allProcessedOrders, errors),
         batchResolveAnmeldungenRelationships(req.payload, allProcessedOrders, errors),
+        syncUserData
+          ? syncUserExportData(req.payload, allProcessedOrders, normalizedCodeToOrder, errors)
+          : Promise.resolve(0),
       ])
 
       // ── Phase 5: Report results ───────────────────────────────────────
@@ -493,6 +499,10 @@ export const importPretixOrdersJob = {
         summaryParts.push(
           `relationships resolved (events=${eventsResolved}, anmeldungen=${anmeldungenLinked})`,
         )
+      }
+
+      if (userExportSynced > 0) {
+        summaryParts.push(`export data synced to ${userExportSynced} account(s)`)
       }
 
       if (errors.length > 0) {
@@ -508,6 +518,7 @@ export const importPretixOrdersJob = {
           skippedExisting,
           eventsResolved,
           anmeldungenLinked,
+          userExportSynced,
           errors: errors.length > 0 ? errors : undefined,
         },
       }
@@ -539,6 +550,12 @@ export const importPretixOrdersJob = {
     },
     {
       name: 'updateExisting',
+      type: 'checkbox',
+      required: false,
+      defaultValue: true,
+    },
+    {
+      name: 'syncUserData',
       type: 'checkbox',
       required: false,
       defaultValue: true,

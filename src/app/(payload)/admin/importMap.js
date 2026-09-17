@@ -63,6 +63,7 @@ import { default as default_ab50c006cc520cf36af67ec593724ed8 } from '@/component
 import { default as default_b9b5c78380620634560a69810a73cbb8 } from '@/components/admin/sommerfreizeit/dashboard'
 import { default as default_b20d6190c880518d6f010f0c0fae90ce } from '@/components/admin/sommerfreizeit/importJson'
 import { default as default_245923d31e5ba0652b258c499e0ba9ef } from '@/components/admin/sommerfreizeit/raumplan'
+import { default as default_bfc5490a32792931f4f47a5533d7639e } from '@/components/admin/sommerfreizeit/export'
 import { default as default_5ec299f2b2ecd830d6111c42920458dc } from '@/components/admin/views/PreviewEmailView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -133,6 +134,7 @@ export const importMap = {
   "@/components/admin/sommerfreizeit/dashboard#default": default_b9b5c78380620634560a69810a73cbb8,
   "@/components/admin/sommerfreizeit/importJson#default": default_b20d6190c880518d6f010f0c0fae90ce,
   "@/components/admin/sommerfreizeit/raumplan#default": default_245923d31e5ba0652b258c499e0ba9ef,
+  "@/components/admin/sommerfreizeit/export#default": default_bfc5490a32792931f4f47a5533d7639e,
   "@/components/admin/views/PreviewEmailView#default": default_5ec299f2b2ecd830d6111c42920458dc,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

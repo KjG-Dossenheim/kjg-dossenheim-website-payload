@@ -105,6 +105,30 @@ export const sommerfreizeitUser: CollectionConfig = {
       required: false,
     },
     {
+      name: 'street',
+      label: 'Straße',
+      type: 'text',
+      admin: {
+        description: 'Straße inkl. Hausnummer, wie sie in Pretix hinterlegt ist',
+      },
+    },
+    {
+      name: 'houseNumber',
+      label: 'Hausnummer',
+      type: 'text',
+      admin: {
+        description: 'Aus der Straße abgeleitete Hausnummer',
+      },
+    },
+    {
+      name: 'country',
+      label: 'Land',
+      type: 'text',
+      admin: {
+        description: 'Ländercode, z. B. "de"',
+      },
+    },
+    {
       name: 'pretix_Identifier',
       label: 'Pretix Identifier',
       type: 'text',

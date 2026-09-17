@@ -127,7 +127,7 @@ export const sommerfreizeitAnmeldung: CollectionConfig = {
     {
       name: 'bemerkungen',
       label: 'Weitere Hinweise',
-      type: 'text',
+      type: 'textarea',
       admin: {
         position: 'sidebar',
       },

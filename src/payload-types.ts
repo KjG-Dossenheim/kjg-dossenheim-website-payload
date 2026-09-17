@@ -162,7 +162,6 @@ export interface Config {
     startseite: Startseite;
     adventsmarkt: Adventsmarkt;
     martinsumzug: Martinsumzug;
-    sommerfreizeit: Sommerfreizeit;
     tannenbaumaktion: Tannenbaumaktion;
     '72stunden': Stunden;
     about: About;
@@ -171,14 +170,12 @@ export interface Config {
     rechtliches: Rechtlich;
     knallbonbon: Knallbonbon;
     knallbonbonSettings: KnallbonbonSetting;
-    sommerfreizeitLandingPage: SommerfreizeitLandingPage;
     sommerfreizeitSettings: SommerfreizeitSetting;
   };
   globalsSelect: {
     startseite: StartseiteSelect<false> | StartseiteSelect<true>;
     adventsmarkt: AdventsmarktSelect<false> | AdventsmarktSelect<true>;
     martinsumzug: MartinsumzugSelect<false> | MartinsumzugSelect<true>;
-    sommerfreizeit: SommerfreizeitSelect<false> | SommerfreizeitSelect<true>;
     tannenbaumaktion: TannenbaumaktionSelect<false> | TannenbaumaktionSelect<true>;
     '72stunden': StundenSelect<false> | StundenSelect<true>;
     about: AboutSelect<false> | AboutSelect<true>;
@@ -187,7 +184,6 @@ export interface Config {
     rechtliches: RechtlichesSelect<false> | RechtlichesSelect<true>;
     knallbonbon: KnallbonbonSelect<false> | KnallbonbonSelect<true>;
     knallbonbonSettings: KnallbonbonSettingsSelect<false> | KnallbonbonSettingsSelect<true>;
-    sommerfreizeitLandingPage: SommerfreizeitLandingPageSelect<false> | SommerfreizeitLandingPageSelect<true>;
     sommerfreizeitSettings: SommerfreizeitSettingsSelect<false> | SommerfreizeitSettingsSelect<true>;
   };
   locale: null;
@@ -511,6 +507,18 @@ export interface Team {
   email?: string | null;
   phone?: string | null;
   position: ('vorstand' | 'teamer' | 'helfer' | 'ehemalige')[];
+  street?: string | null;
+  houseNumber?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
+  /**
+   * Ländercode, z. B. "de"
+   */
+  country?: string | null;
+  /**
+   * Juleica-Nummer des Team-Mitglieds
+   */
+  juleica?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -763,6 +771,18 @@ export interface SommerfreizeitUser {
   address?: string | null;
   postalCode?: string | null;
   city?: string | null;
+  /**
+   * Straße inkl. Hausnummer, wie sie in Pretix hinterlegt ist
+   */
+  street?: string | null;
+  /**
+   * Aus der Straße abgeleitete Hausnummer
+   */
+  houseNumber?: string | null;
+  /**
+   * Ländercode, z. B. "de"
+   */
+  country?: string | null;
   pretix_Identifier?: string | null;
   children?: {
     docs?: (string | SommerfreizeitChild)[];
@@ -1971,6 +1991,9 @@ export interface SommerfreizeitUsersSelect<T extends boolean = true> {
   address?: T;
   postalCode?: T;
   city?: T;
+  street?: T;
+  houseNumber?: T;
+  country?: T;
   pretix_Identifier?: T;
   children?: T;
   updatedAt?: T;
@@ -2048,6 +2071,12 @@ export interface TeamSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   position?: T;
+  street?: T;
+  houseNumber?: T;
+  postalCode?: T;
+  city?: T;
+  country?: T;
+  juleica?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2755,138 +2784,6 @@ export interface Martinsumzug {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeit".
- */
-export interface Sommerfreizeit {
-  id: string;
-  title: string;
-  motto?: string | null;
-  startDate: string;
-  endDate: string;
-  alter: string;
-  anmeldungWebsite: string;
-  /**
-   * Ab wann ist die Anmeldung möglich? Leer lassen für sofort.
-   */
-  signupStartDate?: string | null;
-  allgemein: {
-    pricing: {
-      name: string;
-      beschreibung: string;
-      price: number;
-      eigenschaften: {
-        name: string;
-        id?: string | null;
-      }[];
-      id?: string | null;
-    }[];
-    eigenschaften: {
-      title: string;
-      description?: {
-        root: {
-          type: string;
-          children: {
-            type: any;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      id?: string | null;
-    }[];
-    teamFreizeit: (string | Team)[];
-  };
-  unterkunft: {
-    name: string;
-    beschreibung: string;
-    website: string;
-    bild: string | Media;
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    location?: [number, number] | null;
-  };
-  faq: {
-    eintrag: {
-      question: string;
-      answer: {
-        root: {
-          type: string;
-          children: {
-            type: any;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      };
-      id?: string | null;
-    }[];
-  };
-  packliste: {
-    text: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  informationen: {
-    eintrag: {
-      title?: string | null;
-      text?: {
-        root: {
-          type: string;
-          children: {
-            type: any;
-            version: number;
-            [k: string]: unknown;
-          }[];
-          direction: ('ltr' | 'rtl') | null;
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      links?:
-        | {
-            linkText?: string | null;
-            link?: string | null;
-            id?: string | null;
-          }[]
-        | null;
-      id?: string | null;
-    }[];
-  };
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tannenbaumaktion".
  */
 export interface Tannenbaumaktion {
@@ -3148,21 +3045,65 @@ export interface KnallbonbonSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitLandingPage".
- */
-export interface SommerfreizeitLandingPage {
-  id: string;
-  freizeit: string | SommerfreizeitEvent;
-  description?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitSettings".
  */
 export interface SommerfreizeitSetting {
   id: string;
+  /**
+   * Die aktuell verknuepfte Freizeit. Nach ihrem Enddatum zeigt die Seite automatisch die allgemeinen Inhalte.
+   */
+  freizeit: string | SommerfreizeitEvent;
+  /**
+   * Wird im Hero angezeigt, sobald die verknuepfte Freizeit vorbei ist. Ohne Angabe wird "Sommerfreizeit" verwendet.
+   */
+  headline?: string | null;
+  /**
+   * Zum Beispiel "Die nächste Freizeit ist in Planung". Nur fuer die allgemeine Ansicht.
+   */
+  subline?: string | null;
+  /**
+   * Hintergrundbild der allgemeinen Ansicht.
+   */
+  heroImage?: (string | null) | Media;
+  /**
+   * Einleitender Text der allgemeinen Ansicht.
+   */
+  description?: string | null;
+  /**
+   * Zum Beispiel "8 und 14 Jahren". Wird im Alters-Banner angezeigt.
+   */
+  alter?: string | null;
+  /**
+   * Inhalte des Akkordeons "Was uns ausmacht".
+   */
+  eigenschaften?:
+    | {
+        title: string;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Meta-Daten fuer die Suchmaschinen.
+   */
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3235,97 +3176,6 @@ export interface MartinsumzugSelect<T extends boolean = true> {
       };
   content?: T;
   songs?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeit_select".
- */
-export interface SommerfreizeitSelect<T extends boolean = true> {
-  title?: T;
-  motto?: T;
-  startDate?: T;
-  endDate?: T;
-  alter?: T;
-  anmeldungWebsite?: T;
-  signupStartDate?: T;
-  allgemein?:
-    | T
-    | {
-        pricing?:
-          | T
-          | {
-              name?: T;
-              beschreibung?: T;
-              price?: T;
-              eigenschaften?:
-                | T
-                | {
-                    name?: T;
-                    id?: T;
-                  };
-              id?: T;
-            };
-        eigenschaften?:
-          | T
-          | {
-              title?: T;
-              description?: T;
-              id?: T;
-            };
-        teamFreizeit?: T;
-      };
-  unterkunft?:
-    | T
-    | {
-        name?: T;
-        beschreibung?: T;
-        website?: T;
-        bild?: T;
-        location?: T;
-      };
-  faq?:
-    | T
-    | {
-        eintrag?:
-          | T
-          | {
-              question?: T;
-              answer?: T;
-              id?: T;
-            };
-      };
-  packliste?:
-    | T
-    | {
-        text?: T;
-      };
-  informationen?:
-    | T
-    | {
-        eintrag?:
-          | T
-          | {
-              title?: T;
-              text?: T;
-              links?:
-                | T
-                | {
-                    linkText?: T;
-                    link?: T;
-                    id?: T;
-                  };
-              id?: T;
-            };
-      };
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -3500,20 +3350,28 @@ export interface KnallbonbonSettingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sommerfreizeitLandingPage_select".
- */
-export interface SommerfreizeitLandingPageSelect<T extends boolean = true> {
-  freizeit?: T;
-  description?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sommerfreizeitSettings_select".
  */
 export interface SommerfreizeitSettingsSelect<T extends boolean = true> {
+  freizeit?: T;
+  headline?: T;
+  subline?: T;
+  heroImage?: T;
+  description?: T;
+  alter?: T;
+  eigenschaften?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -3597,6 +3455,7 @@ export interface ImportPretixOrdersJob {
     pretixEventId?: string | null;
     statuses?: string | null;
     updateExisting?: boolean | null;
+    syncUserData?: boolean | null;
   };
   output?: unknown;
 }

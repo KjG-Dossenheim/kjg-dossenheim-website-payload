@@ -1,39 +1,21 @@
-import { getPayload } from 'payload'
+import { redirect } from 'next/navigation'
 
-import config from '@payload-config'
-import type { SommerfreizeitEvent } from '@/payload-types'
+import { getSommerfreizeitPage } from '@/utilities/sommerfreizeitPage'
 
 export const revalidate = 600
 
 async function getPretixEvent() {
-  const payload = await getPayload({ config })
+  const data = await getSommerfreizeitPage()
 
-  const landingPageData = await payload.findGlobal({
-    slug: 'sommerfreizeitLandingPage',
-    select: {
-      freizeit: true,
-    },
-  })
-
-  const eventId =
-    typeof landingPageData.freizeit === 'string'
-      ? landingPageData.freizeit
-      : landingPageData.freizeit?.id
-
-  if (!eventId) {
-    throw new Error('Keine Sommerfreizeit im Landing-Global verknuepft.')
+  if (data.mode !== 'event') {
+    redirect('/sommerfreizeit')
   }
 
-  const eventData = (await payload.findByID({
-    collection: 'sommerfreizeitEvents',
-    id: eventId,
-  })) as SommerfreizeitEvent
-
-  if (!eventData.pretixEventId) {
+  if (!data.event.pretixEventId) {
     throw new Error('Die verknuepfte Sommerfreizeit hat keine Pretix Event ID.')
   }
 
-  return eventData.pretixEventId
+  return data.event.pretixEventId
 }
 
 export default async function Page() {

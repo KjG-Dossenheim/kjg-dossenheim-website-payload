@@ -64,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> { /* ... */ }
 
 export default async function Page() {
   const payload = await getPayload({ config })
-  const data = await payload.findGlobal({ slug: 'sommerfreizeit' })
+  const data = await payload.findGlobal({ slug: 'adventsmarkt' })
   // or: payload.find({ collection: 'blogPosts', where: { _status: { equals: 'published' } } })
   return <RichText data={data.content} />
 }

@@ -2,40 +2,20 @@
 export const revalidate = 60 // 1 Minute
 
 import React from 'react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { PacklisteDownloadButton } from '@/components/common/PacklisteDownloadButton'
+import { getSommerfreizeitPage } from '@/utilities/sommerfreizeitPage'
 
 async function getData() {
-  const payload = await getPayload({ config })
+  const data = await getSommerfreizeitPage()
 
-  const landingPageData = await payload.findGlobal({
-    slug: 'sommerfreizeitLandingPage',
-    select: {
-      freizeit: true,
-    },
-  })
-
-  const eventId =
-    typeof landingPageData.freizeit === 'string'
-      ? landingPageData.freizeit
-      : landingPageData.freizeit?.id
-
-  if (!eventId) {
-    throw new Error('Keine Sommerfreizeit im Landing-Global verknuepft.')
+  if (data.mode !== 'event') {
+    redirect('/sommerfreizeit')
   }
 
-  const eventData = await payload.findByID({
-    collection: 'sommerfreizeitEvents',
-    id: eventId,
-    select: {
-      packliste: true,
-    },
-  })
-
-  return { text: eventData.packliste.text }
+  return { text: data.event.packliste.text }
 }
 
 export const metadata: Metadata = {

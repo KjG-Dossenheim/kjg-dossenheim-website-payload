@@ -290,6 +290,12 @@ export async function SommerfreizeitDashboardView({
               >
                 Freizeiten verwalten
               </Link>
+              <Link
+                href="/admin/sommerfreizeit/export"
+                className="rounded-full border border-(--theme-elevation-200) px-4 py-2 text-sm font-medium hover:bg-(--theme-elevation-100)"
+              >
+                Export (CSV)
+              </Link>
             </div>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

@@ -2,49 +2,27 @@
 import React from 'react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 // Third-party libraries
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
-// Payload CMS
-import { getPayload } from 'payload'
-import config from '@payload-config'
-
 // UI Components
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { getSommerfreizeitPage } from '@/utilities/sommerfreizeitPage'
 
 // ⬇️ ISR-Zeit (in Sekunden) einstellen
 export const revalidate = 60 // alle 60s neue Daten abrufen
 
 async function getData() {
-  const payload = await getPayload({ config })
+  const data = await getSommerfreizeitPage()
 
-  const landingPageData = await payload.findGlobal({
-    slug: 'sommerfreizeitLandingPage',
-    select: {
-      freizeit: true,
-    },
-  })
-
-  const eventId =
-    typeof landingPageData.freizeit === 'string'
-      ? landingPageData.freizeit
-      : landingPageData.freizeit?.id
-
-  if (!eventId) {
-    throw new Error('Keine Sommerfreizeit im Landing-Global verknuepft.')
+  if (data.mode !== 'event') {
+    redirect('/sommerfreizeit')
   }
 
-  const eventData = await payload.findByID({
-    collection: 'sommerfreizeitEvents',
-    id: eventId,
-    select: {
-      informationen: true,
-    },
-  })
-
-  return { informationen: eventData.informationen }
+  return { informationen: data.event.informationen }
 }
 
 export const metadata: Metadata = {

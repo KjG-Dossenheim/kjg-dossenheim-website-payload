@@ -10,6 +10,9 @@ export function MySettingsMenu() {
       <PopupList.Button onClick={() => window.open('/admin/email-preview')}>
         Email Vorschau
       </PopupList.Button>
+      <PopupList.Button onClick={() => window.open('/admin/sommerfreizeit/export')}>
+        Sommerfreizeit Export
+      </PopupList.Button>
     </PopupList.ButtonGroup>
   )
 }

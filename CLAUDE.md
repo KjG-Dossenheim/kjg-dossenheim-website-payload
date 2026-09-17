@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is the KjG Dossenheim website, a Next.js application powered by Payload CMS (v3.x). It serves as a content management system and website for the KjG Dossenheim community, a Catholic youth organization in Dossenheim, Germany.
 
 **Key Technologies:**
+
 - Next.js 15+ with App Router
 - Payload CMS 3.x (headless CMS)
 - MongoDB (via Mongoose adapter)
@@ -19,57 +20,72 @@ This is the KjG Dossenheim website, a Next.js application powered by Payload CMS
 ## Development Commands
 
 **Start development server:**
+
 ```bash
 pnpm dev
 ```
 
 **Build for production:**
+
 ```bash
 pnpm build
 ```
+
 Note: `postbuild` script automatically runs `next-sitemap` after the build.
 
 **Start production server:**
+
 ```bash
 pnpm start
 ```
 
 **Development in production mode:**
+
 ```bash
 pnpm dev:prod
 ```
+
 This removes `.next`, builds, and starts the production server.
 
 **Safe development restart:**
+
 ```bash
 pnpm devsafe
 ```
+
 Removes `.next` directory and starts fresh dev server.
 
 **Type generation:**
+
 ```bash
 pnpm generate:types
 ```
+
 Generates TypeScript types from Payload collections/globals into `src/payload-types.ts`.
 
 **Import map generation:**
+
 ```bash
 pnpm generate:importmap
 ```
 
 **Linting:**
+
 ```bash
 pnpm lint          # Check for issues
 pnpm lint:fix      # Auto-fix issues
 ```
 
 **Email development:**
+
 ```bash
 pnpm email-dev
 ```
+
 Runs email preview server on port 3030 for React Email components.
 
 **Bundle analysis:**
+
 ```bash
 ANALYZE_BUNDLE=true pnpm build
 ```
@@ -81,12 +97,14 @@ ANALYZE_BUNDLE=true pnpm build
 The application uses Next.js App Router with two distinct routing groups:
 
 **`src/app/(website)/`** - Public-facing website
+
 - Main website routes (home, blog, events, etc.)
 - Custom layout with Navbar, Footer, and ThemeProvider
 - German locale (`lang="de"`)
 - Includes Umami analytics integration
 
 **`src/app/(payload)/`** - Payload CMS admin panel
+
 - Admin interface at `/admin`
 - API routes at `/api`
 - Separate layout with Payload's RootLayout
@@ -96,6 +114,7 @@ The application uses Next.js App Router with two distinct routing groups:
 
 **Collections** (`src/collections/`):
 Core data models managed through Payload CMS:
+
 - `Users` - Admin users with Authentik OAuth integration
 - `Media`, `TeamBilder` - Media management (stored in S3/Cloudflare R2)
 - `Team` - Team member profiles
@@ -108,14 +127,17 @@ Core data models managed through Payload CMS:
 
 **Globals** (`src/globals/`):
 Singleton content types (one instance each):
+
 - `Header`, `Footer` - Navigation and footer content
 - `Startseite` - Homepage content
 - `Rechtliches` - Legal pages
-- Event-specific: `Sommerfreizeit`, `Adventsmarkt`, `Martinsumzug`, `Tannenbaumaktion`, `Knallbonbon`
+- Event-specific: `Adventsmarkt`, `Martinsumzug`, `Tannenbaumaktion`, `Knallbonbon`
 - `aktion72Stunden` - 72-hour action event
+- Sommerfreizeit: `sommerfreizeitSettings` - all Sommerfreizeit content and the relationship to the current `sommerfreizeitEvents` entry (once the linked Freizeit is over, the page falls back to the general content of the same global)
 
 **Blocks** (`src/blocks/`):
 Reusable content blocks for Lexical editor:
+
 - `FormBlock` - Embedded forms (via form-builder plugin)
 - `Code` - Code snippets with syntax highlighting
 - `Gallery` - Image galleries
@@ -142,6 +164,7 @@ Blocks are registered in `payload.config.ts` under `BlocksFeature()` and rendere
 ### Rich Text Rendering
 
 The project uses Lexical editor with custom block rendering. When working with rich text:
+
 - Configuration: `src/payload.config.ts` (lexicalEditor features)
 - Frontend rendering: `src/components/utils/RichText/index.tsx`
 - Custom JSX converters map Payload blocks to React components
@@ -157,6 +180,7 @@ The project uses Lexical editor with custom block rendering. When working with r
 ### File Storage
 
 Media files use S3-compatible storage (Cloudflare R2):
+
 - `media` collection: General uploads
 - `teambilder` collection: Team photos with `teambilder` prefix
 - Configuration in `payload.config.ts` under `s3Storage` plugin
@@ -166,6 +190,7 @@ Media files use S3-compatible storage (Cloudflare R2):
 ### Path Aliases
 
 TypeScript path aliases configured in `tsconfig.json`:
+
 - `@/*` → `src/*`
 - `@payload-config` → `src/payload.config.ts`
 
@@ -174,6 +199,7 @@ Always use these aliases for imports.
 ### Environment Variables
 
 Required variables (must be configured):
+
 - `DATABASE_URI` - MongoDB connection string
 - `PAYLOAD_SECRET` - Payload CMS encryption secret
 - `NEXT_PUBLIC_SITE_URL` - Full site URL
@@ -183,12 +209,14 @@ Required variables (must be configured):
 - `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` - Email (Nodemailer)
 
 Optional (for OAuth):
+
 - `AUTHENTIK_CLIENT_ID`, `AUTHENTIK_CLIENT_SECRET`
 - `AUTHENTIK_TOKEN_ENDPOINT`, `AUTHENTIK_AUTHORIZATION_URL`, `AUTHENTIK_USERINFO_ENDPOINT`
 
 ### Type Safety
 
 After modifying collections or globals, always regenerate types:
+
 ```bash
 pnpm generate:types
 ```
@@ -198,6 +226,7 @@ This updates `src/payload-types.ts` which is imported throughout the app.
 ### Working with Collections
 
 When adding/modifying collections:
+
 1. Create/update the collection file in `src/collections/`
 2. Import and register in `src/payload.config.ts` (collections array)
 3. Run `pnpm generate:types`
@@ -206,6 +235,7 @@ When adding/modifying collections:
 ### Working with Globals
 
 Similar to collections:
+
 1. Create/update in `src/globals/`
 2. Import and register in `src/payload.config.ts` (globals array)
 3. Run `pnpm generate:types`
@@ -214,6 +244,7 @@ Similar to collections:
 ### Custom Admin Views
 
 Custom admin panel views are defined in `payload.config.ts` under `admin.components.views`:
+
 - `knallbonbon` (`/knallbonbon`) - Knallbonbon management view
 - `settings` (`/settings`) - Custom settings view
 - `emailPreview` (`/email-preview`) - Email template preview
@@ -227,6 +258,7 @@ Requires Node.js `^18.20.2 || >=20.9.0` (specified in package.json engines).
 ### Server Actions
 
 The application uses Next.js Server Actions instead of API routes where possible:
+
 - Server actions are located in `actions.ts` files alongside their respective pages
 - Example: `/knallbonbon/bestatigen/[registrationId]/actions.ts` for confirmation logic
 - Server actions provide better type safety and performance than traditional API routes
@@ -235,12 +267,14 @@ The application uses Next.js Server Actions instead of API routes where possible
 ### Payload Jobs System
 
 Background jobs are handled using Payload's native jobs queue (`src/jobs/`):
+
 - Jobs are stored in the `payload-jobs` MongoDB collection
 - Register jobs in `payload.config.ts` under the `jobs.tasks` array
 - Jobs can be scheduled with `payload.jobs.queue({ task: 'taskSlug', waitUntil: date })`
 - See `src/jobs/README.md` for detailed documentation on creating and scheduling jobs
 
 Example job pattern:
+
 ```typescript
 export const myJob = {
   slug: 'myJob',
@@ -256,11 +290,13 @@ export const myJob = {
 ### Collection Hooks Pattern
 
 Collections can have hooks in `src/collections/[collectionName]/hooks/`:
+
 - `afterChange` - Runs after a document is created/updated
 - `beforeChange` - Runs before a document is created/updated
 - `beforeDelete` - Runs before a document is deleted
 
 Example: `knallbonbonRegistration` collection has hooks for:
+
 - `updateEventParticipantCount` - Updates event capacity when registrations change
 - `promoteFromWaitlist` - Automatically promotes waitlisted users when spots open
 - `cleanupExpiredConfirmations` - Helper for the cleanup job
@@ -268,6 +304,7 @@ Example: `knallbonbonRegistration` collection has hooks for:
 ### Knallbonbon Event System
 
 Complex waitlist and confirmation workflow:
+
 - Registrations can be waitlisted when events are full
 - Automatic promotion system sends confirmation emails with time-limited links
 - Confirmation tokens are SHA-256 hashed with `PAYLOAD_SECRET` for security

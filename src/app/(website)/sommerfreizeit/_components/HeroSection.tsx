@@ -10,23 +10,28 @@ const Countdown = dynamic(() => import('@/components/common/Countdown'), {
 
 interface HeroSectionProps {
   title: string
-  motto?: string | null | undefined
-  startDate: string
-  endDate: string
-  signupStartDate?: string | null
-  pretixEventId: string
-  backgroundImage: Media | string | null | undefined
+  /** Motto der Freizeit. Wird nur angezeigt, wenn keine Unterzeile gesetzt ist. */
+  motto?: string | null
+  /** Unterzeile der allgemeinen Ansicht (Freizeit vorbei oder nicht verknuepft). */
+  subline?: string | null
+  /** Fehlen die Daten, werden Zeitraum und Countdown nicht angezeigt. */
+  startDate?: string | null
+  endDate?: string | null
+  backgroundImage?: Media | string | null
 }
 
 export default function HeroSection({
   title,
   motto,
+  subline,
   startDate,
   endDate,
   backgroundImage,
 }: HeroSectionProps) {
   const bgUrl = typeof backgroundImage === 'string' ? undefined : backgroundImage?.url
   const bgAlt = typeof backgroundImage === 'string' ? title : backgroundImage?.alt || title
+
+  const text = subline || motto
 
   return (
     <section className="background-cover relative h-screen! overflow-hidden text-center">
@@ -46,18 +51,24 @@ export default function HeroSection({
             {title}
           </h1>
         </div>
-        <div className="bg-primary mx-auto w-fit -rotate-3 px-4 py-2">
-          <h2 className="text-primary-foreground text-xl md:text-2xl lg:text-3xl">{motto}</h2>
-        </div>
-        <div className="bg-primary mx-auto w-fit rotate-3 px-4 py-2">
-          <p className="text-primary-foreground text-lg font-normal lg:text-xl">
-            <DateComponent dateString={startDate} formatString="EEEE, d. MMMM" /> bis{' '}
-            <DateComponent dateString={endDate} formatString="EEEE, d. MMMM" />
-          </p>
-        </div>
-        <div className="bg-primary -rotate-3 px-4 py-2">
-          <Countdown targetDate={startDate} textColor="text-primary-foreground" />
-        </div>
+        {text && (
+          <div className="bg-primary mx-auto w-fit -rotate-3 px-4 py-2">
+            <h2 className="text-primary-foreground text-xl md:text-2xl lg:text-3xl">{text}</h2>
+          </div>
+        )}
+        {startDate && endDate && (
+          <>
+            <div className="bg-primary mx-auto w-fit rotate-3 px-4 py-2">
+              <p className="text-primary-foreground text-lg font-normal lg:text-xl">
+                <DateComponent dateString={startDate} formatString="EEEE, d. MMMM" /> bis{' '}
+                <DateComponent dateString={endDate} formatString="EEEE, d. MMMM" />
+              </p>
+            </div>
+            <div className="bg-primary -rotate-3 px-4 py-2">
+              <Countdown targetDate={startDate} textColor="text-primary-foreground" />
+            </div>
+          </>
+        )}
       </div>
     </section>
   )
