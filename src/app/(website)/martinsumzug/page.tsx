@@ -79,22 +79,22 @@ export default async function Page() {
       />
       {/* Hero Section */}
       <div className="relative flex h-160 w-full flex-col items-center justify-center bg-neutral-900">
-        <div className="relative z-10 flex flex-col items-center justify-center text-center text-white">
-          <CardHeader>
+        <div className="relative z-10 flex flex-col items-center justify-center gap-4 text-center text-white">
+          <div>
             <h1 className="text-4xl font-bold md:text-5xl">
               Martinsumzug {formatDateLocale(martinsumzug.startDate, 'yyyy')}
             </h1>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div>
             <p className="mx-auto text-xl">
               {formatDateLocale(martinsumzug.startDate, 'EEEE, d. MMMM')}
               {' ab '}
               {formatDateLocale(martinsumzug.startDate, 'HH:mm')}
             </p>
-          </CardContent>
-          <CardContent>
+          </div>
+          <div>
             <Countdown targetDate={martinsumzug.startDate} />
-          </CardContent>
+          </div>
         </div>
         <ShootingStars
           minSpeed={10}
@@ -114,8 +114,8 @@ export default async function Page() {
           maxTwinkleSpeed={1}
         />
       </div>
-      <section className="container mx-auto p-6">
-        <Card className="mx-auto mt-6 max-w-md">
+      <section className="flex flex-col justify-center md:flex-row md:items-stretch">
+        <Card className="mx-auto max-w-md rounded-none md:self-start">
           <CardHeader>
             <h2 className="flex items-center gap-2 text-2xl font-semibold">
               <span className="bg-primary h-8 w-1 rounded-full"></span>
@@ -125,31 +125,7 @@ export default async function Page() {
           <CardContent>
             <RichText data={martinsumzug.content} />
           </CardContent>
-          <CardFooter>
-            <CardTitle>Liedtexte</CardTitle>
-          </CardFooter>
-          {new Date(martinsumzug.startDate).toDateString() === new Date().toDateString() ? (
-            <CardFooter className="flex flex-col items-start justify-start gap-2">
-              {martinsumzug.songs?.map((song) => (
-                <div key={song.id}>
-                  <Link
-                    href={`/martinsumzug/lieder/${song.slug}`}
-                    className={buttonVariants({ variant: 'outline' })}
-                  >
-                    {song.title} <ArrowRight className="size-4" />
-                  </Link>
-                </div>
-              ))}
-            </CardFooter>
-          ) : (
-            <CardFooter>
-              <p>Am Tag des Martinsumzugs findet ihr hier die Liedtexte</p>
-            </CardFooter>
-          )}
         </Card>
-      </section>
-      <section className="space-y-6">
-        <h2 className="text-center text-4xl font-bold sm:text-5xl">Strecke des Martinsumzugs</h2>
         <MartinsumzugMap />
       </section>
     </section>
