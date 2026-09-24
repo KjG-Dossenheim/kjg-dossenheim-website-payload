@@ -2743,23 +2743,6 @@ export interface Martinsumzug {
   id: string;
   startDate: string;
   startDate_tz: SupportedTimezones;
-  /**
-   * @minItems 2
-   * @maxItems 2
-   */
-  startLocation: [number, number];
-  /**
-   * @minItems 2
-   * @maxItems 2
-   */
-  endLocation: [number, number];
-  /**
-   * Meta-Daten für SEO
-   */
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-  };
   content: {
     root: {
       type: string;
@@ -2779,6 +2762,29 @@ export interface Martinsumzug {
    * Wähle die Lieder für den Martinsumzug aus
    */
   songs: (string | Song)[];
+  route: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    startLocation: [number, number];
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    endLocation: [number, number];
+    /**
+     * Zwischenziel des Umzugs, z.B. Friedrichstraße. Bleibt das Feld leer, verwendet die Karte automatisch den Standard-Wegpunkt über die Friedrichstraße.
+     *
+     * @minItems 2
+     * @maxItems 2
+     */
+    viaLocation?: [number, number] | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3166,16 +3172,21 @@ export interface AdventsmarktSelect<T extends boolean = true> {
 export interface MartinsumzugSelect<T extends boolean = true> {
   startDate?: T;
   startDate_tz?: T;
-  startLocation?: T;
-  endLocation?: T;
+  content?: T;
+  songs?: T;
+  route?:
+    | T
+    | {
+        startLocation?: T;
+        endLocation?: T;
+        viaLocation?: T;
+      };
   meta?:
     | T
     | {
         title?: T;
         description?: T;
       };
-  content?: T;
-  songs?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

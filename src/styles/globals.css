@@ -39,7 +39,7 @@
     @apply font-sans;
   }
   .maplibregl-popup-content {
-    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+    @apply rounded-none! bg-transparent! p-0! shadow-none!;
   }
   .maplibregl-popup-tip {
     @apply hidden!;
@@ -118,6 +118,35 @@
 
     p {
       @apply pb-2 last:p-0;
+    }
+  }
+
+  /*
+   * Liedtexte (Martinsumzug). Steht bewusst nach `.payload-richtext`, damit die
+   * Abstände dort überschrieben werden: beim Singen braucht es klar getrennte
+   * Strophen, aber eng zusammenstehende Zeilen innerhalb einer Strophe.
+   */
+  .song-lyrics {
+    @apply text-lg leading-relaxed;
+
+    /* Strophen deutlich trennen; `py-0` überschreibt das `pb-2` von `.payload-richtext`. */
+    p {
+      @apply mt-0 mb-6 py-0 last:mb-0;
+    }
+
+    /* Fett gesetzte Passagen sind im Liedtext der Refrain. */
+    strong,
+    b {
+      @apply text-primary font-semibold;
+    }
+
+    @media print {
+      @apply text-base;
+
+      p {
+        @apply mb-4;
+        break-inside: avoid;
+      }
     }
   }
 }

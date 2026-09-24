@@ -3,104 +3,18 @@ export const revalidate = 60 // 1 Minute
 
 // React and Next.js
 import React from 'react'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { unstable_cache } from 'next/cache'
 
-// Payload CMS
-import { getPayload } from 'payload'
-import config from '@payload-config'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+// Icons
+import { ArrowLeft, Lock } from 'lucide-react'
 
 // UI Components
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { SongLyrics } from '@/components/song/SongLyrics'
 
-// Types
-interface MartinsumzugData {
-  songIds: string[]
-  startDate: string | null
-  isToday: boolean
-}
-
-// Cached helper to get Martinsumzug data (song IDs + date validation)
-const getMartinsumzugData = unstable_cache(
-  async (): Promise<MartinsumzugData> => {
-    const payload = await getPayload({ config })
-    const martinsumzugGlobal = await payload.findGlobal({
-      slug: 'martinsumzug',
-      depth: 0,
-      select: {
-        songs: true,
-        startDate: true,
-      },
-    })
-
-    // Extract song IDs from the relationship
-    const songIds = (martinsumzugGlobal.songs || [])
-      .map((song) => {
-        if (typeof song === 'string') return song
-        if (typeof song === 'object' && song !== null && 'id' in song) return song.id
-        return null
-      })
-      .filter((id): id is string => id !== null)
-
-    // Check if today is the Martinsumzug day
-    const startDate = martinsumzugGlobal.startDate
-    const isToday = startDate
-      ? new Date(startDate).toDateString() === new Date().toDateString()
-      : false
-
-    return { songIds, startDate, isToday }
-  },
-  ['martinsumzug-data'],
-  {
-    revalidate: 60,
-    tags: ['martinsumzug'],
-  },
-)
-
-// Helper function to fetch song by slug with validation
-async function getSongBySlug(slug: string) {
-  // Get Martinsumzug data (cached)
-  const { songIds, isToday } = await getMartinsumzugData()
-
-  // If not today or no songs configured, return null early
-  if (!isToday || songIds.length === 0) {
-    return null
-  }
-
-  const payload = await getPayload({ config })
-
-  // Query songs collection with both slug and ID constraints
-  const result = await payload.find({
-    collection: 'songs',
-    where: {
-      and: [
-        {
-          slug: {
-            equals: slug,
-          },
-        },
-        {
-          id: {
-            in: songIds,
-          },
-        },
-      ],
-    },
-    limit: 1,
-    select: {
-      title: true,
-      slug: true,
-      artist: true,
-      year: true,
-      copyright: true,
-      lyrics: true,
-    },
-  })
-
-  return result.docs[0] || null
-}
+// Utilities
+import { getMartinsumzugSongData, getMartinsumzugSongs, getSongBySlug } from '@/utilities/songs'
 
 // Generate metadata for SEO
 export async function generateMetadata({
@@ -122,6 +36,9 @@ export async function generateMetadata({
     description: song.artist
       ? `${song.title} von ${song.artist} - Liedtext für den Martinsumzug`
       : `${song.title} - Liedtext für den Martinsumzug`,
+    alternates: {
+      canonical: `/martinsumzug/lieder/${song.slug}`,
+    },
     openGraph: {
       title: song.title,
       description: song.artist ? `Von ${song.artist}` : undefined,
@@ -132,54 +49,78 @@ export async function generateMetadata({
 // Create a React component for the song page
 export default async function SongPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const song = await getSongBySlug(slug)
+  const [{ isToday }, song] = await Promise.all([getMartinsumzugSongData(), getSongBySlug(slug)])
 
-  // getSongBySlug already validates the date and returns null if not today
+  // Nur Lieder, die im Martinsumzug-Global ausgewählt sind, haben eine Seite.
   if (!song) return notFound()
 
+  const meta = [song.artist, song.year].filter(Boolean).join(' · ')
+
+  // Bewusst ohne `lyrics.text`: der Liedtext ist urheberrechtlich geschützt und
+  // soll nicht zusätzlich in den strukturierten Daten landen.
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'MusicComposition',
+    name: song.title,
+    composer: song.artist ? { '@type': 'Person', name: song.artist } : undefined,
+    datePublished: song.year ? String(song.year) : undefined,
+    inLanguage: 'de',
+  }
+
   return (
-    <div className="container mx-auto p-6">
-      <Card className="w-fit">
-        <CardHeader>
-          <CardTitle className="space-x-2">{song.title}</CardTitle>
-          {song.year && <CardDescription>Jahr: {song.year}</CardDescription>}
-          {song.artist && <CardDescription>Interpret: {song.artist}</CardDescription>}
-          {song.copyright && <CardDescription>Copyright: {song.copyright}</CardDescription>}
-        </CardHeader>
-        <CardContent>
-          <RichText data={song.lyrics} />
-        </CardContent>
-      </Card>
-    </div>
+    <article className="container mx-auto max-w-2xl px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
+
+      <Link
+        href="/martinsumzug/lieder"
+        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+      >
+        <ArrowLeft className="size-4" />
+        Alle Lieder
+      </Link>
+
+      <header className="mt-6 border-b pb-6">
+        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{song.title}</h1>
+        {meta && <p className="text-muted-foreground mt-2">{meta}</p>}
+      </header>
+
+      <div className="mt-8">
+        {isToday ? (
+          <SongLyrics lyrics={song.lyrics} />
+        ) : (
+          /*
+           * Außerhalb des Umzugstags bleibt die Seite erreichbar, nur der Text
+           * fehlt — so sind Lied und Angaben schon vorab auffindbar.
+           */
+          <div className="border-muted-foreground/25 rounded-lg border-2 border-dashed p-12 text-center">
+            <div className="bg-muted mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+              <Lock className="text-muted-foreground h-6 w-6" />
+            </div>
+            <h2 className="mb-2 text-lg font-semibold">Liedtext noch nicht verfügbar</h2>
+            <p className="text-muted-foreground">Der Liedtext wird am Umzugstag freigeschaltet.</p>
+          </div>
+        )}
+      </div>
+
+      {song.copyright && (
+        <footer className="text-muted-foreground mt-10 border-t pt-4 text-xs">
+          {song.copyright}
+        </footer>
+      )}
+    </article>
   )
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config })
+  // Nur Lieder, die im Martinsumzug-Global ausgewählt sind.
+  const songs = await getMartinsumzugSongs()
 
-  // Get the allowed song IDs from Martinsumzug global (cached)
-  const { songIds } = await getMartinsumzugData()
-
-  if (songIds.length === 0) {
-    return []
-  }
-
-  // Query only songs that are in the Martinsumzug collection
-  const result = await payload.find({
-    collection: 'songs',
-    where: {
-      id: {
-        in: songIds,
-      },
-    },
-    limit: 1000,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
-
-  return result.docs.map((song) => ({
+  return songs.map((song) => ({
     slug: song.slug,
   }))
 }

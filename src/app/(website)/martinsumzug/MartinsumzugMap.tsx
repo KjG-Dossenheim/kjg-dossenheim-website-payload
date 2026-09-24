@@ -1,14 +1,23 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Map, MapMarker, MarkerContent, MapRoute, MarkerLabel, useMap } from '@/components/ui/map'
-import { Loader2 } from 'lucide-react'
+import { Footprints } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
-const waypoints = [
-  { name: 'Start', lng: 8.677112, lat: 49.450017 },
-  { name: 'Ziel', lng: 8.675105, lat: 49.451762 },
-]
+const numberFormat = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 1 })
+
+/** Metres → "850 m" below a kilometre, "1,2 km" from there on. */
+function formatDistance(meters: number): string {
+  if (meters < 1000) return `${Math.round(meters / 10) * 10} m`
+  return `${numberFormat.format(meters / 1000)} km`
+}
+
+/** Seconds → "15 Min", never rounding down to zero. */
+function formatDuration(seconds: number): string {
+  return `${Math.max(1, Math.round(seconds / 60))} Min`
+}
 
 interface RouteData {
   coordinates: [number, number][]
@@ -16,39 +25,38 @@ interface RouteData {
   distance: number // meters
 }
 
-export function MartinsumzugMap({ className }: { className?: string }) {
-  const [route, setRoute] = useState<RouteData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+/** A labelled marker on the map, in the order the parade walks them. */
+interface MapPoint {
+  name: string
+  lng: number
+  lat: number
+}
 
-  useEffect(() => {
-    async function fetchRoute() {
-      try {
-        const response = await fetch(
-          `https://router.project-osrm.org/route/v1/walking/8.677112,49.450017;8.672022,49.450027;8.675105,49.451762?overview=full&geometries=geojson`,
-        )
-        const data = await response.json()
-        if (data.routes?.length > 0) {
-          const r = data.routes[0]
-          setRoute({
-            coordinates: r.geometry.coordinates,
-            duration: r.duration,
-            distance: r.distance,
-          })
-        }
-      } catch (error) {
-        console.error('Failed to fetch route:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+interface MartinsumzugMapProps {
+  /** Walking route, resolved on the server. `null` when the router is unreachable. */
+  route: RouteData | null
+  /** The global's `startLocation` point field, as `[longitude, latitude]`. */
+  start: [number, number]
+  /** The global's `endLocation` point field, as `[longitude, latitude]`. */
+  end: [number, number]
+  className?: string
+}
 
-    fetchRoute()
-  }, [])
+export function MartinsumzugMap({ route, start, end, className }: MartinsumzugMapProps) {
+  // Memoised so `FitRouteBounds`'s effect isn't re-run by a fresh array identity.
+  const waypoints = useMemo<MapPoint[]>(
+    () => [
+      { name: 'Start', lng: start[0], lat: start[1] },
+      { name: 'Ziel', lng: end[0], lat: end[1] },
+    ],
+    [start, end],
+  )
 
-  // `flex` + the map's `h-full` make the map adopt the wrapper's height, which
-  // the neighbouring Card dictates (the wrapper is a stretched flex item).
-  // On mobile the two stack, so the Card's height is no longer a reference and
-  // the map falls back to a fixed height.
+  // `flex` + the map's `h-full` make the map adopt the wrapper's height. From
+  // `md` up the wrapper is a stretched flex item inside the Card, so its height
+  // is dictated by the text column beside it. Below `md` the Card stacks, so
+  // the text column is no longer a reference and the map falls back to a fixed
+  // height.
   return (
     <div className={cn('relative flex w-full max-md:h-100', className)}>
       <Map
@@ -59,7 +67,7 @@ export function MartinsumzugMap({ className }: { className?: string }) {
         // swallows page scroll. The camera is driven by FitRouteBounds instead.
         interactive={false}
       >
-        <FitRouteBounds route={route} />
+        <FitRouteBounds route={route} waypoints={waypoints} />
         {route && <MapRoute coordinates={route.coordinates} color="#6366f1" opacity={1} />}
 
         {waypoints.map((waypoint, index) => (
@@ -82,10 +90,19 @@ export function MartinsumzugMap({ className }: { className?: string }) {
         ))}
       </Map>
 
-      {isLoading && (
-        <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
-          <Loader2 className="text-muted-foreground size-6 animate-spin" />
-        </div>
+      {/*
+       * Route stats, pinned bottom-left: the attribution control owns the
+       * bottom-right corner and the "Ziel" marker label sits at the top-left.
+       * `pointer-events-none` keeps it out of the way of the map surface.
+       */}
+      {route && (
+        <Badge className="pointer-events-none absolute bottom-3 left-3 z-10">
+          <Footprints />
+          <span>
+            <span className="sr-only">Fußweg: </span>
+            {formatDistance(route.distance)} · ca. {formatDuration(route.duration)}
+          </span>
+        </Badge>
       )}
     </div>
   )
@@ -94,12 +111,12 @@ export function MartinsumzugMap({ className }: { className?: string }) {
 /**
  * Internal component — must be a child of {@link Map} to access map context.
  *
- * Frames the whole route (or the waypoints, until it has loaded) and re-frames
- * on every container resize, because the map's height is dictated by the
- * neighbouring Card. MapLibre's own `trackResize` only reacts to *window*
- * resizes, so the container also needs an explicit `map.resize()`.
+ * Frames the whole route, or just the waypoints when no route could be resolved,
+ * and re-frames on every container resize, because the map's height is dictated
+ * by the text column beside it. MapLibre's own `trackResize` only reacts to
+ * *window* resizes, so the container also needs an explicit `map.resize()`.
  */
-function FitRouteBounds({ route }: { route: RouteData | null }) {
+function FitRouteBounds({ route, waypoints }: { route: RouteData | null; waypoints: MapPoint[] }) {
   const { map } = useMap()
   const [containerSize, setContainerSize] = useState('')
 
